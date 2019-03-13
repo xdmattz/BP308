@@ -1,0 +1,60 @@
+void Init_X_Axis(void)
+{
+	ch0->InputMode=ENCODER_MODE;
+	ch0->OutputMode=DAC_SERVO_MODE;
+	ch0->Vel=160000;
+	ch0->Accel=1.2e+06;
+	ch0->Jerk=8e+06;
+	ch0->P=4;
+	ch0->I=0.02;
+	ch0->D=0;
+	ch0->FFAccel=0;
+	ch0->FFVel=0;
+	ch0->MaxI=1700;
+	ch0->MaxErr=1e+06;
+	ch0->MaxOutput=1800;
+	ch0->DeadBandGain=1;
+	ch0->DeadBandRange=0;
+	ch0->InputChan0=0;
+	ch0->InputChan1=0;
+	ch0->OutputChan0=0;
+	ch0->OutputChan1=0;
+	ch0->MasterAxis=-1;
+	ch0->LimitSwitchOptions=0x120;
+	ch0->LimitSwitchNegBit=0;
+	ch0->LimitSwitchPosBit=0;
+	ch0->SoftLimitPos=1e+09;
+	ch0->SoftLimitNeg=-1e+09;
+	ch0->InputGain0=1;
+	ch0->InputGain1=1;
+	ch0->InputOffset0=0;
+	ch0->InputOffset1=0;
+	ch0->OutputGain=1;
+	ch0->OutputOffset=-36;
+	ch0->SlaveGain=1;
+	ch0->BacklashMode=BACKLASH_OFF;
+	ch0->BacklashAmount=0;
+	ch0->BacklashRate=0;
+	ch0->invDistPerCycle=1;
+	ch0->Lead=0;
+	ch0->MaxFollowingError=1000000000;
+	ch0->StepperAmplitude=20;
+
+	ch0->iir[0].B0=0.123861;
+	ch0->iir[0].B1=0.123861;
+	ch0->iir[0].B2=0;
+	ch0->iir[0].A1=0.752278;
+	ch0->iir[0].A2=0;
+
+	ch0->iir[1].B0=1;
+	ch0->iir[1].B1=0;
+	ch0->iir[1].B2=0;
+	ch0->iir[1].A1=0;
+	ch0->iir[1].A2=0;
+
+	ch0->iir[2].B0=0.0313994;
+	ch0->iir[2].B1=0.0627987;
+	ch0->iir[2].B2=0.0313994;
+	ch0->iir[2].A1=1.49864;
+	ch0->iir[2].A2=-0.624233;
+}
