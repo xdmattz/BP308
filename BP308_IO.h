@@ -13,22 +13,25 @@
 #define POWER_MODULE_READY  130	// - OPTO_2
 #define AXIS_FAULT		    131		// - OPTO_3
 #define X_LIMIT			    132		// Normally Closed - OPTO_4
-#define X_HOME			    133		// Normally Open - OPTO_5
-#define Y_LIMIT			    134		// Normally Closed - OPTO_6
+#define X_HOME			    134		// Normally Open - OPTO_6
+#define Y_LIMIT			    133		// Normally Closed - OPTO_5
 #define Y_HOME			    135		// Normally Open - OPTO_7
 #define Z_LIMIT			    136		// Normally Closed - OPTO_8
-#define Z_HOME			    137		// Normally Open - OPTO_9
-#define OPTO_10			    138		// UNUSED - OPTO_10
+#define Z_HOME			    138		// Normally Open - OPTO_10
+#define OPTO_9			    137		// UNUSED - OPTO_9
 #define HEAD_WHITE		    139		// OPTO_11
 #define HEAD_RED		    140		// OPTO_12
 #define HEAD_GREEN		    141		// OPTO_13
 #define HEAD_BLUE		    142		// OPTO_14
 #define HEAD_YELLOW		    143		// OPTO_15
+#define TOOL_RELEASE        143     // same as yellow wire.
 
 #define ESTOP_ACTIVE	    1		// Reads 1 when the ESTOP switch is pressed
 #define ESTOP_RUN           0
-#define SPINDLE_FAULTED     1       // Double Check all of these!!!
-#define SPINDLE_FAULT_OK    0
+#define ESTOP_OK            0
+#define SPINDLE_FAULTED     0       // Double Check all of these!!!
+#define SPINDLE_FAULT_OK    1
+#define POWER_MODULE_OK     1
 #define AXIS_FAULTED        1
 #define AXIS_FALT_OK        0
 #define X_AT_LIMIT          0
@@ -48,7 +51,7 @@
 // 24V FET drive
 #define ESTOP_RELAY		    152		// 24V FET 0
 #define SPINDLE_ENABLE 	    153 	// 24V FET 1
-#define RELAY2			    154		// 24V FET 2
+#define RELAY3			    154		// 24V FET 2
 #define Z_BRAKE			    155		// 24V FET 3
 #define FET4			    156
 #define FET5			    157
@@ -113,12 +116,14 @@
 #define AUX_ISO_1	    1041	//
 #define AUX_ISO_2	    1042	//
 #define AUX_ISO_3	    1043	//
-#define LUBE_LOW	    1044	// Lube Oil level
+#define LUBE_MON	    1044	// Lube Oil level
 #define COOLANT_MON	    1045	// Coolant motor relay monitor
 #define AIR_MON		    1046	// Air input PSI monitor
 #define AUX_ISO_7	    1047	//
 
-
+#define LUBE_MON_OK     1
+#define AIR_MON_OK      1
+#define COOLANT_MON_OK  1
 
 
 #endif

@@ -1,30 +1,12 @@
 #ifndef BP308_MPG_H
 #define BP308_MPG_H
 
-#include "KMotionDef.h"
+// time constants for MPG smoothing
+// #define TAU 0.08 // smoothness factor (Low Pass Time constant seconds)
+#define TAU 0.20 // smoothness factor (Low Pass Time constant seconds)
+#define FINAL_TIME 0.85 // Set final dest after this amount of time with no change
 
-// functions to communicate with an MPG via the serial port and Quadrature Inputs
-
-void Init_MPG(void)
-{
-
-}
-void ServiceMPG(void)
-{
-    // if the HostStatus bit is active then don't do anything with the MPG
-    if((HostStatus & HOST_JOB_ACTIVE_BIT) == 0)
-    {
-        // Host is active so don't do anything with the MPG
-        // Set the MPG state to OFF so it has to respond to a status request to restart.
-    }
-    else if(TRUE)   // MPG Switch is set to OFF then don't do anything either
-    {
-
-    }
-    else
-    {
-        // do the actual MPG reading and update the axis based on the MPG state that was read from the serial status request
-    }
-}
+void Init_MPG(void);
+void ServiceMPG(void);
 
 #endif
