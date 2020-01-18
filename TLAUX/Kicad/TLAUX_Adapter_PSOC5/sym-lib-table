@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name Lattice)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/Lattice.lib)(options "")(descr ""))
+  (lib (name TLAUX_Adapter_PSOC5-rescue)(type Legacy)(uri ${KIPRJMOD}/TLAUX_Adapter_PSOC5-rescue.lib)(options "")(descr ""))
+)

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="TLAUX\TLAUX_PSoC\Source Files\CLI.c">
+<ExpandedNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Pins</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Analog</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Clocks</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Interrupts</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\DMA</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\System</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Directives</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Flash Security</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\EEPROM</v>
+<v>TLAUX\TLAUX_PSoC\Header Files</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\CLI.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\Cmds.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\cyapicallbacks.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\Processes.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\State_Machine.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\TestMessages.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\U_HW.h</v>
+<v>TLAUX\TLAUX_PSoC\Source Files</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\CLI.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\Cmds.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\main.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\Processes.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\State_Machine.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\U_HW.c</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Pins</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Analog</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Clocks</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Interrupts</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\DMA</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\System</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Directives</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\Flash Security</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.cydwr\EEPROM</v>
+<v>TLAUX\TLAUX_PSoC\Header Files</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\CLI.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\Cmds.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\cyapicallbacks.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\Processes.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\State_Machine.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\TestMessages.h</v>
+<v>TLAUX\TLAUX_PSoC\Header Files\U_HW.h</v>
+<v>TLAUX\TLAUX_PSoC\Source Files</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\CLI.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\Cmds.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\main.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\Processes.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\State_Machine.c</v>
+<v>TLAUX\TLAUX_PSoC\Source Files\U_HW.c</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\cy_boot</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Em_EEPROM_Dynamic</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_1</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_AC_Mon</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Car_FWD</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Car_REV</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_ESTOP</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_JP1_2A</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_JP1_2B</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_JP8_3A</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_LED</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_1</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Air</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Arm_Back</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Arm_Brake</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Arm_FWD</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Arm_Out</v>
+<v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5\Pin_Tool_Arm_REV</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign</v>
+<v>TLAUX\TLAUX_PSoC\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CLI.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cmds.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_AC_Mon.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Car_FWD.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Car_REV.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_ESTOP.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP1_2A.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP1_2B.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP8_3A.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LED.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Air.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Back.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Brake.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_FWD.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Out.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_REV.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Clamp.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Clamped.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Count.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Unclamped.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_V_Mon2.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Processes.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\State_Machine.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\TX_EN.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\U_HW.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_BOOT.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_INT.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_IntClock.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_PM.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_audio.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_boot.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_cdc.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_cls.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_descr.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_Dm.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_Dp.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_drv.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_episr.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_hid.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_midi.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_msc.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_pm.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_std.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_vnd.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\TLAUX_PSoC.elf</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\TLAUX_PSoC.hex</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\TLAUX_PSoC.map</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.gpdsc</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC.rpt</v>
+<v>TLAUX\TLAUX_PSoC\TLAUX_PSoC_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CLI.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cmds.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_AC_Mon.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Car_FWD.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Car_REV.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_ESTOP.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP1_2A.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP1_2B.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_JP8_3A.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LED.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Air.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Back.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Brake.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_FWD.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_Out.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Arm_REV.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Clamp.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Clamped.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Count.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Tool_Unclamped.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_V_Mon2.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Processes.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\State_Machine.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\TX_EN.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\U_HW.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_BOOT.lst</v>
+<v>TLAUX\TLAUX_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_1_INT.lst</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\PSoC 5LP Architecture TRM</v>
+<v>TLAUX\TLAUX_PSoC\CY8C58LP Family Datasheet</v>
+<v>TLAUX\TLAUX_PSoC\System Reference Guides</v>
+<v>TLAUX\TLAUX_PSoC\System Reference Guides\cy_boot_v5_70</v>
+<v>TLAUX\TLAUX_PSoC\cy_constant_v1_0.pdf</v>
+<v>TLAUX\TLAUX_PSoC\cy_pins_v2_20</v>
+<v>TLAUX\TLAUX_PSoC\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>TLAUX\TLAUX_PSoC\UART_v2_50.pdf</v>
+<v>TLAUX\TLAUX_PSoC\USBFS_v3_20.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>TLAUX</v>
+<v>TLAUX\TLAUX_PSoC</v>
+<v>TLAUX\TLAUX_PSoC\PSoC 5LP Architecture TRM</v>
+<v>TLAUX\TLAUX_PSoC\CY8C58LP Family Datasheet</v>
+<v>TLAUX\TLAUX_PSoC\System Reference Guides</v>
+<v>TLAUX\TLAUX_PSoC\System Reference Guides\cy_boot_v5_70</v>
+<v>TLAUX\TLAUX_PSoC\cy_constant_v1_0.pdf</v>
+<v>TLAUX\TLAUX_PSoC\cy_pins_v2_20</v>
+<v>TLAUX\TLAUX_PSoC\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>TLAUX\TLAUX_PSoC\UART_v2_50.pdf</v>
+<v>TLAUX\TLAUX_PSoC\USBFS_v3_20.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\TLAUX_PSoC.cydsn\CLI.c" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1012, 695" SelectedTabbedMdiWindow="8057bc97-acbb-43f2-9874-6de34b5fe76d"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="dc9366df-999c-4aa9-95cf-b504de69b773" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\CLI.c" Guid="8057bc97-acbb-43f2-9874-6de34b5fe76d" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>

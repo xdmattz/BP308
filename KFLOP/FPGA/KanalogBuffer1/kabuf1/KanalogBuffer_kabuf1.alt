@@ -1,0 +1,86 @@
+NOTE Copyright (C), 1992-2010, Lattice Semiconductor Corporation *
+NOTE All Rights Reserved *
+NOTE DATE CREATED: Sat Dec 08 15:54:28 2018 *
+NOTE DESIGN NAME: kbuf_top *
+NOTE DEVICE NAME: LCMXO2-7000HE-4TQFP144 *
+NOTE PIN ASSIGNMENTS *
+NOTE PINS kdata_io[7] : 132 : inout *
+NOTE PINS ka_out[4] : 61 : out *
+NOTE PINS ka_out[5] : 62 : out *
+NOTE PINS dac_out[2] : 32 : out *
+NOTE PINS dac_out[1] : 35 : out *
+NOTE PINS kdata_io[6] : 133 : inout *
+NOTE PINS kdata_io[5] : 138 : inout *
+NOTE PINS kdata_io[4] : 139 : inout *
+NOTE PINS kdata_io[3] : 140 : inout *
+NOTE PINS kdata_io[2] : 141 : inout *
+NOTE PINS kdata_io[1] : 142 : inout *
+NOTE PINS kdata_io[0] : 143 : inout *
+NOTE PINS ka_out[6] : 65 : out *
+NOTE PINS ka_out[2] : 59 : out *
+NOTE PINS ka_out[3] : 60 : out *
+NOTE PINS ka_out[7] : 67 : out *
+NOTE PINS Ddin : 117 : out *
+NOTE PINS dac_out[3] : 33 : out *
+NOTE PINS dac_out[4] : 27 : out *
+NOTE PINS dac_out[5] : 28 : out *
+NOTE PINS dac_out[6] : 25 : out *
+NOTE PINS dac_out[7] : 26 : out *
+NOTE PINS ka_out[0] : 57 : out *
+NOTE PINS ka_out[1] : 58 : out *
+NOTE PINS dac_out[0] : 34 : out *
+NOTE PINS k_out[15] : 56 : out *
+NOTE PINS k_out[14] : 55 : out *
+NOTE PINS k_out[13] : 54 : out *
+NOTE PINS k_out[12] : 52 : out *
+NOTE PINS k_out[11] : 50 : out *
+NOTE PINS k_out[10] : 49 : out *
+NOTE PINS k_out[9] : 48 : out *
+NOTE PINS k_out[8] : 47 : out *
+NOTE PINS k_out[7] : 107 : out *
+NOTE PINS k_out[6] : 106 : out *
+NOTE PINS k_out[5] : 105 : out *
+NOTE PINS k_out[4] : 104 : out *
+NOTE PINS k_out[3] : 100 : out *
+NOTE PINS k_out[2] : 99 : out *
+NOTE PINS k_out[1] : 98 : out *
+NOTE PINS k_out[0] : 97 : out *
+NOTE PINS xk_clk : 40 : out *
+NOTE PINS xstart_in : 38 : out *
+NOTE PINS xstate[2] : 45 : out *
+NOTE PINS xstate[1] : 42 : out *
+NOTE PINS xstate[0] : 44 : out *
+NOTE PINS xkdata[7] : 22 : out *
+NOTE PINS xkdata[6] : 21 : out *
+NOTE PINS xkdata[5] : 20 : out *
+NOTE PINS xkdata[4] : 19 : out *
+NOTE PINS xkdata[3] : 14 : out *
+NOTE PINS xkdata[2] : 13 : out *
+NOTE PINS xkdata[1] : 12 : out *
+NOTE PINS xkdata[0] : 11 : out *
+NOTE PINS t_out : 10 : out *
+NOTE PINS dac_clk : 23 : out *
+NOTE PINS Dlatch : 115 : in *
+NOTE PINS Dclk : 121 : in *
+NOTE PINS Ddout : 122 : in *
+NOTE PINS kreset : 128 : in *
+NOTE PINS ka_in[15] : 93 : in *
+NOTE PINS ka_in[14] : 94 : in *
+NOTE PINS ka_in[13] : 91 : in *
+NOTE PINS ka_in[12] : 92 : in *
+NOTE PINS ka_in[11] : 85 : in *
+NOTE PINS ka_in[10] : 86 : in *
+NOTE PINS ka_in[9] : 83 : in *
+NOTE PINS ka_in[8] : 84 : in *
+NOTE PINS ka_in[7] : 81 : in *
+NOTE PINS ka_in[6] : 82 : in *
+NOTE PINS ka_in[5] : 77 : in *
+NOTE PINS ka_in[4] : 78 : in *
+NOTE PINS ka_in[3] : 75 : in *
+NOTE PINS ka_in[2] : 76 : in *
+NOTE PINS ka_in[1] : 73 : in *
+NOTE PINS ka_in[0] : 74 : in *
+NOTE PINS k_clk : 126 : in *
+NOTE PINS start_in : 125 : in *
+NOTE CONFIGURATION MODE: NONE *
+NOTE COMPRESSION: on *

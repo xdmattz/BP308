@@ -1,0 +1,707 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"MPGCmds.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.MPGStatusQuery,"ax",%progbits
+  20              		.align	2
+  21              		.global	MPGStatusQuery
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	MPGStatusQuery, %function
+  25              	MPGStatusQuery:
+  26              	.LFB64:
+  27              		.file 1 "MPGCmds.c"
+   1:MPGCmds.c     **** /* ========================================
+   2:MPGCmds.c     ****  *
+   3:MPGCmds.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:MPGCmds.c     ****  * All Rights Reserved
+   5:MPGCmds.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:MPGCmds.c     ****  *
+   7:MPGCmds.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:MPGCmds.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:MPGCmds.c     ****  *
+  10:MPGCmds.c     ****  * ========================================
+  11:MPGCmds.c     **** */
+  12:MPGCmds.c     **** 
+  13:MPGCmds.c     **** #include "MPGCmds.h"
+  14:MPGCmds.c     **** #include "project.h"
+  15:MPGCmds.c     **** #include "Processes.h"
+  16:MPGCmds.c     **** #include "State_Machine.h"
+  17:MPGCmds.c     **** #include "U_HW.h"
+  18:MPGCmds.c     **** 
+  19:MPGCmds.c     **** #include "stdio.h"
+  20:MPGCmds.c     **** 
+  21:MPGCmds.c     **** extern func_ptr MPG_SM;
+  22:MPGCmds.c     **** extern uint8 MPG_STATE;
+  23:MPGCmds.c     **** 
+  24:MPGCmds.c     **** // ToolStatusQuery - returns the status of the tool changer
+  25:MPGCmds.c     **** uint16 MPGStatusQuery(void)
+  26:MPGCmds.c     **** {
+  28              		.loc 1 26 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 2
+
+
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  27:MPGCmds.c     ****     uint16 status = 0;
+  28:MPGCmds.c     ****     if((AXIS_SW_PORT & Pin_X_MASK) == 0) status |= (AXIS_X << AXIS_POS);    // X axis position
+  34              		.loc 1 28 0
+  35 0000 2C4B     		ldr	r3, .L16
+  36 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  37 0004 13F0080F 		tst	r3, #8
+  38 0008 10D0     		beq	.L12
+  29:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_Y_MASK) == 0) status |= (AXIS_Y << AXIS_POS);    // Y axis position
+  39              		.loc 1 29 0
+  40 000a 2A4B     		ldr	r3, .L16
+  41 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  42 000e 13F0040F 		tst	r3, #4
+  43 0012 0DD0     		beq	.L13
+  30:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_Z_MASK) == 0) status |= (AXIS_Z << AXIS_POS);    // Z axis position
+  44              		.loc 1 30 0
+  45 0014 274B     		ldr	r3, .L16
+  46 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  47 0018 13F0020F 		tst	r3, #2
+  48 001c 0AD0     		beq	.L14
+  31:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_A_MASK) == 0) status |= (AXIS_A << AXIS_POS);    // A axis position
+  49              		.loc 1 31 0
+  50 001e 254B     		ldr	r3, .L16
+  51 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  52 0022 13F0010F 		tst	r3, #1
+  53 0026 07D0     		beq	.L15
+  27:MPGCmds.c     ****     if((AXIS_SW_PORT & Pin_X_MASK) == 0) status |= (AXIS_X << AXIS_POS);    // X axis position
+  54              		.loc 1 27 0
+  55 0028 0020     		movs	r0, #0
+  56 002a 06E0     		b	.L2
+  57              	.L12:
+  28:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_Y_MASK) == 0) status |= (AXIS_Y << AXIS_POS);    // Y axis position
+  58              		.loc 1 28 0
+  59 002c 0820     		movs	r0, #8
+  60 002e 04E0     		b	.L2
+  61              	.L13:
+  29:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_Z_MASK) == 0) status |= (AXIS_Z << AXIS_POS);    // Z axis position
+  62              		.loc 1 29 0
+  63 0030 1020     		movs	r0, #16
+  64 0032 02E0     		b	.L2
+  65              	.L14:
+  30:MPGCmds.c     ****     else if((AXIS_SW_PORT & Pin_A_MASK) == 0) status |= (AXIS_A << AXIS_POS);    // A axis position
+  66              		.loc 1 30 0
+  67 0034 1820     		movs	r0, #24
+  68 0036 00E0     		b	.L2
+  69              	.L15:
+  70              		.loc 1 31 0
+  71 0038 2020     		movs	r0, #32
+  72              	.L2:
+  73              	.LVL1:
+  32:MPGCmds.c     ****     
+  33:MPGCmds.c     ****     if(status == 0) status |= (1 << OFF_POS);                       // if the positions are all zer
+  74              		.loc 1 33 0
+  75 003a 08B9     		cbnz	r0, .L3
+  76              		.loc 1 33 0 is_stmt 0 discriminator 1
+  77 003c 40F04000 		orr	r0, r0, #64
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 3
+
+
+  78              	.LVL2:
+  79              	.L3:
+  34:MPGCmds.c     ****     
+  35:MPGCmds.c     ****     if(MPG_STATE == MPG_STATE_FAULT) status |= (1 << TIMEOUT_FAULT_POS);           // in fault stat
+  80              		.loc 1 35 0 is_stmt 1
+  81 0040 1D4B     		ldr	r3, .L16+4
+  82 0042 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  83 0044 042B     		cmp	r3, #4
+  84 0046 01D1     		bne	.L4
+  85              		.loc 1 35 0 is_stmt 0 discriminator 1
+  86 0048 40F48040 		orr	r0, r0, #16384
+  87              	.LVL3:
+  88              	.L4:
+  36:MPGCmds.c     ****     
+  37:MPGCmds.c     ****     if((ESTOP_PORT & Pin_ESTOP_MASK) == 0) status |= (1 << ESTOP_STATUS_POS);   // in ESTOP conditi
+  89              		.loc 1 37 0 is_stmt 1
+  90 004c 1B4B     		ldr	r3, .L16+8
+  91 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  92 0050 13F0800F 		tst	r3, #128
+  93 0054 01D1     		bne	.L5
+  94              		.loc 1 37 0 is_stmt 0 discriminator 1
+  95 0056 40F40050 		orr	r0, r0, #8192
+  96              	.LVL4:
+  97              	.L5:
+  38:MPGCmds.c     ****    
+  39:MPGCmds.c     ****     if((EN_SW_PORT & Pin_EN_SW_MASK) == 0) status |= (1 << EN_SW_POS);    // Enable Switch axis pos
+  98              		.loc 1 39 0 is_stmt 1
+  99 005a 164B     		ldr	r3, .L16
+ 100 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 101 005e 13F0100F 		tst	r3, #16
+ 102 0062 01D1     		bne	.L6
+ 103              		.loc 1 39 0 is_stmt 0 discriminator 1
+ 104 0064 40F08000 		orr	r0, r0, #128
+ 105              	.LVL5:
+ 106              	.L6:
+  40:MPGCmds.c     ****     if((SWITCH_PORT & Pin_SW1_MASK) == 0) status |= (1 << SW1_POS);       //  SW1 position
+ 107              		.loc 1 40 0 is_stmt 1
+ 108 0068 154B     		ldr	r3, .L16+12
+ 109 006a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 110 006c 13F0080F 		tst	r3, #8
+ 111 0070 01D1     		bne	.L7
+ 112              		.loc 1 40 0 is_stmt 0 discriminator 1
+ 113 0072 40F48070 		orr	r0, r0, #256
+ 114              	.LVL6:
+ 115              	.L7:
+  41:MPGCmds.c     ****     if((SWITCH_PORT & Pin_SW2_MASK) == 0) status |= (1 << SW2_POS);       //  SW2 position
+ 116              		.loc 1 41 0 is_stmt 1
+ 117 0076 124B     		ldr	r3, .L16+12
+ 118 0078 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 119 007a 13F0040F 		tst	r3, #4
+ 120 007e 01D1     		bne	.L8
+ 121              		.loc 1 41 0 is_stmt 0 discriminator 1
+ 122 0080 40F40070 		orr	r0, r0, #512
+ 123              	.LVL7:
+ 124              	.L8:
+  42:MPGCmds.c     ****     if((RATE_SW_PORT & Pin_X1_MASK) == 0) status |= (RATE_X1 << RATE_POS);  // 1x motion rate
+ 125              		.loc 1 42 0 is_stmt 1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 4
+
+
+ 126 0084 0D4B     		ldr	r3, .L16+8
+ 127 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 128 0088 13F0040F 		tst	r3, #4
+ 129 008c 02D1     		bne	.L9
+ 130              		.loc 1 42 0 is_stmt 0 discriminator 1
+ 131 008e 40F00100 		orr	r0, r0, #1
+ 132              	.LVL8:
+ 133 0092 7047     		bx	lr
+ 134              	.L9:
+  43:MPGCmds.c     ****     else if((RATE_SW_PORT & Pin_X10_MASK) == 0) status |= (RATE_X10 << RATE_POS);  // 10x motion ra
+ 135              		.loc 1 43 0 is_stmt 1
+ 136 0094 094B     		ldr	r3, .L16+8
+ 137 0096 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 138 0098 13F0020F 		tst	r3, #2
+ 139 009c 02D1     		bne	.L11
+ 140              		.loc 1 43 0 is_stmt 0 discriminator 1
+ 141 009e 40F00200 		orr	r0, r0, #2
+ 142              	.LVL9:
+ 143 00a2 7047     		bx	lr
+ 144              	.L11:
+  44:MPGCmds.c     ****     else if((RATE_SW_PORT & Pin_X100_MASK) == 0) status |= (RATE_X100 << RATE_POS);  // 100x motion
+ 145              		.loc 1 44 0 is_stmt 1
+ 146 00a4 054B     		ldr	r3, .L16+8
+ 147 00a6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 148 00a8 13F0010F 		tst	r3, #1
+ 149 00ac 01D1     		bne	.L10
+ 150              		.loc 1 44 0 is_stmt 0 discriminator 1
+ 151 00ae 40F00300 		orr	r0, r0, #3
+ 152              	.LVL10:
+ 153              	.L10:
+  45:MPGCmds.c     **** 
+  46:MPGCmds.c     ****     return status;
+  47:MPGCmds.c     **** }
+ 154              		.loc 1 47 0 is_stmt 1
+ 155 00b2 7047     		bx	lr
+ 156              	.L17:
+ 157              		.align	2
+ 158              	.L16:
+ 159 00b4 01510040 		.word	1073762561
+ 160 00b8 00000000 		.word	MPG_STATE
+ 161 00bc 31510040 		.word	1073762609
+ 162 00c0 21510040 		.word	1073762593
+ 163              		.cfi_endproc
+ 164              	.LFE64:
+ 165              		.size	MPGStatusQuery, .-MPGStatusQuery
+ 166              		.text
+ 167              	.Letext0:
+ 168              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 169              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 170              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 171              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 172              		.section	.debug_info,"",%progbits
+ 173              	.Ldebug_info0:
+ 174 0000 0F010000 		.4byte	0x10f
+ 175 0004 0400     		.2byte	0x4
+ 176 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 177 000a 04       		.byte	0x4
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 5
+
+
+ 178 000b 01       		.uleb128 0x1
+ 179 000c 34000000 		.4byte	.LASF21
+ 180 0010 0C       		.byte	0xc
+ 181 0011 FA000000 		.4byte	.LASF22
+ 182 0015 1C010000 		.4byte	.LASF23
+ 183 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 184 001d 00000000 		.4byte	0
+ 185 0021 00000000 		.4byte	.Ldebug_line0
+ 186 0025 02       		.uleb128 0x2
+ 187 0026 01       		.byte	0x1
+ 188 0027 06       		.byte	0x6
+ 189 0028 73010000 		.4byte	.LASF0
+ 190 002c 02       		.uleb128 0x2
+ 191 002d 01       		.byte	0x1
+ 192 002e 08       		.byte	0x8
+ 193 002f 04010000 		.4byte	.LASF1
+ 194 0033 02       		.uleb128 0x2
+ 195 0034 02       		.byte	0x2
+ 196 0035 05       		.byte	0x5
+ 197 0036 AA010000 		.4byte	.LASF2
+ 198 003a 02       		.uleb128 0x2
+ 199 003b 02       		.byte	0x2
+ 200 003c 07       		.byte	0x7
+ 201 003d 0E000000 		.4byte	.LASF3
+ 202 0041 03       		.uleb128 0x3
+ 203 0042 9A010000 		.4byte	.LASF9
+ 204 0046 02       		.byte	0x2
+ 205 0047 3F       		.byte	0x3f
+ 206 0048 4C000000 		.4byte	0x4c
+ 207 004c 02       		.uleb128 0x2
+ 208 004d 04       		.byte	0x4
+ 209 004e 05       		.byte	0x5
+ 210 004f 5D010000 		.4byte	.LASF4
+ 211 0053 02       		.uleb128 0x2
+ 212 0054 04       		.byte	0x4
+ 213 0055 07       		.byte	0x7
+ 214 0056 CA000000 		.4byte	.LASF5
+ 215 005a 02       		.uleb128 0x2
+ 216 005b 08       		.byte	0x8
+ 217 005c 05       		.byte	0x5
+ 218 005d 00000000 		.4byte	.LASF6
+ 219 0061 02       		.uleb128 0x2
+ 220 0062 08       		.byte	0x8
+ 221 0063 07       		.byte	0x7
+ 222 0064 E3000000 		.4byte	.LASF7
+ 223 0068 04       		.uleb128 0x4
+ 224 0069 04       		.byte	0x4
+ 225 006a 05       		.byte	0x5
+ 226 006b 696E7400 		.ascii	"int\000"
+ 227 006f 02       		.uleb128 0x2
+ 228 0070 04       		.byte	0x4
+ 229 0071 07       		.byte	0x7
+ 230 0072 21000000 		.4byte	.LASF8
+ 231 0076 03       		.uleb128 0x3
+ 232 0077 C2000000 		.4byte	.LASF10
+ 233 007b 03       		.byte	0x3
+ 234 007c 2C       		.byte	0x2c
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 6
+
+
+ 235 007d 41000000 		.4byte	0x41
+ 236 0081 05       		.uleb128 0x5
+ 237 0082 2E000000 		.4byte	.LASF11
+ 238 0086 04       		.byte	0x4
+ 239 0087 E401     		.2byte	0x1e4
+ 240 0089 2C000000 		.4byte	0x2c
+ 241 008d 05       		.uleb128 0x5
+ 242 008e B4010000 		.4byte	.LASF12
+ 243 0092 04       		.byte	0x4
+ 244 0093 E501     		.2byte	0x1e5
+ 245 0095 3A000000 		.4byte	0x3a
+ 246 0099 02       		.uleb128 0x2
+ 247 009a 04       		.byte	0x4
+ 248 009b 04       		.byte	0x4
+ 249 009c A4010000 		.4byte	.LASF13
+ 250 00a0 02       		.uleb128 0x2
+ 251 00a1 08       		.byte	0x8
+ 252 00a2 04       		.byte	0x4
+ 253 00a3 56010000 		.4byte	.LASF14
+ 254 00a7 02       		.uleb128 0x2
+ 255 00a8 01       		.byte	0x1
+ 256 00a9 08       		.byte	0x8
+ 257 00aa 12010000 		.4byte	.LASF15
+ 258 00ae 05       		.uleb128 0x5
+ 259 00af 17010000 		.4byte	.LASF16
+ 260 00b3 04       		.byte	0x4
+ 261 00b4 8E02     		.2byte	0x28e
+ 262 00b6 BA000000 		.4byte	0xba
+ 263 00ba 06       		.uleb128 0x6
+ 264 00bb 81000000 		.4byte	0x81
+ 265 00bf 02       		.uleb128 0x2
+ 266 00c0 08       		.byte	0x8
+ 267 00c1 04       		.byte	0x4
+ 268 00c2 7F010000 		.4byte	.LASF17
+ 269 00c6 02       		.uleb128 0x2
+ 270 00c7 04       		.byte	0x4
+ 271 00c8 07       		.byte	0x7
+ 272 00c9 C5010000 		.4byte	.LASF18
+ 273 00cd 07       		.uleb128 0x7
+ 274 00ce 8B010000 		.4byte	.LASF24
+ 275 00d2 01       		.byte	0x1
+ 276 00d3 19       		.byte	0x19
+ 277 00d4 8D000000 		.4byte	0x8d
+ 278 00d8 00000000 		.4byte	.LFB64
+ 279 00dc C4000000 		.4byte	.LFE64-.LFB64
+ 280 00e0 01       		.uleb128 0x1
+ 281 00e1 9C       		.byte	0x9c
+ 282 00e2 F6000000 		.4byte	0xf6
+ 283 00e6 08       		.uleb128 0x8
+ 284 00e7 DC000000 		.4byte	.LASF25
+ 285 00eb 01       		.byte	0x1
+ 286 00ec 1B       		.byte	0x1b
+ 287 00ed 8D000000 		.4byte	0x8d
+ 288 00f1 00000000 		.4byte	.LLST0
+ 289 00f5 00       		.byte	0
+ 290 00f6 09       		.uleb128 0x9
+ 291 00f7 66010000 		.4byte	.LASF19
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 7
+
+
+ 292 00fb 05       		.byte	0x5
+ 293 00fc 1207     		.2byte	0x712
+ 294 00fe 02010000 		.4byte	0x102
+ 295 0102 06       		.uleb128 0x6
+ 296 0103 76000000 		.4byte	0x76
+ 297 0107 0A       		.uleb128 0xa
+ 298 0108 BB010000 		.4byte	.LASF20
+ 299 010c 01       		.byte	0x1
+ 300 010d 16       		.byte	0x16
+ 301 010e 81000000 		.4byte	0x81
+ 302 0112 00       		.byte	0
+ 303              		.section	.debug_abbrev,"",%progbits
+ 304              	.Ldebug_abbrev0:
+ 305 0000 01       		.uleb128 0x1
+ 306 0001 11       		.uleb128 0x11
+ 307 0002 01       		.byte	0x1
+ 308 0003 25       		.uleb128 0x25
+ 309 0004 0E       		.uleb128 0xe
+ 310 0005 13       		.uleb128 0x13
+ 311 0006 0B       		.uleb128 0xb
+ 312 0007 03       		.uleb128 0x3
+ 313 0008 0E       		.uleb128 0xe
+ 314 0009 1B       		.uleb128 0x1b
+ 315 000a 0E       		.uleb128 0xe
+ 316 000b 55       		.uleb128 0x55
+ 317 000c 17       		.uleb128 0x17
+ 318 000d 11       		.uleb128 0x11
+ 319 000e 01       		.uleb128 0x1
+ 320 000f 10       		.uleb128 0x10
+ 321 0010 17       		.uleb128 0x17
+ 322 0011 00       		.byte	0
+ 323 0012 00       		.byte	0
+ 324 0013 02       		.uleb128 0x2
+ 325 0014 24       		.uleb128 0x24
+ 326 0015 00       		.byte	0
+ 327 0016 0B       		.uleb128 0xb
+ 328 0017 0B       		.uleb128 0xb
+ 329 0018 3E       		.uleb128 0x3e
+ 330 0019 0B       		.uleb128 0xb
+ 331 001a 03       		.uleb128 0x3
+ 332 001b 0E       		.uleb128 0xe
+ 333 001c 00       		.byte	0
+ 334 001d 00       		.byte	0
+ 335 001e 03       		.uleb128 0x3
+ 336 001f 16       		.uleb128 0x16
+ 337 0020 00       		.byte	0
+ 338 0021 03       		.uleb128 0x3
+ 339 0022 0E       		.uleb128 0xe
+ 340 0023 3A       		.uleb128 0x3a
+ 341 0024 0B       		.uleb128 0xb
+ 342 0025 3B       		.uleb128 0x3b
+ 343 0026 0B       		.uleb128 0xb
+ 344 0027 49       		.uleb128 0x49
+ 345 0028 13       		.uleb128 0x13
+ 346 0029 00       		.byte	0
+ 347 002a 00       		.byte	0
+ 348 002b 04       		.uleb128 0x4
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 8
+
+
+ 349 002c 24       		.uleb128 0x24
+ 350 002d 00       		.byte	0
+ 351 002e 0B       		.uleb128 0xb
+ 352 002f 0B       		.uleb128 0xb
+ 353 0030 3E       		.uleb128 0x3e
+ 354 0031 0B       		.uleb128 0xb
+ 355 0032 03       		.uleb128 0x3
+ 356 0033 08       		.uleb128 0x8
+ 357 0034 00       		.byte	0
+ 358 0035 00       		.byte	0
+ 359 0036 05       		.uleb128 0x5
+ 360 0037 16       		.uleb128 0x16
+ 361 0038 00       		.byte	0
+ 362 0039 03       		.uleb128 0x3
+ 363 003a 0E       		.uleb128 0xe
+ 364 003b 3A       		.uleb128 0x3a
+ 365 003c 0B       		.uleb128 0xb
+ 366 003d 3B       		.uleb128 0x3b
+ 367 003e 05       		.uleb128 0x5
+ 368 003f 49       		.uleb128 0x49
+ 369 0040 13       		.uleb128 0x13
+ 370 0041 00       		.byte	0
+ 371 0042 00       		.byte	0
+ 372 0043 06       		.uleb128 0x6
+ 373 0044 35       		.uleb128 0x35
+ 374 0045 00       		.byte	0
+ 375 0046 49       		.uleb128 0x49
+ 376 0047 13       		.uleb128 0x13
+ 377 0048 00       		.byte	0
+ 378 0049 00       		.byte	0
+ 379 004a 07       		.uleb128 0x7
+ 380 004b 2E       		.uleb128 0x2e
+ 381 004c 01       		.byte	0x1
+ 382 004d 3F       		.uleb128 0x3f
+ 383 004e 19       		.uleb128 0x19
+ 384 004f 03       		.uleb128 0x3
+ 385 0050 0E       		.uleb128 0xe
+ 386 0051 3A       		.uleb128 0x3a
+ 387 0052 0B       		.uleb128 0xb
+ 388 0053 3B       		.uleb128 0x3b
+ 389 0054 0B       		.uleb128 0xb
+ 390 0055 27       		.uleb128 0x27
+ 391 0056 19       		.uleb128 0x19
+ 392 0057 49       		.uleb128 0x49
+ 393 0058 13       		.uleb128 0x13
+ 394 0059 11       		.uleb128 0x11
+ 395 005a 01       		.uleb128 0x1
+ 396 005b 12       		.uleb128 0x12
+ 397 005c 06       		.uleb128 0x6
+ 398 005d 40       		.uleb128 0x40
+ 399 005e 18       		.uleb128 0x18
+ 400 005f 9742     		.uleb128 0x2117
+ 401 0061 19       		.uleb128 0x19
+ 402 0062 01       		.uleb128 0x1
+ 403 0063 13       		.uleb128 0x13
+ 404 0064 00       		.byte	0
+ 405 0065 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 9
+
+
+ 406 0066 08       		.uleb128 0x8
+ 407 0067 34       		.uleb128 0x34
+ 408 0068 00       		.byte	0
+ 409 0069 03       		.uleb128 0x3
+ 410 006a 0E       		.uleb128 0xe
+ 411 006b 3A       		.uleb128 0x3a
+ 412 006c 0B       		.uleb128 0xb
+ 413 006d 3B       		.uleb128 0x3b
+ 414 006e 0B       		.uleb128 0xb
+ 415 006f 49       		.uleb128 0x49
+ 416 0070 13       		.uleb128 0x13
+ 417 0071 02       		.uleb128 0x2
+ 418 0072 17       		.uleb128 0x17
+ 419 0073 00       		.byte	0
+ 420 0074 00       		.byte	0
+ 421 0075 09       		.uleb128 0x9
+ 422 0076 34       		.uleb128 0x34
+ 423 0077 00       		.byte	0
+ 424 0078 03       		.uleb128 0x3
+ 425 0079 0E       		.uleb128 0xe
+ 426 007a 3A       		.uleb128 0x3a
+ 427 007b 0B       		.uleb128 0xb
+ 428 007c 3B       		.uleb128 0x3b
+ 429 007d 05       		.uleb128 0x5
+ 430 007e 49       		.uleb128 0x49
+ 431 007f 13       		.uleb128 0x13
+ 432 0080 3F       		.uleb128 0x3f
+ 433 0081 19       		.uleb128 0x19
+ 434 0082 3C       		.uleb128 0x3c
+ 435 0083 19       		.uleb128 0x19
+ 436 0084 00       		.byte	0
+ 437 0085 00       		.byte	0
+ 438 0086 0A       		.uleb128 0xa
+ 439 0087 34       		.uleb128 0x34
+ 440 0088 00       		.byte	0
+ 441 0089 03       		.uleb128 0x3
+ 442 008a 0E       		.uleb128 0xe
+ 443 008b 3A       		.uleb128 0x3a
+ 444 008c 0B       		.uleb128 0xb
+ 445 008d 3B       		.uleb128 0x3b
+ 446 008e 0B       		.uleb128 0xb
+ 447 008f 49       		.uleb128 0x49
+ 448 0090 13       		.uleb128 0x13
+ 449 0091 3F       		.uleb128 0x3f
+ 450 0092 19       		.uleb128 0x19
+ 451 0093 3C       		.uleb128 0x3c
+ 452 0094 19       		.uleb128 0x19
+ 453 0095 00       		.byte	0
+ 454 0096 00       		.byte	0
+ 455 0097 00       		.byte	0
+ 456              		.section	.debug_loc,"",%progbits
+ 457              	.Ldebug_loc0:
+ 458              	.LLST0:
+ 459 0000 00000000 		.4byte	.LVL0
+ 460 0004 3A000000 		.4byte	.LVL1
+ 461 0008 0200     		.2byte	0x2
+ 462 000a 30       		.byte	0x30
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 10
+
+
+ 463 000b 9F       		.byte	0x9f
+ 464 000c 3A000000 		.4byte	.LVL1
+ 465 0010 C4000000 		.4byte	.LFE64
+ 466 0014 0100     		.2byte	0x1
+ 467 0016 50       		.byte	0x50
+ 468 0017 00000000 		.4byte	0
+ 469 001b 00000000 		.4byte	0
+ 470              		.section	.debug_aranges,"",%progbits
+ 471 0000 1C000000 		.4byte	0x1c
+ 472 0004 0200     		.2byte	0x2
+ 473 0006 00000000 		.4byte	.Ldebug_info0
+ 474 000a 04       		.byte	0x4
+ 475 000b 00       		.byte	0
+ 476 000c 0000     		.2byte	0
+ 477 000e 0000     		.2byte	0
+ 478 0010 00000000 		.4byte	.LFB64
+ 479 0014 C4000000 		.4byte	.LFE64-.LFB64
+ 480 0018 00000000 		.4byte	0
+ 481 001c 00000000 		.4byte	0
+ 482              		.section	.debug_ranges,"",%progbits
+ 483              	.Ldebug_ranges0:
+ 484 0000 00000000 		.4byte	.LFB64
+ 485 0004 C4000000 		.4byte	.LFE64
+ 486 0008 00000000 		.4byte	0
+ 487 000c 00000000 		.4byte	0
+ 488              		.section	.debug_line,"",%progbits
+ 489              	.Ldebug_line0:
+ 490 0000 B6010000 		.section	.debug_str,"MS",%progbits,1
+ 490      02004F01 
+ 490      00000201 
+ 490      FB0E0D00 
+ 490      01010101 
+ 491              	.LASF6:
+ 492 0000 6C6F6E67 		.ascii	"long long int\000"
+ 492      206C6F6E 
+ 492      6720696E 
+ 492      7400
+ 493              	.LASF3:
+ 494 000e 73686F72 		.ascii	"short unsigned int\000"
+ 494      7420756E 
+ 494      7369676E 
+ 494      65642069 
+ 494      6E7400
+ 495              	.LASF8:
+ 496 0021 756E7369 		.ascii	"unsigned int\000"
+ 496      676E6564 
+ 496      20696E74 
+ 496      00
+ 497              	.LASF11:
+ 498 002e 75696E74 		.ascii	"uint8\000"
+ 498      3800
+ 499              	.LASF21:
+ 500 0034 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 500      43313120 
+ 500      352E342E 
+ 500      31203230 
+ 500      31363036 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 11
+
+
+ 501 0067 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 501      20726576 
+ 501      6973696F 
+ 501      6E203233 
+ 501      37373135 
+ 502 009a 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 502      66756E63 
+ 502      74696F6E 
+ 502      2D736563 
+ 502      74696F6E 
+ 503              	.LASF10:
+ 504 00c2 696E7433 		.ascii	"int32_t\000"
+ 504      325F7400 
+ 505              	.LASF5:
+ 506 00ca 6C6F6E67 		.ascii	"long unsigned int\000"
+ 506      20756E73 
+ 506      69676E65 
+ 506      6420696E 
+ 506      7400
+ 507              	.LASF25:
+ 508 00dc 73746174 		.ascii	"status\000"
+ 508      757300
+ 509              	.LASF7:
+ 510 00e3 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 510      206C6F6E 
+ 510      6720756E 
+ 510      7369676E 
+ 510      65642069 
+ 511              	.LASF22:
+ 512 00fa 4D504743 		.ascii	"MPGCmds.c\000"
+ 512      6D64732E 
+ 512      6300
+ 513              	.LASF1:
+ 514 0104 756E7369 		.ascii	"unsigned char\000"
+ 514      676E6564 
+ 514      20636861 
+ 514      7200
+ 515              	.LASF15:
+ 516 0112 63686172 		.ascii	"char\000"
+ 516      00
+ 517              	.LASF16:
+ 518 0117 72656738 		.ascii	"reg8\000"
+ 518      00
+ 519              	.LASF23:
+ 520 011c 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\MPG\\ARM Code\\MPG\\M"
+ 520      616E5C45 
+ 520      6E672050 
+ 520      726F6A65 
+ 520      6374735C 
+ 521 0148 50475F50 		.ascii	"PG_PSoC.cydsn\000"
+ 521      536F432E 
+ 521      63796473 
+ 521      6E00
+ 522              	.LASF14:
+ 523 0156 646F7562 		.ascii	"double\000"
+ 523      6C6500
+ 524              	.LASF4:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccdXeTUz.s 			page 12
+
+
+ 525 015d 6C6F6E67 		.ascii	"long int\000"
+ 525      20696E74 
+ 525      00
+ 526              	.LASF19:
+ 527 0166 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 527      52784275 
+ 527      66666572 
+ 527      00
+ 528              	.LASF0:
+ 529 0173 7369676E 		.ascii	"signed char\000"
+ 529      65642063 
+ 529      68617200 
+ 530              	.LASF17:
+ 531 017f 6C6F6E67 		.ascii	"long double\000"
+ 531      20646F75 
+ 531      626C6500 
+ 532              	.LASF24:
+ 533 018b 4D504753 		.ascii	"MPGStatusQuery\000"
+ 533      74617475 
+ 533      73517565 
+ 533      727900
+ 534              	.LASF9:
+ 535 019a 5F5F696E 		.ascii	"__int32_t\000"
+ 535      7433325F 
+ 535      7400
+ 536              	.LASF13:
+ 537 01a4 666C6F61 		.ascii	"float\000"
+ 537      7400
+ 538              	.LASF2:
+ 539 01aa 73686F72 		.ascii	"short int\000"
+ 539      7420696E 
+ 539      7400
+ 540              	.LASF12:
+ 541 01b4 75696E74 		.ascii	"uint16\000"
+ 541      313600
+ 542              	.LASF20:
+ 543 01bb 4D50475F 		.ascii	"MPG_STATE\000"
+ 543      53544154 
+ 543      4500
+ 544              	.LASF18:
+ 545 01c5 73697A65 		.ascii	"sizetype\000"
+ 545      74797065 
+ 545      00
+ 546              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

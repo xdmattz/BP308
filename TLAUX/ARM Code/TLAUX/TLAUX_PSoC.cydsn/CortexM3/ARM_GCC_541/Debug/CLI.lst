@@ -1,0 +1,4618 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CLI.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CLI_Test,"ax",%progbits
+  20              		.align	2
+  21              		.global	CLI_Test
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	CLI_Test, %function
+  25              	CLI_Test:
+  26              	.LFB71:
+  27              		.file 1 "CLI.c"
+   1:CLI.c         **** /* ========================================
+   2:CLI.c         ****  *
+   3:CLI.c         ****  * Copyright YOUR COMPANY, THE YEAR
+   4:CLI.c         ****  * All Rights Reserved
+   5:CLI.c         ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:CLI.c         ****  *
+   7:CLI.c         ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:CLI.c         ****  * WHICH IS THE PROPERTY OF your company.
+   9:CLI.c         ****  *
+  10:CLI.c         ****  * ========================================
+  11:CLI.c         **** */
+  12:CLI.c         **** 
+  13:CLI.c         **** // commands consist of a key word followed by numbers or other words separated by spaces, and endin
+  14:CLI.c         **** // commands are processed upon receipt of the CR character.
+  15:CLI.c         **** // the first line word (words are separated by white space) is assumed to be the key word. It is co
+  16:CLI.c         **** // key word table and the appropriate command function is called with the argc and argv variables c
+  17:CLI.c         **** // the number of additional words and a pointer to their locations. (with each white space being re
+  18:CLI.c         **** 
+  19:CLI.c         **** // parse the command line
+  20:CLI.c         **** //
+  21:CLI.c         **** #include <CLI.h>
+  22:CLI.c         **** 
+  23:CLI.c         **** #include <stdlib.h>
+  24:CLI.c         **** #include <string.h>
+  25:CLI.c         **** #include <stdbool.h>
+  26:CLI.c         **** #include "U_HW.h"
+  27:CLI.c         **** #include "TestMessages.h"
+  28:CLI.c         **** #include <stdio.h>
+  29:CLI.c         **** 
+  30:CLI.c         **** #define NUM_OF_ARGS 30  // maximum number of arguments
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 2
+
+
+  31:CLI.c         **** #define IN_BUFF_LEN 80
+  32:CLI.c         **** 
+  33:CLI.c         **** char InBuff[IN_BUFF_LEN];
+  34:CLI.c         **** uint8_t InBuffCnt;  // line buffer position
+  35:CLI.c         **** 
+  36:CLI.c         **** static bool cliEcho = true;
+  37:CLI.c         **** static bool cliOn = true;
+  38:CLI.c         **** 
+  39:CLI.c         **** char msg[32];
+  40:CLI.c         **** 
+  41:CLI.c         **** static inline void SetCliEcho(bool on) {
+  42:CLI.c         ****     cliEcho = on;
+  43:CLI.c         **** }
+  44:CLI.c         **** 
+  45:CLI.c         **** static inline bool GetCliEcho() {
+  46:CLI.c         ****     return cliEcho;
+  47:CLI.c         **** }
+  48:CLI.c         **** 
+  49:CLI.c         **** void Init_CLI(void)
+  50:CLI.c         **** {
+  51:CLI.c         ****     ClearInputBufferN(IN_BUFF_LEN);
+  52:CLI.c         ****     // set the ECHO flag 
+  53:CLI.c         ****     cliEcho = true;
+  54:CLI.c         ****     // HelpScreen(0, NULL);     
+  55:CLI.c         **** }
+  56:CLI.c         **** 
+  57:CLI.c         **** void CLI(void)
+  58:CLI.c         **** {
+  59:CLI.c         ****     if(U_CheckForRx())
+  60:CLI.c         ****     {
+  61:CLI.c         ****         char data = GetChar();
+  62:CLI.c         ****         if(cliEcho) PutChar(data);      // if in ECHO mode then echo the character
+  63:CLI.c         ****         switch (data)
+  64:CLI.c         ****         {
+  65:CLI.c         ****             case '\n'   : break; // newline - ignore
+  66:CLI.c         ****             case '\r'   : // CR save the count and return
+  67:CLI.c         ****                 ParseCommand(InBuff);
+  68:CLI.c         ****                 ClearInputBufferN(InBuffCnt);
+  69:CLI.c         ****                 break;
+  70:CLI.c         ****             case 0x7f   :   // alt back space
+  71:CLI.c         ****             case 0x08   :   // back space - back up one space 
+  72:CLI.c         ****                 if(InBuffCnt > 0)
+  73:CLI.c         ****                 {
+  74:CLI.c         ****                     InBuffCnt--;  
+  75:CLI.c         ****                     InBuff[InBuffCnt] = 0;  // back fill with zeros
+  76:CLI.c         ****                     break;
+  77:CLI.c         ****                 }
+  78:CLI.c         ****             default     :
+  79:CLI.c         ****                 if(InBuffCnt >= IN_BUFF_LEN)    // Message is too long! 
+  80:CLI.c         ****                 {
+  81:CLI.c         ****                     PutStr(CmdTooLong);
+  82:CLI.c         ****                     ClearInputBufferN(InBuffCnt);
+  83:CLI.c         ****                 }
+  84:CLI.c         ****                 InBuff[InBuffCnt] = data;
+  85:CLI.c         ****                 InBuffCnt++;
+  86:CLI.c         ****                 break;
+  87:CLI.c         ****         }
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 3
+
+
+  88:CLI.c         ****     }
+  89:CLI.c         **** }
+  90:CLI.c         **** 
+  91:CLI.c         **** void ClearInputBufferN(uint8_t N)
+  92:CLI.c         **** {
+  93:CLI.c         ****     
+  94:CLI.c         ****     for(uint8_t i = 0; i < N; i++)
+  95:CLI.c         ****     {
+  96:CLI.c         ****         InBuff[i] = 0;
+  97:CLI.c         ****     }
+  98:CLI.c         ****     InBuffCnt = 0;
+  99:CLI.c         **** }
+ 100:CLI.c         **** 
+ 101:CLI.c         **** static inline char *getWord(char *buf)
+ 102:CLI.c         **** {
+ 103:CLI.c         ****     static char *ptr = NULL;    // static variable  is rememberd from call to call
+ 104:CLI.c         ****     char *start, *scan;
+ 105:CLI.c         ****     char term = ' ';
+ 106:CLI.c         ****     
+ 107:CLI.c         ****     if(buf != NULL)     // takes care of the command (key) word
+ 108:CLI.c         ****     {
+ 109:CLI.c         ****         ptr = buf;
+ 110:CLI.c         ****     }
+ 111:CLI.c         ****     while (((*ptr == ' ') || (*ptr == '\t')) && (*ptr != '\0')) // skip through spaces and tabs whi
+ 112:CLI.c         ****     {
+ 113:CLI.c         ****         ptr++;
+ 114:CLI.c         ****     }
+ 115:CLI.c         ****     if(*ptr == '\0')    // if we get a \0 then done
+ 116:CLI.c         ****     {
+ 117:CLI.c         ****         return NULL;
+ 118:CLI.c         ****     }
+ 119:CLI.c         ****     if((*ptr == '"') || (*ptr == '\''))     // parse stuff between quotes "" or ''
+ 120:CLI.c         ****     {
+ 121:CLI.c         ****         term = *ptr;
+ 122:CLI.c         ****         ptr++;
+ 123:CLI.c         ****     }
+ 124:CLI.c         ****     start = ptr;
+ 125:CLI.c         ****     while (*ptr != '\0')        
+ 126:CLI.c         ****     {
+ 127:CLI.c         ****         if(*ptr == '\\')
+ 128:CLI.c         ****         {
+ 129:CLI.c         ****             for(scan = ptr; *scan != '\0'; scan++)
+ 130:CLI.c         ****             {
+ 131:CLI.c         ****                 *scan = *(scan+1);
+ 132:CLI.c         ****             }
+ 133:CLI.c         ****             ptr++;
+ 134:CLI.c         ****             continue;
+ 135:CLI.c         ****         }
+ 136:CLI.c         ****         if((*ptr == term) || ((term == ' ') && (*ptr == '\t')))
+ 137:CLI.c         ****         {
+ 138:CLI.c         ****             *ptr = '\0';        // put the null termination in the argument list (this is how the a
+ 139:CLI.c         ****             ptr++;
+ 140:CLI.c         ****             return start;
+ 141:CLI.c         ****         }
+ 142:CLI.c         ****         ptr++;
+ 143:CLI.c         ****     }
+ 144:CLI.c         ****     if (ptr == start)       // there were no arguments
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 4
+
+
+ 145:CLI.c         ****     {
+ 146:CLI.c         ****         return NULL;
+ 147:CLI.c         ****     }
+ 148:CLI.c         ****     return start;
+ 149:CLI.c         **** }
+ 150:CLI.c         **** 
+ 151:CLI.c         **** int ParseCommand(char *buf)
+ 152:CLI.c         **** {
+ 153:CLI.c         **** 	int argc;
+ 154:CLI.c         **** 	char *argv[NUM_OF_ARGS];
+ 155:CLI.c         **** 	char *w;
+ 156:CLI.c         **** 	
+ 157:CLI.c         **** 	if(buf[0] == 0)
+ 158:CLI.c         **** 	{
+ 159:CLI.c         ****         PutStr(Prompt);
+ 160:CLI.c         **** 		return 0;	// no command or arguments
+ 161:CLI.c         **** 	}
+ 162:CLI.c         **** 
+ 163:CLI.c         **** 	argc = 0;
+ 164:CLI.c         **** 	w = getWord(buf);
+ 165:CLI.c         **** 	while((argc < NUM_OF_ARGS) && (w != NULL))
+ 166:CLI.c         **** 	{
+ 167:CLI.c         ****         argv[argc++] = w;
+ 168:CLI.c         **** 		w = getWord(NULL);
+ 169:CLI.c         **** 	}
+ 170:CLI.c         **** 
+ 171:CLI.c         **** 	const char*  PstrPtr;
+ 172:CLI.c         **** 	
+ 173:CLI.c         **** 	// compare the first word with the CmdName Key word in the CMD Parse Table
+ 174:CLI.c         **** 	for(uint8_t i = 0; i < NUMOFCMDS; i++)
+ 175:CLI.c         **** 	{
+ 176:CLI.c         **** 		PstrPtr = CMD_Parse_Table[i].name;
+ 177:CLI.c         **** 		if(strcmp(argv[0], PstrPtr) == 0)
+ 178:CLI.c         **** 		{
+ 179:CLI.c         **** 			int rval = CMD_Parse_Table[i].func(argc, argv);	// call the command function
+ 180:CLI.c         **** 
+ 181:CLI.c         ****             PutStr(Prompt);
+ 182:CLI.c         ****             return rval;
+ 183:CLI.c         **** 		}
+ 184:CLI.c         **** 	}
+ 185:CLI.c         **** 	PutStr(BadMsgString);
+ 186:CLI.c         ****     PutStr(Prompt);
+ 187:CLI.c         **** 	return -1;
+ 188:CLI.c         **** }
+ 189:CLI.c         **** 
+ 190:CLI.c         **** CLI_CMD(CLI_Test)
+ 191:CLI.c         **** {
+  28              		.loc 1 191 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 5
+
+
+  38              		.cfi_offset 14, -4
+  39 0002 0546     		mov	r5, r0
+  40 0004 0E46     		mov	r6, r1
+ 192:CLI.c         ****     PutChar('\r');
+  41              		.loc 1 192 0
+  42 0006 0D20     		movs	r0, #13
+  43              	.LVL1:
+  44 0008 FFF7FEFF 		bl	USB_PutChar
+  45              	.LVL2:
+  46              	.LBB8:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  47              		.loc 1 193 0
+  48 000c 0024     		movs	r4, #0
+  49 000e 05E0     		b	.L2
+  50              	.LVL3:
+  51              	.L3:
+ 194:CLI.c         ****     {
+ 195:CLI.c         ****         PutStr(argv[i]);
+  52              		.loc 1 195 0 discriminator 3
+  53 0010 56F82400 		ldr	r0, [r6, r4, lsl #2]
+  54 0014 FFF7FEFF 		bl	USB_PutString
+  55              	.LVL4:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  56              		.loc 1 193 0 discriminator 3
+  57 0018 0134     		adds	r4, r4, #1
+  58              	.LVL5:
+  59 001a E4B2     		uxtb	r4, r4
+  60              	.LVL6:
+  61              	.L2:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  62              		.loc 1 193 0 is_stmt 0 discriminator 1
+  63 001c AC42     		cmp	r4, r5
+  64 001e F7DB     		blt	.L3
+  65              	.LBE8:
+ 196:CLI.c         ****     }
+ 197:CLI.c         ****     return 0;
+ 198:CLI.c         **** }
+  66              		.loc 1 198 0 is_stmt 1
+  67 0020 0020     		movs	r0, #0
+  68 0022 70BD     		pop	{r4, r5, r6, pc}
+  69              		.cfi_endproc
+  70              	.LFE71:
+  71              		.size	CLI_Test, .-CLI_Test
+  72              		.section	.text.HelpScreen,"ax",%progbits
+  73              		.align	2
+  74              		.global	HelpScreen
+  75              		.thumb
+  76              		.thumb_func
+  77              		.type	HelpScreen, %function
+  78              	HelpScreen:
+  79              	.LFB72:
+ 199:CLI.c         **** 
+ 200:CLI.c         **** CLI_CMD(HelpScreen)
+ 201:CLI.c         **** {
+  80              		.loc 1 201 0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 6
+
+
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84              	.LVL7:
+  85 0000 38B5     		push	{r3, r4, r5, lr}
+  86              		.cfi_def_cfa_offset 16
+  87              		.cfi_offset 3, -16
+  88              		.cfi_offset 4, -12
+  89              		.cfi_offset 5, -8
+  90              		.cfi_offset 14, -4
+  91              	.LVL8:
+ 202:CLI.c         ****     UNUSED_ARG(argc);UNUSED_ARG(argv);
+ 203:CLI.c         ****     
+ 204:CLI.c         ****     const char * const *pc = HelpHeader;
+  92              		.loc 1 204 0
+  93 0002 154C     		ldr	r4, .L13
+ 205:CLI.c         ****     for (; *pc; pc++)
+  94              		.loc 1 205 0
+  95 0004 05E0     		b	.L6
+  96              	.LVL9:
+  97              	.L7:
+ 206:CLI.c         ****     {
+ 207:CLI.c         ****         PutStr(*pc);
+  98              		.loc 1 207 0 discriminator 2
+  99 0006 FFF7FEFF 		bl	USB_PutString
+ 100              	.LVL10:
+ 208:CLI.c         ****         PutChar('\r');
+ 101              		.loc 1 208 0 discriminator 2
+ 102 000a 0D20     		movs	r0, #13
+ 103 000c FFF7FEFF 		bl	USB_PutChar
+ 104              	.LVL11:
+ 205:CLI.c         ****     for (; *pc; pc++)
+ 105              		.loc 1 205 0 discriminator 2
+ 106 0010 0434     		adds	r4, r4, #4
+ 107              	.LVL12:
+ 108              	.L6:
+ 205:CLI.c         ****     for (; *pc; pc++)
+ 109              		.loc 1 205 0 is_stmt 0 discriminator 1
+ 110 0012 2068     		ldr	r0, [r4]
+ 111 0014 0028     		cmp	r0, #0
+ 112 0016 F6D1     		bne	.L7
+ 113 0018 0025     		movs	r5, #0
+ 114 001a 104C     		ldr	r4, .L13+4
+ 115              	.LVL13:
+ 116 001c 18E0     		b	.L8
+ 117              	.LVL14:
+ 118              	.L11:
+ 119              	.LBB9:
+ 209:CLI.c         ****     }
+ 210:CLI.c         ****     const struct CmdDesc *pcd = CMD_Parse_Table;
+ 211:CLI.c         ****     for(uint8_t i = 0;i < NUMOFCMDS; pcd++, i++)
+ 212:CLI.c         ****     {
+ 213:CLI.c         **** //        uint16_t clen = strlen(pcd->name);
+ 214:CLI.c         **** //        maybe add the "tab" spacing so the help message looks nice...        
+ 215:CLI.c         ****         PutStr(pcd->name);
+ 120              		.loc 1 215 0 is_stmt 1
+ 121 001e 2068     		ldr	r0, [r4]
+ 122 0020 FFF7FEFF 		bl	USB_PutString
+ 123              	.LVL15:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 7
+
+
+ 216:CLI.c         ****         if(pcd->args) 
+ 124              		.loc 1 216 0
+ 125 0024 6368     		ldr	r3, [r4, #4]
+ 126 0026 2BB1     		cbz	r3, .L9
+ 217:CLI.c         ****         {
+ 218:CLI.c         ****             PutChar(' ');
+ 127              		.loc 1 218 0
+ 128 0028 2020     		movs	r0, #32
+ 129 002a FFF7FEFF 		bl	USB_PutChar
+ 130              	.LVL16:
+ 219:CLI.c         ****             PutStr(pcd->args);
+ 131              		.loc 1 219 0
+ 132 002e 6068     		ldr	r0, [r4, #4]
+ 133 0030 FFF7FEFF 		bl	USB_PutString
+ 134              	.LVL17:
+ 135              	.L9:
+ 220:CLI.c         ****         }
+ 221:CLI.c         ****         if(pcd->desc)
+ 136              		.loc 1 221 0
+ 137 0034 A368     		ldr	r3, [r4, #8]
+ 138 0036 2BB1     		cbz	r3, .L10
+ 222:CLI.c         ****         {
+ 223:CLI.c         ****             PutStr(" - ");
+ 139              		.loc 1 223 0
+ 140 0038 0948     		ldr	r0, .L13+8
+ 141 003a FFF7FEFF 		bl	USB_PutString
+ 142              	.LVL18:
+ 224:CLI.c         ****             PutStr(pcd->desc);
+ 143              		.loc 1 224 0
+ 144 003e A068     		ldr	r0, [r4, #8]
+ 145 0040 FFF7FEFF 		bl	USB_PutString
+ 146              	.LVL19:
+ 147              	.L10:
+ 225:CLI.c         ****         }
+ 226:CLI.c         ****         PutChar('\r');
+ 148              		.loc 1 226 0 discriminator 2
+ 149 0044 0D20     		movs	r0, #13
+ 150 0046 FFF7FEFF 		bl	USB_PutChar
+ 151              	.LVL20:
+ 211:CLI.c         ****     {
+ 152              		.loc 1 211 0 discriminator 2
+ 153 004a 1034     		adds	r4, r4, #16
+ 154              	.LVL21:
+ 155 004c 0135     		adds	r5, r5, #1
+ 156              	.LVL22:
+ 157 004e EDB2     		uxtb	r5, r5
+ 158              	.LVL23:
+ 159              	.L8:
+ 211:CLI.c         ****     {
+ 160              		.loc 1 211 0 is_stmt 0 discriminator 1
+ 161 0050 1B2D     		cmp	r5, #27
+ 162 0052 E4D9     		bls	.L11
+ 163              	.LBE9:
+ 227:CLI.c         ****     }
+ 228:CLI.c         ****     return 0;
+ 229:CLI.c         ****  }
+ 164              		.loc 1 229 0 is_stmt 1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 8
+
+
+ 165 0054 0020     		movs	r0, #0
+ 166 0056 38BD     		pop	{r3, r4, r5, pc}
+ 167              	.LVL24:
+ 168              	.L14:
+ 169              		.align	2
+ 170              	.L13:
+ 171 0058 00000000 		.word	.LANCHOR0
+ 172 005c 20000000 		.word	.LANCHOR0+32
+ 173 0060 00000000 		.word	.LC0
+ 174              		.cfi_endproc
+ 175              	.LFE72:
+ 176              		.size	HelpScreen, .-HelpScreen
+ 177              		.section	.text.Echo_Cmd,"ax",%progbits
+ 178              		.align	2
+ 179              		.global	Echo_Cmd
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.type	Echo_Cmd, %function
+ 183              	Echo_Cmd:
+ 184              	.LFB73:
+ 230:CLI.c         **** 
+ 231:CLI.c         **** CLI_CMD(Echo_Cmd)
+ 232:CLI.c         **** {
+ 185              		.loc 1 232 0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              	.LVL25:
+ 190 0000 10B5     		push	{r4, lr}
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 4, -8
+ 193              		.cfi_offset 14, -4
+ 233:CLI.c         ****         if (argc < 2)
+ 194              		.loc 1 233 0
+ 195 0002 0128     		cmp	r0, #1
+ 196 0004 0EDC     		bgt	.L16
+ 234:CLI.c         ****     {
+ 235:CLI.c         ****         PutStr("Echo is ");
+ 197              		.loc 1 235 0
+ 198 0006 1348     		ldr	r0, .L23
+ 199              	.LVL26:
+ 200 0008 FFF7FEFF 		bl	USB_PutString
+ 201              	.LVL27:
+ 202              	.LBB10:
+ 203              	.LBB11:
+  46:CLI.c         **** }
+ 204              		.loc 1 46 0
+ 205 000c 124B     		ldr	r3, .L23+4
+ 206 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 207              	.LBE11:
+ 208              	.LBE10:
+ 236:CLI.c         ****         PutStr(GetCliEcho() ? "ON" : "OFF");
+ 209              		.loc 1 236 0
+ 210 0010 0BB1     		cbz	r3, .L21
+ 211 0012 1248     		ldr	r0, .L23+8
+ 212 0014 00E0     		b	.L17
+ 213              	.L21:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 9
+
+
+ 214 0016 1248     		ldr	r0, .L23+12
+ 215              	.L17:
+ 216              		.loc 1 236 0 is_stmt 0 discriminator 4
+ 217 0018 FFF7FEFF 		bl	USB_PutString
+ 218              	.LVL28:
+ 237:CLI.c         ****         PutChar('\r');
+ 219              		.loc 1 237 0 is_stmt 1 discriminator 4
+ 220 001c 0D20     		movs	r0, #13
+ 221 001e FFF7FEFF 		bl	USB_PutChar
+ 222              	.LVL29:
+ 223 0022 15E0     		b	.L18
+ 224              	.LVL30:
+ 225              	.L16:
+ 238:CLI.c         ****     }
+ 239:CLI.c         ****     else {
+ 240:CLI.c         ****         if(strcmp(argv[1], "off") == 0) SetCliEcho(false);
+ 226              		.loc 1 240 0
+ 227 0024 4C68     		ldr	r4, [r1, #4]
+ 228 0026 0F49     		ldr	r1, .L23+16
+ 229              	.LVL31:
+ 230 0028 2046     		mov	r0, r4
+ 231              	.LVL32:
+ 232 002a FFF7FEFF 		bl	strcmp
+ 233              	.LVL33:
+ 234 002e 18B9     		cbnz	r0, .L19
+ 235              	.LVL34:
+ 236              	.LBB12:
+ 237              	.LBB13:
+  42:CLI.c         **** }
+ 238              		.loc 1 42 0
+ 239 0030 0022     		movs	r2, #0
+ 240 0032 094B     		ldr	r3, .L23+4
+ 241 0034 1A70     		strb	r2, [r3]
+ 242 0036 0BE0     		b	.L18
+ 243              	.LVL35:
+ 244              	.L19:
+ 245              	.LBE13:
+ 246              	.LBE12:
+ 241:CLI.c         ****         else if(strcmp(argv[1], "on") == 0) SetCliEcho(true);
+ 247              		.loc 1 241 0
+ 248 0038 0B49     		ldr	r1, .L23+20
+ 249 003a 2046     		mov	r0, r4
+ 250 003c FFF7FEFF 		bl	strcmp
+ 251              	.LVL36:
+ 252 0040 18B9     		cbnz	r0, .L20
+ 253              	.LVL37:
+ 254              	.LBB14:
+ 255              	.LBB15:
+  42:CLI.c         **** }
+ 256              		.loc 1 42 0
+ 257 0042 0122     		movs	r2, #1
+ 258 0044 044B     		ldr	r3, .L23+4
+ 259 0046 1A70     		strb	r2, [r3]
+ 260 0048 02E0     		b	.L18
+ 261              	.LVL38:
+ 262              	.L20:
+ 263              	.LBE15:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 10
+
+
+ 264              	.LBE14:
+ 242:CLI.c         ****         else 
+ 243:CLI.c         ****         {            // error message
+ 244:CLI.c         ****             PutStr("Usage echo 'on'/'off'");
+ 265              		.loc 1 244 0
+ 266 004a 0848     		ldr	r0, .L23+24
+ 267 004c FFF7FEFF 		bl	USB_PutString
+ 268              	.LVL39:
+ 269              	.L18:
+ 245:CLI.c         ****         }
+ 246:CLI.c         ****     }
+ 247:CLI.c         ****     return 0;
+ 248:CLI.c         **** }
+ 270              		.loc 1 248 0
+ 271 0050 0020     		movs	r0, #0
+ 272 0052 10BD     		pop	{r4, pc}
+ 273              	.L24:
+ 274              		.align	2
+ 275              	.L23:
+ 276 0054 0C000000 		.word	.LC3
+ 277 0058 00000000 		.word	.LANCHOR1
+ 278 005c 04000000 		.word	.LC1
+ 279 0060 08000000 		.word	.LC2
+ 280 0064 18000000 		.word	.LC4
+ 281 0068 1C000000 		.word	.LC5
+ 282 006c 20000000 		.word	.LC6
+ 283              		.cfi_endproc
+ 284              	.LFE73:
+ 285              		.size	Echo_Cmd, .-Echo_Cmd
+ 286              		.section	.text.UsbCfg_Cmd,"ax",%progbits
+ 287              		.align	2
+ 288              		.global	UsbCfg_Cmd
+ 289              		.thumb
+ 290              		.thumb_func
+ 291              		.type	UsbCfg_Cmd, %function
+ 292              	UsbCfg_Cmd:
+ 293              	.LFB74:
+ 249:CLI.c         **** 
+ 250:CLI.c         **** CLI_CMD(UsbCfg_Cmd)
+ 251:CLI.c         **** {
+ 294              		.loc 1 251 0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              	.LVL40:
+ 299 0000 10B5     		push	{r4, lr}
+ 300              		.cfi_def_cfa_offset 8
+ 301              		.cfi_offset 4, -8
+ 302              		.cfi_offset 14, -4
+ 252:CLI.c         ****     UNUSED_ARG(argc);UNUSED_ARG(argv); 
+ 253:CLI.c         ****     uint8 temp;
+ 254:CLI.c         ****     temp = USBUART_GetConfiguration();
+ 303              		.loc 1 254 0
+ 304 0002 FFF7FEFF 		bl	USBUART_GetConfiguration
+ 305              	.LVL41:
+ 255:CLI.c         ****     sprintf(msg, "USB Config = 0x%X\n", temp);
+ 306              		.loc 1 255 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 11
+
+
+ 307 0006 054C     		ldr	r4, .L27
+ 308 0008 0246     		mov	r2, r0
+ 309 000a 0549     		ldr	r1, .L27+4
+ 310 000c 2046     		mov	r0, r4
+ 311              	.LVL42:
+ 312 000e FFF7FEFF 		bl	sprintf
+ 313              	.LVL43:
+ 256:CLI.c         ****     PutStr(msg);
+ 314              		.loc 1 256 0
+ 315 0012 2046     		mov	r0, r4
+ 316 0014 FFF7FEFF 		bl	USB_PutString
+ 317              	.LVL44:
+ 257:CLI.c         ****     return 0;
+ 258:CLI.c         **** }
+ 318              		.loc 1 258 0
+ 319 0018 0020     		movs	r0, #0
+ 320 001a 10BD     		pop	{r4, pc}
+ 321              	.L28:
+ 322              		.align	2
+ 323              	.L27:
+ 324 001c 00000000 		.word	msg
+ 325 0020 38000000 		.word	.LC7
+ 326              		.cfi_endproc
+ 327              	.LFE74:
+ 328              		.size	UsbCfg_Cmd, .-UsbCfg_Cmd
+ 329              		.section	.text.ClearInputBufferN,"ax",%progbits
+ 330              		.align	2
+ 331              		.global	ClearInputBufferN
+ 332              		.thumb
+ 333              		.thumb_func
+ 334              		.type	ClearInputBufferN, %function
+ 335              	ClearInputBufferN:
+ 336              	.LFB68:
+  92:CLI.c         ****     
+ 337              		.loc 1 92 0
+ 338              		.cfi_startproc
+ 339              		@ args = 0, pretend = 0, frame = 0
+ 340              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341              		@ link register save eliminated.
+ 342              	.LVL45:
+ 343              	.LBB16:
+  94:CLI.c         ****     {
+ 344              		.loc 1 94 0
+ 345 0000 0023     		movs	r3, #0
+ 346 0002 04E0     		b	.L30
+ 347              	.LVL46:
+ 348              	.L31:
+  96:CLI.c         ****     }
+ 349              		.loc 1 96 0 discriminator 3
+ 350 0004 0021     		movs	r1, #0
+ 351 0006 054A     		ldr	r2, .L32
+ 352 0008 D154     		strb	r1, [r2, r3]
+  94:CLI.c         ****     {
+ 353              		.loc 1 94 0 discriminator 3
+ 354 000a 0133     		adds	r3, r3, #1
+ 355              	.LVL47:
+ 356 000c DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 12
+
+
+ 357              	.LVL48:
+ 358              	.L30:
+  94:CLI.c         ****     {
+ 359              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 360 000e 8342     		cmp	r3, r0
+ 361 0010 F8D3     		bcc	.L31
+ 362              	.LBE16:
+  98:CLI.c         **** }
+ 363              		.loc 1 98 0 is_stmt 1
+ 364 0012 0022     		movs	r2, #0
+ 365 0014 024B     		ldr	r3, .L32+4
+ 366              	.LVL49:
+ 367 0016 1A70     		strb	r2, [r3]
+ 368 0018 7047     		bx	lr
+ 369              	.L33:
+ 370 001a 00BF     		.align	2
+ 371              	.L32:
+ 372 001c 00000000 		.word	InBuff
+ 373 0020 00000000 		.word	InBuffCnt
+ 374              		.cfi_endproc
+ 375              	.LFE68:
+ 376              		.size	ClearInputBufferN, .-ClearInputBufferN
+ 377              		.section	.text.Init_CLI,"ax",%progbits
+ 378              		.align	2
+ 379              		.global	Init_CLI
+ 380              		.thumb
+ 381              		.thumb_func
+ 382              		.type	Init_CLI, %function
+ 383              	Init_CLI:
+ 384              	.LFB66:
+  50:CLI.c         ****     ClearInputBufferN(IN_BUFF_LEN);
+ 385              		.loc 1 50 0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 0
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389 0000 08B5     		push	{r3, lr}
+ 390              		.cfi_def_cfa_offset 8
+ 391              		.cfi_offset 3, -8
+ 392              		.cfi_offset 14, -4
+  51:CLI.c         ****     // set the ECHO flag 
+ 393              		.loc 1 51 0
+ 394 0002 5020     		movs	r0, #80
+ 395 0004 FFF7FEFF 		bl	ClearInputBufferN
+ 396              	.LVL50:
+  53:CLI.c         ****     // HelpScreen(0, NULL);     
+ 397              		.loc 1 53 0
+ 398 0008 0122     		movs	r2, #1
+ 399 000a 014B     		ldr	r3, .L36
+ 400 000c 1A70     		strb	r2, [r3]
+ 401 000e 08BD     		pop	{r3, pc}
+ 402              	.L37:
+ 403              		.align	2
+ 404              	.L36:
+ 405 0010 00000000 		.word	.LANCHOR1
+ 406              		.cfi_endproc
+ 407              	.LFE66:
+ 408              		.size	Init_CLI, .-Init_CLI
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 13
+
+
+ 409              		.section	.text.ParseCommand,"ax",%progbits
+ 410              		.align	2
+ 411              		.global	ParseCommand
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.type	ParseCommand, %function
+ 415              	ParseCommand:
+ 416              	.LFB70:
+ 152:CLI.c         **** 	int argc;
+ 417              		.loc 1 152 0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 120
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421              	.LVL51:
+ 422 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 423              		.cfi_def_cfa_offset 20
+ 424              		.cfi_offset 4, -20
+ 425              		.cfi_offset 5, -16
+ 426              		.cfi_offset 6, -12
+ 427              		.cfi_offset 7, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 9FB0     		sub	sp, sp, #124
+ 430              		.cfi_def_cfa_offset 144
+ 157:CLI.c         **** 	{
+ 431              		.loc 1 157 0
+ 432 0004 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 433 0006 23B9     		cbnz	r3, .L39
+ 159:CLI.c         **** 		return 0;	// no command or arguments
+ 434              		.loc 1 159 0
+ 435 0008 6448     		ldr	r0, .L88
+ 436              	.LVL52:
+ 437 000a FFF7FEFF 		bl	USB_PutString
+ 438              	.LVL53:
+ 160:CLI.c         **** 	}
+ 439              		.loc 1 160 0
+ 440 000e 0020     		movs	r0, #0
+ 441 0010 C2E0     		b	.L40
+ 442              	.LVL54:
+ 443              	.L39:
+ 444              	.LBB23:
+ 445              	.LBB24:
+ 107:CLI.c         ****     {
+ 446              		.loc 1 107 0
+ 447 0012 28B1     		cbz	r0, .L41
+ 109:CLI.c         ****     }
+ 448              		.loc 1 109 0
+ 449 0014 624B     		ldr	r3, .L88+4
+ 450 0016 1860     		str	r0, [r3]
+ 451 0018 02E0     		b	.L41
+ 452              	.LVL55:
+ 453              	.L44:
+ 113:CLI.c         ****     }
+ 454              		.loc 1 113 0
+ 455 001a 0133     		adds	r3, r3, #1
+ 456 001c 604A     		ldr	r2, .L88+4
+ 457 001e 1360     		str	r3, [r2]
+ 458              	.L41:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 14
+
+
+ 111:CLI.c         ****     {
+ 459              		.loc 1 111 0
+ 460 0020 5F4B     		ldr	r3, .L88+4
+ 461 0022 1B68     		ldr	r3, [r3]
+ 462 0024 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 463 0026 2028     		cmp	r0, #32
+ 464 0028 01D0     		beq	.L42
+ 465 002a 0928     		cmp	r0, #9
+ 466 002c 01D1     		bne	.L43
+ 467              	.L42:
+ 468 002e 0028     		cmp	r0, #0
+ 469 0030 F3D1     		bne	.L44
+ 470              	.L43:
+ 115:CLI.c         ****     {
+ 471              		.loc 1 115 0
+ 472 0032 0028     		cmp	r0, #0
+ 473 0034 32D0     		beq	.L76
+ 119:CLI.c         ****     {
+ 474              		.loc 1 119 0
+ 475 0036 2228     		cmp	r0, #34
+ 476 0038 01D0     		beq	.L46
+ 477 003a 2728     		cmp	r0, #39
+ 478 003c 03D1     		bne	.L77
+ 479              	.L46:
+ 480              	.LVL56:
+ 122:CLI.c         ****     }
+ 481              		.loc 1 122 0
+ 482 003e 0133     		adds	r3, r3, #1
+ 483 0040 574A     		ldr	r2, .L88+4
+ 484 0042 1360     		str	r3, [r2]
+ 485 0044 00E0     		b	.L47
+ 486              	.LVL57:
+ 487              	.L77:
+ 105:CLI.c         ****     
+ 488              		.loc 1 105 0
+ 489 0046 2020     		movs	r0, #32
+ 490              	.LVL58:
+ 491              	.L47:
+ 124:CLI.c         ****     while (*ptr != '\0')        
+ 492              		.loc 1 124 0
+ 493 0048 554B     		ldr	r3, .L88+4
+ 494 004a 1C68     		ldr	r4, [r3]
+ 495              	.LVL59:
+ 496 004c 1EE0     		b	.L48
+ 497              	.L55:
+ 127:CLI.c         ****         {
+ 498              		.loc 1 127 0
+ 499 004e 5C2B     		cmp	r3, #92
+ 500 0050 0CD1     		bne	.L85
+ 501 0052 03E0     		b	.L78
+ 502              	.LVL60:
+ 503              	.L51:
+ 131:CLI.c         ****             }
+ 504              		.loc 1 131 0
+ 505 0054 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 506 0056 03F8012B 		strb	r2, [r3], #1
+ 507              	.LVL61:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 15
+
+
+ 508 005a 00E0     		b	.L49
+ 509              	.LVL62:
+ 510              	.L78:
+ 127:CLI.c         ****         {
+ 511              		.loc 1 127 0
+ 512 005c 0B46     		mov	r3, r1
+ 513              	.L49:
+ 514              	.LVL63:
+ 129:CLI.c         ****             {
+ 515              		.loc 1 129 0
+ 516 005e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 517 0060 002A     		cmp	r2, #0
+ 518 0062 F7D1     		bne	.L51
+ 133:CLI.c         ****             continue;
+ 519              		.loc 1 133 0
+ 520 0064 0131     		adds	r1, r1, #1
+ 521 0066 4E4B     		ldr	r3, .L88+4
+ 522              	.LVL64:
+ 523 0068 1960     		str	r1, [r3]
+ 524 006a 0FE0     		b	.L48
+ 525              	.L85:
+ 136:CLI.c         ****         {
+ 526              		.loc 1 136 0
+ 527 006c 8342     		cmp	r3, r0
+ 528 006e 03D0     		beq	.L53
+ 529 0070 2028     		cmp	r0, #32
+ 530 0072 08D1     		bne	.L54
+ 531 0074 092B     		cmp	r3, #9
+ 532 0076 06D1     		bne	.L54
+ 533              	.L53:
+ 138:CLI.c         ****             ptr++;
+ 534              		.loc 1 138 0
+ 535 0078 0023     		movs	r3, #0
+ 536 007a 01F8013B 		strb	r3, [r1], #1
+ 139:CLI.c         ****             return start;
+ 537              		.loc 1 139 0
+ 538 007e 484B     		ldr	r3, .L88+4
+ 539 0080 1960     		str	r1, [r3]
+ 140:CLI.c         ****         }
+ 540              		.loc 1 140 0
+ 541 0082 2346     		mov	r3, r4
+ 542 0084 0DE0     		b	.L45
+ 543              	.L54:
+ 142:CLI.c         ****     }
+ 544              		.loc 1 142 0
+ 545 0086 0131     		adds	r1, r1, #1
+ 546 0088 454B     		ldr	r3, .L88+4
+ 547 008a 1960     		str	r1, [r3]
+ 548              	.L48:
+ 125:CLI.c         ****     {
+ 549              		.loc 1 125 0
+ 550 008c 444B     		ldr	r3, .L88+4
+ 551 008e 1968     		ldr	r1, [r3]
+ 552 0090 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 553 0092 002B     		cmp	r3, #0
+ 554 0094 DBD1     		bne	.L55
+ 144:CLI.c         ****     {
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 16
+
+
+ 555              		.loc 1 144 0
+ 556 0096 8C42     		cmp	r4, r1
+ 557 0098 02D1     		bne	.L79
+ 558 009a 02E0     		b	.L45
+ 559              	.LVL65:
+ 560              	.L76:
+ 117:CLI.c         ****     }
+ 561              		.loc 1 117 0
+ 562 009c 0023     		movs	r3, #0
+ 563 009e 00E0     		b	.L45
+ 564              	.LVL66:
+ 565              	.L79:
+ 148:CLI.c         **** }
+ 566              		.loc 1 148 0
+ 567 00a0 2346     		mov	r3, r4
+ 568              	.LVL67:
+ 569              	.L45:
+ 570              	.LBE24:
+ 571              	.LBE23:
+ 163:CLI.c         **** 	w = getWord(buf);
+ 572              		.loc 1 163 0
+ 573 00a2 0025     		movs	r5, #0
+ 165:CLI.c         **** 	{
+ 574              		.loc 1 165 0
+ 575 00a4 4BE0     		b	.L56
+ 576              	.LVL68:
+ 577              	.L73:
+ 167:CLI.c         **** 		w = getWord(NULL);
+ 578              		.loc 1 167 0
+ 579 00a6 6C1C     		adds	r4, r5, #1
+ 580              	.LVL69:
+ 581 00a8 1EAA     		add	r2, sp, #120
+ 582 00aa 02EB8505 		add	r5, r2, r5, lsl #2
+ 583 00ae 45F8783C 		str	r3, [r5, #-120]
+ 584              	.LVL70:
+ 585 00b2 02E0     		b	.L57
+ 586              	.LVL71:
+ 587              	.L60:
+ 588              	.LBB25:
+ 589              	.LBB26:
+ 113:CLI.c         ****     }
+ 590              		.loc 1 113 0
+ 591 00b4 0133     		adds	r3, r3, #1
+ 592 00b6 3A4A     		ldr	r2, .L88+4
+ 593 00b8 1360     		str	r3, [r2]
+ 594              	.L57:
+ 111:CLI.c         ****     {
+ 595              		.loc 1 111 0
+ 596 00ba 394B     		ldr	r3, .L88+4
+ 597 00bc 1B68     		ldr	r3, [r3]
+ 598 00be 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 599 00c0 2028     		cmp	r0, #32
+ 600 00c2 01D0     		beq	.L58
+ 601 00c4 0928     		cmp	r0, #9
+ 602 00c6 01D1     		bne	.L59
+ 603              	.L58:
+ 604 00c8 0028     		cmp	r0, #0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 17
+
+
+ 605 00ca F3D1     		bne	.L60
+ 606              	.L59:
+ 115:CLI.c         ****     {
+ 607              		.loc 1 115 0
+ 608 00cc 0028     		cmp	r0, #0
+ 609 00ce 32D0     		beq	.L80
+ 119:CLI.c         ****     {
+ 610              		.loc 1 119 0
+ 611 00d0 2228     		cmp	r0, #34
+ 612 00d2 01D0     		beq	.L62
+ 613 00d4 2728     		cmp	r0, #39
+ 614 00d6 03D1     		bne	.L81
+ 615              	.L62:
+ 616              	.LVL72:
+ 122:CLI.c         ****     }
+ 617              		.loc 1 122 0
+ 618 00d8 0133     		adds	r3, r3, #1
+ 619 00da 314A     		ldr	r2, .L88+4
+ 620 00dc 1360     		str	r3, [r2]
+ 621 00de 00E0     		b	.L63
+ 622              	.LVL73:
+ 623              	.L81:
+ 105:CLI.c         ****     
+ 624              		.loc 1 105 0
+ 625 00e0 2020     		movs	r0, #32
+ 626              	.LVL74:
+ 627              	.L63:
+ 124:CLI.c         ****     while (*ptr != '\0')        
+ 628              		.loc 1 124 0
+ 629 00e2 2F4B     		ldr	r3, .L88+4
+ 630 00e4 1D68     		ldr	r5, [r3]
+ 631              	.LVL75:
+ 632 00e6 1EE0     		b	.L64
+ 633              	.LVL76:
+ 634              	.L71:
+ 127:CLI.c         ****         {
+ 635              		.loc 1 127 0
+ 636 00e8 5C2B     		cmp	r3, #92
+ 637 00ea 0CD1     		bne	.L86
+ 638 00ec 03E0     		b	.L82
+ 639              	.LVL77:
+ 640              	.L67:
+ 131:CLI.c         ****             }
+ 641              		.loc 1 131 0
+ 642 00ee 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 643 00f0 03F8012B 		strb	r2, [r3], #1
+ 644              	.LVL78:
+ 645 00f4 00E0     		b	.L65
+ 646              	.LVL79:
+ 647              	.L82:
+ 127:CLI.c         ****         {
+ 648              		.loc 1 127 0
+ 649 00f6 0B46     		mov	r3, r1
+ 650              	.L65:
+ 651              	.LVL80:
+ 129:CLI.c         ****             {
+ 652              		.loc 1 129 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 18
+
+
+ 653 00f8 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 654 00fa 002A     		cmp	r2, #0
+ 655 00fc F7D1     		bne	.L67
+ 133:CLI.c         ****             continue;
+ 656              		.loc 1 133 0
+ 657 00fe 0131     		adds	r1, r1, #1
+ 658 0100 274B     		ldr	r3, .L88+4
+ 659              	.LVL81:
+ 660 0102 1960     		str	r1, [r3]
+ 661 0104 0FE0     		b	.L64
+ 662              	.L86:
+ 136:CLI.c         ****         {
+ 663              		.loc 1 136 0
+ 664 0106 8342     		cmp	r3, r0
+ 665 0108 03D0     		beq	.L69
+ 666 010a 2028     		cmp	r0, #32
+ 667 010c 08D1     		bne	.L70
+ 668 010e 092B     		cmp	r3, #9
+ 669 0110 06D1     		bne	.L70
+ 670              	.L69:
+ 138:CLI.c         ****             ptr++;
+ 671              		.loc 1 138 0
+ 672 0112 0023     		movs	r3, #0
+ 673 0114 01F8013B 		strb	r3, [r1], #1
+ 139:CLI.c         ****             return start;
+ 674              		.loc 1 139 0
+ 675 0118 214B     		ldr	r3, .L88+4
+ 676 011a 1960     		str	r1, [r3]
+ 140:CLI.c         ****         }
+ 677              		.loc 1 140 0
+ 678 011c 2B46     		mov	r3, r5
+ 679 011e 0DE0     		b	.L61
+ 680              	.L70:
+ 142:CLI.c         ****     }
+ 681              		.loc 1 142 0
+ 682 0120 0131     		adds	r1, r1, #1
+ 683 0122 1F4B     		ldr	r3, .L88+4
+ 684 0124 1960     		str	r1, [r3]
+ 685              	.L64:
+ 125:CLI.c         ****     {
+ 686              		.loc 1 125 0
+ 687 0126 1E4B     		ldr	r3, .L88+4
+ 688 0128 1968     		ldr	r1, [r3]
+ 689 012a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 690 012c 002B     		cmp	r3, #0
+ 691 012e DBD1     		bne	.L71
+ 144:CLI.c         ****     {
+ 692              		.loc 1 144 0
+ 693 0130 8D42     		cmp	r5, r1
+ 694 0132 02D1     		bne	.L83
+ 695 0134 02E0     		b	.L61
+ 696              	.LVL82:
+ 697              	.L80:
+ 117:CLI.c         ****     }
+ 698              		.loc 1 117 0
+ 699 0136 0023     		movs	r3, #0
+ 700 0138 00E0     		b	.L61
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 19
+
+
+ 701              	.LVL83:
+ 702              	.L83:
+ 148:CLI.c         **** }
+ 703              		.loc 1 148 0
+ 704 013a 2B46     		mov	r3, r5
+ 705              	.LVL84:
+ 706              	.L61:
+ 707              	.LBE26:
+ 708              	.LBE25:
+ 167:CLI.c         **** 		w = getWord(NULL);
+ 709              		.loc 1 167 0
+ 710 013c 2546     		mov	r5, r4
+ 711              	.LVL85:
+ 712              	.L56:
+ 165:CLI.c         **** 	{
+ 713              		.loc 1 165 0
+ 714 013e 1D2D     		cmp	r5, #29
+ 715 0140 1CDC     		bgt	.L84
+ 165:CLI.c         **** 	{
+ 716              		.loc 1 165 0 is_stmt 0 discriminator 1
+ 717 0142 002B     		cmp	r3, #0
+ 718 0144 AFD1     		bne	.L73
+ 719 0146 0024     		movs	r4, #0
+ 720 0148 19E0     		b	.L72
+ 721              	.LVL86:
+ 722              	.L75:
+ 723              	.LBB27:
+ 176:CLI.c         **** 		if(strcmp(argv[0], PstrPtr) == 0)
+ 724              		.loc 1 176 0 is_stmt 1
+ 725 014a 164B     		ldr	r3, .L88+8
+ 726 014c 03EB0413 		add	r3, r3, r4, lsl #4
+ 727              	.LVL87:
+ 177:CLI.c         **** 		{
+ 728              		.loc 1 177 0
+ 729 0150 196A     		ldr	r1, [r3, #32]
+ 730 0152 0098     		ldr	r0, [sp]
+ 731 0154 FFF7FEFF 		bl	strcmp
+ 732              	.LVL88:
+ 733 0158 68B9     		cbnz	r0, .L74
+ 734              	.LBB28:
+ 179:CLI.c         **** 
+ 735              		.loc 1 179 0
+ 736 015a 124F     		ldr	r7, .L88+8
+ 737              	.LVL89:
+ 738 015c 07EB0416 		add	r6, r7, r4, lsl #4
+ 739              	.LVL90:
+ 740 0160 F36A     		ldr	r3, [r6, #44]
+ 741 0162 6946     		mov	r1, sp
+ 742 0164 2846     		mov	r0, r5
+ 743 0166 9847     		blx	r3
+ 744              	.LVL91:
+ 745 0168 0446     		mov	r4, r0
+ 746              	.LVL92:
+ 181:CLI.c         ****             return rval;
+ 747              		.loc 1 181 0
+ 748 016a 07F5F070 		add	r0, r7, #480
+ 749              	.LVL93:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 20
+
+
+ 750 016e FFF7FEFF 		bl	USB_PutString
+ 751              	.LVL94:
+ 182:CLI.c         **** 		}
+ 752              		.loc 1 182 0
+ 753 0172 2046     		mov	r0, r4
+ 754 0174 10E0     		b	.L40
+ 755              	.LVL95:
+ 756              	.L74:
+ 757              	.LBE28:
+ 174:CLI.c         **** 	{
+ 758              		.loc 1 174 0 discriminator 2
+ 759 0176 0134     		adds	r4, r4, #1
+ 760              	.LVL96:
+ 761 0178 E4B2     		uxtb	r4, r4
+ 762              	.LVL97:
+ 763 017a 00E0     		b	.L72
+ 764              	.LVL98:
+ 765              	.L84:
+ 766              	.LBE27:
+ 767 017c 0024     		movs	r4, #0
+ 768              	.LVL99:
+ 769              	.L72:
+ 770              	.LBB29:
+ 174:CLI.c         **** 	{
+ 771              		.loc 1 174 0 is_stmt 0 discriminator 1
+ 772 017e 1B2C     		cmp	r4, #27
+ 773 0180 E3D9     		bls	.L75
+ 774              	.LBE29:
+ 185:CLI.c         ****     PutStr(Prompt);
+ 775              		.loc 1 185 0 is_stmt 1
+ 776 0182 084C     		ldr	r4, .L88+8
+ 777              	.LVL100:
+ 778 0184 04F5F270 		add	r0, r4, #484
+ 779 0188 FFF7FEFF 		bl	USB_PutString
+ 780              	.LVL101:
+ 186:CLI.c         **** 	return -1;
+ 781              		.loc 1 186 0
+ 782 018c 04F5F070 		add	r0, r4, #480
+ 783 0190 FFF7FEFF 		bl	USB_PutString
+ 784              	.LVL102:
+ 187:CLI.c         **** }
+ 785              		.loc 1 187 0
+ 786 0194 4FF0FF30 		mov	r0, #-1
+ 787              	.LVL103:
+ 788              	.L40:
+ 188:CLI.c         **** 
+ 789              		.loc 1 188 0
+ 790 0198 1FB0     		add	sp, sp, #124
+ 791              		.cfi_def_cfa_offset 20
+ 792              		@ sp needed
+ 793 019a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 794              	.L89:
+ 795              		.align	2
+ 796              	.L88:
+ 797 019c E0010000 		.word	.LANCHOR0+480
+ 798 01a0 00000000 		.word	.LANCHOR2
+ 799 01a4 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 21
+
+
+ 800              		.cfi_endproc
+ 801              	.LFE70:
+ 802              		.size	ParseCommand, .-ParseCommand
+ 803              		.section	.text.CLI,"ax",%progbits
+ 804              		.align	2
+ 805              		.global	CLI
+ 806              		.thumb
+ 807              		.thumb_func
+ 808              		.type	CLI, %function
+ 809              	CLI:
+ 810              	.LFB67:
+  58:CLI.c         ****     if(U_CheckForRx())
+ 811              		.loc 1 58 0
+ 812              		.cfi_startproc
+ 813              		@ args = 0, pretend = 0, frame = 0
+ 814              		@ frame_needed = 0, uses_anonymous_args = 0
+ 815 0000 10B5     		push	{r4, lr}
+ 816              		.cfi_def_cfa_offset 8
+ 817              		.cfi_offset 4, -8
+ 818              		.cfi_offset 14, -4
+  59:CLI.c         ****     {
+ 819              		.loc 1 59 0
+ 820 0002 FFF7FEFF 		bl	Check_USB
+ 821              	.LVL104:
+ 822 0006 0028     		cmp	r0, #0
+ 823 0008 36D0     		beq	.L90
+ 824              	.LBB30:
+  61:CLI.c         ****         if(cliEcho) PutChar(data);      // if in ECHO mode then echo the character
+ 825              		.loc 1 61 0
+ 826 000a FFF7FEFF 		bl	USB_Buff_GetChar
+ 827              	.LVL105:
+ 828 000e 0446     		mov	r4, r0
+ 829              	.LVL106:
+  62:CLI.c         ****         switch (data)
+ 830              		.loc 1 62 0
+ 831 0010 1A4B     		ldr	r3, .L99
+ 832 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 833 0014 0BB1     		cbz	r3, .L92
+  62:CLI.c         ****         switch (data)
+ 834              		.loc 1 62 0 is_stmt 0 discriminator 1
+ 835 0016 FFF7FEFF 		bl	USB_PutChar
+ 836              	.LVL107:
+ 837              	.L92:
+  63:CLI.c         ****         {
+ 838              		.loc 1 63 0 is_stmt 1
+ 839 001a 0A2C     		cmp	r4, #10
+ 840 001c 2CD0     		beq	.L90
+ 841 001e 02D8     		bhi	.L94
+ 842 0020 082C     		cmp	r4, #8
+ 843 0022 0DD0     		beq	.L95
+ 844 0024 17E0     		b	.L93
+ 845              	.L94:
+ 846 0026 0D2C     		cmp	r4, #13
+ 847 0028 02D0     		beq	.L96
+ 848 002a 7F2C     		cmp	r4, #127
+ 849 002c 08D0     		beq	.L95
+ 850 002e 12E0     		b	.L93
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 22
+
+
+ 851              	.L96:
+  67:CLI.c         ****                 ClearInputBufferN(InBuffCnt);
+ 852              		.loc 1 67 0
+ 853 0030 1348     		ldr	r0, .L99+4
+ 854 0032 FFF7FEFF 		bl	ParseCommand
+ 855              	.LVL108:
+  68:CLI.c         ****                 break;
+ 856              		.loc 1 68 0
+ 857 0036 134B     		ldr	r3, .L99+8
+ 858 0038 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 859 003a FFF7FEFF 		bl	ClearInputBufferN
+ 860              	.LVL109:
+  69:CLI.c         ****             case 0x7f   :   // alt back space
+ 861              		.loc 1 69 0
+ 862 003e 10BD     		pop	{r4, pc}
+ 863              	.L95:
+  72:CLI.c         ****                 {
+ 864              		.loc 1 72 0
+ 865 0040 104B     		ldr	r3, .L99+8
+ 866 0042 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 867 0044 3BB1     		cbz	r3, .L93
+  74:CLI.c         ****                     InBuff[InBuffCnt] = 0;  // back fill with zeros
+ 868              		.loc 1 74 0
+ 869 0046 013B     		subs	r3, r3, #1
+ 870 0048 DBB2     		uxtb	r3, r3
+ 871 004a 0E4A     		ldr	r2, .L99+8
+ 872 004c 1370     		strb	r3, [r2]
+  75:CLI.c         ****                     break;
+ 873              		.loc 1 75 0
+ 874 004e 0021     		movs	r1, #0
+ 875 0050 0B4A     		ldr	r2, .L99+4
+ 876 0052 D154     		strb	r1, [r2, r3]
+  76:CLI.c         ****                 }
+ 877              		.loc 1 76 0
+ 878 0054 10BD     		pop	{r4, pc}
+ 879              	.L93:
+  79:CLI.c         ****                 {
+ 880              		.loc 1 79 0
+ 881 0056 0B4B     		ldr	r3, .L99+8
+ 882 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 883 005a 4F2B     		cmp	r3, #79
+ 884 005c 06D9     		bls	.L97
+  81:CLI.c         ****                     ClearInputBufferN(InBuffCnt);
+ 885              		.loc 1 81 0
+ 886 005e 0A48     		ldr	r0, .L99+12
+ 887 0060 FFF7FEFF 		bl	USB_PutString
+ 888              	.LVL110:
+  82:CLI.c         ****                 }
+ 889              		.loc 1 82 0
+ 890 0064 074B     		ldr	r3, .L99+8
+ 891 0066 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 892 0068 FFF7FEFF 		bl	ClearInputBufferN
+ 893              	.LVL111:
+ 894              	.L97:
+  84:CLI.c         ****                 InBuffCnt++;
+ 895              		.loc 1 84 0
+ 896 006c 054A     		ldr	r2, .L99+8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 23
+
+
+ 897 006e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 898 0070 0349     		ldr	r1, .L99+4
+ 899 0072 CC54     		strb	r4, [r1, r3]
+  85:CLI.c         ****                 break;
+ 900              		.loc 1 85 0
+ 901 0074 0133     		adds	r3, r3, #1
+ 902 0076 1370     		strb	r3, [r2]
+ 903              	.L90:
+ 904 0078 10BD     		pop	{r4, pc}
+ 905              	.L100:
+ 906 007a 00BF     		.align	2
+ 907              	.L99:
+ 908 007c 00000000 		.word	.LANCHOR1
+ 909 0080 00000000 		.word	InBuff
+ 910 0084 00000000 		.word	InBuffCnt
+ 911 0088 FC010000 		.word	.LANCHOR0+508
+ 912              	.LBE30:
+ 913              		.cfi_endproc
+ 914              	.LFE67:
+ 915              		.size	CLI, .-CLI
+ 916              		.comm	msg,32,4
+ 917              		.comm	InBuffCnt,1,1
+ 918              		.comm	InBuff,80,4
+ 919              		.global	HelpHeader
+ 920              		.global	HelpDiv
+ 921              		.global	CMD_Parse_Table
+ 922              		.global	Prompt
+ 923              		.global	CmdTooLong
+ 924              		.global	BadMsgString
+ 925              		.section	.rodata
+ 926              		.align	2
+ 927              		.set	.LANCHOR0,. + 0
+ 928              		.type	HelpHeader, %object
+ 929              		.size	HelpHeader, 32
+ 930              	HelpHeader:
+ 931 0000 4C000000 		.word	.LC8
+ 932 0004 00000000 		.word	HelpDiv
+ 933 0008 50000000 		.word	.LC9
+ 934 000c 00000000 		.word	HelpDiv
+ 935 0010 4C000000 		.word	.LC8
+ 936 0014 5C000000 		.word	.LC10
+ 937 0018 94000000 		.word	.LC11
+ 938 001c 00000000 		.word	0
+ 939              		.type	CMD_Parse_Table, %object
+ 940              		.size	CMD_Parse_Table, 448
+ 941              	CMD_Parse_Table:
+ 942 0020 A8000000 		.word	.LC12
+ 943 0024 00000000 		.word	0
+ 944 0028 B0000000 		.word	.LC13
+ 945 002c 00000000 		.word	HelpScreen
+ 946 0030 BC000000 		.word	.LC14
+ 947 0034 00000000 		.word	0
+ 948 0038 C0000000 		.word	.LC15
+ 949 003c 00000000 		.word	HelpScreen
+ 950 0040 D0000000 		.word	.LC16
+ 951 0044 00000000 		.word	0
+ 952 0048 D8000000 		.word	.LC17
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 24
+
+
+ 953 004c 00000000 		.word	CLI_Test
+ 954 0050 EC000000 		.word	.LC18
+ 955 0054 F4000000 		.word	.LC19
+ 956 0058 00010000 		.word	.LC20
+ 957 005c 00000000 		.word	Echo_Cmd
+ 958 0060 1C010000 		.word	.LC21
+ 959 0064 00000000 		.word	0
+ 960 0068 20010000 		.word	.LC22
+ 961 006c 00000000 		.word	Ver_Cmd
+ 962 0070 34010000 		.word	.LC23
+ 963 0074 00000000 		.word	0
+ 964 0078 38010000 		.word	.LC24
+ 965 007c 00000000 		.word	Comment_Cmd
+ 966 0080 60010000 		.word	.LC25
+ 967 0084 F4000000 		.word	.LC19
+ 968 0088 68010000 		.word	.LC26
+ 969 008c 00000000 		.word	Count_Cmd
+ 970 0090 80010000 		.word	.LC27
+ 971 0094 F4000000 		.word	.LC19
+ 972 0098 88010000 		.word	.LC28
+ 973 009c 00000000 		.word	Alpha_Cmd
+ 974 00a0 A4010000 		.word	.LC29
+ 975 00a4 A8010000 		.word	.LC30
+ 976 00a8 B0010000 		.word	.LC31
+ 977 00ac 00000000 		.word	UTX_Cmd
+ 978 00b0 CC010000 		.word	.LC32
+ 979 00b4 D4010000 		.word	.LC33
+ 980 00b8 D8010000 		.word	.LC34
+ 981 00bc 00000000 		.word	A_Motor_Cmd
+ 982 00c0 F8010000 		.word	.LC35
+ 983 00c4 00020000 		.word	.LC36
+ 984 00c8 0C020000 		.word	.LC37
+ 985 00cc 00000000 		.word	Arm_Dir_Cmd
+ 986 00d0 28020000 		.word	.LC38
+ 987 00d4 D4010000 		.word	.LC33
+ 988 00d8 30020000 		.word	.LC39
+ 989 00dc 00000000 		.word	C_Motor_Cmd
+ 990 00e0 54020000 		.word	.LC40
+ 991 00e4 5C020000 		.word	.LC41
+ 992 00e8 68020000 		.word	.LC42
+ 993 00ec 00000000 		.word	Carousel_Dir_Cmd
+ 994 00f0 8C020000 		.word	.LC43
+ 995 00f4 D4010000 		.word	.LC33
+ 996 00f8 94020000 		.word	.LC44
+ 997 00fc 00000000 		.word	Brake_Cmd
+ 998 0100 B8020000 		.word	.LC45
+ 999 0104 F4000000 		.word	.LC19
+ 1000 0108 C0020000 		.word	.LC46
+ 1001 010c 00000000 		.word	TClamp_Cmd
+ 1002 0110 D4020000 		.word	.LC47
+ 1003 0114 F4000000 		.word	.LC19
+ 1004 0118 D8020000 		.word	.LC48
+ 1005 011c 00000000 		.word	TC_Air_Cmd
+ 1006 0120 F0020000 		.word	.LC49
+ 1007 0124 00000000 		.word	0
+ 1008 0128 F8020000 		.word	.LC50
+ 1009 012c 00000000 		.word	Load_Cmd
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 25
+
+
+ 1010 0130 10030000 		.word	.LC51
+ 1011 0134 00000000 		.word	0
+ 1012 0138 18030000 		.word	.LC52
+ 1013 013c 00000000 		.word	Status_Cmd
+ 1014 0140 34030000 		.word	.LC53
+ 1015 0144 00000000 		.word	0
+ 1016 0148 3C030000 		.word	.LC54
+ 1017 014c 00000000 		.word	Arm_In_Cmd
+ 1018 0150 5C030000 		.word	.LC55
+ 1019 0154 00000000 		.word	0
+ 1020 0158 64030000 		.word	.LC56
+ 1021 015c 00000000 		.word	Arm_Out_Cmd
+ 1022 0160 84030000 		.word	.LC57
+ 1023 0164 D4010000 		.word	.LC33
+ 1024 0168 8C030000 		.word	.LC58
+ 1025 016c 00000000 		.word	ToolChange_Cmd
+ 1026 0170 A8030000 		.word	.LC59
+ 1027 0174 00000000 		.word	0
+ 1028 0178 B0030000 		.word	.LC60
+ 1029 017c 00000000 		.word	ToolRelease_Cmd
+ 1030 0180 C8030000 		.word	.LC61
+ 1031 0184 00000000 		.word	0
+ 1032 0188 D0030000 		.word	.LC62
+ 1033 018c 00000000 		.word	ToolGrab_Cmd
+ 1034 0190 DC030000 		.word	.LC63
+ 1035 0194 00000000 		.word	0
+ 1036 0198 E4030000 		.word	.LC64
+ 1037 019c 00000000 		.word	Test_Home_Cmd
+ 1038 01a0 F8030000 		.word	.LC65
+ 1039 01a4 00000000 		.word	0
+ 1040 01a8 00040000 		.word	.LC66
+ 1041 01ac 00000000 		.word	At_Home_Cmd
+ 1042 01b0 0C040000 		.word	.LC67
+ 1043 01b4 00000000 		.word	0
+ 1044 01b8 14040000 		.word	.LC68
+ 1045 01bc 00000000 		.word	In_Fault_Cmd
+ 1046 01c0 20040000 		.word	.LC69
+ 1047 01c4 00000000 		.word	0
+ 1048 01c8 28040000 		.word	.LC70
+ 1049 01cc 00000000 		.word	Sense_Cmd
+ 1050 01d0 40040000 		.word	.LC71
+ 1051 01d4 00000000 		.word	0
+ 1052 01d8 48040000 		.word	.LC72
+ 1053 01dc 00000000 		.word	UsbCfg_Cmd
+ 1054              		.type	Prompt, %object
+ 1055              		.size	Prompt, 3
+ 1056              	Prompt:
+ 1057 01e0 0D3E00   		.ascii	"\015>\000"
+ 1058 01e3 00       		.space	1
+ 1059              		.type	BadMsgString, %object
+ 1060              		.size	BadMsgString, 22
+ 1061              	BadMsgString:
+ 1062 01e4 556E7265 		.ascii	"Unrecognized Command!\000"
+ 1062      636F676E 
+ 1062      697A6564 
+ 1062      20436F6D 
+ 1062      6D616E64 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 26
+
+
+ 1063 01fa 0000     		.space	2
+ 1064              		.type	CmdTooLong, %object
+ 1065              		.size	CmdTooLong, 30
+ 1066              	CmdTooLong:
+ 1067 01fc 2A2A2A20 		.ascii	"*** Command was too long! ***\000"
+ 1067      436F6D6D 
+ 1067      616E6420 
+ 1067      77617320 
+ 1067      746F6F20 
+ 1068 021a 0000     		.space	2
+ 1069              		.type	HelpDiv, %object
+ 1070              		.size	HelpDiv, 25
+ 1071              	HelpDiv:
+ 1072 021c 2A2A2A2A 		.ascii	"************************\000"
+ 1072      2A2A2A2A 
+ 1072      2A2A2A2A 
+ 1072      2A2A2A2A 
+ 1072      2A2A2A2A 
+ 1073              		.data
+ 1074              		.set	.LANCHOR1,. + 0
+ 1075              		.type	cliEcho, %object
+ 1076              		.size	cliEcho, 1
+ 1077              	cliEcho:
+ 1078 0000 01       		.byte	1
+ 1079              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1080              		.align	2
+ 1081              	.LC0:
+ 1082 0000 202D2000 		.ascii	" - \000"
+ 1083              	.LC1:
+ 1084 0004 4F4E00   		.ascii	"ON\000"
+ 1085 0007 00       		.space	1
+ 1086              	.LC2:
+ 1087 0008 4F464600 		.ascii	"OFF\000"
+ 1088              	.LC3:
+ 1089 000c 4563686F 		.ascii	"Echo is \000"
+ 1089      20697320 
+ 1089      00
+ 1090 0015 000000   		.space	3
+ 1091              	.LC4:
+ 1092 0018 6F666600 		.ascii	"off\000"
+ 1093              	.LC5:
+ 1094 001c 6F6E00   		.ascii	"on\000"
+ 1095 001f 00       		.space	1
+ 1096              	.LC6:
+ 1097 0020 55736167 		.ascii	"Usage echo 'on'/'off'\000"
+ 1097      65206563 
+ 1097      686F2027 
+ 1097      6F6E272F 
+ 1097      276F6666 
+ 1098 0036 0000     		.space	2
+ 1099              	.LC7:
+ 1100 0038 55534220 		.ascii	"USB Config = 0x%X\012\000"
+ 1100      436F6E66 
+ 1100      6967203D 
+ 1100      20307825 
+ 1100      580A00
+ 1101 004b 00       		.space	1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 27
+
+
+ 1102              	.LC8:
+ 1103 004c 00       		.ascii	"\000"
+ 1104 004d 000000   		.space	3
+ 1105              	.LC9:
+ 1106 0050 2A205553 		.ascii	"* USB CLI *\000"
+ 1106      4220434C 
+ 1106      49202A00 
+ 1107              	.LC10:
+ 1108 005c 25643D64 		.ascii	"%d=decimal, %x=hex, %n=decimal or hex with '0x' pre"
+ 1108      6563696D 
+ 1108      616C2C20 
+ 1108      25783D68 
+ 1108      65782C20 
+ 1109 008f 66697800 		.ascii	"fix\000"
+ 1110 0093 00       		.space	1
+ 1111              	.LC11:
+ 1112 0094 41766169 		.ascii	"Available Commands:\000"
+ 1112      6C61626C 
+ 1112      6520436F 
+ 1112      6D6D616E 
+ 1112      64733A00 
+ 1113              	.LC12:
+ 1114 00a8 68656C70 		.ascii	"help\000"
+ 1114      00
+ 1115 00ad 000000   		.space	3
+ 1116              	.LC13:
+ 1117 00b0 54686973 		.ascii	"This menu\000"
+ 1117      206D656E 
+ 1117      7500
+ 1118 00ba 0000     		.space	2
+ 1119              	.LC14:
+ 1120 00bc 3F00     		.ascii	"?\000"
+ 1121 00be 0000     		.space	2
+ 1122              	.LC15:
+ 1123 00c0 53616D65 		.ascii	"Same as 'help'\000"
+ 1123      20617320 
+ 1123      2768656C 
+ 1123      702700
+ 1124 00cf 00       		.space	1
+ 1125              	.LC16:
+ 1126 00d0 74657374 		.ascii	"test\000"
+ 1126      00
+ 1127 00d5 000000   		.space	3
+ 1128              	.LC17:
+ 1129 00d8 4563686F 		.ascii	"Echo the arguments\000"
+ 1129      20746865 
+ 1129      20617267 
+ 1129      756D656E 
+ 1129      747300
+ 1130 00eb 00       		.space	1
+ 1131              	.LC18:
+ 1132 00ec 6563686F 		.ascii	"echo\000"
+ 1132      00
+ 1133 00f1 000000   		.space	3
+ 1134              	.LC19:
+ 1135 00f4 7B6F6E2F 		.ascii	"{on/off}\000"
+ 1135      6F66667D 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 28
+
+
+ 1135      00
+ 1136 00fd 000000   		.space	3
+ 1137              	.LC20:
+ 1138 0100 546F6767 		.ascii	"Toggle the character echo\000"
+ 1138      6C652074 
+ 1138      68652063 
+ 1138      68617261 
+ 1138      63746572 
+ 1139 011a 0000     		.space	2
+ 1140              	.LC21:
+ 1141 011c 76657200 		.ascii	"ver\000"
+ 1142              	.LC22:
+ 1143 0120 536F6674 		.ascii	"Software Version\000"
+ 1143      77617265 
+ 1143      20566572 
+ 1143      73696F6E 
+ 1143      00
+ 1144 0131 000000   		.space	3
+ 1145              	.LC23:
+ 1146 0134 2100     		.ascii	"!\000"
+ 1147 0136 0000     		.space	2
+ 1148              	.LC24:
+ 1149 0138 436F6D6D 		.ascii	"Comment delimiter up to 78 characters\000"
+ 1149      656E7420 
+ 1149      64656C69 
+ 1149      6D697465 
+ 1149      72207570 
+ 1150 015e 0000     		.space	2
+ 1151              	.LC25:
+ 1152 0160 636F756E 		.ascii	"count\000"
+ 1152      7400
+ 1153 0166 0000     		.space	2
+ 1154              	.LC26:
+ 1155 0168 436F756E 		.ascii	"Count up every second\000"
+ 1155      74207570 
+ 1155      20657665 
+ 1155      72792073 
+ 1155      65636F6E 
+ 1156 017e 0000     		.space	2
+ 1157              	.LC27:
+ 1158 0180 616C7068 		.ascii	"alpha\000"
+ 1158      6100
+ 1159 0186 0000     		.space	2
+ 1160              	.LC28:
+ 1161 0188 416C7068 		.ascii	"Alphabet up every second\000"
+ 1161      61626574 
+ 1161      20757020 
+ 1161      65766572 
+ 1161      79207365 
+ 1162 01a1 000000   		.space	3
+ 1163              	.LC29:
+ 1164 01a4 75747800 		.ascii	"utx\000"
+ 1165              	.LC30:
+ 1166 01a8 63636363 		.ascii	"ccccc\000"
+ 1166      6300
+ 1167 01ae 0000     		.space	2
+ 1168              	.LC31:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 29
+
+
+ 1169 01b0 73656E64 		.ascii	"send the string to the uart\000"
+ 1169      20746865 
+ 1169      20737472 
+ 1169      696E6720 
+ 1169      746F2074 
+ 1170              	.LC32:
+ 1171 01cc 615F6D6F 		.ascii	"a_motor\000"
+ 1171      746F7200 
+ 1172              	.LC33:
+ 1173 01d4 646400   		.ascii	"dd\000"
+ 1174 01d7 00       		.space	1
+ 1175              	.LC34:
+ 1176 01d8 52756E20 		.ascii	"Run the Arm Motor for dd sec\000"
+ 1176      74686520 
+ 1176      41726D20 
+ 1176      4D6F746F 
+ 1176      7220666F 
+ 1177 01f5 000000   		.space	3
+ 1178              	.LC35:
+ 1179 01f8 615F6469 		.ascii	"a_dir\000"
+ 1179      7200
+ 1180 01fe 0000     		.space	2
+ 1181              	.LC36:
+ 1182 0200 7B696E2F 		.ascii	"{in/out}\000"
+ 1182      6F75747D 
+ 1182      00
+ 1183 0209 000000   		.space	3
+ 1184              	.LC37:
+ 1185 020c 53657420 		.ascii	"Set the Arm Motor direction\000"
+ 1185      74686520 
+ 1185      41726D20 
+ 1185      4D6F746F 
+ 1185      72206469 
+ 1186              	.LC38:
+ 1187 0228 635F6D6F 		.ascii	"c_motor\000"
+ 1187      746F7200 
+ 1188              	.LC39:
+ 1189 0230 52756E20 		.ascii	"Run the Carousel Motor for dd sec\000"
+ 1189      74686520 
+ 1189      4361726F 
+ 1189      7573656C 
+ 1189      204D6F74 
+ 1190 0252 0000     		.space	2
+ 1191              	.LC40:
+ 1192 0254 635F6469 		.ascii	"c_dir\000"
+ 1192      7200
+ 1193 025a 0000     		.space	2
+ 1194              	.LC41:
+ 1195 025c 7B63772F 		.ascii	"{cw/ccw}\000"
+ 1195      6363777D 
+ 1195      00
+ 1196 0265 000000   		.space	3
+ 1197              	.LC42:
+ 1198 0268 53657420 		.ascii	"Set the Carousel Motor direction\000"
+ 1198      74686520 
+ 1198      4361726F 
+ 1198      7573656C 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 30
+
+
+ 1198      204D6F74 
+ 1199 0289 000000   		.space	3
+ 1200              	.LC43:
+ 1201 028c 6272616B 		.ascii	"brake\000"
+ 1201      6500
+ 1202 0292 0000     		.space	2
+ 1203              	.LC44:
+ 1204 0294 52656C65 		.ascii	"Release the Arm Brake for dd sec\000"
+ 1204      61736520 
+ 1204      74686520 
+ 1204      41726D20 
+ 1204      4272616B 
+ 1205 02b5 000000   		.space	3
+ 1206              	.LC45:
+ 1207 02b8 74636C61 		.ascii	"tclamp\000"
+ 1207      6D7000
+ 1208 02bf 00       		.space	1
+ 1209              	.LC46:
+ 1210 02c0 546F6F6C 		.ascii	"Tool clamp control\000"
+ 1210      20636C61 
+ 1210      6D702063 
+ 1210      6F6E7472 
+ 1210      6F6C00
+ 1211 02d3 00       		.space	1
+ 1212              	.LC47:
+ 1213 02d4 61697200 		.ascii	"air\000"
+ 1214              	.LC48:
+ 1215 02d8 546F6F6C 		.ascii	"Tool Clamp air blast\000"
+ 1215      20436C61 
+ 1215      6D702061 
+ 1215      69722062 
+ 1215      6C617374 
+ 1216 02ed 000000   		.space	3
+ 1217              	.LC49:
+ 1218 02f0 6C6F6164 		.ascii	"load\000"
+ 1218      00
+ 1219 02f5 000000   		.space	3
+ 1220              	.LC50:
+ 1221 02f8 53746172 		.ascii	"Start the Bootloader\000"
+ 1221      74207468 
+ 1221      6520426F 
+ 1221      6F746C6F 
+ 1221      61646572 
+ 1222 030d 000000   		.space	3
+ 1223              	.LC51:
+ 1224 0310 73746174 		.ascii	"status\000"
+ 1224      757300
+ 1225 0317 00       		.space	1
+ 1226              	.LC52:
+ 1227 0318 546F6F6C 		.ascii	"Tool Changer State Status\000"
+ 1227      20436861 
+ 1227      6E676572 
+ 1227      20537461 
+ 1227      74652053 
+ 1228 0332 0000     		.space	2
+ 1229              	.LC53:
+ 1230 0334 61726D5F 		.ascii	"arm_in\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 31
+
+
+ 1230      696E00
+ 1231 033b 00       		.space	1
+ 1232              	.LC54:
+ 1233 033c 4D6F7265 		.ascii	"More Tool Arm to IN position\000"
+ 1233      20546F6F 
+ 1233      6C204172 
+ 1233      6D20746F 
+ 1233      20494E20 
+ 1234 0359 000000   		.space	3
+ 1235              	.LC55:
+ 1236 035c 61726D5F 		.ascii	"arm_out\000"
+ 1236      6F757400 
+ 1237              	.LC56:
+ 1238 0364 4D6F7665 		.ascii	"Move Tool Arm to OUT position\000"
+ 1238      20546F6F 
+ 1238      6C204172 
+ 1238      6D20746F 
+ 1238      204F5554 
+ 1239 0382 0000     		.space	2
+ 1240              	.LC57:
+ 1241 0384 746F6F6C 		.ascii	"tool\000"
+ 1241      00
+ 1242 0389 000000   		.space	3
+ 1243              	.LC58:
+ 1244 038c 4368616E 		.ascii	"Change tool to number dd\000"
+ 1244      67652074 
+ 1244      6F6F6C20 
+ 1244      746F206E 
+ 1244      756D6265 
+ 1245 03a5 000000   		.space	3
+ 1246              	.LC59:
+ 1247 03a8 745F7265 		.ascii	"t_rel\000"
+ 1247      6C00
+ 1248 03ae 0000     		.space	2
+ 1249              	.LC60:
+ 1250 03b0 546F6F6C 		.ascii	"Tool Release with Air\000"
+ 1250      2052656C 
+ 1250      65617365 
+ 1250      20776974 
+ 1250      68204169 
+ 1251 03c6 0000     		.space	2
+ 1252              	.LC61:
+ 1253 03c8 745F636C 		.ascii	"t_cl\000"
+ 1253      00
+ 1254 03cd 000000   		.space	3
+ 1255              	.LC62:
+ 1256 03d0 546F6F6C 		.ascii	"Tool Clamp\000"
+ 1256      20436C61 
+ 1256      6D7000
+ 1257 03db 00       		.space	1
+ 1258              	.LC63:
+ 1259 03dc 686F6D65 		.ascii	"home\000"
+ 1259      00
+ 1260 03e1 000000   		.space	3
+ 1261              	.LC64:
+ 1262 03e4 546F6F6C 		.ascii	"Tool Changer Home\000"
+ 1262      20436861 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 32
+
+
+ 1262      6E676572 
+ 1262      20486F6D 
+ 1262      6500
+ 1263 03f6 0000     		.space	2
+ 1264              	.LC65:
+ 1265 03f8 61745F68 		.ascii	"at_home\000"
+ 1265      6F6D6500 
+ 1266              	.LC66:
+ 1267 0400 486F6D65 		.ascii	"Home Query\000"
+ 1267      20517565 
+ 1267      727900
+ 1268 040b 00       		.space	1
+ 1269              	.LC67:
+ 1270 040c 6661756C 		.ascii	"fault\000"
+ 1270      7400
+ 1271 0412 0000     		.space	2
+ 1272              	.LC68:
+ 1273 0414 4661756C 		.ascii	"Fault Query\000"
+ 1273      74205175 
+ 1273      65727900 
+ 1274              	.LC69:
+ 1275 0420 73656E73 		.ascii	"sense\000"
+ 1275      6500
+ 1276 0426 0000     		.space	2
+ 1277              	.LC70:
+ 1278 0428 52656164 		.ascii	"Read Port 0 and port 1\000"
+ 1278      20506F72 
+ 1278      74203020 
+ 1278      616E6420 
+ 1278      706F7274 
+ 1279 043f 00       		.space	1
+ 1280              	.LC71:
+ 1281 0440 75636667 		.ascii	"ucfg\000"
+ 1281      00
+ 1282 0445 000000   		.space	3
+ 1283              	.LC72:
+ 1284 0448 67657420 		.ascii	"get the USB Configuration\000"
+ 1284      74686520 
+ 1284      55534220 
+ 1284      436F6E66 
+ 1284      69677572 
+ 1285              		.bss
+ 1286              		.align	2
+ 1287              		.set	.LANCHOR2,. + 0
+ 1288              		.type	ptr.7613, %object
+ 1289              		.size	ptr.7613, 4
+ 1290              	ptr.7613:
+ 1291 0000 00000000 		.space	4
+ 1292              		.text
+ 1293              	.Letext0:
+ 1294              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1295              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1296              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 1297              		.file 5 "TestMessages.h"
+ 1298              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 1299              		.file 7 "U_HW.h"
+ 1300              		.file 8 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 33
+
+
+ 1301              		.file 9 "Generated_Source\\PSoC5/USBUART.h"
+ 1302              		.file 10 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4
+ 1303              		.section	.debug_info,"",%progbits
+ 1304              	.Ldebug_info0:
+ 1305 0000 EB080000 		.4byte	0x8eb
+ 1306 0004 0400     		.2byte	0x4
+ 1307 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1308 000a 04       		.byte	0x4
+ 1309 000b 01       		.uleb128 0x1
+ 1310 000c 99020000 		.4byte	.LASF58
+ 1311 0010 0C       		.byte	0xc
+ 1312 0011 70010000 		.4byte	.LASF59
+ 1313 0015 00000000 		.4byte	.LASF60
+ 1314 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
+ 1315 001d 00000000 		.4byte	0
+ 1316 0021 00000000 		.4byte	.Ldebug_line0
+ 1317 0025 02       		.uleb128 0x2
+ 1318 0026 01       		.byte	0x1
+ 1319 0027 06       		.byte	0x6
+ 1320 0028 95010000 		.4byte	.LASF0
+ 1321 002c 03       		.uleb128 0x3
+ 1322 002d 46010000 		.4byte	.LASF4
+ 1323 0031 02       		.byte	0x2
+ 1324 0032 1D       		.byte	0x1d
+ 1325 0033 37000000 		.4byte	0x37
+ 1326 0037 02       		.uleb128 0x2
+ 1327 0038 01       		.byte	0x1
+ 1328 0039 08       		.byte	0x8
+ 1329 003a 82010000 		.4byte	.LASF1
+ 1330 003e 02       		.uleb128 0x2
+ 1331 003f 02       		.byte	0x2
+ 1332 0040 05       		.byte	0x5
+ 1333 0041 7A000000 		.4byte	.LASF2
+ 1334 0045 02       		.uleb128 0x2
+ 1335 0046 02       		.byte	0x2
+ 1336 0047 07       		.byte	0x7
+ 1337 0048 05020000 		.4byte	.LASF3
+ 1338 004c 03       		.uleb128 0x3
+ 1339 004d 5F020000 		.4byte	.LASF5
+ 1340 0051 02       		.byte	0x2
+ 1341 0052 3F       		.byte	0x3f
+ 1342 0053 57000000 		.4byte	0x57
+ 1343 0057 02       		.uleb128 0x2
+ 1344 0058 04       		.byte	0x4
+ 1345 0059 05       		.byte	0x5
+ 1346 005a 2B010000 		.4byte	.LASF6
+ 1347 005e 02       		.uleb128 0x2
+ 1348 005f 04       		.byte	0x4
+ 1349 0060 07       		.byte	0x7
+ 1350 0061 2E020000 		.4byte	.LASF7
+ 1351 0065 02       		.uleb128 0x2
+ 1352 0066 08       		.byte	0x8
+ 1353 0067 05       		.byte	0x5
+ 1354 0068 14010000 		.4byte	.LASF8
+ 1355 006c 02       		.uleb128 0x2
+ 1356 006d 08       		.byte	0x8
+ 1357 006e 07       		.byte	0x7
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 34
+
+
+ 1358 006f A1010000 		.4byte	.LASF9
+ 1359 0073 04       		.uleb128 0x4
+ 1360 0074 04       		.byte	0x4
+ 1361 0075 05       		.byte	0x5
+ 1362 0076 696E7400 		.ascii	"int\000"
+ 1363 007a 02       		.uleb128 0x2
+ 1364 007b 04       		.byte	0x4
+ 1365 007c 07       		.byte	0x7
+ 1366 007d C0010000 		.4byte	.LASF10
+ 1367 0081 03       		.uleb128 0x3
+ 1368 0082 B6000000 		.4byte	.LASF11
+ 1369 0086 03       		.byte	0x3
+ 1370 0087 18       		.byte	0x18
+ 1371 0088 2C000000 		.4byte	0x2c
+ 1372 008c 03       		.uleb128 0x3
+ 1373 008d FD010000 		.4byte	.LASF12
+ 1374 0091 03       		.byte	0x3
+ 1375 0092 2C       		.byte	0x2c
+ 1376 0093 4C000000 		.4byte	0x4c
+ 1377 0097 02       		.uleb128 0x2
+ 1378 0098 08       		.byte	0x8
+ 1379 0099 04       		.byte	0x4
+ 1380 009a 76010000 		.4byte	.LASF13
+ 1381 009e 02       		.uleb128 0x2
+ 1382 009f 04       		.byte	0x4
+ 1383 00a0 07       		.byte	0x7
+ 1384 00a1 8B000000 		.4byte	.LASF14
+ 1385 00a5 05       		.uleb128 0x5
+ 1386 00a6 04       		.byte	0x4
+ 1387 00a7 AB000000 		.4byte	0xab
+ 1388 00ab 02       		.uleb128 0x2
+ 1389 00ac 01       		.byte	0x1
+ 1390 00ad 08       		.byte	0x8
+ 1391 00ae F8010000 		.4byte	.LASF15
+ 1392 00b2 05       		.uleb128 0x5
+ 1393 00b3 04       		.byte	0x4
+ 1394 00b4 B8000000 		.4byte	0xb8
+ 1395 00b8 06       		.uleb128 0x6
+ 1396 00b9 AB000000 		.4byte	0xab
+ 1397 00bd 07       		.uleb128 0x7
+ 1398 00be CC000000 		.4byte	.LASF16
+ 1399 00c2 04       		.byte	0x4
+ 1400 00c3 E401     		.2byte	0x1e4
+ 1401 00c5 37000000 		.4byte	0x37
+ 1402 00c9 02       		.uleb128 0x2
+ 1403 00ca 04       		.byte	0x4
+ 1404 00cb 04       		.byte	0x4
+ 1405 00cc E5000000 		.4byte	.LASF17
+ 1406 00d0 02       		.uleb128 0x2
+ 1407 00d1 08       		.byte	0x8
+ 1408 00d2 04       		.byte	0x4
+ 1409 00d3 40020000 		.4byte	.LASF18
+ 1410 00d7 08       		.uleb128 0x8
+ 1411 00d8 AE000000 		.4byte	.LASF61
+ 1412 00dc 10       		.byte	0x10
+ 1413 00dd 05       		.byte	0x5
+ 1414 00de 1C       		.byte	0x1c
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 35
+
+
+ 1415 00df 14010000 		.4byte	0x114
+ 1416 00e3 09       		.uleb128 0x9
+ 1417 00e4 7F020000 		.4byte	.LASF19
+ 1418 00e8 05       		.byte	0x5
+ 1419 00e9 1D       		.byte	0x1d
+ 1420 00ea B2000000 		.4byte	0xb2
+ 1421 00ee 00       		.byte	0
+ 1422 00ef 09       		.uleb128 0x9
+ 1423 00f0 CD010000 		.4byte	.LASF20
+ 1424 00f4 05       		.byte	0x5
+ 1425 00f5 1E       		.byte	0x1e
+ 1426 00f6 B2000000 		.4byte	0xb2
+ 1427 00fa 04       		.byte	0x4
+ 1428 00fb 09       		.uleb128 0x9
+ 1429 00fc 27030000 		.4byte	.LASF21
+ 1430 0100 05       		.byte	0x5
+ 1431 0101 1F       		.byte	0x1f
+ 1432 0102 B2000000 		.4byte	0xb2
+ 1433 0106 08       		.byte	0x8
+ 1434 0107 09       		.uleb128 0x9
+ 1435 0108 0F010000 		.4byte	.LASF22
+ 1436 010c 05       		.byte	0x5
+ 1437 010d 20       		.byte	0x20
+ 1438 010e 2E010000 		.4byte	0x12e
+ 1439 0112 0C       		.byte	0xc
+ 1440 0113 00       		.byte	0
+ 1441 0114 0A       		.uleb128 0xa
+ 1442 0115 73000000 		.4byte	0x73
+ 1443 0119 28010000 		.4byte	0x128
+ 1444 011d 0B       		.uleb128 0xb
+ 1445 011e 73000000 		.4byte	0x73
+ 1446 0122 0B       		.uleb128 0xb
+ 1447 0123 28010000 		.4byte	0x128
+ 1448 0127 00       		.byte	0
+ 1449 0128 05       		.uleb128 0x5
+ 1450 0129 04       		.byte	0x4
+ 1451 012a A5000000 		.4byte	0xa5
+ 1452 012e 05       		.uleb128 0x5
+ 1453 012f 04       		.byte	0x4
+ 1454 0130 14010000 		.4byte	0x114
+ 1455 0134 0C       		.uleb128 0xc
+ 1456 0135 54020000 		.4byte	.LASF62
+ 1457 0139 01       		.byte	0x1
+ 1458 013a 2D       		.byte	0x2d
+ 1459 013b 40010000 		.4byte	0x140
+ 1460 013f 03       		.byte	0x3
+ 1461 0140 02       		.uleb128 0x2
+ 1462 0141 01       		.byte	0x1
+ 1463 0142 02       		.byte	0x2
+ 1464 0143 18020000 		.4byte	.LASF23
+ 1465 0147 0D       		.uleb128 0xd
+ 1466 0148 9A000000 		.4byte	.LASF63
+ 1467 014c 01       		.byte	0x1
+ 1468 014d 29       		.byte	0x29
+ 1469 014e 03       		.byte	0x3
+ 1470 014f 5E010000 		.4byte	0x15e
+ 1471 0153 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 36
+
+
+ 1472 0154 6F6E00   		.ascii	"on\000"
+ 1473 0157 01       		.byte	0x1
+ 1474 0158 29       		.byte	0x29
+ 1475 0159 40010000 		.4byte	0x140
+ 1476 015d 00       		.byte	0
+ 1477 015e 0F       		.uleb128 0xf
+ 1478 015f 2C030000 		.4byte	.LASF26
+ 1479 0163 01       		.byte	0x1
+ 1480 0164 BE       		.byte	0xbe
+ 1481 0165 73000000 		.4byte	0x73
+ 1482 0169 00000000 		.4byte	.LFB71
+ 1483 016d 24000000 		.4byte	.LFE71-.LFB71
+ 1484 0171 01       		.uleb128 0x1
+ 1485 0172 9C       		.byte	0x9c
+ 1486 0173 C9010000 		.4byte	0x1c9
+ 1487 0177 10       		.uleb128 0x10
+ 1488 0178 90010000 		.4byte	.LASF24
+ 1489 017c 01       		.byte	0x1
+ 1490 017d BE       		.byte	0xbe
+ 1491 017e 73000000 		.4byte	0x73
+ 1492 0182 00000000 		.4byte	.LLST0
+ 1493 0186 10       		.uleb128 0x10
+ 1494 0187 D2010000 		.4byte	.LASF25
+ 1495 018b 01       		.byte	0x1
+ 1496 018c BE       		.byte	0xbe
+ 1497 018d 28010000 		.4byte	0x128
+ 1498 0191 1E000000 		.4byte	.LLST1
+ 1499 0195 11       		.uleb128 0x11
+ 1500 0196 0C000000 		.4byte	.LBB8
+ 1501 019a 14000000 		.4byte	.LBE8-.LBB8
+ 1502 019e B9010000 		.4byte	0x1b9
+ 1503 01a2 12       		.uleb128 0x12
+ 1504 01a3 6900     		.ascii	"i\000"
+ 1505 01a5 01       		.byte	0x1
+ 1506 01a6 C1       		.byte	0xc1
+ 1507 01a7 81000000 		.4byte	0x81
+ 1508 01ab 3C000000 		.4byte	.LLST2
+ 1509 01af 13       		.uleb128 0x13
+ 1510 01b0 18000000 		.4byte	.LVL4
+ 1511 01b4 A0080000 		.4byte	0x8a0
+ 1512 01b8 00       		.byte	0
+ 1513 01b9 14       		.uleb128 0x14
+ 1514 01ba 0C000000 		.4byte	.LVL2
+ 1515 01be AB080000 		.4byte	0x8ab
+ 1516 01c2 15       		.uleb128 0x15
+ 1517 01c3 01       		.uleb128 0x1
+ 1518 01c4 50       		.byte	0x50
+ 1519 01c5 01       		.uleb128 0x1
+ 1520 01c6 3D       		.byte	0x3d
+ 1521 01c7 00       		.byte	0
+ 1522 01c8 00       		.byte	0
+ 1523 01c9 0F       		.uleb128 0xf
+ 1524 01ca 6A000000 		.4byte	.LASF27
+ 1525 01ce 01       		.byte	0x1
+ 1526 01cf C8       		.byte	0xc8
+ 1527 01d0 73000000 		.4byte	0x73
+ 1528 01d4 00000000 		.4byte	.LFB72
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 37
+
+
+ 1529 01d8 64000000 		.4byte	.LFE72-.LFB72
+ 1530 01dc 01       		.uleb128 0x1
+ 1531 01dd 9C       		.byte	0x9c
+ 1532 01de A6020000 		.4byte	0x2a6
+ 1533 01e2 10       		.uleb128 0x10
+ 1534 01e3 90010000 		.4byte	.LASF24
+ 1535 01e7 01       		.byte	0x1
+ 1536 01e8 C8       		.byte	0xc8
+ 1537 01e9 73000000 		.4byte	0x73
+ 1538 01ed 66000000 		.4byte	.LLST3
+ 1539 01f1 10       		.uleb128 0x10
+ 1540 01f2 D2010000 		.4byte	.LASF25
+ 1541 01f6 01       		.byte	0x1
+ 1542 01f7 C8       		.byte	0xc8
+ 1543 01f8 28010000 		.4byte	0x128
+ 1544 01fc 87000000 		.4byte	.LLST4
+ 1545 0200 12       		.uleb128 0x12
+ 1546 0201 706300   		.ascii	"pc\000"
+ 1547 0204 01       		.byte	0x1
+ 1548 0205 CC       		.byte	0xcc
+ 1549 0206 A6020000 		.4byte	0x2a6
+ 1550 020a A8000000 		.4byte	.LLST5
+ 1551 020e 12       		.uleb128 0x12
+ 1552 020f 70636400 		.ascii	"pcd\000"
+ 1553 0213 01       		.byte	0x1
+ 1554 0214 D2       		.byte	0xd2
+ 1555 0215 B1020000 		.4byte	0x2b1
+ 1556 0219 CB000000 		.4byte	.LLST6
+ 1557 021d 11       		.uleb128 0x11
+ 1558 021e 1E000000 		.4byte	.LBB9
+ 1559 0222 36000000 		.4byte	.LBE9-.LBB9
+ 1560 0226 8D020000 		.4byte	0x28d
+ 1561 022a 12       		.uleb128 0x12
+ 1562 022b 6900     		.ascii	"i\000"
+ 1563 022d 01       		.byte	0x1
+ 1564 022e D3       		.byte	0xd3
+ 1565 022f 81000000 		.4byte	0x81
+ 1566 0233 DE000000 		.4byte	.LLST7
+ 1567 0237 13       		.uleb128 0x13
+ 1568 0238 24000000 		.4byte	.LVL15
+ 1569 023c A0080000 		.4byte	0x8a0
+ 1570 0240 16       		.uleb128 0x16
+ 1571 0241 2E000000 		.4byte	.LVL16
+ 1572 0245 AB080000 		.4byte	0x8ab
+ 1573 0249 54020000 		.4byte	0x254
+ 1574 024d 15       		.uleb128 0x15
+ 1575 024e 01       		.uleb128 0x1
+ 1576 024f 50       		.byte	0x50
+ 1577 0250 02       		.uleb128 0x2
+ 1578 0251 08       		.byte	0x8
+ 1579 0252 20       		.byte	0x20
+ 1580 0253 00       		.byte	0
+ 1581 0254 13       		.uleb128 0x13
+ 1582 0255 34000000 		.4byte	.LVL17
+ 1583 0259 A0080000 		.4byte	0x8a0
+ 1584 025d 16       		.uleb128 0x16
+ 1585 025e 3E000000 		.4byte	.LVL18
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 38
+
+
+ 1586 0262 A0080000 		.4byte	0x8a0
+ 1587 0266 74020000 		.4byte	0x274
+ 1588 026a 15       		.uleb128 0x15
+ 1589 026b 01       		.uleb128 0x1
+ 1590 026c 50       		.byte	0x50
+ 1591 026d 05       		.uleb128 0x5
+ 1592 026e 03       		.byte	0x3
+ 1593 026f 00000000 		.4byte	.LC0
+ 1594 0273 00       		.byte	0
+ 1595 0274 13       		.uleb128 0x13
+ 1596 0275 44000000 		.4byte	.LVL19
+ 1597 0279 A0080000 		.4byte	0x8a0
+ 1598 027d 14       		.uleb128 0x14
+ 1599 027e 4A000000 		.4byte	.LVL20
+ 1600 0282 AB080000 		.4byte	0x8ab
+ 1601 0286 15       		.uleb128 0x15
+ 1602 0287 01       		.uleb128 0x1
+ 1603 0288 50       		.byte	0x50
+ 1604 0289 01       		.uleb128 0x1
+ 1605 028a 3D       		.byte	0x3d
+ 1606 028b 00       		.byte	0
+ 1607 028c 00       		.byte	0
+ 1608 028d 13       		.uleb128 0x13
+ 1609 028e 0A000000 		.4byte	.LVL10
+ 1610 0292 A0080000 		.4byte	0x8a0
+ 1611 0296 14       		.uleb128 0x14
+ 1612 0297 10000000 		.4byte	.LVL11
+ 1613 029b AB080000 		.4byte	0x8ab
+ 1614 029f 15       		.uleb128 0x15
+ 1615 02a0 01       		.uleb128 0x1
+ 1616 02a1 50       		.byte	0x50
+ 1617 02a2 01       		.uleb128 0x1
+ 1618 02a3 3D       		.byte	0x3d
+ 1619 02a4 00       		.byte	0
+ 1620 02a5 00       		.byte	0
+ 1621 02a6 05       		.uleb128 0x5
+ 1622 02a7 04       		.byte	0x4
+ 1623 02a8 AC020000 		.4byte	0x2ac
+ 1624 02ac 06       		.uleb128 0x6
+ 1625 02ad B2000000 		.4byte	0xb2
+ 1626 02b1 05       		.uleb128 0x5
+ 1627 02b2 04       		.byte	0x4
+ 1628 02b3 B7020000 		.4byte	0x2b7
+ 1629 02b7 06       		.uleb128 0x6
+ 1630 02b8 D7000000 		.4byte	0xd7
+ 1631 02bc 0F       		.uleb128 0xf
+ 1632 02bd A5000000 		.4byte	.LASF28
+ 1633 02c1 01       		.byte	0x1
+ 1634 02c2 E7       		.byte	0xe7
+ 1635 02c3 73000000 		.4byte	0x73
+ 1636 02c7 00000000 		.4byte	.LFB73
+ 1637 02cb 70000000 		.4byte	.LFE73-.LFB73
+ 1638 02cf 01       		.uleb128 0x1
+ 1639 02d0 9C       		.byte	0x9c
+ 1640 02d1 BD030000 		.4byte	0x3bd
+ 1641 02d5 10       		.uleb128 0x10
+ 1642 02d6 90010000 		.4byte	.LASF24
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 39
+
+
+ 1643 02da 01       		.byte	0x1
+ 1644 02db E7       		.byte	0xe7
+ 1645 02dc 73000000 		.4byte	0x73
+ 1646 02e0 FC000000 		.4byte	.LLST8
+ 1647 02e4 10       		.uleb128 0x10
+ 1648 02e5 D2010000 		.4byte	.LASF25
+ 1649 02e9 01       		.byte	0x1
+ 1650 02ea E7       		.byte	0xe7
+ 1651 02eb 28010000 		.4byte	0x128
+ 1652 02ef 36010000 		.4byte	.LLST9
+ 1653 02f3 17       		.uleb128 0x17
+ 1654 02f4 34010000 		.4byte	0x134
+ 1655 02f8 0C000000 		.4byte	.LBB10
+ 1656 02fc 04000000 		.4byte	.LBE10-.LBB10
+ 1657 0300 01       		.byte	0x1
+ 1658 0301 EC       		.byte	0xec
+ 1659 0302 18       		.uleb128 0x18
+ 1660 0303 47010000 		.4byte	0x147
+ 1661 0307 30000000 		.4byte	.LBB12
+ 1662 030b 08000000 		.4byte	.LBE12-.LBB12
+ 1663 030f 01       		.byte	0x1
+ 1664 0310 F0       		.byte	0xf0
+ 1665 0311 1F030000 		.4byte	0x31f
+ 1666 0315 19       		.uleb128 0x19
+ 1667 0316 53010000 		.4byte	0x153
+ 1668 031a 70010000 		.4byte	.LLST10
+ 1669 031e 00       		.byte	0
+ 1670 031f 18       		.uleb128 0x18
+ 1671 0320 47010000 		.4byte	0x147
+ 1672 0324 42000000 		.4byte	.LBB14
+ 1673 0328 08000000 		.4byte	.LBE14-.LBB14
+ 1674 032c 01       		.byte	0x1
+ 1675 032d F1       		.byte	0xf1
+ 1676 032e 3C030000 		.4byte	0x33c
+ 1677 0332 19       		.uleb128 0x19
+ 1678 0333 53010000 		.4byte	0x153
+ 1679 0337 84010000 		.4byte	.LLST11
+ 1680 033b 00       		.byte	0
+ 1681 033c 16       		.uleb128 0x16
+ 1682 033d 0C000000 		.4byte	.LVL27
+ 1683 0341 A0080000 		.4byte	0x8a0
+ 1684 0345 53030000 		.4byte	0x353
+ 1685 0349 15       		.uleb128 0x15
+ 1686 034a 01       		.uleb128 0x1
+ 1687 034b 50       		.byte	0x50
+ 1688 034c 05       		.uleb128 0x5
+ 1689 034d 03       		.byte	0x3
+ 1690 034e 0C000000 		.4byte	.LC3
+ 1691 0352 00       		.byte	0
+ 1692 0353 13       		.uleb128 0x13
+ 1693 0354 1C000000 		.4byte	.LVL28
+ 1694 0358 A0080000 		.4byte	0x8a0
+ 1695 035c 16       		.uleb128 0x16
+ 1696 035d 22000000 		.4byte	.LVL29
+ 1697 0361 AB080000 		.4byte	0x8ab
+ 1698 0365 6F030000 		.4byte	0x36f
+ 1699 0369 15       		.uleb128 0x15
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 40
+
+
+ 1700 036a 01       		.uleb128 0x1
+ 1701 036b 50       		.byte	0x50
+ 1702 036c 01       		.uleb128 0x1
+ 1703 036d 3D       		.byte	0x3d
+ 1704 036e 00       		.byte	0
+ 1705 036f 16       		.uleb128 0x16
+ 1706 0370 2E000000 		.4byte	.LVL33
+ 1707 0374 B6080000 		.4byte	0x8b6
+ 1708 0378 8C030000 		.4byte	0x38c
+ 1709 037c 15       		.uleb128 0x15
+ 1710 037d 01       		.uleb128 0x1
+ 1711 037e 50       		.byte	0x50
+ 1712 037f 02       		.uleb128 0x2
+ 1713 0380 74       		.byte	0x74
+ 1714 0381 00       		.sleb128 0
+ 1715 0382 15       		.uleb128 0x15
+ 1716 0383 01       		.uleb128 0x1
+ 1717 0384 51       		.byte	0x51
+ 1718 0385 05       		.uleb128 0x5
+ 1719 0386 03       		.byte	0x3
+ 1720 0387 18000000 		.4byte	.LC4
+ 1721 038b 00       		.byte	0
+ 1722 038c 16       		.uleb128 0x16
+ 1723 038d 40000000 		.4byte	.LVL36
+ 1724 0391 B6080000 		.4byte	0x8b6
+ 1725 0395 A9030000 		.4byte	0x3a9
+ 1726 0399 15       		.uleb128 0x15
+ 1727 039a 01       		.uleb128 0x1
+ 1728 039b 50       		.byte	0x50
+ 1729 039c 02       		.uleb128 0x2
+ 1730 039d 74       		.byte	0x74
+ 1731 039e 00       		.sleb128 0
+ 1732 039f 15       		.uleb128 0x15
+ 1733 03a0 01       		.uleb128 0x1
+ 1734 03a1 51       		.byte	0x51
+ 1735 03a2 05       		.uleb128 0x5
+ 1736 03a3 03       		.byte	0x3
+ 1737 03a4 1C000000 		.4byte	.LC5
+ 1738 03a8 00       		.byte	0
+ 1739 03a9 14       		.uleb128 0x14
+ 1740 03aa 50000000 		.4byte	.LVL39
+ 1741 03ae A0080000 		.4byte	0x8a0
+ 1742 03b2 15       		.uleb128 0x15
+ 1743 03b3 01       		.uleb128 0x1
+ 1744 03b4 50       		.byte	0x50
+ 1745 03b5 05       		.uleb128 0x5
+ 1746 03b6 03       		.byte	0x3
+ 1747 03b7 20000000 		.4byte	.LC6
+ 1748 03bb 00       		.byte	0
+ 1749 03bc 00       		.byte	0
+ 1750 03bd 0F       		.uleb128 0xf
+ 1751 03be 04010000 		.4byte	.LASF29
+ 1752 03c2 01       		.byte	0x1
+ 1753 03c3 FA       		.byte	0xfa
+ 1754 03c4 73000000 		.4byte	0x73
+ 1755 03c8 00000000 		.4byte	.LFB74
+ 1756 03cc 24000000 		.4byte	.LFE74-.LFB74
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 41
+
+
+ 1757 03d0 01       		.uleb128 0x1
+ 1758 03d1 9C       		.byte	0x9c
+ 1759 03d2 3A040000 		.4byte	0x43a
+ 1760 03d6 10       		.uleb128 0x10
+ 1761 03d7 90010000 		.4byte	.LASF24
+ 1762 03db 01       		.byte	0x1
+ 1763 03dc FA       		.byte	0xfa
+ 1764 03dd 73000000 		.4byte	0x73
+ 1765 03e1 98010000 		.4byte	.LLST12
+ 1766 03e5 10       		.uleb128 0x10
+ 1767 03e6 D2010000 		.4byte	.LASF25
+ 1768 03ea 01       		.byte	0x1
+ 1769 03eb FA       		.byte	0xfa
+ 1770 03ec 28010000 		.4byte	0x128
+ 1771 03f0 B9010000 		.4byte	.LLST13
+ 1772 03f4 1A       		.uleb128 0x1a
+ 1773 03f5 75000000 		.4byte	.LASF30
+ 1774 03f9 01       		.byte	0x1
+ 1775 03fa FD       		.byte	0xfd
+ 1776 03fb BD000000 		.4byte	0xbd
+ 1777 03ff DA010000 		.4byte	.LLST14
+ 1778 0403 13       		.uleb128 0x13
+ 1779 0404 06000000 		.4byte	.LVL41
+ 1780 0408 C1080000 		.4byte	0x8c1
+ 1781 040c 16       		.uleb128 0x16
+ 1782 040d 12000000 		.4byte	.LVL43
+ 1783 0411 CD080000 		.4byte	0x8cd
+ 1784 0415 29040000 		.4byte	0x429
+ 1785 0419 15       		.uleb128 0x15
+ 1786 041a 01       		.uleb128 0x1
+ 1787 041b 50       		.byte	0x50
+ 1788 041c 02       		.uleb128 0x2
+ 1789 041d 74       		.byte	0x74
+ 1790 041e 00       		.sleb128 0
+ 1791 041f 15       		.uleb128 0x15
+ 1792 0420 01       		.uleb128 0x1
+ 1793 0421 51       		.byte	0x51
+ 1794 0422 05       		.uleb128 0x5
+ 1795 0423 03       		.byte	0x3
+ 1796 0424 38000000 		.4byte	.LC7
+ 1797 0428 00       		.byte	0
+ 1798 0429 14       		.uleb128 0x14
+ 1799 042a 18000000 		.4byte	.LVL44
+ 1800 042e A0080000 		.4byte	0x8a0
+ 1801 0432 15       		.uleb128 0x15
+ 1802 0433 01       		.uleb128 0x1
+ 1803 0434 50       		.byte	0x50
+ 1804 0435 02       		.uleb128 0x2
+ 1805 0436 74       		.byte	0x74
+ 1806 0437 00       		.sleb128 0
+ 1807 0438 00       		.byte	0
+ 1808 0439 00       		.byte	0
+ 1809 043a 1B       		.uleb128 0x1b
+ 1810 043b 58000000 		.4byte	.LASF31
+ 1811 043f 01       		.byte	0x1
+ 1812 0440 5B       		.byte	0x5b
+ 1813 0441 00000000 		.4byte	.LFB68
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 42
+
+
+ 1814 0445 24000000 		.4byte	.LFE68-.LFB68
+ 1815 0449 01       		.uleb128 0x1
+ 1816 044a 9C       		.byte	0x9c
+ 1817 044b 72040000 		.4byte	0x472
+ 1818 044f 1C       		.uleb128 0x1c
+ 1819 0450 4E00     		.ascii	"N\000"
+ 1820 0452 01       		.byte	0x1
+ 1821 0453 5B       		.byte	0x5b
+ 1822 0454 81000000 		.4byte	0x81
+ 1823 0458 01       		.uleb128 0x1
+ 1824 0459 50       		.byte	0x50
+ 1825 045a 1D       		.uleb128 0x1d
+ 1826 045b 00000000 		.4byte	.LBB16
+ 1827 045f 12000000 		.4byte	.LBE16-.LBB16
+ 1828 0463 12       		.uleb128 0x12
+ 1829 0464 6900     		.ascii	"i\000"
+ 1830 0466 01       		.byte	0x1
+ 1831 0467 5E       		.byte	0x5e
+ 1832 0468 81000000 		.4byte	0x81
+ 1833 046c ED010000 		.4byte	.LLST15
+ 1834 0470 00       		.byte	0
+ 1835 0471 00       		.byte	0
+ 1836 0472 1B       		.uleb128 0x1b
+ 1837 0473 22010000 		.4byte	.LASF32
+ 1838 0477 01       		.byte	0x1
+ 1839 0478 31       		.byte	0x31
+ 1840 0479 00000000 		.4byte	.LFB66
+ 1841 047d 14000000 		.4byte	.LFE66-.LFB66
+ 1842 0481 01       		.uleb128 0x1
+ 1843 0482 9C       		.byte	0x9c
+ 1844 0483 98040000 		.4byte	0x498
+ 1845 0487 14       		.uleb128 0x14
+ 1846 0488 08000000 		.4byte	.LVL50
+ 1847 048c 3A040000 		.4byte	0x43a
+ 1848 0490 15       		.uleb128 0x15
+ 1849 0491 01       		.uleb128 0x1
+ 1850 0492 50       		.byte	0x50
+ 1851 0493 02       		.uleb128 0x2
+ 1852 0494 08       		.byte	0x8
+ 1853 0495 50       		.byte	0x50
+ 1854 0496 00       		.byte	0
+ 1855 0497 00       		.byte	0
+ 1856 0498 1E       		.uleb128 0x1e
+ 1857 0499 84020000 		.4byte	.LASF64
+ 1858 049d 01       		.byte	0x1
+ 1859 049e 65       		.byte	0x65
+ 1860 049f A5000000 		.4byte	0xa5
+ 1861 04a3 03       		.byte	0x3
+ 1862 04a4 E0040000 		.4byte	0x4e0
+ 1863 04a8 0E       		.uleb128 0xe
+ 1864 04a9 62756600 		.ascii	"buf\000"
+ 1865 04ad 01       		.byte	0x1
+ 1866 04ae 65       		.byte	0x65
+ 1867 04af A5000000 		.4byte	0xa5
+ 1868 04b3 1F       		.uleb128 0x1f
+ 1869 04b4 70747200 		.ascii	"ptr\000"
+ 1870 04b8 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 43
+
+
+ 1871 04b9 67       		.byte	0x67
+ 1872 04ba A5000000 		.4byte	0xa5
+ 1873 04be 20       		.uleb128 0x20
+ 1874 04bf E8010000 		.4byte	.LASF33
+ 1875 04c3 01       		.byte	0x1
+ 1876 04c4 68       		.byte	0x68
+ 1877 04c5 A5000000 		.4byte	0xa5
+ 1878 04c9 20       		.uleb128 0x20
+ 1879 04ca 7A020000 		.4byte	.LASF34
+ 1880 04ce 01       		.byte	0x1
+ 1881 04cf 68       		.byte	0x68
+ 1882 04d0 A5000000 		.4byte	0xa5
+ 1883 04d4 20       		.uleb128 0x20
+ 1884 04d5 58010000 		.4byte	.LASF35
+ 1885 04d9 01       		.byte	0x1
+ 1886 04da 69       		.byte	0x69
+ 1887 04db AB000000 		.4byte	0xab
+ 1888 04df 00       		.byte	0
+ 1889 04e0 0F       		.uleb128 0xf
+ 1890 04e1 34010000 		.4byte	.LASF36
+ 1891 04e5 01       		.byte	0x1
+ 1892 04e6 97       		.byte	0x97
+ 1893 04e7 73000000 		.4byte	0x73
+ 1894 04eb 00000000 		.4byte	.LFB70
+ 1895 04ef A8010000 		.4byte	.LFE70-.LFB70
+ 1896 04f3 01       		.uleb128 0x1
+ 1897 04f4 9C       		.byte	0x9c
+ 1898 04f5 92060000 		.4byte	0x692
+ 1899 04f9 21       		.uleb128 0x21
+ 1900 04fa 62756600 		.ascii	"buf\000"
+ 1901 04fe 01       		.byte	0x1
+ 1902 04ff 97       		.byte	0x97
+ 1903 0500 A5000000 		.4byte	0xa5
+ 1904 0504 17020000 		.4byte	.LLST16
+ 1905 0508 1A       		.uleb128 0x1a
+ 1906 0509 90010000 		.4byte	.LASF24
+ 1907 050d 01       		.byte	0x1
+ 1908 050e 99       		.byte	0x99
+ 1909 050f 73000000 		.4byte	0x73
+ 1910 0513 51020000 		.4byte	.LLST17
+ 1911 0517 22       		.uleb128 0x22
+ 1912 0518 D2010000 		.4byte	.LASF25
+ 1913 051c 01       		.byte	0x1
+ 1914 051d 9A       		.byte	0x9a
+ 1915 051e 92060000 		.4byte	0x692
+ 1916 0522 03       		.uleb128 0x3
+ 1917 0523 91       		.byte	0x91
+ 1918 0524 F07E     		.sleb128 -144
+ 1919 0526 12       		.uleb128 0x12
+ 1920 0527 7700     		.ascii	"w\000"
+ 1921 0529 01       		.byte	0x1
+ 1922 052a 9B       		.byte	0x9b
+ 1923 052b A5000000 		.4byte	0xa5
+ 1924 052f 86020000 		.4byte	.LLST18
+ 1925 0533 1A       		.uleb128 0x1a
+ 1926 0534 40000000 		.4byte	.LASF37
+ 1927 0538 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 44
+
+
+ 1928 0539 AB       		.byte	0xab
+ 1929 053a B2000000 		.4byte	0xb2
+ 1930 053e DD020000 		.4byte	.LLST19
+ 1931 0542 18       		.uleb128 0x18
+ 1932 0543 98040000 		.4byte	0x498
+ 1933 0547 12000000 		.4byte	.LBB23
+ 1934 054b 90000000 		.4byte	.LBE23-.LBB23
+ 1935 054f 01       		.byte	0x1
+ 1936 0550 A4       		.byte	0xa4
+ 1937 0551 8F050000 		.4byte	0x58f
+ 1938 0555 19       		.uleb128 0x19
+ 1939 0556 A8040000 		.4byte	0x4a8
+ 1940 055a 4C030000 		.4byte	.LLST20
+ 1941 055e 1D       		.uleb128 0x1d
+ 1942 055f 12000000 		.4byte	.LBB24
+ 1943 0563 90000000 		.4byte	.LBE24-.LBB24
+ 1944 0567 23       		.uleb128 0x23
+ 1945 0568 BE040000 		.4byte	0x4be
+ 1946 056c 6D030000 		.4byte	.LLST21
+ 1947 0570 23       		.uleb128 0x23
+ 1948 0571 C9040000 		.4byte	0x4c9
+ 1949 0575 8B030000 		.4byte	.LLST22
+ 1950 0579 23       		.uleb128 0x23
+ 1951 057a D4040000 		.4byte	0x4d4
+ 1952 057e A9030000 		.4byte	.LLST23
+ 1953 0582 24       		.uleb128 0x24
+ 1954 0583 B3040000 		.4byte	0x4b3
+ 1955 0587 05       		.uleb128 0x5
+ 1956 0588 03       		.byte	0x3
+ 1957 0589 00000000 		.4byte	ptr.7613
+ 1958 058d 00       		.byte	0
+ 1959 058e 00       		.byte	0
+ 1960 058f 18       		.uleb128 0x18
+ 1961 0590 98040000 		.4byte	0x498
+ 1962 0594 B4000000 		.4byte	.LBB25
+ 1963 0598 88000000 		.4byte	.LBE25-.LBB25
+ 1964 059c 01       		.byte	0x1
+ 1965 059d A8       		.byte	0xa8
+ 1966 059e DC050000 		.4byte	0x5dc
+ 1967 05a2 19       		.uleb128 0x19
+ 1968 05a3 A8040000 		.4byte	0x4a8
+ 1969 05a7 F9030000 		.4byte	.LLST24
+ 1970 05ab 1D       		.uleb128 0x1d
+ 1971 05ac B4000000 		.4byte	.LBB26
+ 1972 05b0 88000000 		.4byte	.LBE26-.LBB26
+ 1973 05b4 23       		.uleb128 0x23
+ 1974 05b5 BE040000 		.4byte	0x4be
+ 1975 05b9 0D040000 		.4byte	.LLST25
+ 1976 05bd 23       		.uleb128 0x23
+ 1977 05be C9040000 		.4byte	0x4c9
+ 1978 05c2 2B040000 		.4byte	.LLST26
+ 1979 05c6 23       		.uleb128 0x23
+ 1980 05c7 D4040000 		.4byte	0x4d4
+ 1981 05cb 49040000 		.4byte	.LLST27
+ 1982 05cf 24       		.uleb128 0x24
+ 1983 05d0 B3040000 		.4byte	0x4b3
+ 1984 05d4 05       		.uleb128 0x5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 45
+
+
+ 1985 05d5 03       		.byte	0x3
+ 1986 05d6 00000000 		.4byte	ptr.7613
+ 1987 05da 00       		.byte	0
+ 1988 05db 00       		.byte	0
+ 1989 05dc 25       		.uleb128 0x25
+ 1990 05dd 00000000 		.4byte	.Ldebug_ranges0+0
+ 1991 05e1 54060000 		.4byte	0x654
+ 1992 05e5 12       		.uleb128 0x12
+ 1993 05e6 6900     		.ascii	"i\000"
+ 1994 05e8 01       		.byte	0x1
+ 1995 05e9 AE       		.byte	0xae
+ 1996 05ea 81000000 		.4byte	0x81
+ 1997 05ee 99040000 		.4byte	.LLST28
+ 1998 05f2 11       		.uleb128 0x11
+ 1999 05f3 5A010000 		.4byte	.LBB28
+ 2000 05f7 1C000000 		.4byte	.LBE28-.LBB28
+ 2001 05fb 3A060000 		.4byte	0x63a
+ 2002 05ff 1A       		.uleb128 0x1a
+ 2003 0600 41010000 		.4byte	.LASF38
+ 2004 0604 01       		.byte	0x1
+ 2005 0605 B3       		.byte	0xb3
+ 2006 0606 73000000 		.4byte	0x73
+ 2007 060a CD040000 		.4byte	.LLST29
+ 2008 060e 26       		.uleb128 0x26
+ 2009 060f 68010000 		.4byte	.LVL91
+ 2010 0613 03       		.uleb128 0x3
+ 2011 0614 76       		.byte	0x76
+ 2012 0615 2C       		.sleb128 44
+ 2013 0616 06       		.byte	0x6
+ 2014 0617 28060000 		.4byte	0x628
+ 2015 061b 15       		.uleb128 0x15
+ 2016 061c 01       		.uleb128 0x1
+ 2017 061d 50       		.byte	0x50
+ 2018 061e 02       		.uleb128 0x2
+ 2019 061f 75       		.byte	0x75
+ 2020 0620 00       		.sleb128 0
+ 2021 0621 15       		.uleb128 0x15
+ 2022 0622 01       		.uleb128 0x1
+ 2023 0623 51       		.byte	0x51
+ 2024 0624 02       		.uleb128 0x2
+ 2025 0625 7D       		.byte	0x7d
+ 2026 0626 00       		.sleb128 0
+ 2027 0627 00       		.byte	0
+ 2028 0628 14       		.uleb128 0x14
+ 2029 0629 72010000 		.4byte	.LVL94
+ 2030 062d A0080000 		.4byte	0x8a0
+ 2031 0631 15       		.uleb128 0x15
+ 2032 0632 01       		.uleb128 0x1
+ 2033 0633 50       		.byte	0x50
+ 2034 0634 03       		.uleb128 0x3
+ 2035 0635 77       		.byte	0x77
+ 2036 0636 E003     		.sleb128 480
+ 2037 0638 00       		.byte	0
+ 2038 0639 00       		.byte	0
+ 2039 063a 14       		.uleb128 0x14
+ 2040 063b 58010000 		.4byte	.LVL88
+ 2041 063f B6080000 		.4byte	0x8b6
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 46
+
+
+ 2042 0643 15       		.uleb128 0x15
+ 2043 0644 01       		.uleb128 0x1
+ 2044 0645 51       		.byte	0x51
+ 2045 0646 0B       		.uleb128 0xb
+ 2046 0647 74       		.byte	0x74
+ 2047 0648 00       		.sleb128 0
+ 2048 0649 34       		.byte	0x34
+ 2049 064a 24       		.byte	0x24
+ 2050 064b 03       		.byte	0x3
+ 2051 064c 20000000 		.4byte	.LANCHOR0+32
+ 2052 0650 22       		.byte	0x22
+ 2053 0651 06       		.byte	0x6
+ 2054 0652 00       		.byte	0
+ 2055 0653 00       		.byte	0
+ 2056 0654 16       		.uleb128 0x16
+ 2057 0655 0E000000 		.4byte	.LVL53
+ 2058 0659 A0080000 		.4byte	0x8a0
+ 2059 065d 6B060000 		.4byte	0x66b
+ 2060 0661 15       		.uleb128 0x15
+ 2061 0662 01       		.uleb128 0x1
+ 2062 0663 50       		.byte	0x50
+ 2063 0664 05       		.uleb128 0x5
+ 2064 0665 03       		.byte	0x3
+ 2065 0666 E0010000 		.4byte	.LANCHOR0+480
+ 2066 066a 00       		.byte	0
+ 2067 066b 16       		.uleb128 0x16
+ 2068 066c 8C010000 		.4byte	.LVL101
+ 2069 0670 A0080000 		.4byte	0x8a0
+ 2070 0674 80060000 		.4byte	0x680
+ 2071 0678 15       		.uleb128 0x15
+ 2072 0679 01       		.uleb128 0x1
+ 2073 067a 50       		.byte	0x50
+ 2074 067b 03       		.uleb128 0x3
+ 2075 067c 74       		.byte	0x74
+ 2076 067d E403     		.sleb128 484
+ 2077 067f 00       		.byte	0
+ 2078 0680 14       		.uleb128 0x14
+ 2079 0681 94010000 		.4byte	.LVL102
+ 2080 0685 A0080000 		.4byte	0x8a0
+ 2081 0689 15       		.uleb128 0x15
+ 2082 068a 01       		.uleb128 0x1
+ 2083 068b 50       		.byte	0x50
+ 2084 068c 03       		.uleb128 0x3
+ 2085 068d 74       		.byte	0x74
+ 2086 068e E003     		.sleb128 480
+ 2087 0690 00       		.byte	0
+ 2088 0691 00       		.byte	0
+ 2089 0692 27       		.uleb128 0x27
+ 2090 0693 A5000000 		.4byte	0xa5
+ 2091 0697 A2060000 		.4byte	0x6a2
+ 2092 069b 28       		.uleb128 0x28
+ 2093 069c 9E000000 		.4byte	0x9e
+ 2094 06a0 1D       		.byte	0x1d
+ 2095 06a1 00       		.byte	0
+ 2096 06a2 29       		.uleb128 0x29
+ 2097 06a3 434C4900 		.ascii	"CLI\000"
+ 2098 06a7 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 47
+
+
+ 2099 06a8 39       		.byte	0x39
+ 2100 06a9 00000000 		.4byte	.LFB67
+ 2101 06ad 8C000000 		.4byte	.LFE67-.LFB67
+ 2102 06b1 01       		.uleb128 0x1
+ 2103 06b2 9C       		.byte	0x9c
+ 2104 06b3 3B070000 		.4byte	0x73b
+ 2105 06b7 11       		.uleb128 0x11
+ 2106 06b8 0A000000 		.4byte	.LBB30
+ 2107 06bc 82000000 		.4byte	.LBE30-.LBB30
+ 2108 06c0 31070000 		.4byte	0x731
+ 2109 06c4 1A       		.uleb128 0x1a
+ 2110 06c5 1E020000 		.4byte	.LASF39
+ 2111 06c9 01       		.byte	0x1
+ 2112 06ca 3D       		.byte	0x3d
+ 2113 06cb AB000000 		.4byte	0xab
+ 2114 06cf EB040000 		.4byte	.LLST30
+ 2115 06d3 13       		.uleb128 0x13
+ 2116 06d4 0E000000 		.4byte	.LVL105
+ 2117 06d8 D8080000 		.4byte	0x8d8
+ 2118 06dc 16       		.uleb128 0x16
+ 2119 06dd 1A000000 		.4byte	.LVL107
+ 2120 06e1 AB080000 		.4byte	0x8ab
+ 2121 06e5 F0060000 		.4byte	0x6f0
+ 2122 06e9 15       		.uleb128 0x15
+ 2123 06ea 01       		.uleb128 0x1
+ 2124 06eb 50       		.byte	0x50
+ 2125 06ec 02       		.uleb128 0x2
+ 2126 06ed 74       		.byte	0x74
+ 2127 06ee 00       		.sleb128 0
+ 2128 06ef 00       		.byte	0
+ 2129 06f0 16       		.uleb128 0x16
+ 2130 06f1 36000000 		.4byte	.LVL108
+ 2131 06f5 E0040000 		.4byte	0x4e0
+ 2132 06f9 07070000 		.4byte	0x707
+ 2133 06fd 15       		.uleb128 0x15
+ 2134 06fe 01       		.uleb128 0x1
+ 2135 06ff 50       		.byte	0x50
+ 2136 0700 05       		.uleb128 0x5
+ 2137 0701 03       		.byte	0x3
+ 2138 0702 00000000 		.4byte	InBuff
+ 2139 0706 00       		.byte	0
+ 2140 0707 13       		.uleb128 0x13
+ 2141 0708 3E000000 		.4byte	.LVL109
+ 2142 070c 3A040000 		.4byte	0x43a
+ 2143 0710 16       		.uleb128 0x16
+ 2144 0711 64000000 		.4byte	.LVL110
+ 2145 0715 A0080000 		.4byte	0x8a0
+ 2146 0719 27070000 		.4byte	0x727
+ 2147 071d 15       		.uleb128 0x15
+ 2148 071e 01       		.uleb128 0x1
+ 2149 071f 50       		.byte	0x50
+ 2150 0720 05       		.uleb128 0x5
+ 2151 0721 03       		.byte	0x3
+ 2152 0722 FC010000 		.4byte	.LANCHOR0+508
+ 2153 0726 00       		.byte	0
+ 2154 0727 13       		.uleb128 0x13
+ 2155 0728 6C000000 		.4byte	.LVL111
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 48
+
+
+ 2156 072c 3A040000 		.4byte	0x43a
+ 2157 0730 00       		.byte	0
+ 2158 0731 13       		.uleb128 0x13
+ 2159 0732 06000000 		.4byte	.LVL104
+ 2160 0736 E3080000 		.4byte	0x8e3
+ 2161 073a 00       		.byte	0
+ 2162 073b 22       		.uleb128 0x22
+ 2163 073c 5D010000 		.4byte	.LASF40
+ 2164 0740 01       		.byte	0x1
+ 2165 0741 24       		.byte	0x24
+ 2166 0742 40010000 		.4byte	0x140
+ 2167 0746 05       		.uleb128 0x5
+ 2168 0747 03       		.byte	0x3
+ 2169 0748 00000000 		.4byte	cliEcho
+ 2170 074c 2A       		.uleb128 0x2a
+ 2171 074d 94000000 		.4byte	.LASF41
+ 2172 0751 01       		.byte	0x1
+ 2173 0752 25       		.byte	0x25
+ 2174 0753 40010000 		.4byte	0x140
+ 2175 0757 01       		.byte	0x1
+ 2176 0758 2B       		.uleb128 0x2b
+ 2177 0759 8C020000 		.4byte	.LASF42
+ 2178 075d 06       		.byte	0x6
+ 2179 075e 1207     		.2byte	0x712
+ 2180 0760 64070000 		.4byte	0x764
+ 2181 0764 2C       		.uleb128 0x2c
+ 2182 0765 8C000000 		.4byte	0x8c
+ 2183 0769 27       		.uleb128 0x27
+ 2184 076a B8000000 		.4byte	0xb8
+ 2185 076e 79070000 		.4byte	0x779
+ 2186 0772 28       		.uleb128 0x28
+ 2187 0773 9E000000 		.4byte	0x9e
+ 2188 0777 15       		.byte	0x15
+ 2189 0778 00       		.byte	0
+ 2190 0779 2D       		.uleb128 0x2d
+ 2191 077a 47020000 		.4byte	.LASF43
+ 2192 077e 05       		.byte	0x5
+ 2193 077f 18       		.byte	0x18
+ 2194 0780 8A070000 		.4byte	0x78a
+ 2195 0784 05       		.uleb128 0x5
+ 2196 0785 03       		.byte	0x3
+ 2197 0786 00000000 		.4byte	BadMsgString
+ 2198 078a 06       		.uleb128 0x6
+ 2199 078b 69070000 		.4byte	0x769
+ 2200 078f 27       		.uleb128 0x27
+ 2201 0790 B8000000 		.4byte	0xb8
+ 2202 0794 9F070000 		.4byte	0x79f
+ 2203 0798 28       		.uleb128 0x28
+ 2204 0799 9E000000 		.4byte	0x9e
+ 2205 079d 1D       		.byte	0x1d
+ 2206 079e 00       		.byte	0
+ 2207 079f 2D       		.uleb128 0x2d
+ 2208 07a0 65010000 		.4byte	.LASF44
+ 2209 07a4 05       		.byte	0x5
+ 2210 07a5 19       		.byte	0x19
+ 2211 07a6 B0070000 		.4byte	0x7b0
+ 2212 07aa 05       		.uleb128 0x5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 49
+
+
+ 2213 07ab 03       		.byte	0x3
+ 2214 07ac 00000000 		.4byte	CmdTooLong
+ 2215 07b0 06       		.uleb128 0x6
+ 2216 07b1 8F070000 		.4byte	0x78f
+ 2217 07b5 27       		.uleb128 0x27
+ 2218 07b6 B8000000 		.4byte	0xb8
+ 2219 07ba C5070000 		.4byte	0x7c5
+ 2220 07be 28       		.uleb128 0x28
+ 2221 07bf 9E000000 		.4byte	0x9e
+ 2222 07c3 02       		.byte	0x2
+ 2223 07c4 00       		.byte	0
+ 2224 07c5 2D       		.uleb128 0x2d
+ 2225 07c6 D2000000 		.4byte	.LASF45
+ 2226 07ca 05       		.byte	0x5
+ 2227 07cb 1A       		.byte	0x1a
+ 2228 07cc D6070000 		.4byte	0x7d6
+ 2229 07d0 05       		.uleb128 0x5
+ 2230 07d1 03       		.byte	0x3
+ 2231 07d2 00000000 		.4byte	Prompt
+ 2232 07d6 06       		.uleb128 0x6
+ 2233 07d7 B5070000 		.4byte	0x7b5
+ 2234 07db 27       		.uleb128 0x27
+ 2235 07dc B7020000 		.4byte	0x2b7
+ 2236 07e0 EB070000 		.4byte	0x7eb
+ 2237 07e4 28       		.uleb128 0x28
+ 2238 07e5 9E000000 		.4byte	0x9e
+ 2239 07e9 1B       		.byte	0x1b
+ 2240 07ea 00       		.byte	0
+ 2241 07eb 2D       		.uleb128 0x2d
+ 2242 07ec 48000000 		.4byte	.LASF46
+ 2243 07f0 05       		.byte	0x5
+ 2244 07f1 25       		.byte	0x25
+ 2245 07f2 FC070000 		.4byte	0x7fc
+ 2246 07f6 05       		.uleb128 0x5
+ 2247 07f7 03       		.byte	0x3
+ 2248 07f8 00000000 		.4byte	CMD_Parse_Table
+ 2249 07fc 06       		.uleb128 0x6
+ 2250 07fd DB070000 		.4byte	0x7db
+ 2251 0801 27       		.uleb128 0x27
+ 2252 0802 B8000000 		.4byte	0xb8
+ 2253 0806 11080000 		.4byte	0x811
+ 2254 080a 28       		.uleb128 0x28
+ 2255 080b 9E000000 		.4byte	0x9e
+ 2256 080f 18       		.byte	0x18
+ 2257 0810 00       		.byte	0
+ 2258 0811 2D       		.uleb128 0x2d
+ 2259 0812 50010000 		.4byte	.LASF47
+ 2260 0816 05       		.byte	0x5
+ 2261 0817 46       		.byte	0x46
+ 2262 0818 22080000 		.4byte	0x822
+ 2263 081c 05       		.uleb128 0x5
+ 2264 081d 03       		.byte	0x3
+ 2265 081e 00000000 		.4byte	HelpDiv
+ 2266 0822 06       		.uleb128 0x6
+ 2267 0823 01080000 		.4byte	0x801
+ 2268 0827 27       		.uleb128 0x27
+ 2269 0828 AC020000 		.4byte	0x2ac
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 50
+
+
+ 2270 082c 37080000 		.4byte	0x837
+ 2271 0830 28       		.uleb128 0x28
+ 2272 0831 9E000000 		.4byte	0x9e
+ 2273 0835 07       		.byte	0x7
+ 2274 0836 00       		.byte	0
+ 2275 0837 2D       		.uleb128 0x2d
+ 2276 0838 23020000 		.4byte	.LASF48
+ 2277 083c 05       		.byte	0x5
+ 2278 083d 48       		.byte	0x48
+ 2279 083e 48080000 		.4byte	0x848
+ 2280 0842 05       		.uleb128 0x5
+ 2281 0843 03       		.byte	0x3
+ 2282 0844 00000000 		.4byte	HelpHeader
+ 2283 0848 06       		.uleb128 0x6
+ 2284 0849 27080000 		.4byte	0x827
+ 2285 084d 27       		.uleb128 0x27
+ 2286 084e AB000000 		.4byte	0xab
+ 2287 0852 5D080000 		.4byte	0x85d
+ 2288 0856 28       		.uleb128 0x28
+ 2289 0857 9E000000 		.4byte	0x9e
+ 2290 085b 4F       		.byte	0x4f
+ 2291 085c 00       		.byte	0
+ 2292 085d 2D       		.uleb128 0x2d
+ 2293 085e 84000000 		.4byte	.LASF49
+ 2294 0862 01       		.byte	0x1
+ 2295 0863 21       		.byte	0x21
+ 2296 0864 4D080000 		.4byte	0x84d
+ 2297 0868 05       		.uleb128 0x5
+ 2298 0869 03       		.byte	0x3
+ 2299 086a 00000000 		.4byte	InBuff
+ 2300 086e 2D       		.uleb128 0x2d
+ 2301 086f 69020000 		.4byte	.LASF50
+ 2302 0873 01       		.byte	0x1
+ 2303 0874 22       		.byte	0x22
+ 2304 0875 81000000 		.4byte	0x81
+ 2305 0879 05       		.uleb128 0x5
+ 2306 087a 03       		.byte	0x3
+ 2307 087b 00000000 		.4byte	InBuffCnt
+ 2308 087f 27       		.uleb128 0x27
+ 2309 0880 AB000000 		.4byte	0xab
+ 2310 0884 8F080000 		.4byte	0x88f
+ 2311 0888 28       		.uleb128 0x28
+ 2312 0889 9E000000 		.4byte	0x9e
+ 2313 088d 1F       		.byte	0x1f
+ 2314 088e 00       		.byte	0
+ 2315 088f 2E       		.uleb128 0x2e
+ 2316 0890 6D736700 		.ascii	"msg\000"
+ 2317 0894 01       		.byte	0x1
+ 2318 0895 27       		.byte	0x27
+ 2319 0896 7F080000 		.4byte	0x87f
+ 2320 089a 05       		.uleb128 0x5
+ 2321 089b 03       		.byte	0x3
+ 2322 089c 00000000 		.4byte	msg
+ 2323 08a0 2F       		.uleb128 0x2f
+ 2324 08a1 BE000000 		.4byte	.LASF51
+ 2325 08a5 BE000000 		.4byte	.LASF51
+ 2326 08a9 07       		.byte	0x7
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 51
+
+
+ 2327 08aa 4A       		.byte	0x4a
+ 2328 08ab 2F       		.uleb128 0x2f
+ 2329 08ac D9000000 		.4byte	.LASF52
+ 2330 08b0 D9000000 		.4byte	.LASF52
+ 2331 08b4 07       		.byte	0x7
+ 2332 08b5 49       		.byte	0x49
+ 2333 08b6 2F       		.uleb128 0x2f
+ 2334 08b7 73020000 		.4byte	.LASF53
+ 2335 08bb 73020000 		.4byte	.LASF53
+ 2336 08bf 08       		.byte	0x8
+ 2337 08c0 1C       		.byte	0x1c
+ 2338 08c1 30       		.uleb128 0x30
+ 2339 08c2 EB000000 		.4byte	.LASF54
+ 2340 08c6 EB000000 		.4byte	.LASF54
+ 2341 08ca 09       		.byte	0x9
+ 2342 08cb 2D01     		.2byte	0x12d
+ 2343 08cd 2F       		.uleb128 0x2f
+ 2344 08ce B8010000 		.4byte	.LASF55
+ 2345 08d2 B8010000 		.4byte	.LASF55
+ 2346 08d6 0A       		.byte	0xa
+ 2347 08d7 E7       		.byte	0xe7
+ 2348 08d8 2F       		.uleb128 0x2f
+ 2349 08d9 D7010000 		.4byte	.LASF56
+ 2350 08dd D7010000 		.4byte	.LASF56
+ 2351 08e1 07       		.byte	0x7
+ 2352 08e2 48       		.byte	0x48
+ 2353 08e3 2F       		.uleb128 0x2f
+ 2354 08e4 EE010000 		.4byte	.LASF57
+ 2355 08e8 EE010000 		.4byte	.LASF57
+ 2356 08ec 07       		.byte	0x7
+ 2357 08ed 47       		.byte	0x47
+ 2358 08ee 00       		.byte	0
+ 2359              		.section	.debug_abbrev,"",%progbits
+ 2360              	.Ldebug_abbrev0:
+ 2361 0000 01       		.uleb128 0x1
+ 2362 0001 11       		.uleb128 0x11
+ 2363 0002 01       		.byte	0x1
+ 2364 0003 25       		.uleb128 0x25
+ 2365 0004 0E       		.uleb128 0xe
+ 2366 0005 13       		.uleb128 0x13
+ 2367 0006 0B       		.uleb128 0xb
+ 2368 0007 03       		.uleb128 0x3
+ 2369 0008 0E       		.uleb128 0xe
+ 2370 0009 1B       		.uleb128 0x1b
+ 2371 000a 0E       		.uleb128 0xe
+ 2372 000b 55       		.uleb128 0x55
+ 2373 000c 17       		.uleb128 0x17
+ 2374 000d 11       		.uleb128 0x11
+ 2375 000e 01       		.uleb128 0x1
+ 2376 000f 10       		.uleb128 0x10
+ 2377 0010 17       		.uleb128 0x17
+ 2378 0011 00       		.byte	0
+ 2379 0012 00       		.byte	0
+ 2380 0013 02       		.uleb128 0x2
+ 2381 0014 24       		.uleb128 0x24
+ 2382 0015 00       		.byte	0
+ 2383 0016 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 52
+
+
+ 2384 0017 0B       		.uleb128 0xb
+ 2385 0018 3E       		.uleb128 0x3e
+ 2386 0019 0B       		.uleb128 0xb
+ 2387 001a 03       		.uleb128 0x3
+ 2388 001b 0E       		.uleb128 0xe
+ 2389 001c 00       		.byte	0
+ 2390 001d 00       		.byte	0
+ 2391 001e 03       		.uleb128 0x3
+ 2392 001f 16       		.uleb128 0x16
+ 2393 0020 00       		.byte	0
+ 2394 0021 03       		.uleb128 0x3
+ 2395 0022 0E       		.uleb128 0xe
+ 2396 0023 3A       		.uleb128 0x3a
+ 2397 0024 0B       		.uleb128 0xb
+ 2398 0025 3B       		.uleb128 0x3b
+ 2399 0026 0B       		.uleb128 0xb
+ 2400 0027 49       		.uleb128 0x49
+ 2401 0028 13       		.uleb128 0x13
+ 2402 0029 00       		.byte	0
+ 2403 002a 00       		.byte	0
+ 2404 002b 04       		.uleb128 0x4
+ 2405 002c 24       		.uleb128 0x24
+ 2406 002d 00       		.byte	0
+ 2407 002e 0B       		.uleb128 0xb
+ 2408 002f 0B       		.uleb128 0xb
+ 2409 0030 3E       		.uleb128 0x3e
+ 2410 0031 0B       		.uleb128 0xb
+ 2411 0032 03       		.uleb128 0x3
+ 2412 0033 08       		.uleb128 0x8
+ 2413 0034 00       		.byte	0
+ 2414 0035 00       		.byte	0
+ 2415 0036 05       		.uleb128 0x5
+ 2416 0037 0F       		.uleb128 0xf
+ 2417 0038 00       		.byte	0
+ 2418 0039 0B       		.uleb128 0xb
+ 2419 003a 0B       		.uleb128 0xb
+ 2420 003b 49       		.uleb128 0x49
+ 2421 003c 13       		.uleb128 0x13
+ 2422 003d 00       		.byte	0
+ 2423 003e 00       		.byte	0
+ 2424 003f 06       		.uleb128 0x6
+ 2425 0040 26       		.uleb128 0x26
+ 2426 0041 00       		.byte	0
+ 2427 0042 49       		.uleb128 0x49
+ 2428 0043 13       		.uleb128 0x13
+ 2429 0044 00       		.byte	0
+ 2430 0045 00       		.byte	0
+ 2431 0046 07       		.uleb128 0x7
+ 2432 0047 16       		.uleb128 0x16
+ 2433 0048 00       		.byte	0
+ 2434 0049 03       		.uleb128 0x3
+ 2435 004a 0E       		.uleb128 0xe
+ 2436 004b 3A       		.uleb128 0x3a
+ 2437 004c 0B       		.uleb128 0xb
+ 2438 004d 3B       		.uleb128 0x3b
+ 2439 004e 05       		.uleb128 0x5
+ 2440 004f 49       		.uleb128 0x49
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 53
+
+
+ 2441 0050 13       		.uleb128 0x13
+ 2442 0051 00       		.byte	0
+ 2443 0052 00       		.byte	0
+ 2444 0053 08       		.uleb128 0x8
+ 2445 0054 13       		.uleb128 0x13
+ 2446 0055 01       		.byte	0x1
+ 2447 0056 03       		.uleb128 0x3
+ 2448 0057 0E       		.uleb128 0xe
+ 2449 0058 0B       		.uleb128 0xb
+ 2450 0059 0B       		.uleb128 0xb
+ 2451 005a 3A       		.uleb128 0x3a
+ 2452 005b 0B       		.uleb128 0xb
+ 2453 005c 3B       		.uleb128 0x3b
+ 2454 005d 0B       		.uleb128 0xb
+ 2455 005e 01       		.uleb128 0x1
+ 2456 005f 13       		.uleb128 0x13
+ 2457 0060 00       		.byte	0
+ 2458 0061 00       		.byte	0
+ 2459 0062 09       		.uleb128 0x9
+ 2460 0063 0D       		.uleb128 0xd
+ 2461 0064 00       		.byte	0
+ 2462 0065 03       		.uleb128 0x3
+ 2463 0066 0E       		.uleb128 0xe
+ 2464 0067 3A       		.uleb128 0x3a
+ 2465 0068 0B       		.uleb128 0xb
+ 2466 0069 3B       		.uleb128 0x3b
+ 2467 006a 0B       		.uleb128 0xb
+ 2468 006b 49       		.uleb128 0x49
+ 2469 006c 13       		.uleb128 0x13
+ 2470 006d 38       		.uleb128 0x38
+ 2471 006e 0B       		.uleb128 0xb
+ 2472 006f 00       		.byte	0
+ 2473 0070 00       		.byte	0
+ 2474 0071 0A       		.uleb128 0xa
+ 2475 0072 15       		.uleb128 0x15
+ 2476 0073 01       		.byte	0x1
+ 2477 0074 27       		.uleb128 0x27
+ 2478 0075 19       		.uleb128 0x19
+ 2479 0076 49       		.uleb128 0x49
+ 2480 0077 13       		.uleb128 0x13
+ 2481 0078 01       		.uleb128 0x1
+ 2482 0079 13       		.uleb128 0x13
+ 2483 007a 00       		.byte	0
+ 2484 007b 00       		.byte	0
+ 2485 007c 0B       		.uleb128 0xb
+ 2486 007d 05       		.uleb128 0x5
+ 2487 007e 00       		.byte	0
+ 2488 007f 49       		.uleb128 0x49
+ 2489 0080 13       		.uleb128 0x13
+ 2490 0081 00       		.byte	0
+ 2491 0082 00       		.byte	0
+ 2492 0083 0C       		.uleb128 0xc
+ 2493 0084 2E       		.uleb128 0x2e
+ 2494 0085 00       		.byte	0
+ 2495 0086 03       		.uleb128 0x3
+ 2496 0087 0E       		.uleb128 0xe
+ 2497 0088 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 54
+
+
+ 2498 0089 0B       		.uleb128 0xb
+ 2499 008a 3B       		.uleb128 0x3b
+ 2500 008b 0B       		.uleb128 0xb
+ 2501 008c 49       		.uleb128 0x49
+ 2502 008d 13       		.uleb128 0x13
+ 2503 008e 20       		.uleb128 0x20
+ 2504 008f 0B       		.uleb128 0xb
+ 2505 0090 00       		.byte	0
+ 2506 0091 00       		.byte	0
+ 2507 0092 0D       		.uleb128 0xd
+ 2508 0093 2E       		.uleb128 0x2e
+ 2509 0094 01       		.byte	0x1
+ 2510 0095 03       		.uleb128 0x3
+ 2511 0096 0E       		.uleb128 0xe
+ 2512 0097 3A       		.uleb128 0x3a
+ 2513 0098 0B       		.uleb128 0xb
+ 2514 0099 3B       		.uleb128 0x3b
+ 2515 009a 0B       		.uleb128 0xb
+ 2516 009b 27       		.uleb128 0x27
+ 2517 009c 19       		.uleb128 0x19
+ 2518 009d 20       		.uleb128 0x20
+ 2519 009e 0B       		.uleb128 0xb
+ 2520 009f 01       		.uleb128 0x1
+ 2521 00a0 13       		.uleb128 0x13
+ 2522 00a1 00       		.byte	0
+ 2523 00a2 00       		.byte	0
+ 2524 00a3 0E       		.uleb128 0xe
+ 2525 00a4 05       		.uleb128 0x5
+ 2526 00a5 00       		.byte	0
+ 2527 00a6 03       		.uleb128 0x3
+ 2528 00a7 08       		.uleb128 0x8
+ 2529 00a8 3A       		.uleb128 0x3a
+ 2530 00a9 0B       		.uleb128 0xb
+ 2531 00aa 3B       		.uleb128 0x3b
+ 2532 00ab 0B       		.uleb128 0xb
+ 2533 00ac 49       		.uleb128 0x49
+ 2534 00ad 13       		.uleb128 0x13
+ 2535 00ae 00       		.byte	0
+ 2536 00af 00       		.byte	0
+ 2537 00b0 0F       		.uleb128 0xf
+ 2538 00b1 2E       		.uleb128 0x2e
+ 2539 00b2 01       		.byte	0x1
+ 2540 00b3 3F       		.uleb128 0x3f
+ 2541 00b4 19       		.uleb128 0x19
+ 2542 00b5 03       		.uleb128 0x3
+ 2543 00b6 0E       		.uleb128 0xe
+ 2544 00b7 3A       		.uleb128 0x3a
+ 2545 00b8 0B       		.uleb128 0xb
+ 2546 00b9 3B       		.uleb128 0x3b
+ 2547 00ba 0B       		.uleb128 0xb
+ 2548 00bb 27       		.uleb128 0x27
+ 2549 00bc 19       		.uleb128 0x19
+ 2550 00bd 49       		.uleb128 0x49
+ 2551 00be 13       		.uleb128 0x13
+ 2552 00bf 11       		.uleb128 0x11
+ 2553 00c0 01       		.uleb128 0x1
+ 2554 00c1 12       		.uleb128 0x12
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 55
+
+
+ 2555 00c2 06       		.uleb128 0x6
+ 2556 00c3 40       		.uleb128 0x40
+ 2557 00c4 18       		.uleb128 0x18
+ 2558 00c5 9742     		.uleb128 0x2117
+ 2559 00c7 19       		.uleb128 0x19
+ 2560 00c8 01       		.uleb128 0x1
+ 2561 00c9 13       		.uleb128 0x13
+ 2562 00ca 00       		.byte	0
+ 2563 00cb 00       		.byte	0
+ 2564 00cc 10       		.uleb128 0x10
+ 2565 00cd 05       		.uleb128 0x5
+ 2566 00ce 00       		.byte	0
+ 2567 00cf 03       		.uleb128 0x3
+ 2568 00d0 0E       		.uleb128 0xe
+ 2569 00d1 3A       		.uleb128 0x3a
+ 2570 00d2 0B       		.uleb128 0xb
+ 2571 00d3 3B       		.uleb128 0x3b
+ 2572 00d4 0B       		.uleb128 0xb
+ 2573 00d5 49       		.uleb128 0x49
+ 2574 00d6 13       		.uleb128 0x13
+ 2575 00d7 02       		.uleb128 0x2
+ 2576 00d8 17       		.uleb128 0x17
+ 2577 00d9 00       		.byte	0
+ 2578 00da 00       		.byte	0
+ 2579 00db 11       		.uleb128 0x11
+ 2580 00dc 0B       		.uleb128 0xb
+ 2581 00dd 01       		.byte	0x1
+ 2582 00de 11       		.uleb128 0x11
+ 2583 00df 01       		.uleb128 0x1
+ 2584 00e0 12       		.uleb128 0x12
+ 2585 00e1 06       		.uleb128 0x6
+ 2586 00e2 01       		.uleb128 0x1
+ 2587 00e3 13       		.uleb128 0x13
+ 2588 00e4 00       		.byte	0
+ 2589 00e5 00       		.byte	0
+ 2590 00e6 12       		.uleb128 0x12
+ 2591 00e7 34       		.uleb128 0x34
+ 2592 00e8 00       		.byte	0
+ 2593 00e9 03       		.uleb128 0x3
+ 2594 00ea 08       		.uleb128 0x8
+ 2595 00eb 3A       		.uleb128 0x3a
+ 2596 00ec 0B       		.uleb128 0xb
+ 2597 00ed 3B       		.uleb128 0x3b
+ 2598 00ee 0B       		.uleb128 0xb
+ 2599 00ef 49       		.uleb128 0x49
+ 2600 00f0 13       		.uleb128 0x13
+ 2601 00f1 02       		.uleb128 0x2
+ 2602 00f2 17       		.uleb128 0x17
+ 2603 00f3 00       		.byte	0
+ 2604 00f4 00       		.byte	0
+ 2605 00f5 13       		.uleb128 0x13
+ 2606 00f6 898201   		.uleb128 0x4109
+ 2607 00f9 00       		.byte	0
+ 2608 00fa 11       		.uleb128 0x11
+ 2609 00fb 01       		.uleb128 0x1
+ 2610 00fc 31       		.uleb128 0x31
+ 2611 00fd 13       		.uleb128 0x13
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 56
+
+
+ 2612 00fe 00       		.byte	0
+ 2613 00ff 00       		.byte	0
+ 2614 0100 14       		.uleb128 0x14
+ 2615 0101 898201   		.uleb128 0x4109
+ 2616 0104 01       		.byte	0x1
+ 2617 0105 11       		.uleb128 0x11
+ 2618 0106 01       		.uleb128 0x1
+ 2619 0107 31       		.uleb128 0x31
+ 2620 0108 13       		.uleb128 0x13
+ 2621 0109 00       		.byte	0
+ 2622 010a 00       		.byte	0
+ 2623 010b 15       		.uleb128 0x15
+ 2624 010c 8A8201   		.uleb128 0x410a
+ 2625 010f 00       		.byte	0
+ 2626 0110 02       		.uleb128 0x2
+ 2627 0111 18       		.uleb128 0x18
+ 2628 0112 9142     		.uleb128 0x2111
+ 2629 0114 18       		.uleb128 0x18
+ 2630 0115 00       		.byte	0
+ 2631 0116 00       		.byte	0
+ 2632 0117 16       		.uleb128 0x16
+ 2633 0118 898201   		.uleb128 0x4109
+ 2634 011b 01       		.byte	0x1
+ 2635 011c 11       		.uleb128 0x11
+ 2636 011d 01       		.uleb128 0x1
+ 2637 011e 31       		.uleb128 0x31
+ 2638 011f 13       		.uleb128 0x13
+ 2639 0120 01       		.uleb128 0x1
+ 2640 0121 13       		.uleb128 0x13
+ 2641 0122 00       		.byte	0
+ 2642 0123 00       		.byte	0
+ 2643 0124 17       		.uleb128 0x17
+ 2644 0125 1D       		.uleb128 0x1d
+ 2645 0126 00       		.byte	0
+ 2646 0127 31       		.uleb128 0x31
+ 2647 0128 13       		.uleb128 0x13
+ 2648 0129 11       		.uleb128 0x11
+ 2649 012a 01       		.uleb128 0x1
+ 2650 012b 12       		.uleb128 0x12
+ 2651 012c 06       		.uleb128 0x6
+ 2652 012d 58       		.uleb128 0x58
+ 2653 012e 0B       		.uleb128 0xb
+ 2654 012f 59       		.uleb128 0x59
+ 2655 0130 0B       		.uleb128 0xb
+ 2656 0131 00       		.byte	0
+ 2657 0132 00       		.byte	0
+ 2658 0133 18       		.uleb128 0x18
+ 2659 0134 1D       		.uleb128 0x1d
+ 2660 0135 01       		.byte	0x1
+ 2661 0136 31       		.uleb128 0x31
+ 2662 0137 13       		.uleb128 0x13
+ 2663 0138 11       		.uleb128 0x11
+ 2664 0139 01       		.uleb128 0x1
+ 2665 013a 12       		.uleb128 0x12
+ 2666 013b 06       		.uleb128 0x6
+ 2667 013c 58       		.uleb128 0x58
+ 2668 013d 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 57
+
+
+ 2669 013e 59       		.uleb128 0x59
+ 2670 013f 0B       		.uleb128 0xb
+ 2671 0140 01       		.uleb128 0x1
+ 2672 0141 13       		.uleb128 0x13
+ 2673 0142 00       		.byte	0
+ 2674 0143 00       		.byte	0
+ 2675 0144 19       		.uleb128 0x19
+ 2676 0145 05       		.uleb128 0x5
+ 2677 0146 00       		.byte	0
+ 2678 0147 31       		.uleb128 0x31
+ 2679 0148 13       		.uleb128 0x13
+ 2680 0149 02       		.uleb128 0x2
+ 2681 014a 17       		.uleb128 0x17
+ 2682 014b 00       		.byte	0
+ 2683 014c 00       		.byte	0
+ 2684 014d 1A       		.uleb128 0x1a
+ 2685 014e 34       		.uleb128 0x34
+ 2686 014f 00       		.byte	0
+ 2687 0150 03       		.uleb128 0x3
+ 2688 0151 0E       		.uleb128 0xe
+ 2689 0152 3A       		.uleb128 0x3a
+ 2690 0153 0B       		.uleb128 0xb
+ 2691 0154 3B       		.uleb128 0x3b
+ 2692 0155 0B       		.uleb128 0xb
+ 2693 0156 49       		.uleb128 0x49
+ 2694 0157 13       		.uleb128 0x13
+ 2695 0158 02       		.uleb128 0x2
+ 2696 0159 17       		.uleb128 0x17
+ 2697 015a 00       		.byte	0
+ 2698 015b 00       		.byte	0
+ 2699 015c 1B       		.uleb128 0x1b
+ 2700 015d 2E       		.uleb128 0x2e
+ 2701 015e 01       		.byte	0x1
+ 2702 015f 3F       		.uleb128 0x3f
+ 2703 0160 19       		.uleb128 0x19
+ 2704 0161 03       		.uleb128 0x3
+ 2705 0162 0E       		.uleb128 0xe
+ 2706 0163 3A       		.uleb128 0x3a
+ 2707 0164 0B       		.uleb128 0xb
+ 2708 0165 3B       		.uleb128 0x3b
+ 2709 0166 0B       		.uleb128 0xb
+ 2710 0167 27       		.uleb128 0x27
+ 2711 0168 19       		.uleb128 0x19
+ 2712 0169 11       		.uleb128 0x11
+ 2713 016a 01       		.uleb128 0x1
+ 2714 016b 12       		.uleb128 0x12
+ 2715 016c 06       		.uleb128 0x6
+ 2716 016d 40       		.uleb128 0x40
+ 2717 016e 18       		.uleb128 0x18
+ 2718 016f 9742     		.uleb128 0x2117
+ 2719 0171 19       		.uleb128 0x19
+ 2720 0172 01       		.uleb128 0x1
+ 2721 0173 13       		.uleb128 0x13
+ 2722 0174 00       		.byte	0
+ 2723 0175 00       		.byte	0
+ 2724 0176 1C       		.uleb128 0x1c
+ 2725 0177 05       		.uleb128 0x5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 58
+
+
+ 2726 0178 00       		.byte	0
+ 2727 0179 03       		.uleb128 0x3
+ 2728 017a 08       		.uleb128 0x8
+ 2729 017b 3A       		.uleb128 0x3a
+ 2730 017c 0B       		.uleb128 0xb
+ 2731 017d 3B       		.uleb128 0x3b
+ 2732 017e 0B       		.uleb128 0xb
+ 2733 017f 49       		.uleb128 0x49
+ 2734 0180 13       		.uleb128 0x13
+ 2735 0181 02       		.uleb128 0x2
+ 2736 0182 18       		.uleb128 0x18
+ 2737 0183 00       		.byte	0
+ 2738 0184 00       		.byte	0
+ 2739 0185 1D       		.uleb128 0x1d
+ 2740 0186 0B       		.uleb128 0xb
+ 2741 0187 01       		.byte	0x1
+ 2742 0188 11       		.uleb128 0x11
+ 2743 0189 01       		.uleb128 0x1
+ 2744 018a 12       		.uleb128 0x12
+ 2745 018b 06       		.uleb128 0x6
+ 2746 018c 00       		.byte	0
+ 2747 018d 00       		.byte	0
+ 2748 018e 1E       		.uleb128 0x1e
+ 2749 018f 2E       		.uleb128 0x2e
+ 2750 0190 01       		.byte	0x1
+ 2751 0191 03       		.uleb128 0x3
+ 2752 0192 0E       		.uleb128 0xe
+ 2753 0193 3A       		.uleb128 0x3a
+ 2754 0194 0B       		.uleb128 0xb
+ 2755 0195 3B       		.uleb128 0x3b
+ 2756 0196 0B       		.uleb128 0xb
+ 2757 0197 27       		.uleb128 0x27
+ 2758 0198 19       		.uleb128 0x19
+ 2759 0199 49       		.uleb128 0x49
+ 2760 019a 13       		.uleb128 0x13
+ 2761 019b 20       		.uleb128 0x20
+ 2762 019c 0B       		.uleb128 0xb
+ 2763 019d 01       		.uleb128 0x1
+ 2764 019e 13       		.uleb128 0x13
+ 2765 019f 00       		.byte	0
+ 2766 01a0 00       		.byte	0
+ 2767 01a1 1F       		.uleb128 0x1f
+ 2768 01a2 34       		.uleb128 0x34
+ 2769 01a3 00       		.byte	0
+ 2770 01a4 03       		.uleb128 0x3
+ 2771 01a5 08       		.uleb128 0x8
+ 2772 01a6 3A       		.uleb128 0x3a
+ 2773 01a7 0B       		.uleb128 0xb
+ 2774 01a8 3B       		.uleb128 0x3b
+ 2775 01a9 0B       		.uleb128 0xb
+ 2776 01aa 49       		.uleb128 0x49
+ 2777 01ab 13       		.uleb128 0x13
+ 2778 01ac 00       		.byte	0
+ 2779 01ad 00       		.byte	0
+ 2780 01ae 20       		.uleb128 0x20
+ 2781 01af 34       		.uleb128 0x34
+ 2782 01b0 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 59
+
+
+ 2783 01b1 03       		.uleb128 0x3
+ 2784 01b2 0E       		.uleb128 0xe
+ 2785 01b3 3A       		.uleb128 0x3a
+ 2786 01b4 0B       		.uleb128 0xb
+ 2787 01b5 3B       		.uleb128 0x3b
+ 2788 01b6 0B       		.uleb128 0xb
+ 2789 01b7 49       		.uleb128 0x49
+ 2790 01b8 13       		.uleb128 0x13
+ 2791 01b9 00       		.byte	0
+ 2792 01ba 00       		.byte	0
+ 2793 01bb 21       		.uleb128 0x21
+ 2794 01bc 05       		.uleb128 0x5
+ 2795 01bd 00       		.byte	0
+ 2796 01be 03       		.uleb128 0x3
+ 2797 01bf 08       		.uleb128 0x8
+ 2798 01c0 3A       		.uleb128 0x3a
+ 2799 01c1 0B       		.uleb128 0xb
+ 2800 01c2 3B       		.uleb128 0x3b
+ 2801 01c3 0B       		.uleb128 0xb
+ 2802 01c4 49       		.uleb128 0x49
+ 2803 01c5 13       		.uleb128 0x13
+ 2804 01c6 02       		.uleb128 0x2
+ 2805 01c7 17       		.uleb128 0x17
+ 2806 01c8 00       		.byte	0
+ 2807 01c9 00       		.byte	0
+ 2808 01ca 22       		.uleb128 0x22
+ 2809 01cb 34       		.uleb128 0x34
+ 2810 01cc 00       		.byte	0
+ 2811 01cd 03       		.uleb128 0x3
+ 2812 01ce 0E       		.uleb128 0xe
+ 2813 01cf 3A       		.uleb128 0x3a
+ 2814 01d0 0B       		.uleb128 0xb
+ 2815 01d1 3B       		.uleb128 0x3b
+ 2816 01d2 0B       		.uleb128 0xb
+ 2817 01d3 49       		.uleb128 0x49
+ 2818 01d4 13       		.uleb128 0x13
+ 2819 01d5 02       		.uleb128 0x2
+ 2820 01d6 18       		.uleb128 0x18
+ 2821 01d7 00       		.byte	0
+ 2822 01d8 00       		.byte	0
+ 2823 01d9 23       		.uleb128 0x23
+ 2824 01da 34       		.uleb128 0x34
+ 2825 01db 00       		.byte	0
+ 2826 01dc 31       		.uleb128 0x31
+ 2827 01dd 13       		.uleb128 0x13
+ 2828 01de 02       		.uleb128 0x2
+ 2829 01df 17       		.uleb128 0x17
+ 2830 01e0 00       		.byte	0
+ 2831 01e1 00       		.byte	0
+ 2832 01e2 24       		.uleb128 0x24
+ 2833 01e3 34       		.uleb128 0x34
+ 2834 01e4 00       		.byte	0
+ 2835 01e5 31       		.uleb128 0x31
+ 2836 01e6 13       		.uleb128 0x13
+ 2837 01e7 02       		.uleb128 0x2
+ 2838 01e8 18       		.uleb128 0x18
+ 2839 01e9 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 60
+
+
+ 2840 01ea 00       		.byte	0
+ 2841 01eb 25       		.uleb128 0x25
+ 2842 01ec 0B       		.uleb128 0xb
+ 2843 01ed 01       		.byte	0x1
+ 2844 01ee 55       		.uleb128 0x55
+ 2845 01ef 17       		.uleb128 0x17
+ 2846 01f0 01       		.uleb128 0x1
+ 2847 01f1 13       		.uleb128 0x13
+ 2848 01f2 00       		.byte	0
+ 2849 01f3 00       		.byte	0
+ 2850 01f4 26       		.uleb128 0x26
+ 2851 01f5 898201   		.uleb128 0x4109
+ 2852 01f8 01       		.byte	0x1
+ 2853 01f9 11       		.uleb128 0x11
+ 2854 01fa 01       		.uleb128 0x1
+ 2855 01fb 9342     		.uleb128 0x2113
+ 2856 01fd 18       		.uleb128 0x18
+ 2857 01fe 01       		.uleb128 0x1
+ 2858 01ff 13       		.uleb128 0x13
+ 2859 0200 00       		.byte	0
+ 2860 0201 00       		.byte	0
+ 2861 0202 27       		.uleb128 0x27
+ 2862 0203 01       		.uleb128 0x1
+ 2863 0204 01       		.byte	0x1
+ 2864 0205 49       		.uleb128 0x49
+ 2865 0206 13       		.uleb128 0x13
+ 2866 0207 01       		.uleb128 0x1
+ 2867 0208 13       		.uleb128 0x13
+ 2868 0209 00       		.byte	0
+ 2869 020a 00       		.byte	0
+ 2870 020b 28       		.uleb128 0x28
+ 2871 020c 21       		.uleb128 0x21
+ 2872 020d 00       		.byte	0
+ 2873 020e 49       		.uleb128 0x49
+ 2874 020f 13       		.uleb128 0x13
+ 2875 0210 2F       		.uleb128 0x2f
+ 2876 0211 0B       		.uleb128 0xb
+ 2877 0212 00       		.byte	0
+ 2878 0213 00       		.byte	0
+ 2879 0214 29       		.uleb128 0x29
+ 2880 0215 2E       		.uleb128 0x2e
+ 2881 0216 01       		.byte	0x1
+ 2882 0217 3F       		.uleb128 0x3f
+ 2883 0218 19       		.uleb128 0x19
+ 2884 0219 03       		.uleb128 0x3
+ 2885 021a 08       		.uleb128 0x8
+ 2886 021b 3A       		.uleb128 0x3a
+ 2887 021c 0B       		.uleb128 0xb
+ 2888 021d 3B       		.uleb128 0x3b
+ 2889 021e 0B       		.uleb128 0xb
+ 2890 021f 27       		.uleb128 0x27
+ 2891 0220 19       		.uleb128 0x19
+ 2892 0221 11       		.uleb128 0x11
+ 2893 0222 01       		.uleb128 0x1
+ 2894 0223 12       		.uleb128 0x12
+ 2895 0224 06       		.uleb128 0x6
+ 2896 0225 40       		.uleb128 0x40
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 61
+
+
+ 2897 0226 18       		.uleb128 0x18
+ 2898 0227 9742     		.uleb128 0x2117
+ 2899 0229 19       		.uleb128 0x19
+ 2900 022a 01       		.uleb128 0x1
+ 2901 022b 13       		.uleb128 0x13
+ 2902 022c 00       		.byte	0
+ 2903 022d 00       		.byte	0
+ 2904 022e 2A       		.uleb128 0x2a
+ 2905 022f 34       		.uleb128 0x34
+ 2906 0230 00       		.byte	0
+ 2907 0231 03       		.uleb128 0x3
+ 2908 0232 0E       		.uleb128 0xe
+ 2909 0233 3A       		.uleb128 0x3a
+ 2910 0234 0B       		.uleb128 0xb
+ 2911 0235 3B       		.uleb128 0x3b
+ 2912 0236 0B       		.uleb128 0xb
+ 2913 0237 49       		.uleb128 0x49
+ 2914 0238 13       		.uleb128 0x13
+ 2915 0239 1C       		.uleb128 0x1c
+ 2916 023a 0B       		.uleb128 0xb
+ 2917 023b 00       		.byte	0
+ 2918 023c 00       		.byte	0
+ 2919 023d 2B       		.uleb128 0x2b
+ 2920 023e 34       		.uleb128 0x34
+ 2921 023f 00       		.byte	0
+ 2922 0240 03       		.uleb128 0x3
+ 2923 0241 0E       		.uleb128 0xe
+ 2924 0242 3A       		.uleb128 0x3a
+ 2925 0243 0B       		.uleb128 0xb
+ 2926 0244 3B       		.uleb128 0x3b
+ 2927 0245 05       		.uleb128 0x5
+ 2928 0246 49       		.uleb128 0x49
+ 2929 0247 13       		.uleb128 0x13
+ 2930 0248 3F       		.uleb128 0x3f
+ 2931 0249 19       		.uleb128 0x19
+ 2932 024a 3C       		.uleb128 0x3c
+ 2933 024b 19       		.uleb128 0x19
+ 2934 024c 00       		.byte	0
+ 2935 024d 00       		.byte	0
+ 2936 024e 2C       		.uleb128 0x2c
+ 2937 024f 35       		.uleb128 0x35
+ 2938 0250 00       		.byte	0
+ 2939 0251 49       		.uleb128 0x49
+ 2940 0252 13       		.uleb128 0x13
+ 2941 0253 00       		.byte	0
+ 2942 0254 00       		.byte	0
+ 2943 0255 2D       		.uleb128 0x2d
+ 2944 0256 34       		.uleb128 0x34
+ 2945 0257 00       		.byte	0
+ 2946 0258 03       		.uleb128 0x3
+ 2947 0259 0E       		.uleb128 0xe
+ 2948 025a 3A       		.uleb128 0x3a
+ 2949 025b 0B       		.uleb128 0xb
+ 2950 025c 3B       		.uleb128 0x3b
+ 2951 025d 0B       		.uleb128 0xb
+ 2952 025e 49       		.uleb128 0x49
+ 2953 025f 13       		.uleb128 0x13
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 62
+
+
+ 2954 0260 3F       		.uleb128 0x3f
+ 2955 0261 19       		.uleb128 0x19
+ 2956 0262 02       		.uleb128 0x2
+ 2957 0263 18       		.uleb128 0x18
+ 2958 0264 00       		.byte	0
+ 2959 0265 00       		.byte	0
+ 2960 0266 2E       		.uleb128 0x2e
+ 2961 0267 34       		.uleb128 0x34
+ 2962 0268 00       		.byte	0
+ 2963 0269 03       		.uleb128 0x3
+ 2964 026a 08       		.uleb128 0x8
+ 2965 026b 3A       		.uleb128 0x3a
+ 2966 026c 0B       		.uleb128 0xb
+ 2967 026d 3B       		.uleb128 0x3b
+ 2968 026e 0B       		.uleb128 0xb
+ 2969 026f 49       		.uleb128 0x49
+ 2970 0270 13       		.uleb128 0x13
+ 2971 0271 3F       		.uleb128 0x3f
+ 2972 0272 19       		.uleb128 0x19
+ 2973 0273 02       		.uleb128 0x2
+ 2974 0274 18       		.uleb128 0x18
+ 2975 0275 00       		.byte	0
+ 2976 0276 00       		.byte	0
+ 2977 0277 2F       		.uleb128 0x2f
+ 2978 0278 2E       		.uleb128 0x2e
+ 2979 0279 00       		.byte	0
+ 2980 027a 3F       		.uleb128 0x3f
+ 2981 027b 19       		.uleb128 0x19
+ 2982 027c 3C       		.uleb128 0x3c
+ 2983 027d 19       		.uleb128 0x19
+ 2984 027e 6E       		.uleb128 0x6e
+ 2985 027f 0E       		.uleb128 0xe
+ 2986 0280 03       		.uleb128 0x3
+ 2987 0281 0E       		.uleb128 0xe
+ 2988 0282 3A       		.uleb128 0x3a
+ 2989 0283 0B       		.uleb128 0xb
+ 2990 0284 3B       		.uleb128 0x3b
+ 2991 0285 0B       		.uleb128 0xb
+ 2992 0286 00       		.byte	0
+ 2993 0287 00       		.byte	0
+ 2994 0288 30       		.uleb128 0x30
+ 2995 0289 2E       		.uleb128 0x2e
+ 2996 028a 00       		.byte	0
+ 2997 028b 3F       		.uleb128 0x3f
+ 2998 028c 19       		.uleb128 0x19
+ 2999 028d 3C       		.uleb128 0x3c
+ 3000 028e 19       		.uleb128 0x19
+ 3001 028f 6E       		.uleb128 0x6e
+ 3002 0290 0E       		.uleb128 0xe
+ 3003 0291 03       		.uleb128 0x3
+ 3004 0292 0E       		.uleb128 0xe
+ 3005 0293 3A       		.uleb128 0x3a
+ 3006 0294 0B       		.uleb128 0xb
+ 3007 0295 3B       		.uleb128 0x3b
+ 3008 0296 05       		.uleb128 0x5
+ 3009 0297 00       		.byte	0
+ 3010 0298 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 63
+
+
+ 3011 0299 00       		.byte	0
+ 3012              		.section	.debug_loc,"",%progbits
+ 3013              	.Ldebug_loc0:
+ 3014              	.LLST0:
+ 3015 0000 00000000 		.4byte	.LVL0
+ 3016 0004 08000000 		.4byte	.LVL1
+ 3017 0008 0100     		.2byte	0x1
+ 3018 000a 50       		.byte	0x50
+ 3019 000b 08000000 		.4byte	.LVL1
+ 3020 000f 24000000 		.4byte	.LFE71
+ 3021 0013 0100     		.2byte	0x1
+ 3022 0015 55       		.byte	0x55
+ 3023 0016 00000000 		.4byte	0
+ 3024 001a 00000000 		.4byte	0
+ 3025              	.LLST1:
+ 3026 001e 00000000 		.4byte	.LVL0
+ 3027 0022 0B000000 		.4byte	.LVL2-1
+ 3028 0026 0100     		.2byte	0x1
+ 3029 0028 51       		.byte	0x51
+ 3030 0029 0B000000 		.4byte	.LVL2-1
+ 3031 002d 24000000 		.4byte	.LFE71
+ 3032 0031 0100     		.2byte	0x1
+ 3033 0033 56       		.byte	0x56
+ 3034 0034 00000000 		.4byte	0
+ 3035 0038 00000000 		.4byte	0
+ 3036              	.LLST2:
+ 3037 003c 0C000000 		.4byte	.LVL2
+ 3038 0040 10000000 		.4byte	.LVL3
+ 3039 0044 0200     		.2byte	0x2
+ 3040 0046 30       		.byte	0x30
+ 3041 0047 9F       		.byte	0x9f
+ 3042 0048 10000000 		.4byte	.LVL3
+ 3043 004c 1A000000 		.4byte	.LVL5
+ 3044 0050 0100     		.2byte	0x1
+ 3045 0052 54       		.byte	0x54
+ 3046 0053 1C000000 		.4byte	.LVL6
+ 3047 0057 24000000 		.4byte	.LFE71
+ 3048 005b 0100     		.2byte	0x1
+ 3049 005d 54       		.byte	0x54
+ 3050 005e 00000000 		.4byte	0
+ 3051 0062 00000000 		.4byte	0
+ 3052              	.LLST3:
+ 3053 0066 00000000 		.4byte	.LVL7
+ 3054 006a 06000000 		.4byte	.LVL9
+ 3055 006e 0100     		.2byte	0x1
+ 3056 0070 50       		.byte	0x50
+ 3057 0071 06000000 		.4byte	.LVL9
+ 3058 0075 64000000 		.4byte	.LFE72
+ 3059 0079 0400     		.2byte	0x4
+ 3060 007b F3       		.byte	0xf3
+ 3061 007c 01       		.uleb128 0x1
+ 3062 007d 50       		.byte	0x50
+ 3063 007e 9F       		.byte	0x9f
+ 3064 007f 00000000 		.4byte	0
+ 3065 0083 00000000 		.4byte	0
+ 3066              	.LLST4:
+ 3067 0087 00000000 		.4byte	.LVL7
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 64
+
+
+ 3068 008b 06000000 		.4byte	.LVL9
+ 3069 008f 0100     		.2byte	0x1
+ 3070 0091 51       		.byte	0x51
+ 3071 0092 06000000 		.4byte	.LVL9
+ 3072 0096 64000000 		.4byte	.LFE72
+ 3073 009a 0400     		.2byte	0x4
+ 3074 009c F3       		.byte	0xf3
+ 3075 009d 01       		.uleb128 0x1
+ 3076 009e 51       		.byte	0x51
+ 3077 009f 9F       		.byte	0x9f
+ 3078 00a0 00000000 		.4byte	0
+ 3079 00a4 00000000 		.4byte	0
+ 3080              	.LLST5:
+ 3081 00a8 02000000 		.4byte	.LVL8
+ 3082 00ac 06000000 		.4byte	.LVL9
+ 3083 00b0 0600     		.2byte	0x6
+ 3084 00b2 03       		.byte	0x3
+ 3085 00b3 00000000 		.4byte	HelpHeader
+ 3086 00b7 9F       		.byte	0x9f
+ 3087 00b8 06000000 		.4byte	.LVL9
+ 3088 00bc 1C000000 		.4byte	.LVL13
+ 3089 00c0 0100     		.2byte	0x1
+ 3090 00c2 54       		.byte	0x54
+ 3091 00c3 00000000 		.4byte	0
+ 3092 00c7 00000000 		.4byte	0
+ 3093              	.LLST6:
+ 3094 00cb 1E000000 		.4byte	.LVL14
+ 3095 00cf 58000000 		.4byte	.LVL24
+ 3096 00d3 0100     		.2byte	0x1
+ 3097 00d5 54       		.byte	0x54
+ 3098 00d6 00000000 		.4byte	0
+ 3099 00da 00000000 		.4byte	0
+ 3100              	.LLST7:
+ 3101 00de 1E000000 		.4byte	.LVL14
+ 3102 00e2 4E000000 		.4byte	.LVL22
+ 3103 00e6 0100     		.2byte	0x1
+ 3104 00e8 55       		.byte	0x55
+ 3105 00e9 50000000 		.4byte	.LVL23
+ 3106 00ed 58000000 		.4byte	.LVL24
+ 3107 00f1 0100     		.2byte	0x1
+ 3108 00f3 55       		.byte	0x55
+ 3109 00f4 00000000 		.4byte	0
+ 3110 00f8 00000000 		.4byte	0
+ 3111              	.LLST8:
+ 3112 00fc 00000000 		.4byte	.LVL25
+ 3113 0100 08000000 		.4byte	.LVL26
+ 3114 0104 0100     		.2byte	0x1
+ 3115 0106 50       		.byte	0x50
+ 3116 0107 08000000 		.4byte	.LVL26
+ 3117 010b 24000000 		.4byte	.LVL30
+ 3118 010f 0400     		.2byte	0x4
+ 3119 0111 F3       		.byte	0xf3
+ 3120 0112 01       		.uleb128 0x1
+ 3121 0113 50       		.byte	0x50
+ 3122 0114 9F       		.byte	0x9f
+ 3123 0115 24000000 		.4byte	.LVL30
+ 3124 0119 2A000000 		.4byte	.LVL32
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 65
+
+
+ 3125 011d 0100     		.2byte	0x1
+ 3126 011f 50       		.byte	0x50
+ 3127 0120 2A000000 		.4byte	.LVL32
+ 3128 0124 70000000 		.4byte	.LFE73
+ 3129 0128 0400     		.2byte	0x4
+ 3130 012a F3       		.byte	0xf3
+ 3131 012b 01       		.uleb128 0x1
+ 3132 012c 50       		.byte	0x50
+ 3133 012d 9F       		.byte	0x9f
+ 3134 012e 00000000 		.4byte	0
+ 3135 0132 00000000 		.4byte	0
+ 3136              	.LLST9:
+ 3137 0136 00000000 		.4byte	.LVL25
+ 3138 013a 0B000000 		.4byte	.LVL27-1
+ 3139 013e 0100     		.2byte	0x1
+ 3140 0140 51       		.byte	0x51
+ 3141 0141 0B000000 		.4byte	.LVL27-1
+ 3142 0145 24000000 		.4byte	.LVL30
+ 3143 0149 0400     		.2byte	0x4
+ 3144 014b F3       		.byte	0xf3
+ 3145 014c 01       		.uleb128 0x1
+ 3146 014d 51       		.byte	0x51
+ 3147 014e 9F       		.byte	0x9f
+ 3148 014f 24000000 		.4byte	.LVL30
+ 3149 0153 28000000 		.4byte	.LVL31
+ 3150 0157 0100     		.2byte	0x1
+ 3151 0159 51       		.byte	0x51
+ 3152 015a 28000000 		.4byte	.LVL31
+ 3153 015e 70000000 		.4byte	.LFE73
+ 3154 0162 0400     		.2byte	0x4
+ 3155 0164 F3       		.byte	0xf3
+ 3156 0165 01       		.uleb128 0x1
+ 3157 0166 51       		.byte	0x51
+ 3158 0167 9F       		.byte	0x9f
+ 3159 0168 00000000 		.4byte	0
+ 3160 016c 00000000 		.4byte	0
+ 3161              	.LLST10:
+ 3162 0170 30000000 		.4byte	.LVL34
+ 3163 0174 38000000 		.4byte	.LVL35
+ 3164 0178 0200     		.2byte	0x2
+ 3165 017a 30       		.byte	0x30
+ 3166 017b 9F       		.byte	0x9f
+ 3167 017c 00000000 		.4byte	0
+ 3168 0180 00000000 		.4byte	0
+ 3169              	.LLST11:
+ 3170 0184 42000000 		.4byte	.LVL37
+ 3171 0188 4A000000 		.4byte	.LVL38
+ 3172 018c 0200     		.2byte	0x2
+ 3173 018e 31       		.byte	0x31
+ 3174 018f 9F       		.byte	0x9f
+ 3175 0190 00000000 		.4byte	0
+ 3176 0194 00000000 		.4byte	0
+ 3177              	.LLST12:
+ 3178 0198 00000000 		.4byte	.LVL40
+ 3179 019c 05000000 		.4byte	.LVL41-1
+ 3180 01a0 0100     		.2byte	0x1
+ 3181 01a2 50       		.byte	0x50
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 66
+
+
+ 3182 01a3 05000000 		.4byte	.LVL41-1
+ 3183 01a7 24000000 		.4byte	.LFE74
+ 3184 01ab 0400     		.2byte	0x4
+ 3185 01ad F3       		.byte	0xf3
+ 3186 01ae 01       		.uleb128 0x1
+ 3187 01af 50       		.byte	0x50
+ 3188 01b0 9F       		.byte	0x9f
+ 3189 01b1 00000000 		.4byte	0
+ 3190 01b5 00000000 		.4byte	0
+ 3191              	.LLST13:
+ 3192 01b9 00000000 		.4byte	.LVL40
+ 3193 01bd 05000000 		.4byte	.LVL41-1
+ 3194 01c1 0100     		.2byte	0x1
+ 3195 01c3 51       		.byte	0x51
+ 3196 01c4 05000000 		.4byte	.LVL41-1
+ 3197 01c8 24000000 		.4byte	.LFE74
+ 3198 01cc 0400     		.2byte	0x4
+ 3199 01ce F3       		.byte	0xf3
+ 3200 01cf 01       		.uleb128 0x1
+ 3201 01d0 51       		.byte	0x51
+ 3202 01d1 9F       		.byte	0x9f
+ 3203 01d2 00000000 		.4byte	0
+ 3204 01d6 00000000 		.4byte	0
+ 3205              	.LLST14:
+ 3206 01da 06000000 		.4byte	.LVL41
+ 3207 01de 0E000000 		.4byte	.LVL42
+ 3208 01e2 0100     		.2byte	0x1
+ 3209 01e4 50       		.byte	0x50
+ 3210 01e5 00000000 		.4byte	0
+ 3211 01e9 00000000 		.4byte	0
+ 3212              	.LLST15:
+ 3213 01ed 00000000 		.4byte	.LVL45
+ 3214 01f1 04000000 		.4byte	.LVL46
+ 3215 01f5 0200     		.2byte	0x2
+ 3216 01f7 30       		.byte	0x30
+ 3217 01f8 9F       		.byte	0x9f
+ 3218 01f9 04000000 		.4byte	.LVL46
+ 3219 01fd 0C000000 		.4byte	.LVL47
+ 3220 0201 0100     		.2byte	0x1
+ 3221 0203 53       		.byte	0x53
+ 3222 0204 0E000000 		.4byte	.LVL48
+ 3223 0208 16000000 		.4byte	.LVL49
+ 3224 020c 0100     		.2byte	0x1
+ 3225 020e 53       		.byte	0x53
+ 3226 020f 00000000 		.4byte	0
+ 3227 0213 00000000 		.4byte	0
+ 3228              	.LLST16:
+ 3229 0217 00000000 		.4byte	.LVL51
+ 3230 021b 0A000000 		.4byte	.LVL52
+ 3231 021f 0100     		.2byte	0x1
+ 3232 0221 50       		.byte	0x50
+ 3233 0222 0A000000 		.4byte	.LVL52
+ 3234 0226 12000000 		.4byte	.LVL54
+ 3235 022a 0400     		.2byte	0x4
+ 3236 022c F3       		.byte	0xf3
+ 3237 022d 01       		.uleb128 0x1
+ 3238 022e 50       		.byte	0x50
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 67
+
+
+ 3239 022f 9F       		.byte	0x9f
+ 3240 0230 12000000 		.4byte	.LVL54
+ 3241 0234 1A000000 		.4byte	.LVL55
+ 3242 0238 0100     		.2byte	0x1
+ 3243 023a 50       		.byte	0x50
+ 3244 023b 1A000000 		.4byte	.LVL55
+ 3245 023f A8010000 		.4byte	.LFE70
+ 3246 0243 0400     		.2byte	0x4
+ 3247 0245 F3       		.byte	0xf3
+ 3248 0246 01       		.uleb128 0x1
+ 3249 0247 50       		.byte	0x50
+ 3250 0248 9F       		.byte	0x9f
+ 3251 0249 00000000 		.4byte	0
+ 3252 024d 00000000 		.4byte	0
+ 3253              	.LLST17:
+ 3254 0251 12000000 		.4byte	.LVL54
+ 3255 0255 A6000000 		.4byte	.LVL68
+ 3256 0259 0200     		.2byte	0x2
+ 3257 025b 30       		.byte	0x30
+ 3258 025c 9F       		.byte	0x9f
+ 3259 025d A6000000 		.4byte	.LVL68
+ 3260 0261 A8000000 		.4byte	.LVL69
+ 3261 0265 0100     		.2byte	0x1
+ 3262 0267 55       		.byte	0x55
+ 3263 0268 A8000000 		.4byte	.LVL69
+ 3264 026c 3E010000 		.4byte	.LVL85
+ 3265 0270 0100     		.2byte	0x1
+ 3266 0272 54       		.byte	0x54
+ 3267 0273 3E010000 		.4byte	.LVL85
+ 3268 0277 98010000 		.4byte	.LVL103
+ 3269 027b 0100     		.2byte	0x1
+ 3270 027d 55       		.byte	0x55
+ 3271 027e 00000000 		.4byte	0
+ 3272 0282 00000000 		.4byte	0
+ 3273              	.LLST18:
+ 3274 0286 A6000000 		.4byte	.LVL68
+ 3275 028a B4000000 		.4byte	.LVL71
+ 3276 028e 0100     		.2byte	0x1
+ 3277 0290 53       		.byte	0x53
+ 3278 0291 B4000000 		.4byte	.LVL71
+ 3279 0295 E6000000 		.4byte	.LVL75
+ 3280 0299 0300     		.2byte	0x3
+ 3281 029b 75       		.byte	0x75
+ 3282 029c 887F     		.sleb128 -120
+ 3283 029e E6000000 		.4byte	.LVL75
+ 3284 02a2 E8000000 		.4byte	.LVL76
+ 3285 02a6 0A00     		.2byte	0xa
+ 3286 02a8 74       		.byte	0x74
+ 3287 02a9 7F       		.sleb128 -1
+ 3288 02aa 32       		.byte	0x32
+ 3289 02ab 24       		.byte	0x24
+ 3290 02ac 91       		.byte	0x91
+ 3291 02ad 00       		.sleb128 0
+ 3292 02ae 22       		.byte	0x22
+ 3293 02af 08       		.byte	0x8
+ 3294 02b0 90       		.byte	0x90
+ 3295 02b1 1C       		.byte	0x1c
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 68
+
+
+ 3296 02b2 36010000 		.4byte	.LVL82
+ 3297 02b6 3A010000 		.4byte	.LVL83
+ 3298 02ba 0300     		.2byte	0x3
+ 3299 02bc 75       		.byte	0x75
+ 3300 02bd 887F     		.sleb128 -120
+ 3301 02bf 3E010000 		.4byte	.LVL85
+ 3302 02c3 4A010000 		.4byte	.LVL86
+ 3303 02c7 0100     		.2byte	0x1
+ 3304 02c9 53       		.byte	0x53
+ 3305 02ca 7C010000 		.4byte	.LVL98
+ 3306 02ce 7E010000 		.4byte	.LVL99
+ 3307 02d2 0100     		.2byte	0x1
+ 3308 02d4 53       		.byte	0x53
+ 3309 02d5 00000000 		.4byte	0
+ 3310 02d9 00000000 		.4byte	0
+ 3311              	.LLST19:
+ 3312 02dd 50010000 		.4byte	.LVL87
+ 3313 02e1 57010000 		.4byte	.LVL88-1
+ 3314 02e5 0200     		.2byte	0x2
+ 3315 02e7 73       		.byte	0x73
+ 3316 02e8 20       		.sleb128 32
+ 3317 02e9 57010000 		.4byte	.LVL88-1
+ 3318 02ed 5C010000 		.4byte	.LVL89
+ 3319 02f1 0A00     		.2byte	0xa
+ 3320 02f3 74       		.byte	0x74
+ 3321 02f4 00       		.sleb128 0
+ 3322 02f5 34       		.byte	0x34
+ 3323 02f6 24       		.byte	0x24
+ 3324 02f7 03       		.byte	0x3
+ 3325 02f8 20000000 		.4byte	.LANCHOR0+32
+ 3326 02fc 22       		.byte	0x22
+ 3327 02fd 5C010000 		.4byte	.LVL89
+ 3328 0301 60010000 		.4byte	.LVL90
+ 3329 0305 0900     		.2byte	0x9
+ 3330 0307 74       		.byte	0x74
+ 3331 0308 00       		.sleb128 0
+ 3332 0309 34       		.byte	0x34
+ 3333 030a 24       		.byte	0x24
+ 3334 030b 77       		.byte	0x77
+ 3335 030c 00       		.sleb128 0
+ 3336 030d 22       		.byte	0x22
+ 3337 030e 23       		.byte	0x23
+ 3338 030f 20       		.uleb128 0x20
+ 3339 0310 60010000 		.4byte	.LVL90
+ 3340 0314 76010000 		.4byte	.LVL95
+ 3341 0318 0200     		.2byte	0x2
+ 3342 031a 76       		.byte	0x76
+ 3343 031b 20       		.sleb128 32
+ 3344 031c 76010000 		.4byte	.LVL95
+ 3345 0320 78010000 		.4byte	.LVL96
+ 3346 0324 0A00     		.2byte	0xa
+ 3347 0326 74       		.byte	0x74
+ 3348 0327 00       		.sleb128 0
+ 3349 0328 34       		.byte	0x34
+ 3350 0329 24       		.byte	0x24
+ 3351 032a 03       		.byte	0x3
+ 3352 032b 20000000 		.4byte	.LANCHOR0+32
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 69
+
+
+ 3353 032f 22       		.byte	0x22
+ 3354 0330 78010000 		.4byte	.LVL96
+ 3355 0334 7A010000 		.4byte	.LVL97
+ 3356 0338 0A00     		.2byte	0xa
+ 3357 033a 74       		.byte	0x74
+ 3358 033b 7F       		.sleb128 -1
+ 3359 033c 34       		.byte	0x34
+ 3360 033d 24       		.byte	0x24
+ 3361 033e 03       		.byte	0x3
+ 3362 033f 20000000 		.4byte	.LANCHOR0+32
+ 3363 0343 22       		.byte	0x22
+ 3364 0344 00000000 		.4byte	0
+ 3365 0348 00000000 		.4byte	0
+ 3366              	.LLST20:
+ 3367 034c 12000000 		.4byte	.LVL54
+ 3368 0350 1A000000 		.4byte	.LVL55
+ 3369 0354 0100     		.2byte	0x1
+ 3370 0356 50       		.byte	0x50
+ 3371 0357 1A000000 		.4byte	.LVL55
+ 3372 035b A2000000 		.4byte	.LVL67
+ 3373 035f 0400     		.2byte	0x4
+ 3374 0361 F3       		.byte	0xf3
+ 3375 0362 01       		.uleb128 0x1
+ 3376 0363 50       		.byte	0x50
+ 3377 0364 9F       		.byte	0x9f
+ 3378 0365 00000000 		.4byte	0
+ 3379 0369 00000000 		.4byte	0
+ 3380              	.LLST21:
+ 3381 036d 4C000000 		.4byte	.LVL59
+ 3382 0371 9C000000 		.4byte	.LVL65
+ 3383 0375 0100     		.2byte	0x1
+ 3384 0377 54       		.byte	0x54
+ 3385 0378 A0000000 		.4byte	.LVL66
+ 3386 037c A2000000 		.4byte	.LVL67
+ 3387 0380 0100     		.2byte	0x1
+ 3388 0382 54       		.byte	0x54
+ 3389 0383 00000000 		.4byte	0
+ 3390 0387 00000000 		.4byte	0
+ 3391              	.LLST22:
+ 3392 038b 54000000 		.4byte	.LVL60
+ 3393 038f 5C000000 		.4byte	.LVL62
+ 3394 0393 0100     		.2byte	0x1
+ 3395 0395 53       		.byte	0x53
+ 3396 0396 5E000000 		.4byte	.LVL63
+ 3397 039a 68000000 		.4byte	.LVL64
+ 3398 039e 0100     		.2byte	0x1
+ 3399 03a0 53       		.byte	0x53
+ 3400 03a1 00000000 		.4byte	0
+ 3401 03a5 00000000 		.4byte	0
+ 3402              	.LLST23:
+ 3403 03a9 12000000 		.4byte	.LVL54
+ 3404 03ad 3E000000 		.4byte	.LVL56
+ 3405 03b1 0300     		.2byte	0x3
+ 3406 03b3 08       		.byte	0x8
+ 3407 03b4 20       		.byte	0x20
+ 3408 03b5 9F       		.byte	0x9f
+ 3409 03b6 3E000000 		.4byte	.LVL56
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 70
+
+
+ 3410 03ba 46000000 		.4byte	.LVL57
+ 3411 03be 0100     		.2byte	0x1
+ 3412 03c0 50       		.byte	0x50
+ 3413 03c1 46000000 		.4byte	.LVL57
+ 3414 03c5 48000000 		.4byte	.LVL58
+ 3415 03c9 0300     		.2byte	0x3
+ 3416 03cb 08       		.byte	0x8
+ 3417 03cc 20       		.byte	0x20
+ 3418 03cd 9F       		.byte	0x9f
+ 3419 03ce 48000000 		.4byte	.LVL58
+ 3420 03d2 9C000000 		.4byte	.LVL65
+ 3421 03d6 0100     		.2byte	0x1
+ 3422 03d8 50       		.byte	0x50
+ 3423 03d9 9C000000 		.4byte	.LVL65
+ 3424 03dd A0000000 		.4byte	.LVL66
+ 3425 03e1 0300     		.2byte	0x3
+ 3426 03e3 08       		.byte	0x8
+ 3427 03e4 20       		.byte	0x20
+ 3428 03e5 9F       		.byte	0x9f
+ 3429 03e6 A0000000 		.4byte	.LVL66
+ 3430 03ea A2000000 		.4byte	.LVL67
+ 3431 03ee 0100     		.2byte	0x1
+ 3432 03f0 50       		.byte	0x50
+ 3433 03f1 00000000 		.4byte	0
+ 3434 03f5 00000000 		.4byte	0
+ 3435              	.LLST24:
+ 3436 03f9 B2000000 		.4byte	.LVL70
+ 3437 03fd 3C010000 		.4byte	.LVL84
+ 3438 0401 0200     		.2byte	0x2
+ 3439 0403 30       		.byte	0x30
+ 3440 0404 9F       		.byte	0x9f
+ 3441 0405 00000000 		.4byte	0
+ 3442 0409 00000000 		.4byte	0
+ 3443              	.LLST25:
+ 3444 040d E6000000 		.4byte	.LVL75
+ 3445 0411 36010000 		.4byte	.LVL82
+ 3446 0415 0100     		.2byte	0x1
+ 3447 0417 55       		.byte	0x55
+ 3448 0418 3A010000 		.4byte	.LVL83
+ 3449 041c 3C010000 		.4byte	.LVL84
+ 3450 0420 0100     		.2byte	0x1
+ 3451 0422 55       		.byte	0x55
+ 3452 0423 00000000 		.4byte	0
+ 3453 0427 00000000 		.4byte	0
+ 3454              	.LLST26:
+ 3455 042b EE000000 		.4byte	.LVL77
+ 3456 042f F6000000 		.4byte	.LVL79
+ 3457 0433 0100     		.2byte	0x1
+ 3458 0435 53       		.byte	0x53
+ 3459 0436 F8000000 		.4byte	.LVL80
+ 3460 043a 02010000 		.4byte	.LVL81
+ 3461 043e 0100     		.2byte	0x1
+ 3462 0440 53       		.byte	0x53
+ 3463 0441 00000000 		.4byte	0
+ 3464 0445 00000000 		.4byte	0
+ 3465              	.LLST27:
+ 3466 0449 B2000000 		.4byte	.LVL70
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 71
+
+
+ 3467 044d D8000000 		.4byte	.LVL72
+ 3468 0451 0300     		.2byte	0x3
+ 3469 0453 08       		.byte	0x8
+ 3470 0454 20       		.byte	0x20
+ 3471 0455 9F       		.byte	0x9f
+ 3472 0456 D8000000 		.4byte	.LVL72
+ 3473 045a E0000000 		.4byte	.LVL73
+ 3474 045e 0100     		.2byte	0x1
+ 3475 0460 50       		.byte	0x50
+ 3476 0461 E0000000 		.4byte	.LVL73
+ 3477 0465 E2000000 		.4byte	.LVL74
+ 3478 0469 0300     		.2byte	0x3
+ 3479 046b 08       		.byte	0x8
+ 3480 046c 20       		.byte	0x20
+ 3481 046d 9F       		.byte	0x9f
+ 3482 046e E2000000 		.4byte	.LVL74
+ 3483 0472 36010000 		.4byte	.LVL82
+ 3484 0476 0100     		.2byte	0x1
+ 3485 0478 50       		.byte	0x50
+ 3486 0479 36010000 		.4byte	.LVL82
+ 3487 047d 3A010000 		.4byte	.LVL83
+ 3488 0481 0300     		.2byte	0x3
+ 3489 0483 08       		.byte	0x8
+ 3490 0484 20       		.byte	0x20
+ 3491 0485 9F       		.byte	0x9f
+ 3492 0486 3A010000 		.4byte	.LVL83
+ 3493 048a 3C010000 		.4byte	.LVL84
+ 3494 048e 0100     		.2byte	0x1
+ 3495 0490 50       		.byte	0x50
+ 3496 0491 00000000 		.4byte	0
+ 3497 0495 00000000 		.4byte	0
+ 3498              	.LLST28:
+ 3499 0499 4A010000 		.4byte	.LVL86
+ 3500 049d 6A010000 		.4byte	.LVL92
+ 3501 04a1 0100     		.2byte	0x1
+ 3502 04a3 54       		.byte	0x54
+ 3503 04a4 76010000 		.4byte	.LVL95
+ 3504 04a8 78010000 		.4byte	.LVL96
+ 3505 04ac 0100     		.2byte	0x1
+ 3506 04ae 54       		.byte	0x54
+ 3507 04af 7A010000 		.4byte	.LVL97
+ 3508 04b3 7C010000 		.4byte	.LVL98
+ 3509 04b7 0100     		.2byte	0x1
+ 3510 04b9 54       		.byte	0x54
+ 3511 04ba 7E010000 		.4byte	.LVL99
+ 3512 04be 84010000 		.4byte	.LVL100
+ 3513 04c2 0100     		.2byte	0x1
+ 3514 04c4 54       		.byte	0x54
+ 3515 04c5 00000000 		.4byte	0
+ 3516 04c9 00000000 		.4byte	0
+ 3517              	.LLST29:
+ 3518 04cd 6A010000 		.4byte	.LVL92
+ 3519 04d1 6E010000 		.4byte	.LVL93
+ 3520 04d5 0100     		.2byte	0x1
+ 3521 04d7 50       		.byte	0x50
+ 3522 04d8 6E010000 		.4byte	.LVL93
+ 3523 04dc 76010000 		.4byte	.LVL95
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 72
+
+
+ 3524 04e0 0100     		.2byte	0x1
+ 3525 04e2 54       		.byte	0x54
+ 3526 04e3 00000000 		.4byte	0
+ 3527 04e7 00000000 		.4byte	0
+ 3528              	.LLST30:
+ 3529 04eb 10000000 		.4byte	.LVL106
+ 3530 04ef 19000000 		.4byte	.LVL107-1
+ 3531 04f3 0100     		.2byte	0x1
+ 3532 04f5 50       		.byte	0x50
+ 3533 04f6 00000000 		.4byte	0
+ 3534 04fa 00000000 		.4byte	0
+ 3535              		.section	.debug_aranges,"",%progbits
+ 3536 0000 54000000 		.4byte	0x54
+ 3537 0004 0200     		.2byte	0x2
+ 3538 0006 00000000 		.4byte	.Ldebug_info0
+ 3539 000a 04       		.byte	0x4
+ 3540 000b 00       		.byte	0
+ 3541 000c 0000     		.2byte	0
+ 3542 000e 0000     		.2byte	0
+ 3543 0010 00000000 		.4byte	.LFB71
+ 3544 0014 24000000 		.4byte	.LFE71-.LFB71
+ 3545 0018 00000000 		.4byte	.LFB72
+ 3546 001c 64000000 		.4byte	.LFE72-.LFB72
+ 3547 0020 00000000 		.4byte	.LFB73
+ 3548 0024 70000000 		.4byte	.LFE73-.LFB73
+ 3549 0028 00000000 		.4byte	.LFB74
+ 3550 002c 24000000 		.4byte	.LFE74-.LFB74
+ 3551 0030 00000000 		.4byte	.LFB68
+ 3552 0034 24000000 		.4byte	.LFE68-.LFB68
+ 3553 0038 00000000 		.4byte	.LFB66
+ 3554 003c 14000000 		.4byte	.LFE66-.LFB66
+ 3555 0040 00000000 		.4byte	.LFB70
+ 3556 0044 A8010000 		.4byte	.LFE70-.LFB70
+ 3557 0048 00000000 		.4byte	.LFB67
+ 3558 004c 8C000000 		.4byte	.LFE67-.LFB67
+ 3559 0050 00000000 		.4byte	0
+ 3560 0054 00000000 		.4byte	0
+ 3561              		.section	.debug_ranges,"",%progbits
+ 3562              	.Ldebug_ranges0:
+ 3563 0000 4A010000 		.4byte	.LBB27
+ 3564 0004 7C010000 		.4byte	.LBE27
+ 3565 0008 7E010000 		.4byte	.LBB29
+ 3566 000c 82010000 		.4byte	.LBE29
+ 3567 0010 00000000 		.4byte	0
+ 3568 0014 00000000 		.4byte	0
+ 3569 0018 00000000 		.4byte	.LFB71
+ 3570 001c 24000000 		.4byte	.LFE71
+ 3571 0020 00000000 		.4byte	.LFB72
+ 3572 0024 64000000 		.4byte	.LFE72
+ 3573 0028 00000000 		.4byte	.LFB73
+ 3574 002c 70000000 		.4byte	.LFE73
+ 3575 0030 00000000 		.4byte	.LFB74
+ 3576 0034 24000000 		.4byte	.LFE74
+ 3577 0038 00000000 		.4byte	.LFB68
+ 3578 003c 24000000 		.4byte	.LFE68
+ 3579 0040 00000000 		.4byte	.LFB66
+ 3580 0044 14000000 		.4byte	.LFE66
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 73
+
+
+ 3581 0048 00000000 		.4byte	.LFB70
+ 3582 004c A8010000 		.4byte	.LFE70
+ 3583 0050 00000000 		.4byte	.LFB67
+ 3584 0054 8C000000 		.4byte	.LFE67
+ 3585 0058 00000000 		.4byte	0
+ 3586 005c 00000000 		.4byte	0
+ 3587              		.section	.debug_line,"",%progbits
+ 3588              	.Ldebug_line0:
+ 3589 0000 90030000 		.section	.debug_str,"MS",%progbits,1
+ 3589      0200F301 
+ 3589      00000201 
+ 3589      FB0E0D00 
+ 3589      01010101 
+ 3590              	.LASF60:
+ 3591 0000 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\TLAUX\\ARM Code\\TLAU"
+ 3591      616E5C45 
+ 3591      6E672050 
+ 3591      726F6A65 
+ 3591      6374735C 
+ 3592 002d 585C544C 		.ascii	"X\\TLAUX_PSoC.cydsn\000"
+ 3592      4155585F 
+ 3592      50536F43 
+ 3592      2E637964 
+ 3592      736E00
+ 3593              	.LASF37:
+ 3594 0040 50737472 		.ascii	"PstrPtr\000"
+ 3594      50747200 
+ 3595              	.LASF46:
+ 3596 0048 434D445F 		.ascii	"CMD_Parse_Table\000"
+ 3596      50617273 
+ 3596      655F5461 
+ 3596      626C6500 
+ 3597              	.LASF31:
+ 3598 0058 436C6561 		.ascii	"ClearInputBufferN\000"
+ 3598      72496E70 
+ 3598      75744275 
+ 3598      66666572 
+ 3598      4E00
+ 3599              	.LASF27:
+ 3600 006a 48656C70 		.ascii	"HelpScreen\000"
+ 3600      53637265 
+ 3600      656E00
+ 3601              	.LASF30:
+ 3602 0075 74656D70 		.ascii	"temp\000"
+ 3602      00
+ 3603              	.LASF2:
+ 3604 007a 73686F72 		.ascii	"short int\000"
+ 3604      7420696E 
+ 3604      7400
+ 3605              	.LASF49:
+ 3606 0084 496E4275 		.ascii	"InBuff\000"
+ 3606      666600
+ 3607              	.LASF14:
+ 3608 008b 73697A65 		.ascii	"sizetype\000"
+ 3608      74797065 
+ 3608      00
+ 3609              	.LASF41:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 74
+
+
+ 3610 0094 636C694F 		.ascii	"cliOn\000"
+ 3610      6E00
+ 3611              	.LASF63:
+ 3612 009a 53657443 		.ascii	"SetCliEcho\000"
+ 3612      6C694563 
+ 3612      686F00
+ 3613              	.LASF28:
+ 3614 00a5 4563686F 		.ascii	"Echo_Cmd\000"
+ 3614      5F436D64 
+ 3614      00
+ 3615              	.LASF61:
+ 3616 00ae 436D6444 		.ascii	"CmdDesc\000"
+ 3616      65736300 
+ 3617              	.LASF11:
+ 3618 00b6 75696E74 		.ascii	"uint8_t\000"
+ 3618      385F7400 
+ 3619              	.LASF51:
+ 3620 00be 5553425F 		.ascii	"USB_PutString\000"
+ 3620      50757453 
+ 3620      7472696E 
+ 3620      6700
+ 3621              	.LASF16:
+ 3622 00cc 75696E74 		.ascii	"uint8\000"
+ 3622      3800
+ 3623              	.LASF45:
+ 3624 00d2 50726F6D 		.ascii	"Prompt\000"
+ 3624      707400
+ 3625              	.LASF52:
+ 3626 00d9 5553425F 		.ascii	"USB_PutChar\000"
+ 3626      50757443 
+ 3626      68617200 
+ 3627              	.LASF17:
+ 3628 00e5 666C6F61 		.ascii	"float\000"
+ 3628      7400
+ 3629              	.LASF54:
+ 3630 00eb 55534255 		.ascii	"USBUART_GetConfiguration\000"
+ 3630      4152545F 
+ 3630      47657443 
+ 3630      6F6E6669 
+ 3630      67757261 
+ 3631              	.LASF29:
+ 3632 0104 55736243 		.ascii	"UsbCfg_Cmd\000"
+ 3632      66675F43 
+ 3632      6D6400
+ 3633              	.LASF22:
+ 3634 010f 66756E63 		.ascii	"func\000"
+ 3634      00
+ 3635              	.LASF8:
+ 3636 0114 6C6F6E67 		.ascii	"long long int\000"
+ 3636      206C6F6E 
+ 3636      6720696E 
+ 3636      7400
+ 3637              	.LASF32:
+ 3638 0122 496E6974 		.ascii	"Init_CLI\000"
+ 3638      5F434C49 
+ 3638      00
+ 3639              	.LASF6:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 75
+
+
+ 3640 012b 6C6F6E67 		.ascii	"long int\000"
+ 3640      20696E74 
+ 3640      00
+ 3641              	.LASF36:
+ 3642 0134 50617273 		.ascii	"ParseCommand\000"
+ 3642      65436F6D 
+ 3642      6D616E64 
+ 3642      00
+ 3643              	.LASF38:
+ 3644 0141 7276616C 		.ascii	"rval\000"
+ 3644      00
+ 3645              	.LASF4:
+ 3646 0146 5F5F7569 		.ascii	"__uint8_t\000"
+ 3646      6E74385F 
+ 3646      7400
+ 3647              	.LASF47:
+ 3648 0150 48656C70 		.ascii	"HelpDiv\000"
+ 3648      44697600 
+ 3649              	.LASF35:
+ 3650 0158 7465726D 		.ascii	"term\000"
+ 3650      00
+ 3651              	.LASF40:
+ 3652 015d 636C6945 		.ascii	"cliEcho\000"
+ 3652      63686F00 
+ 3653              	.LASF44:
+ 3654 0165 436D6454 		.ascii	"CmdTooLong\000"
+ 3654      6F6F4C6F 
+ 3654      6E6700
+ 3655              	.LASF59:
+ 3656 0170 434C492E 		.ascii	"CLI.c\000"
+ 3656      6300
+ 3657              	.LASF13:
+ 3658 0176 6C6F6E67 		.ascii	"long double\000"
+ 3658      20646F75 
+ 3658      626C6500 
+ 3659              	.LASF1:
+ 3660 0182 756E7369 		.ascii	"unsigned char\000"
+ 3660      676E6564 
+ 3660      20636861 
+ 3660      7200
+ 3661              	.LASF24:
+ 3662 0190 61726763 		.ascii	"argc\000"
+ 3662      00
+ 3663              	.LASF0:
+ 3664 0195 7369676E 		.ascii	"signed char\000"
+ 3664      65642063 
+ 3664      68617200 
+ 3665              	.LASF9:
+ 3666 01a1 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3666      206C6F6E 
+ 3666      6720756E 
+ 3666      7369676E 
+ 3666      65642069 
+ 3667              	.LASF55:
+ 3668 01b8 73707269 		.ascii	"sprintf\000"
+ 3668      6E746600 
+ 3669              	.LASF10:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 76
+
+
+ 3670 01c0 756E7369 		.ascii	"unsigned int\000"
+ 3670      676E6564 
+ 3670      20696E74 
+ 3670      00
+ 3671              	.LASF20:
+ 3672 01cd 61726773 		.ascii	"args\000"
+ 3672      00
+ 3673              	.LASF25:
+ 3674 01d2 61726776 		.ascii	"argv\000"
+ 3674      00
+ 3675              	.LASF56:
+ 3676 01d7 5553425F 		.ascii	"USB_Buff_GetChar\000"
+ 3676      42756666 
+ 3676      5F476574 
+ 3676      43686172 
+ 3676      00
+ 3677              	.LASF33:
+ 3678 01e8 73746172 		.ascii	"start\000"
+ 3678      7400
+ 3679              	.LASF57:
+ 3680 01ee 43686563 		.ascii	"Check_USB\000"
+ 3680      6B5F5553 
+ 3680      4200
+ 3681              	.LASF15:
+ 3682 01f8 63686172 		.ascii	"char\000"
+ 3682      00
+ 3683              	.LASF12:
+ 3684 01fd 696E7433 		.ascii	"int32_t\000"
+ 3684      325F7400 
+ 3685              	.LASF3:
+ 3686 0205 73686F72 		.ascii	"short unsigned int\000"
+ 3686      7420756E 
+ 3686      7369676E 
+ 3686      65642069 
+ 3686      6E7400
+ 3687              	.LASF23:
+ 3688 0218 5F426F6F 		.ascii	"_Bool\000"
+ 3688      6C00
+ 3689              	.LASF39:
+ 3690 021e 64617461 		.ascii	"data\000"
+ 3690      00
+ 3691              	.LASF48:
+ 3692 0223 48656C70 		.ascii	"HelpHeader\000"
+ 3692      48656164 
+ 3692      657200
+ 3693              	.LASF7:
+ 3694 022e 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3694      20756E73 
+ 3694      69676E65 
+ 3694      6420696E 
+ 3694      7400
+ 3695              	.LASF18:
+ 3696 0240 646F7562 		.ascii	"double\000"
+ 3696      6C6500
+ 3697              	.LASF43:
+ 3698 0247 4261644D 		.ascii	"BadMsgString\000"
+ 3698      73675374 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccOls7dH.s 			page 77
+
+
+ 3698      72696E67 
+ 3698      00
+ 3699              	.LASF62:
+ 3700 0254 47657443 		.ascii	"GetCliEcho\000"
+ 3700      6C694563 
+ 3700      686F00
+ 3701              	.LASF5:
+ 3702 025f 5F5F696E 		.ascii	"__int32_t\000"
+ 3702      7433325F 
+ 3702      7400
+ 3703              	.LASF50:
+ 3704 0269 496E4275 		.ascii	"InBuffCnt\000"
+ 3704      6666436E 
+ 3704      7400
+ 3705              	.LASF53:
+ 3706 0273 73747263 		.ascii	"strcmp\000"
+ 3706      6D7000
+ 3707              	.LASF34:
+ 3708 027a 7363616E 		.ascii	"scan\000"
+ 3708      00
+ 3709              	.LASF19:
+ 3710 027f 6E616D65 		.ascii	"name\000"
+ 3710      00
+ 3711              	.LASF64:
+ 3712 0284 67657457 		.ascii	"getWord\000"
+ 3712      6F726400 
+ 3713              	.LASF42:
+ 3714 028c 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3714      52784275 
+ 3714      66666572 
+ 3714      00
+ 3715              	.LASF58:
+ 3716 0299 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3716      43313120 
+ 3716      352E342E 
+ 3716      31203230 
+ 3716      31363036 
+ 3717 02cc 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3717      20726576 
+ 3717      6973696F 
+ 3717      6E203233 
+ 3717      37373135 
+ 3718 02ff 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3718      66756E63 
+ 3718      74696F6E 
+ 3718      2D736563 
+ 3718      74696F6E 
+ 3719              	.LASF21:
+ 3720 0327 64657363 		.ascii	"desc\000"
+ 3720      00
+ 3721              	.LASF26:
+ 3722 032c 434C495F 		.ascii	"CLI_Test\000"
+ 3722      54657374 
+ 3722      00
+ 3723              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,468 @@
+
+           Lattice Mapping Report File for Design Module 'kbuf_top'
+
+
+Design Information
+------------------
+
+Command line:   map -a MachXO2 -p LCMXO2-7000HE -t TQFP144 -s 4 -oc Commercial
+     KanalogBuffer_Real_kabuf_Real.ngd -o KanalogBuffer_Real_kabuf_Real_map.ncd
+     -pr KanalogBuffer_Real_kabuf_Real.prf -mp KanalogBuffer_Real_kabuf_Real.mrp
+     -lpf C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/kabuf_Rea
+     l/KanalogBuffer_Real_kabuf_Real.lpf -lpf C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/KanalogBuffer_Real.lpf -c
+     0 -gui -msgset C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/promote.xml 
+Target Vendor:  LATTICE
+Target Device:  LCMXO2-7000HETQFP144
+Target Performance:   4
+Mapper:  xo2c00,  version:  Diamond (64-bit) 3.10.0.111.2
+Mapped on:  03/14/19  22:59:17
+
+Design Summary
+--------------
+
+   Number of registers:    116 out of  7209 (2%)
+      PFU registers:          116 out of  6864 (2%)
+      PIO registers:            0 out of   345 (0%)
+   Number of SLICEs:        65 out of  3432 (2%)
+      SLICEs as Logic/ROM:     65 out of  3432 (2%)
+      SLICEs as RAM:            0 out of  2574 (0%)
+      SLICEs as Carry:          0 out of  3432 (0%)
+   Number of LUT4s:         65 out of  6864 (1%)
+      Number used as logic LUTs:         65
+      Number used as distributed RAM:     0
+      Number used as ripple logic:        0
+      Number used as shift registers:     0
+   Number of PIO sites used: 94 + 4(JTAG) out of 115 (85%)
+   Number of block RAMs:  0 out of 26 (0%)
+   Number of GSRs:  0 out of 1 (0%)
+   EFB used :       No
+   JTAG used :      No
+   Readback used :  No
+   Oscillator used :  Yes
+   Startup used :   No
+   POR :            On
+   Bandgap :        On
+   Number of Power Controller:  0 out of 1 (0%)
+   Number of Dynamic Bank Controller (BCINRD):  0 out of 6 (0%)
+   Number of Dynamic Bank Controller (BCLVDSO):  0 out of 1 (0%)
+   Number of DCCA:  0 out of 8 (0%)
+   Number of DCMA:  0 out of 2 (0%)
+   Number of PLLs:  0 out of 2 (0%)
+   Number of DQSDLLs:  0 out of 2 (0%)
+   Number of CLKDIVC:  0 out of 4 (0%)
+   Number of ECLKSYNCA:  0 out of 4 (0%)
+   Number of ECLKBRIDGECS:  0 out of 2 (0%)
+   Notes:-
+      1. Total number of LUT4s = (Number of logic LUT4s) + 2*(Number of
+     distributed RAMs) + 2*(Number of ripple logic)
+      2. Number of logic LUT4s does not include count of distributed RAM and
+     ripple logic.
+   Number of clocks:  1
+
+                                    Page 1
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+Design Summary (cont)
+---------------------
+     Net fpga_clk: 65 loads, 65 rising, 0 falling (Driver: rc_oscillator )
+   Number of Clock Enables:  11
+     Net fpga_clk_enable_1: 1 loads, 1 LSLICEs
+     Net fpga_clk_enable_38: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_48: 2 loads, 2 LSLICEs
+     Net fpga_clk_enable_55: 8 loads, 8 LSLICEs
+     Net fpga_clk_enable_6: 1 loads, 1 LSLICEs
+     Net fpga_clk_enable_80: 12 loads, 12 LSLICEs
+     Net fpga_clk_enable_101: 8 loads, 8 LSLICEs
+     Net fpga_clk_enable_31: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_87: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_46: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_100: 9 loads, 9 LSLICEs
+   Number of LSRs:  4
+     Net kreset_c: 53 loads, 53 LSLICEs
+     Net n640: 8 loads, 8 LSLICEs
+     Net n630: 2 loads, 2 LSLICEs
+     Net n1260: 1 loads, 1 LSLICEs
+   Number of nets driven by tri-state buffers:  0
+   Top 10 highest fanout non-clock nets:
+     Net kreset_c: 64 loads
+     Net state_cnt_0: 23 loads
+     Net state_cnt_1: 22 loads
+     Net dac_out_c_2: 20 loads
+     Net resync_adj_236: 18 loads
+     Net state_cnt_2: 17 loads
+     Net fpga_clk_enable_80: 12 loads
+     Net fpga_clk_enable_100: 9 loads
+     Net tp4_N_61: 9 loads
+     Net fpga_clk_enable_101: 8 loads
+
+
+
+
+   Number of warnings:  12
+   Number of errors:    0
+     
+
+Design Errors/Warnings
+----------------------
+
+WARNING - map: input pad net 'k_in[15]' has no legal load.
+WARNING - map: input pad net 'k_in[14]' has no legal load.
+WARNING - map: input pad net 'k_in[13]' has no legal load.
+WARNING - map: input pad net 'k_in[12]' has no legal load.
+WARNING - map: input pad net 'k_in[11]' has no legal load.
+WARNING - map: input pad net 'k_in[10]' has no legal load.
+WARNING - map: IO buffer missing for top level port k_in[23:0](15)...logic will
+     be discarded.
+WARNING - map: IO buffer missing for top level port k_in[23:0](14)...logic will
+     be discarded.
+WARNING - map: IO buffer missing for top level port k_in[23:0](13)...logic will
+     be discarded.
+WARNING - map: IO buffer missing for top level port k_in[23:0](12)...logic will
+     be discarded.
+WARNING - map: IO buffer missing for top level port k_in[23:0](11)...logic will
+
+                                    Page 2
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+Design Errors/Warnings (cont)
+-----------------------------
+     be discarded.
+WARNING - map: IO buffer missing for top level port k_in[23:0](10)...logic will
+     be discarded.
+
+IO (PIO) Attributes
+-------------------
+
++---------------------+-----------+-----------+------------+
+| IO Name             | Direction | Levelmode | IO         |
+|                     |           |  IO_TYPE  | Register   |
++---------------------+-----------+-----------+------------+
+| kdata_io[7]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[12]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Ddin                | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[13]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[14]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[6]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[6]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[5]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[4]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[3]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[2]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[1]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[0]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[7]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[8]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[9]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| AinDoutBuff         | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[15]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[10]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[11]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[5]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[4]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[3]           | OUTPUT    | LVCMOS33  |            |
+
+                                    Page 3
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+IO (PIO) Attributes (cont)
+--------------------------
++---------------------+-----------+-----------+------------+
+| ka_out[2]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[1]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[0]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[7]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[6]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[5]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[4]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[3]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[2]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[1]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[0]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[15]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[14]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[13]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[12]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[11]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[10]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[9]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[8]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[7]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[6]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[5]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[4]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[3]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[2]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[1]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[0]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_clk             | OUTPUT    | LVCMOS33  |            |
+
+                                    Page 4
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+IO (PIO) Attributes (cont)
+--------------------------
++---------------------+-----------+-----------+------------+
+| tp3                 | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| tp4                 | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| AinDout             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Dlatch              | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Dclk                | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Ddout               | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kreset              | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[15]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[14]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[13]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[12]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[11]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[10]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[9]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[8]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[7]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[6]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[5]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[4]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[3]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[2]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[1]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[0]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_clk               | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| start_in            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[23]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[22]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[21]            | INPUT     | LVCMOS33  |            |
+
+                                    Page 5
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+IO (PIO) Attributes (cont)
+--------------------------
++---------------------+-----------+-----------+------------+
+| k_in[20]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[19]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[18]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[17]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[16]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[9]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[8]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[7]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[6]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[5]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[4]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[3]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[2]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[1]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_in[0]             | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+
+Removed logic
+-------------
+
+Block i2 undriven or does not drive anything - clipped.
+Block GSR_INST undriven or does not drive anything - clipped.
+Signal n1265 was merged into signal kreset_c
+Signal GND_net undriven or does not drive anything - clipped.
+Signal VCC_net undriven or does not drive anything - clipped.
+Block kreset_I_0_1_lut_rep_10 was optimized away.
+Block i1 was optimized away.
+
+Memory Usage
+------------
+
+
+     
+
+OSC Summary
+-----------
+
+OSC 1:                                     Pin/Node Value
+  OSC Instance Name:                                rc_oscillator
+  OSC Type:                                         OSCH
+  STDBY Input:                                      NONE
+
+                                    Page 6
+
+
+
+
+Design:  kbuf_top                                      Date:  03/14/19  22:59:17
+
+OSC Summary (cont)
+------------------
+  OSC Output:                              NODE     fpga_clk
+  OSC Nominal Frequency (MHz):                      66.50
+
+ASIC Components
+---------------
+
+Instance Name: rc_oscillator
+         Type: OSCH
+
+Run Time and Memory Usage
+-------------------------
+
+   Total CPU Time: 1 secs  
+   Total REAL Time: 0 secs  
+   Peak Memory Usage: 59 MB
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    Page 7
+
+
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+     Copyright (c) 1995 AT&T Corp.   All rights reserved.
+     Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+     Copyright (c) 2001 Agere Systems   All rights reserved.
+     Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights
+     reserved.

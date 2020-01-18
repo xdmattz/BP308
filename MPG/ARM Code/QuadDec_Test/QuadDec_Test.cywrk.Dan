@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="QuadDec_Test\QuadDec1\TopDesign">
+<ExpandedNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\TopDesign</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Pins</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Analog</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Clocks</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Interrupts</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\DMA</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\System</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Directives</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Flash Security</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\EEPROM</v>
+<v>QuadDec_Test\QuadDec1\Header Files</v>
+<v>QuadDec_Test\QuadDec1\Header Files\cyapicallbacks.h</v>
+<v>QuadDec_Test\QuadDec1\Source Files</v>
+<v>QuadDec_Test\QuadDec1\Source Files\main.c</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\TopDesign</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Pins</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Analog</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Clocks</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Interrupts</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\DMA</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\System</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Directives</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\Flash Security</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.cydwr\EEPROM</v>
+<v>QuadDec_Test\QuadDec1\Header Files</v>
+<v>QuadDec_Test\QuadDec1\Header Files\cyapicallbacks.h</v>
+<v>QuadDec_Test\QuadDec1\Source Files</v>
+<v>QuadDec_Test\QuadDec1\Source Files\main.c</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Clock_1</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Control_Reg_1</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cy_boot</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Em_EEPROM_Dynamic</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\isr_Dec1</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\isr_Inc1</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Ain</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Aout</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Bin</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Bout</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Dec</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Fault</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\Pin_Inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cycodeshareexport.ld</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cycodeshareimport.ld</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cycodeshareimport.scat</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevice.h</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevice_trm.h</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevicegnu.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevicegnu_trm.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydeviceiar.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydeviceiar_trm.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevicerv.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydevicerv_trm.inc</v>
+<v>QuadDec_Test\QuadDec1\Generated_Source\PSoC5\cydisabledsheets.h</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\TopDesign</v>
+<v>QuadDec_Test\QuadDec1\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\TopDesign</v>
+<v>QuadDec_Test\QuadDec1\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\CortexM3</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.elf</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.hex</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.map</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.gpdsc</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.rpt</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\CortexM3</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.elf</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.hex</v>
+<v>QuadDec_Test\QuadDec1\CortexM3\ARM_GCC_541\Debug\QuadDec1.map</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.gpdsc</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1.rpt</v>
+<v>QuadDec_Test\QuadDec1\QuadDec1_timing.html</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\PSoC 5LP Architecture TRM</v>
+<v>QuadDec_Test\QuadDec1\CY8C58LP Family Datasheet</v>
+<v>QuadDec_Test\QuadDec1\System Reference Guides</v>
+<v>QuadDec_Test\QuadDec1\System Reference Guides\cy_boot_v5_80</v>
+<v>QuadDec_Test\QuadDec1\cy_clock_v2_20.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_isr_v1_70</v>
+<v>QuadDec_Test\QuadDec1\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_pins_v2_20</v>
+<v>QuadDec_Test\QuadDec1\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_sync_v1_0.pdf</v>
+<v>QuadDec_Test\QuadDec1\CyControlReg_v1_80.pdf</v>
+<v>QuadDec_Test\QuadDec1\cydff_v1_30.pdf</v>
+<v>QuadDec_Test\QuadDec1\LUT_v1_60.pdf</v>
+<v>QuadDec_Test\QuadDec1\xor_v1_0.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>QuadDec_Test</v>
+<v>QuadDec_Test\QuadDec1</v>
+<v>QuadDec_Test\QuadDec1\PSoC 5LP Architecture TRM</v>
+<v>QuadDec_Test\QuadDec1\CY8C58LP Family Datasheet</v>
+<v>QuadDec_Test\QuadDec1\System Reference Guides</v>
+<v>QuadDec_Test\QuadDec1\System Reference Guides\cy_boot_v5_80</v>
+<v>QuadDec_Test\QuadDec1\cy_clock_v2_20.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_isr_v1_70</v>
+<v>QuadDec_Test\QuadDec1\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_pins_v2_20</v>
+<v>QuadDec_Test\QuadDec1\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>QuadDec_Test\QuadDec1\cy_sync_v1_0.pdf</v>
+<v>QuadDec_Test\QuadDec1\CyControlReg_v1_80.pdf</v>
+<v>QuadDec_Test\QuadDec1\cydff_v1_30.pdf</v>
+<v>QuadDec_Test\QuadDec1\LUT_v1_60.pdf</v>
+<v>QuadDec_Test\QuadDec1\xor_v1_0.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\QuadDec1.cydsn\TopDesign\TopDesign.cysch" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1216, 665" SelectedTabbedMdiWindow="665f5be8-c6bb-42de-8b6e-c50821adae60"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\QuadDec_Test\QuadDec1.cydsn\TopDesign\TopDesign.cysch" Guid="665f5be8-c6bb-42de-8b6e-c50821adae60" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>

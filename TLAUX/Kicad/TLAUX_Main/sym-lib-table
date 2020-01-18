@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name TLAUX_Main-cache)(type Legacy)(uri ${KIPRJMOD}/TLAUX_Main-cache.lib)(options "")(descr ""))
+  (lib (name TLAUX_Main-rescue)(type Legacy)(uri ${KIPRJMOD}/TLAUX_Main-rescue.lib)(options "")(descr ""))
+)

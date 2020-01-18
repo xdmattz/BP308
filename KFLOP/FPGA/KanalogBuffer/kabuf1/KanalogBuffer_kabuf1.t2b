@@ -1,0 +1,5 @@
+
+
+-g RamCfg:Reset
+
+-path "C:/Dan/Engineering/Lattice/Learning/KanalogBuffer"  

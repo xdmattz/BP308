@@ -1,0 +1,4364 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CLI.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CLI_Test,"ax",%progbits
+  20              		.align	2
+  21              		.global	CLI_Test
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	CLI_Test, %function
+  25              	CLI_Test:
+  26              	.LFB71:
+  27              		.file 1 "CLI.c"
+   1:CLI.c         **** /* ========================================
+   2:CLI.c         ****  *
+   3:CLI.c         ****  * Copyright YOUR COMPANY, THE YEAR
+   4:CLI.c         ****  * All Rights Reserved
+   5:CLI.c         ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:CLI.c         ****  *
+   7:CLI.c         ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:CLI.c         ****  * WHICH IS THE PROPERTY OF your company.
+   9:CLI.c         ****  *
+  10:CLI.c         ****  * ========================================
+  11:CLI.c         **** */
+  12:CLI.c         **** 
+  13:CLI.c         **** // commands consist of a key word followed by numbers or other words separated by spaces, and endin
+  14:CLI.c         **** // commands are processed upon receipt of the CR character.
+  15:CLI.c         **** // the first line word (words are separated by white space) is assumed to be the key word. It is co
+  16:CLI.c         **** // key word table and the appropriate command function is called with the argc and argv variables c
+  17:CLI.c         **** // the number of additional words and a pointer to their locations. (with each white space being re
+  18:CLI.c         **** 
+  19:CLI.c         **** // parse the command line
+  20:CLI.c         **** //
+  21:CLI.c         **** #include <CLI.h>
+  22:CLI.c         **** 
+  23:CLI.c         **** #include <stdlib.h>
+  24:CLI.c         **** #include <string.h>
+  25:CLI.c         **** #include <stdbool.h>
+  26:CLI.c         **** #include "U_HW.h"
+  27:CLI.c         **** #include "TestMessages.h"
+  28:CLI.c         **** #include <stdio.h>
+  29:CLI.c         **** 
+  30:CLI.c         **** #define NUM_OF_ARGS 30  // maximum number of arguments
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 2
+
+
+  31:CLI.c         **** #define IN_BUFF_LEN 80
+  32:CLI.c         **** 
+  33:CLI.c         **** char InBuff[IN_BUFF_LEN];
+  34:CLI.c         **** uint8_t InBuffCnt;  // line buffer position
+  35:CLI.c         **** 
+  36:CLI.c         **** static bool cliEcho = true;
+  37:CLI.c         **** static bool cliOn = true;
+  38:CLI.c         **** 
+  39:CLI.c         **** char msg[32];
+  40:CLI.c         **** 
+  41:CLI.c         **** static inline void SetCliEcho(bool on) {
+  42:CLI.c         ****     cliEcho = on;
+  43:CLI.c         **** }
+  44:CLI.c         **** 
+  45:CLI.c         **** static inline bool GetCliEcho() {
+  46:CLI.c         ****     return cliEcho;
+  47:CLI.c         **** }
+  48:CLI.c         **** 
+  49:CLI.c         **** void Init_CLI(void)
+  50:CLI.c         **** {
+  51:CLI.c         ****     ClearInputBufferN(IN_BUFF_LEN);
+  52:CLI.c         ****     // set the ECHO flag 
+  53:CLI.c         ****     cliEcho = true;
+  54:CLI.c         ****     // HelpScreen(0, NULL);     
+  55:CLI.c         **** }
+  56:CLI.c         **** 
+  57:CLI.c         **** void CLI(void)
+  58:CLI.c         **** {
+  59:CLI.c         ****     if(U_CheckForRx())
+  60:CLI.c         ****     {
+  61:CLI.c         ****         char data = GetChar();
+  62:CLI.c         ****         if(cliEcho) PutChar(data);      // if in ECHO mode then echo the character
+  63:CLI.c         ****         switch (data)
+  64:CLI.c         ****         {
+  65:CLI.c         ****             case '\n'   : break; // newline - ignore
+  66:CLI.c         ****             case '\r'   : // CR save the count and return
+  67:CLI.c         ****                 ParseCommand(InBuff);
+  68:CLI.c         ****                 ClearInputBufferN(InBuffCnt);
+  69:CLI.c         ****                 break;
+  70:CLI.c         ****             case 0x7f   :   // alt back space
+  71:CLI.c         ****             case 0x08   :   // back space - back up one space 
+  72:CLI.c         ****                 if(InBuffCnt > 0)
+  73:CLI.c         ****                 {
+  74:CLI.c         ****                     InBuffCnt--;  
+  75:CLI.c         ****                     InBuff[InBuffCnt] = 0;  // back fill with zeros
+  76:CLI.c         ****                     break;
+  77:CLI.c         ****                 }
+  78:CLI.c         ****             default     :
+  79:CLI.c         ****                 if(InBuffCnt >= IN_BUFF_LEN)    // Message is too long! 
+  80:CLI.c         ****                 {
+  81:CLI.c         ****                     PutStr(CmdTooLong);
+  82:CLI.c         ****                     ClearInputBufferN(InBuffCnt);
+  83:CLI.c         ****                 }
+  84:CLI.c         ****                 InBuff[InBuffCnt] = data;
+  85:CLI.c         ****                 InBuffCnt++;
+  86:CLI.c         ****                 break;
+  87:CLI.c         ****         }
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 3
+
+
+  88:CLI.c         ****     }
+  89:CLI.c         **** }
+  90:CLI.c         **** 
+  91:CLI.c         **** void ClearInputBufferN(uint8_t N)
+  92:CLI.c         **** {
+  93:CLI.c         ****     
+  94:CLI.c         ****     for(uint8_t i = 0; i < N; i++)
+  95:CLI.c         ****     {
+  96:CLI.c         ****         InBuff[i] = 0;
+  97:CLI.c         ****     }
+  98:CLI.c         ****     InBuffCnt = 0;
+  99:CLI.c         **** }
+ 100:CLI.c         **** 
+ 101:CLI.c         **** static inline char *getWord(char *buf)
+ 102:CLI.c         **** {
+ 103:CLI.c         ****     static char *ptr = NULL;    // static variable  is rememberd from call to call
+ 104:CLI.c         ****     char *start, *scan;
+ 105:CLI.c         ****     char term = ' ';
+ 106:CLI.c         ****     
+ 107:CLI.c         ****     if(buf != NULL)     // takes care of the command (key) word
+ 108:CLI.c         ****     {
+ 109:CLI.c         ****         ptr = buf;
+ 110:CLI.c         ****     }
+ 111:CLI.c         ****     while (((*ptr == ' ') || (*ptr == '\t')) && (*ptr != '\0')) // skip through spaces and tabs whi
+ 112:CLI.c         ****     {
+ 113:CLI.c         ****         ptr++;
+ 114:CLI.c         ****     }
+ 115:CLI.c         ****     if(*ptr == '\0')    // if we get a \0 then done
+ 116:CLI.c         ****     {
+ 117:CLI.c         ****         return NULL;
+ 118:CLI.c         ****     }
+ 119:CLI.c         ****     if((*ptr == '"') || (*ptr == '\''))     // parse stuff between quotes "" or ''
+ 120:CLI.c         ****     {
+ 121:CLI.c         ****         term = *ptr;
+ 122:CLI.c         ****         ptr++;
+ 123:CLI.c         ****     }
+ 124:CLI.c         ****     start = ptr;
+ 125:CLI.c         ****     while (*ptr != '\0')        
+ 126:CLI.c         ****     {
+ 127:CLI.c         ****         if(*ptr == '\\')
+ 128:CLI.c         ****         {
+ 129:CLI.c         ****             for(scan = ptr; *scan != '\0'; scan++)
+ 130:CLI.c         ****             {
+ 131:CLI.c         ****                 *scan = *(scan+1);
+ 132:CLI.c         ****             }
+ 133:CLI.c         ****             ptr++;
+ 134:CLI.c         ****             continue;
+ 135:CLI.c         ****         }
+ 136:CLI.c         ****         if((*ptr == term) || ((term == ' ') && (*ptr == '\t')))
+ 137:CLI.c         ****         {
+ 138:CLI.c         ****             *ptr = '\0';        // put the null termination in the argument list (this is how the a
+ 139:CLI.c         ****             ptr++;
+ 140:CLI.c         ****             return start;
+ 141:CLI.c         ****         }
+ 142:CLI.c         ****         ptr++;
+ 143:CLI.c         ****     }
+ 144:CLI.c         ****     if (ptr == start)       // there were no arguments
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 4
+
+
+ 145:CLI.c         ****     {
+ 146:CLI.c         ****         return NULL;
+ 147:CLI.c         ****     }
+ 148:CLI.c         ****     return start;
+ 149:CLI.c         **** }
+ 150:CLI.c         **** 
+ 151:CLI.c         **** int ParseCommand(char *buf)
+ 152:CLI.c         **** {
+ 153:CLI.c         **** 	int argc;
+ 154:CLI.c         **** 	char *argv[NUM_OF_ARGS];
+ 155:CLI.c         **** 	char *w;
+ 156:CLI.c         **** 	
+ 157:CLI.c         **** 	if(buf[0] == 0)
+ 158:CLI.c         **** 	{
+ 159:CLI.c         ****         PutStr(Prompt);
+ 160:CLI.c         **** 		return 0;	// no command or arguments
+ 161:CLI.c         **** 	}
+ 162:CLI.c         **** 
+ 163:CLI.c         **** 	argc = 0;
+ 164:CLI.c         **** 	w = getWord(buf);
+ 165:CLI.c         **** 	while((argc < NUM_OF_ARGS) && (w != NULL))
+ 166:CLI.c         **** 	{
+ 167:CLI.c         ****         argv[argc++] = w;
+ 168:CLI.c         **** 		w = getWord(NULL);
+ 169:CLI.c         **** 	}
+ 170:CLI.c         **** 
+ 171:CLI.c         **** 	const char*  PstrPtr;
+ 172:CLI.c         **** 	
+ 173:CLI.c         **** 	// compare the first word with the CmdName Key word in the CMD Parse Table
+ 174:CLI.c         **** 	for(uint8_t i = 0; i < NUMOFCMDS; i++)
+ 175:CLI.c         **** 	{
+ 176:CLI.c         **** 		PstrPtr = CMD_Parse_Table[i].name;
+ 177:CLI.c         **** 		if(strcmp(argv[0], PstrPtr) == 0)
+ 178:CLI.c         **** 		{
+ 179:CLI.c         **** 			int rval = CMD_Parse_Table[i].func(argc, argv);	// call the command function
+ 180:CLI.c         **** 
+ 181:CLI.c         ****             PutStr(Prompt);
+ 182:CLI.c         ****             return rval;
+ 183:CLI.c         **** 		}
+ 184:CLI.c         **** 	}
+ 185:CLI.c         **** 	PutStr(BadMsgString);
+ 186:CLI.c         ****     PutStr(Prompt);
+ 187:CLI.c         **** 	return -1;
+ 188:CLI.c         **** }
+ 189:CLI.c         **** 
+ 190:CLI.c         **** CLI_CMD(CLI_Test)
+ 191:CLI.c         **** {
+  28              		.loc 1 191 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 5
+
+
+  38              		.cfi_offset 14, -4
+  39 0002 0546     		mov	r5, r0
+  40 0004 0E46     		mov	r6, r1
+ 192:CLI.c         ****     PutChar('\r');
+  41              		.loc 1 192 0
+  42 0006 0D20     		movs	r0, #13
+  43              	.LVL1:
+  44 0008 FFF7FEFF 		bl	USB_PutChar
+  45              	.LVL2:
+  46              	.LBB8:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  47              		.loc 1 193 0
+  48 000c 0024     		movs	r4, #0
+  49 000e 05E0     		b	.L2
+  50              	.LVL3:
+  51              	.L3:
+ 194:CLI.c         ****     {
+ 195:CLI.c         ****         PutStr(argv[i]);
+  52              		.loc 1 195 0 discriminator 3
+  53 0010 56F82400 		ldr	r0, [r6, r4, lsl #2]
+  54 0014 FFF7FEFF 		bl	USB_PutString
+  55              	.LVL4:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  56              		.loc 1 193 0 discriminator 3
+  57 0018 0134     		adds	r4, r4, #1
+  58              	.LVL5:
+  59 001a E4B2     		uxtb	r4, r4
+  60              	.LVL6:
+  61              	.L2:
+ 193:CLI.c         ****     for(uint8_t i = 0; i < argc; i++)
+  62              		.loc 1 193 0 is_stmt 0 discriminator 1
+  63 001c AC42     		cmp	r4, r5
+  64 001e F7DB     		blt	.L3
+  65              	.LBE8:
+ 196:CLI.c         ****     }
+ 197:CLI.c         ****     return 0;
+ 198:CLI.c         **** }
+  66              		.loc 1 198 0 is_stmt 1
+  67 0020 0020     		movs	r0, #0
+  68 0022 70BD     		pop	{r4, r5, r6, pc}
+  69              		.cfi_endproc
+  70              	.LFE71:
+  71              		.size	CLI_Test, .-CLI_Test
+  72              		.section	.text.HelpScreen,"ax",%progbits
+  73              		.align	2
+  74              		.global	HelpScreen
+  75              		.thumb
+  76              		.thumb_func
+  77              		.type	HelpScreen, %function
+  78              	HelpScreen:
+  79              	.LFB72:
+ 199:CLI.c         **** 
+ 200:CLI.c         **** CLI_CMD(HelpScreen)
+ 201:CLI.c         **** {
+  80              		.loc 1 201 0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 6
+
+
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84              	.LVL7:
+  85 0000 38B5     		push	{r3, r4, r5, lr}
+  86              		.cfi_def_cfa_offset 16
+  87              		.cfi_offset 3, -16
+  88              		.cfi_offset 4, -12
+  89              		.cfi_offset 5, -8
+  90              		.cfi_offset 14, -4
+  91              	.LVL8:
+ 202:CLI.c         ****     UNUSED_ARG(argc);UNUSED_ARG(argv);
+ 203:CLI.c         ****     
+ 204:CLI.c         ****     const char * const *pc = HelpHeader;
+  92              		.loc 1 204 0
+  93 0002 154C     		ldr	r4, .L13
+ 205:CLI.c         ****     for (; *pc; pc++)
+  94              		.loc 1 205 0
+  95 0004 05E0     		b	.L6
+  96              	.LVL9:
+  97              	.L7:
+ 206:CLI.c         ****     {
+ 207:CLI.c         ****         PutStr(*pc);
+  98              		.loc 1 207 0 discriminator 2
+  99 0006 FFF7FEFF 		bl	USB_PutString
+ 100              	.LVL10:
+ 208:CLI.c         ****         PutChar('\r');
+ 101              		.loc 1 208 0 discriminator 2
+ 102 000a 0D20     		movs	r0, #13
+ 103 000c FFF7FEFF 		bl	USB_PutChar
+ 104              	.LVL11:
+ 205:CLI.c         ****     for (; *pc; pc++)
+ 105              		.loc 1 205 0 discriminator 2
+ 106 0010 0434     		adds	r4, r4, #4
+ 107              	.LVL12:
+ 108              	.L6:
+ 205:CLI.c         ****     for (; *pc; pc++)
+ 109              		.loc 1 205 0 is_stmt 0 discriminator 1
+ 110 0012 2068     		ldr	r0, [r4]
+ 111 0014 0028     		cmp	r0, #0
+ 112 0016 F6D1     		bne	.L7
+ 113 0018 0025     		movs	r5, #0
+ 114 001a 104C     		ldr	r4, .L13+4
+ 115              	.LVL13:
+ 116 001c 18E0     		b	.L8
+ 117              	.LVL14:
+ 118              	.L11:
+ 119              	.LBB9:
+ 209:CLI.c         ****     }
+ 210:CLI.c         ****     const struct CmdDesc *pcd = CMD_Parse_Table;
+ 211:CLI.c         ****     for(uint8_t i = 0;i < NUMOFCMDS; pcd++, i++)
+ 212:CLI.c         ****     {
+ 213:CLI.c         **** //        uint16_t clen = strlen(pcd->name);
+ 214:CLI.c         **** //        maybe add the "tab" spacing so the help message looks nice...        
+ 215:CLI.c         ****         PutStr(pcd->name);
+ 120              		.loc 1 215 0 is_stmt 1
+ 121 001e 2068     		ldr	r0, [r4]
+ 122 0020 FFF7FEFF 		bl	USB_PutString
+ 123              	.LVL15:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 7
+
+
+ 216:CLI.c         ****         if(pcd->args) 
+ 124              		.loc 1 216 0
+ 125 0024 6368     		ldr	r3, [r4, #4]
+ 126 0026 2BB1     		cbz	r3, .L9
+ 217:CLI.c         ****         {
+ 218:CLI.c         ****             PutChar(' ');
+ 127              		.loc 1 218 0
+ 128 0028 2020     		movs	r0, #32
+ 129 002a FFF7FEFF 		bl	USB_PutChar
+ 130              	.LVL16:
+ 219:CLI.c         ****             PutStr(pcd->args);
+ 131              		.loc 1 219 0
+ 132 002e 6068     		ldr	r0, [r4, #4]
+ 133 0030 FFF7FEFF 		bl	USB_PutString
+ 134              	.LVL17:
+ 135              	.L9:
+ 220:CLI.c         ****         }
+ 221:CLI.c         ****         if(pcd->desc)
+ 136              		.loc 1 221 0
+ 137 0034 A368     		ldr	r3, [r4, #8]
+ 138 0036 2BB1     		cbz	r3, .L10
+ 222:CLI.c         ****         {
+ 223:CLI.c         ****             PutStr(" - ");
+ 139              		.loc 1 223 0
+ 140 0038 0948     		ldr	r0, .L13+8
+ 141 003a FFF7FEFF 		bl	USB_PutString
+ 142              	.LVL18:
+ 224:CLI.c         ****             PutStr(pcd->desc);
+ 143              		.loc 1 224 0
+ 144 003e A068     		ldr	r0, [r4, #8]
+ 145 0040 FFF7FEFF 		bl	USB_PutString
+ 146              	.LVL19:
+ 147              	.L10:
+ 225:CLI.c         ****         }
+ 226:CLI.c         ****         PutChar('\r');
+ 148              		.loc 1 226 0 discriminator 2
+ 149 0044 0D20     		movs	r0, #13
+ 150 0046 FFF7FEFF 		bl	USB_PutChar
+ 151              	.LVL20:
+ 211:CLI.c         ****     {
+ 152              		.loc 1 211 0 discriminator 2
+ 153 004a 1034     		adds	r4, r4, #16
+ 154              	.LVL21:
+ 155 004c 0135     		adds	r5, r5, #1
+ 156              	.LVL22:
+ 157 004e EDB2     		uxtb	r5, r5
+ 158              	.LVL23:
+ 159              	.L8:
+ 211:CLI.c         ****     {
+ 160              		.loc 1 211 0 is_stmt 0 discriminator 1
+ 161 0050 0B2D     		cmp	r5, #11
+ 162 0052 E4D9     		bls	.L11
+ 163              	.LBE9:
+ 227:CLI.c         ****     }
+ 228:CLI.c         ****     return 0;
+ 229:CLI.c         ****  }
+ 164              		.loc 1 229 0 is_stmt 1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 8
+
+
+ 165 0054 0020     		movs	r0, #0
+ 166 0056 38BD     		pop	{r3, r4, r5, pc}
+ 167              	.LVL24:
+ 168              	.L14:
+ 169              		.align	2
+ 170              	.L13:
+ 171 0058 00000000 		.word	.LANCHOR0
+ 172 005c 20000000 		.word	.LANCHOR0+32
+ 173 0060 00000000 		.word	.LC0
+ 174              		.cfi_endproc
+ 175              	.LFE72:
+ 176              		.size	HelpScreen, .-HelpScreen
+ 177              		.section	.text.Echo_Cmd,"ax",%progbits
+ 178              		.align	2
+ 179              		.global	Echo_Cmd
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.type	Echo_Cmd, %function
+ 183              	Echo_Cmd:
+ 184              	.LFB73:
+ 230:CLI.c         **** 
+ 231:CLI.c         **** CLI_CMD(Echo_Cmd)
+ 232:CLI.c         **** {
+ 185              		.loc 1 232 0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              	.LVL25:
+ 190 0000 10B5     		push	{r4, lr}
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 4, -8
+ 193              		.cfi_offset 14, -4
+ 233:CLI.c         ****         if (argc < 2)
+ 194              		.loc 1 233 0
+ 195 0002 0128     		cmp	r0, #1
+ 196 0004 0EDC     		bgt	.L16
+ 234:CLI.c         ****     {
+ 235:CLI.c         ****         PutStr("Echo is ");
+ 197              		.loc 1 235 0
+ 198 0006 1348     		ldr	r0, .L23
+ 199              	.LVL26:
+ 200 0008 FFF7FEFF 		bl	USB_PutString
+ 201              	.LVL27:
+ 202              	.LBB10:
+ 203              	.LBB11:
+  46:CLI.c         **** }
+ 204              		.loc 1 46 0
+ 205 000c 124B     		ldr	r3, .L23+4
+ 206 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 207              	.LBE11:
+ 208              	.LBE10:
+ 236:CLI.c         ****         PutStr(GetCliEcho() ? "ON" : "OFF");
+ 209              		.loc 1 236 0
+ 210 0010 0BB1     		cbz	r3, .L21
+ 211 0012 1248     		ldr	r0, .L23+8
+ 212 0014 00E0     		b	.L17
+ 213              	.L21:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 9
+
+
+ 214 0016 1248     		ldr	r0, .L23+12
+ 215              	.L17:
+ 216              		.loc 1 236 0 is_stmt 0 discriminator 4
+ 217 0018 FFF7FEFF 		bl	USB_PutString
+ 218              	.LVL28:
+ 237:CLI.c         ****         PutChar('\r');
+ 219              		.loc 1 237 0 is_stmt 1 discriminator 4
+ 220 001c 0D20     		movs	r0, #13
+ 221 001e FFF7FEFF 		bl	USB_PutChar
+ 222              	.LVL29:
+ 223 0022 15E0     		b	.L18
+ 224              	.LVL30:
+ 225              	.L16:
+ 238:CLI.c         ****     }
+ 239:CLI.c         ****     else {
+ 240:CLI.c         ****         if(strcmp(argv[1], "off") == 0) SetCliEcho(false);
+ 226              		.loc 1 240 0
+ 227 0024 4C68     		ldr	r4, [r1, #4]
+ 228 0026 0F49     		ldr	r1, .L23+16
+ 229              	.LVL31:
+ 230 0028 2046     		mov	r0, r4
+ 231              	.LVL32:
+ 232 002a FFF7FEFF 		bl	strcmp
+ 233              	.LVL33:
+ 234 002e 18B9     		cbnz	r0, .L19
+ 235              	.LVL34:
+ 236              	.LBB12:
+ 237              	.LBB13:
+  42:CLI.c         **** }
+ 238              		.loc 1 42 0
+ 239 0030 0022     		movs	r2, #0
+ 240 0032 094B     		ldr	r3, .L23+4
+ 241 0034 1A70     		strb	r2, [r3]
+ 242 0036 0BE0     		b	.L18
+ 243              	.LVL35:
+ 244              	.L19:
+ 245              	.LBE13:
+ 246              	.LBE12:
+ 241:CLI.c         ****         else if(strcmp(argv[1], "on") == 0) SetCliEcho(true);
+ 247              		.loc 1 241 0
+ 248 0038 0B49     		ldr	r1, .L23+20
+ 249 003a 2046     		mov	r0, r4
+ 250 003c FFF7FEFF 		bl	strcmp
+ 251              	.LVL36:
+ 252 0040 18B9     		cbnz	r0, .L20
+ 253              	.LVL37:
+ 254              	.LBB14:
+ 255              	.LBB15:
+  42:CLI.c         **** }
+ 256              		.loc 1 42 0
+ 257 0042 0122     		movs	r2, #1
+ 258 0044 044B     		ldr	r3, .L23+4
+ 259 0046 1A70     		strb	r2, [r3]
+ 260 0048 02E0     		b	.L18
+ 261              	.LVL38:
+ 262              	.L20:
+ 263              	.LBE15:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 10
+
+
+ 264              	.LBE14:
+ 242:CLI.c         ****         else 
+ 243:CLI.c         ****         {            // error message
+ 244:CLI.c         ****             PutStr("Usage echo 'on'/'off'");
+ 265              		.loc 1 244 0
+ 266 004a 0848     		ldr	r0, .L23+24
+ 267 004c FFF7FEFF 		bl	USB_PutString
+ 268              	.LVL39:
+ 269              	.L18:
+ 245:CLI.c         ****         }
+ 246:CLI.c         ****     }
+ 247:CLI.c         ****     return 0;
+ 248:CLI.c         **** }
+ 270              		.loc 1 248 0
+ 271 0050 0020     		movs	r0, #0
+ 272 0052 10BD     		pop	{r4, pc}
+ 273              	.L24:
+ 274              		.align	2
+ 275              	.L23:
+ 276 0054 0C000000 		.word	.LC3
+ 277 0058 00000000 		.word	.LANCHOR1
+ 278 005c 04000000 		.word	.LC1
+ 279 0060 08000000 		.word	.LC2
+ 280 0064 18000000 		.word	.LC4
+ 281 0068 1C000000 		.word	.LC5
+ 282 006c 20000000 		.word	.LC6
+ 283              		.cfi_endproc
+ 284              	.LFE73:
+ 285              		.size	Echo_Cmd, .-Echo_Cmd
+ 286              		.section	.text.UsbCfg_Cmd,"ax",%progbits
+ 287              		.align	2
+ 288              		.global	UsbCfg_Cmd
+ 289              		.thumb
+ 290              		.thumb_func
+ 291              		.type	UsbCfg_Cmd, %function
+ 292              	UsbCfg_Cmd:
+ 293              	.LFB74:
+ 249:CLI.c         **** 
+ 250:CLI.c         **** CLI_CMD(UsbCfg_Cmd)
+ 251:CLI.c         **** {
+ 294              		.loc 1 251 0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              	.LVL40:
+ 299 0000 10B5     		push	{r4, lr}
+ 300              		.cfi_def_cfa_offset 8
+ 301              		.cfi_offset 4, -8
+ 302              		.cfi_offset 14, -4
+ 252:CLI.c         ****     UNUSED_ARG(argc);UNUSED_ARG(argv); 
+ 253:CLI.c         ****     uint8 temp;
+ 254:CLI.c         ****     temp = USBUART_GetConfiguration();
+ 303              		.loc 1 254 0
+ 304 0002 FFF7FEFF 		bl	USBUART_GetConfiguration
+ 305              	.LVL41:
+ 255:CLI.c         ****     sprintf(msg, "USB Config = 0x%X\n", temp);
+ 306              		.loc 1 255 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 11
+
+
+ 307 0006 054C     		ldr	r4, .L27
+ 308 0008 0246     		mov	r2, r0
+ 309 000a 0549     		ldr	r1, .L27+4
+ 310 000c 2046     		mov	r0, r4
+ 311              	.LVL42:
+ 312 000e FFF7FEFF 		bl	sprintf
+ 313              	.LVL43:
+ 256:CLI.c         ****     PutStr(msg);
+ 314              		.loc 1 256 0
+ 315 0012 2046     		mov	r0, r4
+ 316 0014 FFF7FEFF 		bl	USB_PutString
+ 317              	.LVL44:
+ 257:CLI.c         ****     return 0;
+ 258:CLI.c         **** }
+ 318              		.loc 1 258 0
+ 319 0018 0020     		movs	r0, #0
+ 320 001a 10BD     		pop	{r4, pc}
+ 321              	.L28:
+ 322              		.align	2
+ 323              	.L27:
+ 324 001c 00000000 		.word	msg
+ 325 0020 38000000 		.word	.LC7
+ 326              		.cfi_endproc
+ 327              	.LFE74:
+ 328              		.size	UsbCfg_Cmd, .-UsbCfg_Cmd
+ 329              		.section	.text.ClearInputBufferN,"ax",%progbits
+ 330              		.align	2
+ 331              		.global	ClearInputBufferN
+ 332              		.thumb
+ 333              		.thumb_func
+ 334              		.type	ClearInputBufferN, %function
+ 335              	ClearInputBufferN:
+ 336              	.LFB68:
+  92:CLI.c         ****     
+ 337              		.loc 1 92 0
+ 338              		.cfi_startproc
+ 339              		@ args = 0, pretend = 0, frame = 0
+ 340              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341              		@ link register save eliminated.
+ 342              	.LVL45:
+ 343              	.LBB16:
+  94:CLI.c         ****     {
+ 344              		.loc 1 94 0
+ 345 0000 0023     		movs	r3, #0
+ 346 0002 04E0     		b	.L30
+ 347              	.LVL46:
+ 348              	.L31:
+  96:CLI.c         ****     }
+ 349              		.loc 1 96 0 discriminator 3
+ 350 0004 0021     		movs	r1, #0
+ 351 0006 054A     		ldr	r2, .L32
+ 352 0008 D154     		strb	r1, [r2, r3]
+  94:CLI.c         ****     {
+ 353              		.loc 1 94 0 discriminator 3
+ 354 000a 0133     		adds	r3, r3, #1
+ 355              	.LVL47:
+ 356 000c DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 12
+
+
+ 357              	.LVL48:
+ 358              	.L30:
+  94:CLI.c         ****     {
+ 359              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 360 000e 8342     		cmp	r3, r0
+ 361 0010 F8D3     		bcc	.L31
+ 362              	.LBE16:
+  98:CLI.c         **** }
+ 363              		.loc 1 98 0 is_stmt 1
+ 364 0012 0022     		movs	r2, #0
+ 365 0014 024B     		ldr	r3, .L32+4
+ 366              	.LVL49:
+ 367 0016 1A70     		strb	r2, [r3]
+ 368 0018 7047     		bx	lr
+ 369              	.L33:
+ 370 001a 00BF     		.align	2
+ 371              	.L32:
+ 372 001c 00000000 		.word	InBuff
+ 373 0020 00000000 		.word	InBuffCnt
+ 374              		.cfi_endproc
+ 375              	.LFE68:
+ 376              		.size	ClearInputBufferN, .-ClearInputBufferN
+ 377              		.section	.text.Init_CLI,"ax",%progbits
+ 378              		.align	2
+ 379              		.global	Init_CLI
+ 380              		.thumb
+ 381              		.thumb_func
+ 382              		.type	Init_CLI, %function
+ 383              	Init_CLI:
+ 384              	.LFB66:
+  50:CLI.c         ****     ClearInputBufferN(IN_BUFF_LEN);
+ 385              		.loc 1 50 0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 0
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389 0000 08B5     		push	{r3, lr}
+ 390              		.cfi_def_cfa_offset 8
+ 391              		.cfi_offset 3, -8
+ 392              		.cfi_offset 14, -4
+  51:CLI.c         ****     // set the ECHO flag 
+ 393              		.loc 1 51 0
+ 394 0002 5020     		movs	r0, #80
+ 395 0004 FFF7FEFF 		bl	ClearInputBufferN
+ 396              	.LVL50:
+  53:CLI.c         ****     // HelpScreen(0, NULL);     
+ 397              		.loc 1 53 0
+ 398 0008 0122     		movs	r2, #1
+ 399 000a 014B     		ldr	r3, .L36
+ 400 000c 1A70     		strb	r2, [r3]
+ 401 000e 08BD     		pop	{r3, pc}
+ 402              	.L37:
+ 403              		.align	2
+ 404              	.L36:
+ 405 0010 00000000 		.word	.LANCHOR1
+ 406              		.cfi_endproc
+ 407              	.LFE66:
+ 408              		.size	Init_CLI, .-Init_CLI
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 13
+
+
+ 409              		.section	.text.ParseCommand,"ax",%progbits
+ 410              		.align	2
+ 411              		.global	ParseCommand
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.type	ParseCommand, %function
+ 415              	ParseCommand:
+ 416              	.LFB70:
+ 152:CLI.c         **** 	int argc;
+ 417              		.loc 1 152 0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 120
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421              	.LVL51:
+ 422 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 423              		.cfi_def_cfa_offset 20
+ 424              		.cfi_offset 4, -20
+ 425              		.cfi_offset 5, -16
+ 426              		.cfi_offset 6, -12
+ 427              		.cfi_offset 7, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 9FB0     		sub	sp, sp, #124
+ 430              		.cfi_def_cfa_offset 144
+ 157:CLI.c         **** 	{
+ 431              		.loc 1 157 0
+ 432 0004 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 433 0006 23B9     		cbnz	r3, .L39
+ 159:CLI.c         **** 		return 0;	// no command or arguments
+ 434              		.loc 1 159 0
+ 435 0008 6448     		ldr	r0, .L88
+ 436              	.LVL52:
+ 437 000a FFF7FEFF 		bl	USB_PutString
+ 438              	.LVL53:
+ 160:CLI.c         **** 	}
+ 439              		.loc 1 160 0
+ 440 000e 0020     		movs	r0, #0
+ 441 0010 C2E0     		b	.L40
+ 442              	.LVL54:
+ 443              	.L39:
+ 444              	.LBB23:
+ 445              	.LBB24:
+ 107:CLI.c         ****     {
+ 446              		.loc 1 107 0
+ 447 0012 28B1     		cbz	r0, .L41
+ 109:CLI.c         ****     }
+ 448              		.loc 1 109 0
+ 449 0014 624B     		ldr	r3, .L88+4
+ 450 0016 1860     		str	r0, [r3]
+ 451 0018 02E0     		b	.L41
+ 452              	.LVL55:
+ 453              	.L44:
+ 113:CLI.c         ****     }
+ 454              		.loc 1 113 0
+ 455 001a 0133     		adds	r3, r3, #1
+ 456 001c 604A     		ldr	r2, .L88+4
+ 457 001e 1360     		str	r3, [r2]
+ 458              	.L41:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 14
+
+
+ 111:CLI.c         ****     {
+ 459              		.loc 1 111 0
+ 460 0020 5F4B     		ldr	r3, .L88+4
+ 461 0022 1B68     		ldr	r3, [r3]
+ 462 0024 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 463 0026 2028     		cmp	r0, #32
+ 464 0028 01D0     		beq	.L42
+ 465 002a 0928     		cmp	r0, #9
+ 466 002c 01D1     		bne	.L43
+ 467              	.L42:
+ 468 002e 0028     		cmp	r0, #0
+ 469 0030 F3D1     		bne	.L44
+ 470              	.L43:
+ 115:CLI.c         ****     {
+ 471              		.loc 1 115 0
+ 472 0032 0028     		cmp	r0, #0
+ 473 0034 32D0     		beq	.L76
+ 119:CLI.c         ****     {
+ 474              		.loc 1 119 0
+ 475 0036 2228     		cmp	r0, #34
+ 476 0038 01D0     		beq	.L46
+ 477 003a 2728     		cmp	r0, #39
+ 478 003c 03D1     		bne	.L77
+ 479              	.L46:
+ 480              	.LVL56:
+ 122:CLI.c         ****     }
+ 481              		.loc 1 122 0
+ 482 003e 0133     		adds	r3, r3, #1
+ 483 0040 574A     		ldr	r2, .L88+4
+ 484 0042 1360     		str	r3, [r2]
+ 485 0044 00E0     		b	.L47
+ 486              	.LVL57:
+ 487              	.L77:
+ 105:CLI.c         ****     
+ 488              		.loc 1 105 0
+ 489 0046 2020     		movs	r0, #32
+ 490              	.LVL58:
+ 491              	.L47:
+ 124:CLI.c         ****     while (*ptr != '\0')        
+ 492              		.loc 1 124 0
+ 493 0048 554B     		ldr	r3, .L88+4
+ 494 004a 1C68     		ldr	r4, [r3]
+ 495              	.LVL59:
+ 496 004c 1EE0     		b	.L48
+ 497              	.L55:
+ 127:CLI.c         ****         {
+ 498              		.loc 1 127 0
+ 499 004e 5C2B     		cmp	r3, #92
+ 500 0050 0CD1     		bne	.L85
+ 501 0052 03E0     		b	.L78
+ 502              	.LVL60:
+ 503              	.L51:
+ 131:CLI.c         ****             }
+ 504              		.loc 1 131 0
+ 505 0054 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 506 0056 03F8012B 		strb	r2, [r3], #1
+ 507              	.LVL61:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 15
+
+
+ 508 005a 00E0     		b	.L49
+ 509              	.LVL62:
+ 510              	.L78:
+ 127:CLI.c         ****         {
+ 511              		.loc 1 127 0
+ 512 005c 0B46     		mov	r3, r1
+ 513              	.L49:
+ 514              	.LVL63:
+ 129:CLI.c         ****             {
+ 515              		.loc 1 129 0
+ 516 005e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 517 0060 002A     		cmp	r2, #0
+ 518 0062 F7D1     		bne	.L51
+ 133:CLI.c         ****             continue;
+ 519              		.loc 1 133 0
+ 520 0064 0131     		adds	r1, r1, #1
+ 521 0066 4E4B     		ldr	r3, .L88+4
+ 522              	.LVL64:
+ 523 0068 1960     		str	r1, [r3]
+ 524 006a 0FE0     		b	.L48
+ 525              	.L85:
+ 136:CLI.c         ****         {
+ 526              		.loc 1 136 0
+ 527 006c 8342     		cmp	r3, r0
+ 528 006e 03D0     		beq	.L53
+ 529 0070 2028     		cmp	r0, #32
+ 530 0072 08D1     		bne	.L54
+ 531 0074 092B     		cmp	r3, #9
+ 532 0076 06D1     		bne	.L54
+ 533              	.L53:
+ 138:CLI.c         ****             ptr++;
+ 534              		.loc 1 138 0
+ 535 0078 0023     		movs	r3, #0
+ 536 007a 01F8013B 		strb	r3, [r1], #1
+ 139:CLI.c         ****             return start;
+ 537              		.loc 1 139 0
+ 538 007e 484B     		ldr	r3, .L88+4
+ 539 0080 1960     		str	r1, [r3]
+ 140:CLI.c         ****         }
+ 540              		.loc 1 140 0
+ 541 0082 2346     		mov	r3, r4
+ 542 0084 0DE0     		b	.L45
+ 543              	.L54:
+ 142:CLI.c         ****     }
+ 544              		.loc 1 142 0
+ 545 0086 0131     		adds	r1, r1, #1
+ 546 0088 454B     		ldr	r3, .L88+4
+ 547 008a 1960     		str	r1, [r3]
+ 548              	.L48:
+ 125:CLI.c         ****     {
+ 549              		.loc 1 125 0
+ 550 008c 444B     		ldr	r3, .L88+4
+ 551 008e 1968     		ldr	r1, [r3]
+ 552 0090 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 553 0092 002B     		cmp	r3, #0
+ 554 0094 DBD1     		bne	.L55
+ 144:CLI.c         ****     {
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 16
+
+
+ 555              		.loc 1 144 0
+ 556 0096 8C42     		cmp	r4, r1
+ 557 0098 02D1     		bne	.L79
+ 558 009a 02E0     		b	.L45
+ 559              	.LVL65:
+ 560              	.L76:
+ 117:CLI.c         ****     }
+ 561              		.loc 1 117 0
+ 562 009c 0023     		movs	r3, #0
+ 563 009e 00E0     		b	.L45
+ 564              	.LVL66:
+ 565              	.L79:
+ 148:CLI.c         **** }
+ 566              		.loc 1 148 0
+ 567 00a0 2346     		mov	r3, r4
+ 568              	.LVL67:
+ 569              	.L45:
+ 570              	.LBE24:
+ 571              	.LBE23:
+ 163:CLI.c         **** 	w = getWord(buf);
+ 572              		.loc 1 163 0
+ 573 00a2 0025     		movs	r5, #0
+ 165:CLI.c         **** 	{
+ 574              		.loc 1 165 0
+ 575 00a4 4BE0     		b	.L56
+ 576              	.LVL68:
+ 577              	.L73:
+ 167:CLI.c         **** 		w = getWord(NULL);
+ 578              		.loc 1 167 0
+ 579 00a6 6C1C     		adds	r4, r5, #1
+ 580              	.LVL69:
+ 581 00a8 1EAA     		add	r2, sp, #120
+ 582 00aa 02EB8505 		add	r5, r2, r5, lsl #2
+ 583 00ae 45F8783C 		str	r3, [r5, #-120]
+ 584              	.LVL70:
+ 585 00b2 02E0     		b	.L57
+ 586              	.LVL71:
+ 587              	.L60:
+ 588              	.LBB25:
+ 589              	.LBB26:
+ 113:CLI.c         ****     }
+ 590              		.loc 1 113 0
+ 591 00b4 0133     		adds	r3, r3, #1
+ 592 00b6 3A4A     		ldr	r2, .L88+4
+ 593 00b8 1360     		str	r3, [r2]
+ 594              	.L57:
+ 111:CLI.c         ****     {
+ 595              		.loc 1 111 0
+ 596 00ba 394B     		ldr	r3, .L88+4
+ 597 00bc 1B68     		ldr	r3, [r3]
+ 598 00be 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 599 00c0 2028     		cmp	r0, #32
+ 600 00c2 01D0     		beq	.L58
+ 601 00c4 0928     		cmp	r0, #9
+ 602 00c6 01D1     		bne	.L59
+ 603              	.L58:
+ 604 00c8 0028     		cmp	r0, #0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 17
+
+
+ 605 00ca F3D1     		bne	.L60
+ 606              	.L59:
+ 115:CLI.c         ****     {
+ 607              		.loc 1 115 0
+ 608 00cc 0028     		cmp	r0, #0
+ 609 00ce 32D0     		beq	.L80
+ 119:CLI.c         ****     {
+ 610              		.loc 1 119 0
+ 611 00d0 2228     		cmp	r0, #34
+ 612 00d2 01D0     		beq	.L62
+ 613 00d4 2728     		cmp	r0, #39
+ 614 00d6 03D1     		bne	.L81
+ 615              	.L62:
+ 616              	.LVL72:
+ 122:CLI.c         ****     }
+ 617              		.loc 1 122 0
+ 618 00d8 0133     		adds	r3, r3, #1
+ 619 00da 314A     		ldr	r2, .L88+4
+ 620 00dc 1360     		str	r3, [r2]
+ 621 00de 00E0     		b	.L63
+ 622              	.LVL73:
+ 623              	.L81:
+ 105:CLI.c         ****     
+ 624              		.loc 1 105 0
+ 625 00e0 2020     		movs	r0, #32
+ 626              	.LVL74:
+ 627              	.L63:
+ 124:CLI.c         ****     while (*ptr != '\0')        
+ 628              		.loc 1 124 0
+ 629 00e2 2F4B     		ldr	r3, .L88+4
+ 630 00e4 1D68     		ldr	r5, [r3]
+ 631              	.LVL75:
+ 632 00e6 1EE0     		b	.L64
+ 633              	.LVL76:
+ 634              	.L71:
+ 127:CLI.c         ****         {
+ 635              		.loc 1 127 0
+ 636 00e8 5C2B     		cmp	r3, #92
+ 637 00ea 0CD1     		bne	.L86
+ 638 00ec 03E0     		b	.L82
+ 639              	.LVL77:
+ 640              	.L67:
+ 131:CLI.c         ****             }
+ 641              		.loc 1 131 0
+ 642 00ee 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 643 00f0 03F8012B 		strb	r2, [r3], #1
+ 644              	.LVL78:
+ 645 00f4 00E0     		b	.L65
+ 646              	.LVL79:
+ 647              	.L82:
+ 127:CLI.c         ****         {
+ 648              		.loc 1 127 0
+ 649 00f6 0B46     		mov	r3, r1
+ 650              	.L65:
+ 651              	.LVL80:
+ 129:CLI.c         ****             {
+ 652              		.loc 1 129 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 18
+
+
+ 653 00f8 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 654 00fa 002A     		cmp	r2, #0
+ 655 00fc F7D1     		bne	.L67
+ 133:CLI.c         ****             continue;
+ 656              		.loc 1 133 0
+ 657 00fe 0131     		adds	r1, r1, #1
+ 658 0100 274B     		ldr	r3, .L88+4
+ 659              	.LVL81:
+ 660 0102 1960     		str	r1, [r3]
+ 661 0104 0FE0     		b	.L64
+ 662              	.L86:
+ 136:CLI.c         ****         {
+ 663              		.loc 1 136 0
+ 664 0106 8342     		cmp	r3, r0
+ 665 0108 03D0     		beq	.L69
+ 666 010a 2028     		cmp	r0, #32
+ 667 010c 08D1     		bne	.L70
+ 668 010e 092B     		cmp	r3, #9
+ 669 0110 06D1     		bne	.L70
+ 670              	.L69:
+ 138:CLI.c         ****             ptr++;
+ 671              		.loc 1 138 0
+ 672 0112 0023     		movs	r3, #0
+ 673 0114 01F8013B 		strb	r3, [r1], #1
+ 139:CLI.c         ****             return start;
+ 674              		.loc 1 139 0
+ 675 0118 214B     		ldr	r3, .L88+4
+ 676 011a 1960     		str	r1, [r3]
+ 140:CLI.c         ****         }
+ 677              		.loc 1 140 0
+ 678 011c 2B46     		mov	r3, r5
+ 679 011e 0DE0     		b	.L61
+ 680              	.L70:
+ 142:CLI.c         ****     }
+ 681              		.loc 1 142 0
+ 682 0120 0131     		adds	r1, r1, #1
+ 683 0122 1F4B     		ldr	r3, .L88+4
+ 684 0124 1960     		str	r1, [r3]
+ 685              	.L64:
+ 125:CLI.c         ****     {
+ 686              		.loc 1 125 0
+ 687 0126 1E4B     		ldr	r3, .L88+4
+ 688 0128 1968     		ldr	r1, [r3]
+ 689 012a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 690 012c 002B     		cmp	r3, #0
+ 691 012e DBD1     		bne	.L71
+ 144:CLI.c         ****     {
+ 692              		.loc 1 144 0
+ 693 0130 8D42     		cmp	r5, r1
+ 694 0132 02D1     		bne	.L83
+ 695 0134 02E0     		b	.L61
+ 696              	.LVL82:
+ 697              	.L80:
+ 117:CLI.c         ****     }
+ 698              		.loc 1 117 0
+ 699 0136 0023     		movs	r3, #0
+ 700 0138 00E0     		b	.L61
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 19
+
+
+ 701              	.LVL83:
+ 702              	.L83:
+ 148:CLI.c         **** }
+ 703              		.loc 1 148 0
+ 704 013a 2B46     		mov	r3, r5
+ 705              	.LVL84:
+ 706              	.L61:
+ 707              	.LBE26:
+ 708              	.LBE25:
+ 167:CLI.c         **** 		w = getWord(NULL);
+ 709              		.loc 1 167 0
+ 710 013c 2546     		mov	r5, r4
+ 711              	.LVL85:
+ 712              	.L56:
+ 165:CLI.c         **** 	{
+ 713              		.loc 1 165 0
+ 714 013e 1D2D     		cmp	r5, #29
+ 715 0140 1CDC     		bgt	.L84
+ 165:CLI.c         **** 	{
+ 716              		.loc 1 165 0 is_stmt 0 discriminator 1
+ 717 0142 002B     		cmp	r3, #0
+ 718 0144 AFD1     		bne	.L73
+ 719 0146 0024     		movs	r4, #0
+ 720 0148 19E0     		b	.L72
+ 721              	.LVL86:
+ 722              	.L75:
+ 723              	.LBB27:
+ 176:CLI.c         **** 		if(strcmp(argv[0], PstrPtr) == 0)
+ 724              		.loc 1 176 0 is_stmt 1
+ 725 014a 164B     		ldr	r3, .L88+8
+ 726 014c 03EB0413 		add	r3, r3, r4, lsl #4
+ 727              	.LVL87:
+ 177:CLI.c         **** 		{
+ 728              		.loc 1 177 0
+ 729 0150 196A     		ldr	r1, [r3, #32]
+ 730 0152 0098     		ldr	r0, [sp]
+ 731 0154 FFF7FEFF 		bl	strcmp
+ 732              	.LVL88:
+ 733 0158 68B9     		cbnz	r0, .L74
+ 734              	.LBB28:
+ 179:CLI.c         **** 
+ 735              		.loc 1 179 0
+ 736 015a 124F     		ldr	r7, .L88+8
+ 737              	.LVL89:
+ 738 015c 07EB0416 		add	r6, r7, r4, lsl #4
+ 739              	.LVL90:
+ 740 0160 F36A     		ldr	r3, [r6, #44]
+ 741 0162 6946     		mov	r1, sp
+ 742 0164 2846     		mov	r0, r5
+ 743 0166 9847     		blx	r3
+ 744              	.LVL91:
+ 745 0168 0446     		mov	r4, r0
+ 746              	.LVL92:
+ 181:CLI.c         ****             return rval;
+ 747              		.loc 1 181 0
+ 748 016a 07F1E000 		add	r0, r7, #224
+ 749              	.LVL93:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 20
+
+
+ 750 016e FFF7FEFF 		bl	USB_PutString
+ 751              	.LVL94:
+ 182:CLI.c         **** 		}
+ 752              		.loc 1 182 0
+ 753 0172 2046     		mov	r0, r4
+ 754 0174 10E0     		b	.L40
+ 755              	.LVL95:
+ 756              	.L74:
+ 757              	.LBE28:
+ 174:CLI.c         **** 	{
+ 758              		.loc 1 174 0 discriminator 2
+ 759 0176 0134     		adds	r4, r4, #1
+ 760              	.LVL96:
+ 761 0178 E4B2     		uxtb	r4, r4
+ 762              	.LVL97:
+ 763 017a 00E0     		b	.L72
+ 764              	.LVL98:
+ 765              	.L84:
+ 766              	.LBE27:
+ 767 017c 0024     		movs	r4, #0
+ 768              	.LVL99:
+ 769              	.L72:
+ 770              	.LBB29:
+ 174:CLI.c         **** 	{
+ 771              		.loc 1 174 0 is_stmt 0 discriminator 1
+ 772 017e 0B2C     		cmp	r4, #11
+ 773 0180 E3D9     		bls	.L75
+ 774              	.LBE29:
+ 185:CLI.c         ****     PutStr(Prompt);
+ 775              		.loc 1 185 0 is_stmt 1
+ 776 0182 084C     		ldr	r4, .L88+8
+ 777              	.LVL100:
+ 778 0184 04F1E400 		add	r0, r4, #228
+ 779 0188 FFF7FEFF 		bl	USB_PutString
+ 780              	.LVL101:
+ 186:CLI.c         **** 	return -1;
+ 781              		.loc 1 186 0
+ 782 018c 04F1E000 		add	r0, r4, #224
+ 783 0190 FFF7FEFF 		bl	USB_PutString
+ 784              	.LVL102:
+ 187:CLI.c         **** }
+ 785              		.loc 1 187 0
+ 786 0194 4FF0FF30 		mov	r0, #-1
+ 787              	.LVL103:
+ 788              	.L40:
+ 188:CLI.c         **** 
+ 789              		.loc 1 188 0
+ 790 0198 1FB0     		add	sp, sp, #124
+ 791              		.cfi_def_cfa_offset 20
+ 792              		@ sp needed
+ 793 019a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 794              	.L89:
+ 795              		.align	2
+ 796              	.L88:
+ 797 019c E0000000 		.word	.LANCHOR0+224
+ 798 01a0 00000000 		.word	.LANCHOR2
+ 799 01a4 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 21
+
+
+ 800              		.cfi_endproc
+ 801              	.LFE70:
+ 802              		.size	ParseCommand, .-ParseCommand
+ 803              		.section	.text.CLI,"ax",%progbits
+ 804              		.align	2
+ 805              		.global	CLI
+ 806              		.thumb
+ 807              		.thumb_func
+ 808              		.type	CLI, %function
+ 809              	CLI:
+ 810              	.LFB67:
+  58:CLI.c         ****     if(U_CheckForRx())
+ 811              		.loc 1 58 0
+ 812              		.cfi_startproc
+ 813              		@ args = 0, pretend = 0, frame = 0
+ 814              		@ frame_needed = 0, uses_anonymous_args = 0
+ 815 0000 10B5     		push	{r4, lr}
+ 816              		.cfi_def_cfa_offset 8
+ 817              		.cfi_offset 4, -8
+ 818              		.cfi_offset 14, -4
+  59:CLI.c         ****     {
+ 819              		.loc 1 59 0
+ 820 0002 FFF7FEFF 		bl	Check_USB
+ 821              	.LVL104:
+ 822 0006 0028     		cmp	r0, #0
+ 823 0008 36D0     		beq	.L90
+ 824              	.LBB30:
+  61:CLI.c         ****         if(cliEcho) PutChar(data);      // if in ECHO mode then echo the character
+ 825              		.loc 1 61 0
+ 826 000a FFF7FEFF 		bl	USB_Buff_GetChar
+ 827              	.LVL105:
+ 828 000e 0446     		mov	r4, r0
+ 829              	.LVL106:
+  62:CLI.c         ****         switch (data)
+ 830              		.loc 1 62 0
+ 831 0010 1A4B     		ldr	r3, .L99
+ 832 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 833 0014 0BB1     		cbz	r3, .L92
+  62:CLI.c         ****         switch (data)
+ 834              		.loc 1 62 0 is_stmt 0 discriminator 1
+ 835 0016 FFF7FEFF 		bl	USB_PutChar
+ 836              	.LVL107:
+ 837              	.L92:
+  63:CLI.c         ****         {
+ 838              		.loc 1 63 0 is_stmt 1
+ 839 001a 0A2C     		cmp	r4, #10
+ 840 001c 2CD0     		beq	.L90
+ 841 001e 02D8     		bhi	.L94
+ 842 0020 082C     		cmp	r4, #8
+ 843 0022 0DD0     		beq	.L95
+ 844 0024 17E0     		b	.L93
+ 845              	.L94:
+ 846 0026 0D2C     		cmp	r4, #13
+ 847 0028 02D0     		beq	.L96
+ 848 002a 7F2C     		cmp	r4, #127
+ 849 002c 08D0     		beq	.L95
+ 850 002e 12E0     		b	.L93
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 22
+
+
+ 851              	.L96:
+  67:CLI.c         ****                 ClearInputBufferN(InBuffCnt);
+ 852              		.loc 1 67 0
+ 853 0030 1348     		ldr	r0, .L99+4
+ 854 0032 FFF7FEFF 		bl	ParseCommand
+ 855              	.LVL108:
+  68:CLI.c         ****                 break;
+ 856              		.loc 1 68 0
+ 857 0036 134B     		ldr	r3, .L99+8
+ 858 0038 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 859 003a FFF7FEFF 		bl	ClearInputBufferN
+ 860              	.LVL109:
+  69:CLI.c         ****             case 0x7f   :   // alt back space
+ 861              		.loc 1 69 0
+ 862 003e 10BD     		pop	{r4, pc}
+ 863              	.L95:
+  72:CLI.c         ****                 {
+ 864              		.loc 1 72 0
+ 865 0040 104B     		ldr	r3, .L99+8
+ 866 0042 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 867 0044 3BB1     		cbz	r3, .L93
+  74:CLI.c         ****                     InBuff[InBuffCnt] = 0;  // back fill with zeros
+ 868              		.loc 1 74 0
+ 869 0046 013B     		subs	r3, r3, #1
+ 870 0048 DBB2     		uxtb	r3, r3
+ 871 004a 0E4A     		ldr	r2, .L99+8
+ 872 004c 1370     		strb	r3, [r2]
+  75:CLI.c         ****                     break;
+ 873              		.loc 1 75 0
+ 874 004e 0021     		movs	r1, #0
+ 875 0050 0B4A     		ldr	r2, .L99+4
+ 876 0052 D154     		strb	r1, [r2, r3]
+  76:CLI.c         ****                 }
+ 877              		.loc 1 76 0
+ 878 0054 10BD     		pop	{r4, pc}
+ 879              	.L93:
+  79:CLI.c         ****                 {
+ 880              		.loc 1 79 0
+ 881 0056 0B4B     		ldr	r3, .L99+8
+ 882 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 883 005a 4F2B     		cmp	r3, #79
+ 884 005c 06D9     		bls	.L97
+  81:CLI.c         ****                     ClearInputBufferN(InBuffCnt);
+ 885              		.loc 1 81 0
+ 886 005e 0A48     		ldr	r0, .L99+12
+ 887 0060 FFF7FEFF 		bl	USB_PutString
+ 888              	.LVL110:
+  82:CLI.c         ****                 }
+ 889              		.loc 1 82 0
+ 890 0064 074B     		ldr	r3, .L99+8
+ 891 0066 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 892 0068 FFF7FEFF 		bl	ClearInputBufferN
+ 893              	.LVL111:
+ 894              	.L97:
+  84:CLI.c         ****                 InBuffCnt++;
+ 895              		.loc 1 84 0
+ 896 006c 054A     		ldr	r2, .L99+8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 23
+
+
+ 897 006e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 898 0070 0349     		ldr	r1, .L99+4
+ 899 0072 CC54     		strb	r4, [r1, r3]
+  85:CLI.c         ****                 break;
+ 900              		.loc 1 85 0
+ 901 0074 0133     		adds	r3, r3, #1
+ 902 0076 1370     		strb	r3, [r2]
+ 903              	.L90:
+ 904 0078 10BD     		pop	{r4, pc}
+ 905              	.L100:
+ 906 007a 00BF     		.align	2
+ 907              	.L99:
+ 908 007c 00000000 		.word	.LANCHOR1
+ 909 0080 00000000 		.word	InBuff
+ 910 0084 00000000 		.word	InBuffCnt
+ 911 0088 FC000000 		.word	.LANCHOR0+252
+ 912              	.LBE30:
+ 913              		.cfi_endproc
+ 914              	.LFE67:
+ 915              		.size	CLI, .-CLI
+ 916              		.comm	msg,32,4
+ 917              		.comm	InBuffCnt,1,1
+ 918              		.comm	InBuff,80,4
+ 919              		.global	HelpHeader
+ 920              		.global	HelpDiv
+ 921              		.global	CMD_Parse_Table
+ 922              		.global	Prompt
+ 923              		.global	CmdTooLong
+ 924              		.global	BadMsgString
+ 925              		.section	.rodata
+ 926              		.align	2
+ 927              		.set	.LANCHOR0,. + 0
+ 928              		.type	HelpHeader, %object
+ 929              		.size	HelpHeader, 32
+ 930              	HelpHeader:
+ 931 0000 4C000000 		.word	.LC8
+ 932 0004 00000000 		.word	HelpDiv
+ 933 0008 50000000 		.word	.LC9
+ 934 000c 00000000 		.word	HelpDiv
+ 935 0010 4C000000 		.word	.LC8
+ 936 0014 5C000000 		.word	.LC10
+ 937 0018 94000000 		.word	.LC11
+ 938 001c 00000000 		.word	0
+ 939              		.type	CMD_Parse_Table, %object
+ 940              		.size	CMD_Parse_Table, 192
+ 941              	CMD_Parse_Table:
+ 942 0020 A8000000 		.word	.LC12
+ 943 0024 00000000 		.word	0
+ 944 0028 B0000000 		.word	.LC13
+ 945 002c 00000000 		.word	HelpScreen
+ 946 0030 BC000000 		.word	.LC14
+ 947 0034 00000000 		.word	0
+ 948 0038 C0000000 		.word	.LC15
+ 949 003c 00000000 		.word	HelpScreen
+ 950 0040 D0000000 		.word	.LC16
+ 951 0044 00000000 		.word	0
+ 952 0048 D8000000 		.word	.LC17
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 24
+
+
+ 953 004c 00000000 		.word	CLI_Test
+ 954 0050 EC000000 		.word	.LC18
+ 955 0054 F4000000 		.word	.LC19
+ 956 0058 00010000 		.word	.LC20
+ 957 005c 00000000 		.word	Echo_Cmd
+ 958 0060 1C010000 		.word	.LC21
+ 959 0064 00000000 		.word	0
+ 960 0068 20010000 		.word	.LC22
+ 961 006c 00000000 		.word	Ver_Cmd
+ 962 0070 34010000 		.word	.LC23
+ 963 0074 00000000 		.word	0
+ 964 0078 38010000 		.word	.LC24
+ 965 007c 00000000 		.word	Comment_Cmd
+ 966 0080 60010000 		.word	.LC25
+ 967 0084 F4000000 		.word	.LC19
+ 968 0088 68010000 		.word	.LC26
+ 969 008c 00000000 		.word	Count_Cmd
+ 970 0090 80010000 		.word	.LC27
+ 971 0094 F4000000 		.word	.LC19
+ 972 0098 88010000 		.word	.LC28
+ 973 009c 00000000 		.word	Alpha_Cmd
+ 974 00a0 A4010000 		.word	.LC29
+ 975 00a4 A8010000 		.word	.LC30
+ 976 00a8 B0010000 		.word	.LC31
+ 977 00ac 00000000 		.word	UTX_Cmd
+ 978 00b0 CC010000 		.word	.LC32
+ 979 00b4 00000000 		.word	0
+ 980 00b8 D4010000 		.word	.LC33
+ 981 00bc 00000000 		.word	State_Cmd
+ 982 00c0 E4010000 		.word	.LC34
+ 983 00c4 00000000 		.word	0
+ 984 00c8 EC010000 		.word	.LC35
+ 985 00cc 00000000 		.word	Load_Cmd
+ 986 00d0 04020000 		.word	.LC36
+ 987 00d4 00000000 		.word	0
+ 988 00d8 0C020000 		.word	.LC37
+ 989 00dc 00000000 		.word	UsbCfg_Cmd
+ 990              		.type	Prompt, %object
+ 991              		.size	Prompt, 3
+ 992              	Prompt:
+ 993 00e0 0D3E00   		.ascii	"\015>\000"
+ 994 00e3 00       		.space	1
+ 995              		.type	BadMsgString, %object
+ 996              		.size	BadMsgString, 22
+ 997              	BadMsgString:
+ 998 00e4 556E7265 		.ascii	"Unrecognized Command!\000"
+ 998      636F676E 
+ 998      697A6564 
+ 998      20436F6D 
+ 998      6D616E64 
+ 999 00fa 0000     		.space	2
+ 1000              		.type	CmdTooLong, %object
+ 1001              		.size	CmdTooLong, 30
+ 1002              	CmdTooLong:
+ 1003 00fc 2A2A2A20 		.ascii	"*** Command was too long! ***\000"
+ 1003      436F6D6D 
+ 1003      616E6420 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 25
+
+
+ 1003      77617320 
+ 1003      746F6F20 
+ 1004 011a 0000     		.space	2
+ 1005              		.type	HelpDiv, %object
+ 1006              		.size	HelpDiv, 25
+ 1007              	HelpDiv:
+ 1008 011c 2A2A2A2A 		.ascii	"************************\000"
+ 1008      2A2A2A2A 
+ 1008      2A2A2A2A 
+ 1008      2A2A2A2A 
+ 1008      2A2A2A2A 
+ 1009              		.data
+ 1010              		.set	.LANCHOR1,. + 0
+ 1011              		.type	cliEcho, %object
+ 1012              		.size	cliEcho, 1
+ 1013              	cliEcho:
+ 1014 0000 01       		.byte	1
+ 1015              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1016              		.align	2
+ 1017              	.LC0:
+ 1018 0000 202D2000 		.ascii	" - \000"
+ 1019              	.LC1:
+ 1020 0004 4F4E00   		.ascii	"ON\000"
+ 1021 0007 00       		.space	1
+ 1022              	.LC2:
+ 1023 0008 4F464600 		.ascii	"OFF\000"
+ 1024              	.LC3:
+ 1025 000c 4563686F 		.ascii	"Echo is \000"
+ 1025      20697320 
+ 1025      00
+ 1026 0015 000000   		.space	3
+ 1027              	.LC4:
+ 1028 0018 6F666600 		.ascii	"off\000"
+ 1029              	.LC5:
+ 1030 001c 6F6E00   		.ascii	"on\000"
+ 1031 001f 00       		.space	1
+ 1032              	.LC6:
+ 1033 0020 55736167 		.ascii	"Usage echo 'on'/'off'\000"
+ 1033      65206563 
+ 1033      686F2027 
+ 1033      6F6E272F 
+ 1033      276F6666 
+ 1034 0036 0000     		.space	2
+ 1035              	.LC7:
+ 1036 0038 55534220 		.ascii	"USB Config = 0x%X\012\000"
+ 1036      436F6E66 
+ 1036      6967203D 
+ 1036      20307825 
+ 1036      580A00
+ 1037 004b 00       		.space	1
+ 1038              	.LC8:
+ 1039 004c 00       		.ascii	"\000"
+ 1040 004d 000000   		.space	3
+ 1041              	.LC9:
+ 1042 0050 2A205553 		.ascii	"* USB CLI *\000"
+ 1042      4220434C 
+ 1042      49202A00 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 26
+
+
+ 1043              	.LC10:
+ 1044 005c 25643D64 		.ascii	"%d=decimal, %x=hex, %n=decimal or hex with '0x' pre"
+ 1044      6563696D 
+ 1044      616C2C20 
+ 1044      25783D68 
+ 1044      65782C20 
+ 1045 008f 66697800 		.ascii	"fix\000"
+ 1046 0093 00       		.space	1
+ 1047              	.LC11:
+ 1048 0094 41766169 		.ascii	"Available Commands:\000"
+ 1048      6C61626C 
+ 1048      6520436F 
+ 1048      6D6D616E 
+ 1048      64733A00 
+ 1049              	.LC12:
+ 1050 00a8 68656C70 		.ascii	"help\000"
+ 1050      00
+ 1051 00ad 000000   		.space	3
+ 1052              	.LC13:
+ 1053 00b0 54686973 		.ascii	"This menu\000"
+ 1053      206D656E 
+ 1053      7500
+ 1054 00ba 0000     		.space	2
+ 1055              	.LC14:
+ 1056 00bc 3F00     		.ascii	"?\000"
+ 1057 00be 0000     		.space	2
+ 1058              	.LC15:
+ 1059 00c0 53616D65 		.ascii	"Same as 'help'\000"
+ 1059      20617320 
+ 1059      2768656C 
+ 1059      702700
+ 1060 00cf 00       		.space	1
+ 1061              	.LC16:
+ 1062 00d0 74657374 		.ascii	"test\000"
+ 1062      00
+ 1063 00d5 000000   		.space	3
+ 1064              	.LC17:
+ 1065 00d8 4563686F 		.ascii	"Echo the arguments\000"
+ 1065      20746865 
+ 1065      20617267 
+ 1065      756D656E 
+ 1065      747300
+ 1066 00eb 00       		.space	1
+ 1067              	.LC18:
+ 1068 00ec 6563686F 		.ascii	"echo\000"
+ 1068      00
+ 1069 00f1 000000   		.space	3
+ 1070              	.LC19:
+ 1071 00f4 7B6F6E2F 		.ascii	"{on/off}\000"
+ 1071      6F66667D 
+ 1071      00
+ 1072 00fd 000000   		.space	3
+ 1073              	.LC20:
+ 1074 0100 546F6767 		.ascii	"Toggle the character echo\000"
+ 1074      6C652074 
+ 1074      68652063 
+ 1074      68617261 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 27
+
+
+ 1074      63746572 
+ 1075 011a 0000     		.space	2
+ 1076              	.LC21:
+ 1077 011c 76657200 		.ascii	"ver\000"
+ 1078              	.LC22:
+ 1079 0120 536F6674 		.ascii	"Software Version\000"
+ 1079      77617265 
+ 1079      20566572 
+ 1079      73696F6E 
+ 1079      00
+ 1080 0131 000000   		.space	3
+ 1081              	.LC23:
+ 1082 0134 2100     		.ascii	"!\000"
+ 1083 0136 0000     		.space	2
+ 1084              	.LC24:
+ 1085 0138 436F6D6D 		.ascii	"Comment delimiter up to 78 characters\000"
+ 1085      656E7420 
+ 1085      64656C69 
+ 1085      6D697465 
+ 1085      72207570 
+ 1086 015e 0000     		.space	2
+ 1087              	.LC25:
+ 1088 0160 636F756E 		.ascii	"count\000"
+ 1088      7400
+ 1089 0166 0000     		.space	2
+ 1090              	.LC26:
+ 1091 0168 436F756E 		.ascii	"Count up every second\000"
+ 1091      74207570 
+ 1091      20657665 
+ 1091      72792073 
+ 1091      65636F6E 
+ 1092 017e 0000     		.space	2
+ 1093              	.LC27:
+ 1094 0180 616C7068 		.ascii	"alpha\000"
+ 1094      6100
+ 1095 0186 0000     		.space	2
+ 1096              	.LC28:
+ 1097 0188 416C7068 		.ascii	"Alphabet up every second\000"
+ 1097      61626574 
+ 1097      20757020 
+ 1097      65766572 
+ 1097      79207365 
+ 1098 01a1 000000   		.space	3
+ 1099              	.LC29:
+ 1100 01a4 75747800 		.ascii	"utx\000"
+ 1101              	.LC30:
+ 1102 01a8 63636363 		.ascii	"ccccc\000"
+ 1102      6300
+ 1103 01ae 0000     		.space	2
+ 1104              	.LC31:
+ 1105 01b0 73656E64 		.ascii	"send the string to the uart\000"
+ 1105      20746865 
+ 1105      20737472 
+ 1105      696E6720 
+ 1105      746F2074 
+ 1106              	.LC32:
+ 1107 01cc 73746174 		.ascii	"state\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 28
+
+
+ 1107      6500
+ 1108 01d2 0000     		.space	2
+ 1109              	.LC33:
+ 1110 01d4 51756572 		.ascii	"Query the state\000"
+ 1110      79207468 
+ 1110      65207374 
+ 1110      61746500 
+ 1111              	.LC34:
+ 1112 01e4 6C6F6164 		.ascii	"load\000"
+ 1112      00
+ 1113 01e9 000000   		.space	3
+ 1114              	.LC35:
+ 1115 01ec 53746172 		.ascii	"Start the Bootloader\000"
+ 1115      74207468 
+ 1115      6520426F 
+ 1115      6F746C6F 
+ 1115      61646572 
+ 1116 0201 000000   		.space	3
+ 1117              	.LC36:
+ 1118 0204 75636667 		.ascii	"ucfg\000"
+ 1118      00
+ 1119 0209 000000   		.space	3
+ 1120              	.LC37:
+ 1121 020c 67657420 		.ascii	"get the USB Configuration\000"
+ 1121      74686520 
+ 1121      55534220 
+ 1121      436F6E66 
+ 1121      69677572 
+ 1122              		.bss
+ 1123              		.align	2
+ 1124              		.set	.LANCHOR2,. + 0
+ 1125              		.type	ptr.7733, %object
+ 1126              		.size	ptr.7733, 4
+ 1127              	ptr.7733:
+ 1128 0000 00000000 		.space	4
+ 1129              		.text
+ 1130              	.Letext0:
+ 1131              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1132              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1133              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 1134              		.file 5 "TestMessages.h"
+ 1135              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 1136              		.file 7 "U_HW.h"
+ 1137              		.file 8 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1138              		.file 9 "Generated_Source\\PSoC5/USBUART.h"
+ 1139              		.file 10 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4
+ 1140              		.section	.debug_info,"",%progbits
+ 1141              	.Ldebug_info0:
+ 1142 0000 EB080000 		.4byte	0x8eb
+ 1143 0004 0400     		.2byte	0x4
+ 1144 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1145 000a 04       		.byte	0x4
+ 1146 000b 01       		.uleb128 0x1
+ 1147 000c 93020000 		.4byte	.LASF58
+ 1148 0010 0C       		.byte	0xc
+ 1149 0011 30010000 		.4byte	.LASF59
+ 1150 0015 E3010000 		.4byte	.LASF60
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 29
+
+
+ 1151 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
+ 1152 001d 00000000 		.4byte	0
+ 1153 0021 00000000 		.4byte	.Ldebug_line0
+ 1154 0025 02       		.uleb128 0x2
+ 1155 0026 01       		.byte	0x1
+ 1156 0027 06       		.byte	0x6
+ 1157 0028 55010000 		.4byte	.LASF0
+ 1158 002c 03       		.uleb128 0x3
+ 1159 002d 06010000 		.4byte	.LASF4
+ 1160 0031 02       		.byte	0x2
+ 1161 0032 1D       		.byte	0x1d
+ 1162 0033 37000000 		.4byte	0x37
+ 1163 0037 02       		.uleb128 0x2
+ 1164 0038 01       		.byte	0x1
+ 1165 0039 08       		.byte	0x8
+ 1166 003a 42010000 		.4byte	.LASF1
+ 1167 003e 02       		.uleb128 0x2
+ 1168 003f 02       		.byte	0x2
+ 1169 0040 05       		.byte	0x5
+ 1170 0041 3A000000 		.4byte	.LASF2
+ 1171 0045 02       		.uleb128 0x2
+ 1172 0046 02       		.byte	0x2
+ 1173 0047 07       		.byte	0x7
+ 1174 0048 C5010000 		.4byte	.LASF3
+ 1175 004c 03       		.uleb128 0x3
+ 1176 004d 59020000 		.4byte	.LASF5
+ 1177 0051 02       		.byte	0x2
+ 1178 0052 3F       		.byte	0x3f
+ 1179 0053 57000000 		.4byte	0x57
+ 1180 0057 02       		.uleb128 0x2
+ 1181 0058 04       		.byte	0x4
+ 1182 0059 05       		.byte	0x5
+ 1183 005a EB000000 		.4byte	.LASF6
+ 1184 005e 02       		.uleb128 0x2
+ 1185 005f 04       		.byte	0x4
+ 1186 0060 07       		.byte	0x7
+ 1187 0061 28020000 		.4byte	.LASF7
+ 1188 0065 02       		.uleb128 0x2
+ 1189 0066 08       		.byte	0x8
+ 1190 0067 05       		.byte	0x5
+ 1191 0068 D4000000 		.4byte	.LASF8
+ 1192 006c 02       		.uleb128 0x2
+ 1193 006d 08       		.byte	0x8
+ 1194 006e 07       		.byte	0x7
+ 1195 006f 61010000 		.4byte	.LASF9
+ 1196 0073 04       		.uleb128 0x4
+ 1197 0074 04       		.byte	0x4
+ 1198 0075 05       		.byte	0x5
+ 1199 0076 696E7400 		.ascii	"int\000"
+ 1200 007a 02       		.uleb128 0x2
+ 1201 007b 04       		.byte	0x4
+ 1202 007c 07       		.byte	0x7
+ 1203 007d 80010000 		.4byte	.LASF10
+ 1204 0081 03       		.uleb128 0x3
+ 1205 0082 76000000 		.4byte	.LASF11
+ 1206 0086 03       		.byte	0x3
+ 1207 0087 18       		.byte	0x18
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 30
+
+
+ 1208 0088 2C000000 		.4byte	0x2c
+ 1209 008c 03       		.uleb128 0x3
+ 1210 008d BD010000 		.4byte	.LASF12
+ 1211 0091 03       		.byte	0x3
+ 1212 0092 2C       		.byte	0x2c
+ 1213 0093 4C000000 		.4byte	0x4c
+ 1214 0097 02       		.uleb128 0x2
+ 1215 0098 08       		.byte	0x8
+ 1216 0099 04       		.byte	0x4
+ 1217 009a 36010000 		.4byte	.LASF13
+ 1218 009e 02       		.uleb128 0x2
+ 1219 009f 04       		.byte	0x4
+ 1220 00a0 07       		.byte	0x7
+ 1221 00a1 4B000000 		.4byte	.LASF14
+ 1222 00a5 05       		.uleb128 0x5
+ 1223 00a6 04       		.byte	0x4
+ 1224 00a7 AB000000 		.4byte	0xab
+ 1225 00ab 02       		.uleb128 0x2
+ 1226 00ac 01       		.byte	0x1
+ 1227 00ad 08       		.byte	0x8
+ 1228 00ae B8010000 		.4byte	.LASF15
+ 1229 00b2 05       		.uleb128 0x5
+ 1230 00b3 04       		.byte	0x4
+ 1231 00b4 B8000000 		.4byte	0xb8
+ 1232 00b8 06       		.uleb128 0x6
+ 1233 00b9 AB000000 		.4byte	0xab
+ 1234 00bd 07       		.uleb128 0x7
+ 1235 00be 8C000000 		.4byte	.LASF16
+ 1236 00c2 04       		.byte	0x4
+ 1237 00c3 E401     		.2byte	0x1e4
+ 1238 00c5 37000000 		.4byte	0x37
+ 1239 00c9 02       		.uleb128 0x2
+ 1240 00ca 04       		.byte	0x4
+ 1241 00cb 04       		.byte	0x4
+ 1242 00cc A5000000 		.4byte	.LASF17
+ 1243 00d0 02       		.uleb128 0x2
+ 1244 00d1 08       		.byte	0x8
+ 1245 00d2 04       		.byte	0x4
+ 1246 00d3 3A020000 		.4byte	.LASF18
+ 1247 00d7 08       		.uleb128 0x8
+ 1248 00d8 6E000000 		.4byte	.LASF61
+ 1249 00dc 10       		.byte	0x10
+ 1250 00dd 05       		.byte	0x5
+ 1251 00de 1C       		.byte	0x1c
+ 1252 00df 14010000 		.4byte	0x114
+ 1253 00e3 09       		.uleb128 0x9
+ 1254 00e4 79020000 		.4byte	.LASF19
+ 1255 00e8 05       		.byte	0x5
+ 1256 00e9 1D       		.byte	0x1d
+ 1257 00ea B2000000 		.4byte	0xb2
+ 1258 00ee 00       		.byte	0
+ 1259 00ef 09       		.uleb128 0x9
+ 1260 00f0 8D010000 		.4byte	.LASF20
+ 1261 00f4 05       		.byte	0x5
+ 1262 00f5 1E       		.byte	0x1e
+ 1263 00f6 B2000000 		.4byte	0xb2
+ 1264 00fa 04       		.byte	0x4
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 31
+
+
+ 1265 00fb 09       		.uleb128 0x9
+ 1266 00fc 21030000 		.4byte	.LASF21
+ 1267 0100 05       		.byte	0x5
+ 1268 0101 1F       		.byte	0x1f
+ 1269 0102 B2000000 		.4byte	0xb2
+ 1270 0106 08       		.byte	0x8
+ 1271 0107 09       		.uleb128 0x9
+ 1272 0108 CF000000 		.4byte	.LASF22
+ 1273 010c 05       		.byte	0x5
+ 1274 010d 20       		.byte	0x20
+ 1275 010e 2E010000 		.4byte	0x12e
+ 1276 0112 0C       		.byte	0xc
+ 1277 0113 00       		.byte	0
+ 1278 0114 0A       		.uleb128 0xa
+ 1279 0115 73000000 		.4byte	0x73
+ 1280 0119 28010000 		.4byte	0x128
+ 1281 011d 0B       		.uleb128 0xb
+ 1282 011e 73000000 		.4byte	0x73
+ 1283 0122 0B       		.uleb128 0xb
+ 1284 0123 28010000 		.4byte	0x128
+ 1285 0127 00       		.byte	0
+ 1286 0128 05       		.uleb128 0x5
+ 1287 0129 04       		.byte	0x4
+ 1288 012a A5000000 		.4byte	0xa5
+ 1289 012e 05       		.uleb128 0x5
+ 1290 012f 04       		.byte	0x4
+ 1291 0130 14010000 		.4byte	0x114
+ 1292 0134 0C       		.uleb128 0xc
+ 1293 0135 4E020000 		.4byte	.LASF62
+ 1294 0139 01       		.byte	0x1
+ 1295 013a 2D       		.byte	0x2d
+ 1296 013b 40010000 		.4byte	0x140
+ 1297 013f 03       		.byte	0x3
+ 1298 0140 02       		.uleb128 0x2
+ 1299 0141 01       		.byte	0x1
+ 1300 0142 02       		.byte	0x2
+ 1301 0143 D8010000 		.4byte	.LASF23
+ 1302 0147 0D       		.uleb128 0xd
+ 1303 0148 5A000000 		.4byte	.LASF63
+ 1304 014c 01       		.byte	0x1
+ 1305 014d 29       		.byte	0x29
+ 1306 014e 03       		.byte	0x3
+ 1307 014f 5E010000 		.4byte	0x15e
+ 1308 0153 0E       		.uleb128 0xe
+ 1309 0154 6F6E00   		.ascii	"on\000"
+ 1310 0157 01       		.byte	0x1
+ 1311 0158 29       		.byte	0x29
+ 1312 0159 40010000 		.4byte	0x140
+ 1313 015d 00       		.byte	0
+ 1314 015e 0F       		.uleb128 0xf
+ 1315 015f 26030000 		.4byte	.LASF26
+ 1316 0163 01       		.byte	0x1
+ 1317 0164 BE       		.byte	0xbe
+ 1318 0165 73000000 		.4byte	0x73
+ 1319 0169 00000000 		.4byte	.LFB71
+ 1320 016d 24000000 		.4byte	.LFE71-.LFB71
+ 1321 0171 01       		.uleb128 0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 32
+
+
+ 1322 0172 9C       		.byte	0x9c
+ 1323 0173 C9010000 		.4byte	0x1c9
+ 1324 0177 10       		.uleb128 0x10
+ 1325 0178 50010000 		.4byte	.LASF24
+ 1326 017c 01       		.byte	0x1
+ 1327 017d BE       		.byte	0xbe
+ 1328 017e 73000000 		.4byte	0x73
+ 1329 0182 00000000 		.4byte	.LLST0
+ 1330 0186 10       		.uleb128 0x10
+ 1331 0187 92010000 		.4byte	.LASF25
+ 1332 018b 01       		.byte	0x1
+ 1333 018c BE       		.byte	0xbe
+ 1334 018d 28010000 		.4byte	0x128
+ 1335 0191 1E000000 		.4byte	.LLST1
+ 1336 0195 11       		.uleb128 0x11
+ 1337 0196 0C000000 		.4byte	.LBB8
+ 1338 019a 14000000 		.4byte	.LBE8-.LBB8
+ 1339 019e B9010000 		.4byte	0x1b9
+ 1340 01a2 12       		.uleb128 0x12
+ 1341 01a3 6900     		.ascii	"i\000"
+ 1342 01a5 01       		.byte	0x1
+ 1343 01a6 C1       		.byte	0xc1
+ 1344 01a7 81000000 		.4byte	0x81
+ 1345 01ab 3C000000 		.4byte	.LLST2
+ 1346 01af 13       		.uleb128 0x13
+ 1347 01b0 18000000 		.4byte	.LVL4
+ 1348 01b4 A0080000 		.4byte	0x8a0
+ 1349 01b8 00       		.byte	0
+ 1350 01b9 14       		.uleb128 0x14
+ 1351 01ba 0C000000 		.4byte	.LVL2
+ 1352 01be AB080000 		.4byte	0x8ab
+ 1353 01c2 15       		.uleb128 0x15
+ 1354 01c3 01       		.uleb128 0x1
+ 1355 01c4 50       		.byte	0x50
+ 1356 01c5 01       		.uleb128 0x1
+ 1357 01c6 3D       		.byte	0x3d
+ 1358 01c7 00       		.byte	0
+ 1359 01c8 00       		.byte	0
+ 1360 01c9 0F       		.uleb128 0xf
+ 1361 01ca 2A000000 		.4byte	.LASF27
+ 1362 01ce 01       		.byte	0x1
+ 1363 01cf C8       		.byte	0xc8
+ 1364 01d0 73000000 		.4byte	0x73
+ 1365 01d4 00000000 		.4byte	.LFB72
+ 1366 01d8 64000000 		.4byte	.LFE72-.LFB72
+ 1367 01dc 01       		.uleb128 0x1
+ 1368 01dd 9C       		.byte	0x9c
+ 1369 01de A6020000 		.4byte	0x2a6
+ 1370 01e2 10       		.uleb128 0x10
+ 1371 01e3 50010000 		.4byte	.LASF24
+ 1372 01e7 01       		.byte	0x1
+ 1373 01e8 C8       		.byte	0xc8
+ 1374 01e9 73000000 		.4byte	0x73
+ 1375 01ed 66000000 		.4byte	.LLST3
+ 1376 01f1 10       		.uleb128 0x10
+ 1377 01f2 92010000 		.4byte	.LASF25
+ 1378 01f6 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 33
+
+
+ 1379 01f7 C8       		.byte	0xc8
+ 1380 01f8 28010000 		.4byte	0x128
+ 1381 01fc 87000000 		.4byte	.LLST4
+ 1382 0200 12       		.uleb128 0x12
+ 1383 0201 706300   		.ascii	"pc\000"
+ 1384 0204 01       		.byte	0x1
+ 1385 0205 CC       		.byte	0xcc
+ 1386 0206 A6020000 		.4byte	0x2a6
+ 1387 020a A8000000 		.4byte	.LLST5
+ 1388 020e 12       		.uleb128 0x12
+ 1389 020f 70636400 		.ascii	"pcd\000"
+ 1390 0213 01       		.byte	0x1
+ 1391 0214 D2       		.byte	0xd2
+ 1392 0215 B1020000 		.4byte	0x2b1
+ 1393 0219 CB000000 		.4byte	.LLST6
+ 1394 021d 11       		.uleb128 0x11
+ 1395 021e 1E000000 		.4byte	.LBB9
+ 1396 0222 36000000 		.4byte	.LBE9-.LBB9
+ 1397 0226 8D020000 		.4byte	0x28d
+ 1398 022a 12       		.uleb128 0x12
+ 1399 022b 6900     		.ascii	"i\000"
+ 1400 022d 01       		.byte	0x1
+ 1401 022e D3       		.byte	0xd3
+ 1402 022f 81000000 		.4byte	0x81
+ 1403 0233 DE000000 		.4byte	.LLST7
+ 1404 0237 13       		.uleb128 0x13
+ 1405 0238 24000000 		.4byte	.LVL15
+ 1406 023c A0080000 		.4byte	0x8a0
+ 1407 0240 16       		.uleb128 0x16
+ 1408 0241 2E000000 		.4byte	.LVL16
+ 1409 0245 AB080000 		.4byte	0x8ab
+ 1410 0249 54020000 		.4byte	0x254
+ 1411 024d 15       		.uleb128 0x15
+ 1412 024e 01       		.uleb128 0x1
+ 1413 024f 50       		.byte	0x50
+ 1414 0250 02       		.uleb128 0x2
+ 1415 0251 08       		.byte	0x8
+ 1416 0252 20       		.byte	0x20
+ 1417 0253 00       		.byte	0
+ 1418 0254 13       		.uleb128 0x13
+ 1419 0255 34000000 		.4byte	.LVL17
+ 1420 0259 A0080000 		.4byte	0x8a0
+ 1421 025d 16       		.uleb128 0x16
+ 1422 025e 3E000000 		.4byte	.LVL18
+ 1423 0262 A0080000 		.4byte	0x8a0
+ 1424 0266 74020000 		.4byte	0x274
+ 1425 026a 15       		.uleb128 0x15
+ 1426 026b 01       		.uleb128 0x1
+ 1427 026c 50       		.byte	0x50
+ 1428 026d 05       		.uleb128 0x5
+ 1429 026e 03       		.byte	0x3
+ 1430 026f 00000000 		.4byte	.LC0
+ 1431 0273 00       		.byte	0
+ 1432 0274 13       		.uleb128 0x13
+ 1433 0275 44000000 		.4byte	.LVL19
+ 1434 0279 A0080000 		.4byte	0x8a0
+ 1435 027d 14       		.uleb128 0x14
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 34
+
+
+ 1436 027e 4A000000 		.4byte	.LVL20
+ 1437 0282 AB080000 		.4byte	0x8ab
+ 1438 0286 15       		.uleb128 0x15
+ 1439 0287 01       		.uleb128 0x1
+ 1440 0288 50       		.byte	0x50
+ 1441 0289 01       		.uleb128 0x1
+ 1442 028a 3D       		.byte	0x3d
+ 1443 028b 00       		.byte	0
+ 1444 028c 00       		.byte	0
+ 1445 028d 13       		.uleb128 0x13
+ 1446 028e 0A000000 		.4byte	.LVL10
+ 1447 0292 A0080000 		.4byte	0x8a0
+ 1448 0296 14       		.uleb128 0x14
+ 1449 0297 10000000 		.4byte	.LVL11
+ 1450 029b AB080000 		.4byte	0x8ab
+ 1451 029f 15       		.uleb128 0x15
+ 1452 02a0 01       		.uleb128 0x1
+ 1453 02a1 50       		.byte	0x50
+ 1454 02a2 01       		.uleb128 0x1
+ 1455 02a3 3D       		.byte	0x3d
+ 1456 02a4 00       		.byte	0
+ 1457 02a5 00       		.byte	0
+ 1458 02a6 05       		.uleb128 0x5
+ 1459 02a7 04       		.byte	0x4
+ 1460 02a8 AC020000 		.4byte	0x2ac
+ 1461 02ac 06       		.uleb128 0x6
+ 1462 02ad B2000000 		.4byte	0xb2
+ 1463 02b1 05       		.uleb128 0x5
+ 1464 02b2 04       		.byte	0x4
+ 1465 02b3 B7020000 		.4byte	0x2b7
+ 1466 02b7 06       		.uleb128 0x6
+ 1467 02b8 D7000000 		.4byte	0xd7
+ 1468 02bc 0F       		.uleb128 0xf
+ 1469 02bd 65000000 		.4byte	.LASF28
+ 1470 02c1 01       		.byte	0x1
+ 1471 02c2 E7       		.byte	0xe7
+ 1472 02c3 73000000 		.4byte	0x73
+ 1473 02c7 00000000 		.4byte	.LFB73
+ 1474 02cb 70000000 		.4byte	.LFE73-.LFB73
+ 1475 02cf 01       		.uleb128 0x1
+ 1476 02d0 9C       		.byte	0x9c
+ 1477 02d1 BD030000 		.4byte	0x3bd
+ 1478 02d5 10       		.uleb128 0x10
+ 1479 02d6 50010000 		.4byte	.LASF24
+ 1480 02da 01       		.byte	0x1
+ 1481 02db E7       		.byte	0xe7
+ 1482 02dc 73000000 		.4byte	0x73
+ 1483 02e0 FC000000 		.4byte	.LLST8
+ 1484 02e4 10       		.uleb128 0x10
+ 1485 02e5 92010000 		.4byte	.LASF25
+ 1486 02e9 01       		.byte	0x1
+ 1487 02ea E7       		.byte	0xe7
+ 1488 02eb 28010000 		.4byte	0x128
+ 1489 02ef 36010000 		.4byte	.LLST9
+ 1490 02f3 17       		.uleb128 0x17
+ 1491 02f4 34010000 		.4byte	0x134
+ 1492 02f8 0C000000 		.4byte	.LBB10
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 35
+
+
+ 1493 02fc 04000000 		.4byte	.LBE10-.LBB10
+ 1494 0300 01       		.byte	0x1
+ 1495 0301 EC       		.byte	0xec
+ 1496 0302 18       		.uleb128 0x18
+ 1497 0303 47010000 		.4byte	0x147
+ 1498 0307 30000000 		.4byte	.LBB12
+ 1499 030b 08000000 		.4byte	.LBE12-.LBB12
+ 1500 030f 01       		.byte	0x1
+ 1501 0310 F0       		.byte	0xf0
+ 1502 0311 1F030000 		.4byte	0x31f
+ 1503 0315 19       		.uleb128 0x19
+ 1504 0316 53010000 		.4byte	0x153
+ 1505 031a 70010000 		.4byte	.LLST10
+ 1506 031e 00       		.byte	0
+ 1507 031f 18       		.uleb128 0x18
+ 1508 0320 47010000 		.4byte	0x147
+ 1509 0324 42000000 		.4byte	.LBB14
+ 1510 0328 08000000 		.4byte	.LBE14-.LBB14
+ 1511 032c 01       		.byte	0x1
+ 1512 032d F1       		.byte	0xf1
+ 1513 032e 3C030000 		.4byte	0x33c
+ 1514 0332 19       		.uleb128 0x19
+ 1515 0333 53010000 		.4byte	0x153
+ 1516 0337 84010000 		.4byte	.LLST11
+ 1517 033b 00       		.byte	0
+ 1518 033c 16       		.uleb128 0x16
+ 1519 033d 0C000000 		.4byte	.LVL27
+ 1520 0341 A0080000 		.4byte	0x8a0
+ 1521 0345 53030000 		.4byte	0x353
+ 1522 0349 15       		.uleb128 0x15
+ 1523 034a 01       		.uleb128 0x1
+ 1524 034b 50       		.byte	0x50
+ 1525 034c 05       		.uleb128 0x5
+ 1526 034d 03       		.byte	0x3
+ 1527 034e 0C000000 		.4byte	.LC3
+ 1528 0352 00       		.byte	0
+ 1529 0353 13       		.uleb128 0x13
+ 1530 0354 1C000000 		.4byte	.LVL28
+ 1531 0358 A0080000 		.4byte	0x8a0
+ 1532 035c 16       		.uleb128 0x16
+ 1533 035d 22000000 		.4byte	.LVL29
+ 1534 0361 AB080000 		.4byte	0x8ab
+ 1535 0365 6F030000 		.4byte	0x36f
+ 1536 0369 15       		.uleb128 0x15
+ 1537 036a 01       		.uleb128 0x1
+ 1538 036b 50       		.byte	0x50
+ 1539 036c 01       		.uleb128 0x1
+ 1540 036d 3D       		.byte	0x3d
+ 1541 036e 00       		.byte	0
+ 1542 036f 16       		.uleb128 0x16
+ 1543 0370 2E000000 		.4byte	.LVL33
+ 1544 0374 B6080000 		.4byte	0x8b6
+ 1545 0378 8C030000 		.4byte	0x38c
+ 1546 037c 15       		.uleb128 0x15
+ 1547 037d 01       		.uleb128 0x1
+ 1548 037e 50       		.byte	0x50
+ 1549 037f 02       		.uleb128 0x2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 36
+
+
+ 1550 0380 74       		.byte	0x74
+ 1551 0381 00       		.sleb128 0
+ 1552 0382 15       		.uleb128 0x15
+ 1553 0383 01       		.uleb128 0x1
+ 1554 0384 51       		.byte	0x51
+ 1555 0385 05       		.uleb128 0x5
+ 1556 0386 03       		.byte	0x3
+ 1557 0387 18000000 		.4byte	.LC4
+ 1558 038b 00       		.byte	0
+ 1559 038c 16       		.uleb128 0x16
+ 1560 038d 40000000 		.4byte	.LVL36
+ 1561 0391 B6080000 		.4byte	0x8b6
+ 1562 0395 A9030000 		.4byte	0x3a9
+ 1563 0399 15       		.uleb128 0x15
+ 1564 039a 01       		.uleb128 0x1
+ 1565 039b 50       		.byte	0x50
+ 1566 039c 02       		.uleb128 0x2
+ 1567 039d 74       		.byte	0x74
+ 1568 039e 00       		.sleb128 0
+ 1569 039f 15       		.uleb128 0x15
+ 1570 03a0 01       		.uleb128 0x1
+ 1571 03a1 51       		.byte	0x51
+ 1572 03a2 05       		.uleb128 0x5
+ 1573 03a3 03       		.byte	0x3
+ 1574 03a4 1C000000 		.4byte	.LC5
+ 1575 03a8 00       		.byte	0
+ 1576 03a9 14       		.uleb128 0x14
+ 1577 03aa 50000000 		.4byte	.LVL39
+ 1578 03ae A0080000 		.4byte	0x8a0
+ 1579 03b2 15       		.uleb128 0x15
+ 1580 03b3 01       		.uleb128 0x1
+ 1581 03b4 50       		.byte	0x50
+ 1582 03b5 05       		.uleb128 0x5
+ 1583 03b6 03       		.byte	0x3
+ 1584 03b7 20000000 		.4byte	.LC6
+ 1585 03bb 00       		.byte	0
+ 1586 03bc 00       		.byte	0
+ 1587 03bd 0F       		.uleb128 0xf
+ 1588 03be C4000000 		.4byte	.LASF29
+ 1589 03c2 01       		.byte	0x1
+ 1590 03c3 FA       		.byte	0xfa
+ 1591 03c4 73000000 		.4byte	0x73
+ 1592 03c8 00000000 		.4byte	.LFB74
+ 1593 03cc 24000000 		.4byte	.LFE74-.LFB74
+ 1594 03d0 01       		.uleb128 0x1
+ 1595 03d1 9C       		.byte	0x9c
+ 1596 03d2 3A040000 		.4byte	0x43a
+ 1597 03d6 10       		.uleb128 0x10
+ 1598 03d7 50010000 		.4byte	.LASF24
+ 1599 03db 01       		.byte	0x1
+ 1600 03dc FA       		.byte	0xfa
+ 1601 03dd 73000000 		.4byte	0x73
+ 1602 03e1 98010000 		.4byte	.LLST12
+ 1603 03e5 10       		.uleb128 0x10
+ 1604 03e6 92010000 		.4byte	.LASF25
+ 1605 03ea 01       		.byte	0x1
+ 1606 03eb FA       		.byte	0xfa
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 37
+
+
+ 1607 03ec 28010000 		.4byte	0x128
+ 1608 03f0 B9010000 		.4byte	.LLST13
+ 1609 03f4 1A       		.uleb128 0x1a
+ 1610 03f5 35000000 		.4byte	.LASF30
+ 1611 03f9 01       		.byte	0x1
+ 1612 03fa FD       		.byte	0xfd
+ 1613 03fb BD000000 		.4byte	0xbd
+ 1614 03ff DA010000 		.4byte	.LLST14
+ 1615 0403 13       		.uleb128 0x13
+ 1616 0404 06000000 		.4byte	.LVL41
+ 1617 0408 C1080000 		.4byte	0x8c1
+ 1618 040c 16       		.uleb128 0x16
+ 1619 040d 12000000 		.4byte	.LVL43
+ 1620 0411 CD080000 		.4byte	0x8cd
+ 1621 0415 29040000 		.4byte	0x429
+ 1622 0419 15       		.uleb128 0x15
+ 1623 041a 01       		.uleb128 0x1
+ 1624 041b 50       		.byte	0x50
+ 1625 041c 02       		.uleb128 0x2
+ 1626 041d 74       		.byte	0x74
+ 1627 041e 00       		.sleb128 0
+ 1628 041f 15       		.uleb128 0x15
+ 1629 0420 01       		.uleb128 0x1
+ 1630 0421 51       		.byte	0x51
+ 1631 0422 05       		.uleb128 0x5
+ 1632 0423 03       		.byte	0x3
+ 1633 0424 38000000 		.4byte	.LC7
+ 1634 0428 00       		.byte	0
+ 1635 0429 14       		.uleb128 0x14
+ 1636 042a 18000000 		.4byte	.LVL44
+ 1637 042e A0080000 		.4byte	0x8a0
+ 1638 0432 15       		.uleb128 0x15
+ 1639 0433 01       		.uleb128 0x1
+ 1640 0434 50       		.byte	0x50
+ 1641 0435 02       		.uleb128 0x2
+ 1642 0436 74       		.byte	0x74
+ 1643 0437 00       		.sleb128 0
+ 1644 0438 00       		.byte	0
+ 1645 0439 00       		.byte	0
+ 1646 043a 1B       		.uleb128 0x1b
+ 1647 043b 18000000 		.4byte	.LASF31
+ 1648 043f 01       		.byte	0x1
+ 1649 0440 5B       		.byte	0x5b
+ 1650 0441 00000000 		.4byte	.LFB68
+ 1651 0445 24000000 		.4byte	.LFE68-.LFB68
+ 1652 0449 01       		.uleb128 0x1
+ 1653 044a 9C       		.byte	0x9c
+ 1654 044b 72040000 		.4byte	0x472
+ 1655 044f 1C       		.uleb128 0x1c
+ 1656 0450 4E00     		.ascii	"N\000"
+ 1657 0452 01       		.byte	0x1
+ 1658 0453 5B       		.byte	0x5b
+ 1659 0454 81000000 		.4byte	0x81
+ 1660 0458 01       		.uleb128 0x1
+ 1661 0459 50       		.byte	0x50
+ 1662 045a 1D       		.uleb128 0x1d
+ 1663 045b 00000000 		.4byte	.LBB16
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 38
+
+
+ 1664 045f 12000000 		.4byte	.LBE16-.LBB16
+ 1665 0463 12       		.uleb128 0x12
+ 1666 0464 6900     		.ascii	"i\000"
+ 1667 0466 01       		.byte	0x1
+ 1668 0467 5E       		.byte	0x5e
+ 1669 0468 81000000 		.4byte	0x81
+ 1670 046c ED010000 		.4byte	.LLST15
+ 1671 0470 00       		.byte	0
+ 1672 0471 00       		.byte	0
+ 1673 0472 1B       		.uleb128 0x1b
+ 1674 0473 E2000000 		.4byte	.LASF32
+ 1675 0477 01       		.byte	0x1
+ 1676 0478 31       		.byte	0x31
+ 1677 0479 00000000 		.4byte	.LFB66
+ 1678 047d 14000000 		.4byte	.LFE66-.LFB66
+ 1679 0481 01       		.uleb128 0x1
+ 1680 0482 9C       		.byte	0x9c
+ 1681 0483 98040000 		.4byte	0x498
+ 1682 0487 14       		.uleb128 0x14
+ 1683 0488 08000000 		.4byte	.LVL50
+ 1684 048c 3A040000 		.4byte	0x43a
+ 1685 0490 15       		.uleb128 0x15
+ 1686 0491 01       		.uleb128 0x1
+ 1687 0492 50       		.byte	0x50
+ 1688 0493 02       		.uleb128 0x2
+ 1689 0494 08       		.byte	0x8
+ 1690 0495 50       		.byte	0x50
+ 1691 0496 00       		.byte	0
+ 1692 0497 00       		.byte	0
+ 1693 0498 1E       		.uleb128 0x1e
+ 1694 0499 7E020000 		.4byte	.LASF64
+ 1695 049d 01       		.byte	0x1
+ 1696 049e 65       		.byte	0x65
+ 1697 049f A5000000 		.4byte	0xa5
+ 1698 04a3 03       		.byte	0x3
+ 1699 04a4 E0040000 		.4byte	0x4e0
+ 1700 04a8 0E       		.uleb128 0xe
+ 1701 04a9 62756600 		.ascii	"buf\000"
+ 1702 04ad 01       		.byte	0x1
+ 1703 04ae 65       		.byte	0x65
+ 1704 04af A5000000 		.4byte	0xa5
+ 1705 04b3 1F       		.uleb128 0x1f
+ 1706 04b4 70747200 		.ascii	"ptr\000"
+ 1707 04b8 01       		.byte	0x1
+ 1708 04b9 67       		.byte	0x67
+ 1709 04ba A5000000 		.4byte	0xa5
+ 1710 04be 20       		.uleb128 0x20
+ 1711 04bf A8010000 		.4byte	.LASF33
+ 1712 04c3 01       		.byte	0x1
+ 1713 04c4 68       		.byte	0x68
+ 1714 04c5 A5000000 		.4byte	0xa5
+ 1715 04c9 20       		.uleb128 0x20
+ 1716 04ca 74020000 		.4byte	.LASF34
+ 1717 04ce 01       		.byte	0x1
+ 1718 04cf 68       		.byte	0x68
+ 1719 04d0 A5000000 		.4byte	0xa5
+ 1720 04d4 20       		.uleb128 0x20
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 39
+
+
+ 1721 04d5 18010000 		.4byte	.LASF35
+ 1722 04d9 01       		.byte	0x1
+ 1723 04da 69       		.byte	0x69
+ 1724 04db AB000000 		.4byte	0xab
+ 1725 04df 00       		.byte	0
+ 1726 04e0 0F       		.uleb128 0xf
+ 1727 04e1 F4000000 		.4byte	.LASF36
+ 1728 04e5 01       		.byte	0x1
+ 1729 04e6 97       		.byte	0x97
+ 1730 04e7 73000000 		.4byte	0x73
+ 1731 04eb 00000000 		.4byte	.LFB70
+ 1732 04ef A8010000 		.4byte	.LFE70-.LFB70
+ 1733 04f3 01       		.uleb128 0x1
+ 1734 04f4 9C       		.byte	0x9c
+ 1735 04f5 92060000 		.4byte	0x692
+ 1736 04f9 21       		.uleb128 0x21
+ 1737 04fa 62756600 		.ascii	"buf\000"
+ 1738 04fe 01       		.byte	0x1
+ 1739 04ff 97       		.byte	0x97
+ 1740 0500 A5000000 		.4byte	0xa5
+ 1741 0504 17020000 		.4byte	.LLST16
+ 1742 0508 1A       		.uleb128 0x1a
+ 1743 0509 50010000 		.4byte	.LASF24
+ 1744 050d 01       		.byte	0x1
+ 1745 050e 99       		.byte	0x99
+ 1746 050f 73000000 		.4byte	0x73
+ 1747 0513 51020000 		.4byte	.LLST17
+ 1748 0517 22       		.uleb128 0x22
+ 1749 0518 92010000 		.4byte	.LASF25
+ 1750 051c 01       		.byte	0x1
+ 1751 051d 9A       		.byte	0x9a
+ 1752 051e 92060000 		.4byte	0x692
+ 1753 0522 03       		.uleb128 0x3
+ 1754 0523 91       		.byte	0x91
+ 1755 0524 F07E     		.sleb128 -144
+ 1756 0526 12       		.uleb128 0x12
+ 1757 0527 7700     		.ascii	"w\000"
+ 1758 0529 01       		.byte	0x1
+ 1759 052a 9B       		.byte	0x9b
+ 1760 052b A5000000 		.4byte	0xa5
+ 1761 052f 86020000 		.4byte	.LLST18
+ 1762 0533 1A       		.uleb128 0x1a
+ 1763 0534 00000000 		.4byte	.LASF37
+ 1764 0538 01       		.byte	0x1
+ 1765 0539 AB       		.byte	0xab
+ 1766 053a B2000000 		.4byte	0xb2
+ 1767 053e DD020000 		.4byte	.LLST19
+ 1768 0542 18       		.uleb128 0x18
+ 1769 0543 98040000 		.4byte	0x498
+ 1770 0547 12000000 		.4byte	.LBB23
+ 1771 054b 90000000 		.4byte	.LBE23-.LBB23
+ 1772 054f 01       		.byte	0x1
+ 1773 0550 A4       		.byte	0xa4
+ 1774 0551 8F050000 		.4byte	0x58f
+ 1775 0555 19       		.uleb128 0x19
+ 1776 0556 A8040000 		.4byte	0x4a8
+ 1777 055a 4C030000 		.4byte	.LLST20
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 40
+
+
+ 1778 055e 1D       		.uleb128 0x1d
+ 1779 055f 12000000 		.4byte	.LBB24
+ 1780 0563 90000000 		.4byte	.LBE24-.LBB24
+ 1781 0567 23       		.uleb128 0x23
+ 1782 0568 BE040000 		.4byte	0x4be
+ 1783 056c 6D030000 		.4byte	.LLST21
+ 1784 0570 23       		.uleb128 0x23
+ 1785 0571 C9040000 		.4byte	0x4c9
+ 1786 0575 8B030000 		.4byte	.LLST22
+ 1787 0579 23       		.uleb128 0x23
+ 1788 057a D4040000 		.4byte	0x4d4
+ 1789 057e A9030000 		.4byte	.LLST23
+ 1790 0582 24       		.uleb128 0x24
+ 1791 0583 B3040000 		.4byte	0x4b3
+ 1792 0587 05       		.uleb128 0x5
+ 1793 0588 03       		.byte	0x3
+ 1794 0589 00000000 		.4byte	ptr.7733
+ 1795 058d 00       		.byte	0
+ 1796 058e 00       		.byte	0
+ 1797 058f 18       		.uleb128 0x18
+ 1798 0590 98040000 		.4byte	0x498
+ 1799 0594 B4000000 		.4byte	.LBB25
+ 1800 0598 88000000 		.4byte	.LBE25-.LBB25
+ 1801 059c 01       		.byte	0x1
+ 1802 059d A8       		.byte	0xa8
+ 1803 059e DC050000 		.4byte	0x5dc
+ 1804 05a2 19       		.uleb128 0x19
+ 1805 05a3 A8040000 		.4byte	0x4a8
+ 1806 05a7 F9030000 		.4byte	.LLST24
+ 1807 05ab 1D       		.uleb128 0x1d
+ 1808 05ac B4000000 		.4byte	.LBB26
+ 1809 05b0 88000000 		.4byte	.LBE26-.LBB26
+ 1810 05b4 23       		.uleb128 0x23
+ 1811 05b5 BE040000 		.4byte	0x4be
+ 1812 05b9 0D040000 		.4byte	.LLST25
+ 1813 05bd 23       		.uleb128 0x23
+ 1814 05be C9040000 		.4byte	0x4c9
+ 1815 05c2 2B040000 		.4byte	.LLST26
+ 1816 05c6 23       		.uleb128 0x23
+ 1817 05c7 D4040000 		.4byte	0x4d4
+ 1818 05cb 49040000 		.4byte	.LLST27
+ 1819 05cf 24       		.uleb128 0x24
+ 1820 05d0 B3040000 		.4byte	0x4b3
+ 1821 05d4 05       		.uleb128 0x5
+ 1822 05d5 03       		.byte	0x3
+ 1823 05d6 00000000 		.4byte	ptr.7733
+ 1824 05da 00       		.byte	0
+ 1825 05db 00       		.byte	0
+ 1826 05dc 25       		.uleb128 0x25
+ 1827 05dd 00000000 		.4byte	.Ldebug_ranges0+0
+ 1828 05e1 54060000 		.4byte	0x654
+ 1829 05e5 12       		.uleb128 0x12
+ 1830 05e6 6900     		.ascii	"i\000"
+ 1831 05e8 01       		.byte	0x1
+ 1832 05e9 AE       		.byte	0xae
+ 1833 05ea 81000000 		.4byte	0x81
+ 1834 05ee 99040000 		.4byte	.LLST28
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 41
+
+
+ 1835 05f2 11       		.uleb128 0x11
+ 1836 05f3 5A010000 		.4byte	.LBB28
+ 1837 05f7 1C000000 		.4byte	.LBE28-.LBB28
+ 1838 05fb 3A060000 		.4byte	0x63a
+ 1839 05ff 1A       		.uleb128 0x1a
+ 1840 0600 01010000 		.4byte	.LASF38
+ 1841 0604 01       		.byte	0x1
+ 1842 0605 B3       		.byte	0xb3
+ 1843 0606 73000000 		.4byte	0x73
+ 1844 060a CD040000 		.4byte	.LLST29
+ 1845 060e 26       		.uleb128 0x26
+ 1846 060f 68010000 		.4byte	.LVL91
+ 1847 0613 03       		.uleb128 0x3
+ 1848 0614 76       		.byte	0x76
+ 1849 0615 2C       		.sleb128 44
+ 1850 0616 06       		.byte	0x6
+ 1851 0617 28060000 		.4byte	0x628
+ 1852 061b 15       		.uleb128 0x15
+ 1853 061c 01       		.uleb128 0x1
+ 1854 061d 50       		.byte	0x50
+ 1855 061e 02       		.uleb128 0x2
+ 1856 061f 75       		.byte	0x75
+ 1857 0620 00       		.sleb128 0
+ 1858 0621 15       		.uleb128 0x15
+ 1859 0622 01       		.uleb128 0x1
+ 1860 0623 51       		.byte	0x51
+ 1861 0624 02       		.uleb128 0x2
+ 1862 0625 7D       		.byte	0x7d
+ 1863 0626 00       		.sleb128 0
+ 1864 0627 00       		.byte	0
+ 1865 0628 14       		.uleb128 0x14
+ 1866 0629 72010000 		.4byte	.LVL94
+ 1867 062d A0080000 		.4byte	0x8a0
+ 1868 0631 15       		.uleb128 0x15
+ 1869 0632 01       		.uleb128 0x1
+ 1870 0633 50       		.byte	0x50
+ 1871 0634 03       		.uleb128 0x3
+ 1872 0635 77       		.byte	0x77
+ 1873 0636 E001     		.sleb128 224
+ 1874 0638 00       		.byte	0
+ 1875 0639 00       		.byte	0
+ 1876 063a 14       		.uleb128 0x14
+ 1877 063b 58010000 		.4byte	.LVL88
+ 1878 063f B6080000 		.4byte	0x8b6
+ 1879 0643 15       		.uleb128 0x15
+ 1880 0644 01       		.uleb128 0x1
+ 1881 0645 51       		.byte	0x51
+ 1882 0646 0B       		.uleb128 0xb
+ 1883 0647 74       		.byte	0x74
+ 1884 0648 00       		.sleb128 0
+ 1885 0649 34       		.byte	0x34
+ 1886 064a 24       		.byte	0x24
+ 1887 064b 03       		.byte	0x3
+ 1888 064c 20000000 		.4byte	.LANCHOR0+32
+ 1889 0650 22       		.byte	0x22
+ 1890 0651 06       		.byte	0x6
+ 1891 0652 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 42
+
+
+ 1892 0653 00       		.byte	0
+ 1893 0654 16       		.uleb128 0x16
+ 1894 0655 0E000000 		.4byte	.LVL53
+ 1895 0659 A0080000 		.4byte	0x8a0
+ 1896 065d 6B060000 		.4byte	0x66b
+ 1897 0661 15       		.uleb128 0x15
+ 1898 0662 01       		.uleb128 0x1
+ 1899 0663 50       		.byte	0x50
+ 1900 0664 05       		.uleb128 0x5
+ 1901 0665 03       		.byte	0x3
+ 1902 0666 E0000000 		.4byte	.LANCHOR0+224
+ 1903 066a 00       		.byte	0
+ 1904 066b 16       		.uleb128 0x16
+ 1905 066c 8C010000 		.4byte	.LVL101
+ 1906 0670 A0080000 		.4byte	0x8a0
+ 1907 0674 80060000 		.4byte	0x680
+ 1908 0678 15       		.uleb128 0x15
+ 1909 0679 01       		.uleb128 0x1
+ 1910 067a 50       		.byte	0x50
+ 1911 067b 03       		.uleb128 0x3
+ 1912 067c 74       		.byte	0x74
+ 1913 067d E401     		.sleb128 228
+ 1914 067f 00       		.byte	0
+ 1915 0680 14       		.uleb128 0x14
+ 1916 0681 94010000 		.4byte	.LVL102
+ 1917 0685 A0080000 		.4byte	0x8a0
+ 1918 0689 15       		.uleb128 0x15
+ 1919 068a 01       		.uleb128 0x1
+ 1920 068b 50       		.byte	0x50
+ 1921 068c 03       		.uleb128 0x3
+ 1922 068d 74       		.byte	0x74
+ 1923 068e E001     		.sleb128 224
+ 1924 0690 00       		.byte	0
+ 1925 0691 00       		.byte	0
+ 1926 0692 27       		.uleb128 0x27
+ 1927 0693 A5000000 		.4byte	0xa5
+ 1928 0697 A2060000 		.4byte	0x6a2
+ 1929 069b 28       		.uleb128 0x28
+ 1930 069c 9E000000 		.4byte	0x9e
+ 1931 06a0 1D       		.byte	0x1d
+ 1932 06a1 00       		.byte	0
+ 1933 06a2 29       		.uleb128 0x29
+ 1934 06a3 434C4900 		.ascii	"CLI\000"
+ 1935 06a7 01       		.byte	0x1
+ 1936 06a8 39       		.byte	0x39
+ 1937 06a9 00000000 		.4byte	.LFB67
+ 1938 06ad 8C000000 		.4byte	.LFE67-.LFB67
+ 1939 06b1 01       		.uleb128 0x1
+ 1940 06b2 9C       		.byte	0x9c
+ 1941 06b3 3B070000 		.4byte	0x73b
+ 1942 06b7 11       		.uleb128 0x11
+ 1943 06b8 0A000000 		.4byte	.LBB30
+ 1944 06bc 82000000 		.4byte	.LBE30-.LBB30
+ 1945 06c0 31070000 		.4byte	0x731
+ 1946 06c4 1A       		.uleb128 0x1a
+ 1947 06c5 DE010000 		.4byte	.LASF39
+ 1948 06c9 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 43
+
+
+ 1949 06ca 3D       		.byte	0x3d
+ 1950 06cb AB000000 		.4byte	0xab
+ 1951 06cf EB040000 		.4byte	.LLST30
+ 1952 06d3 13       		.uleb128 0x13
+ 1953 06d4 0E000000 		.4byte	.LVL105
+ 1954 06d8 D8080000 		.4byte	0x8d8
+ 1955 06dc 16       		.uleb128 0x16
+ 1956 06dd 1A000000 		.4byte	.LVL107
+ 1957 06e1 AB080000 		.4byte	0x8ab
+ 1958 06e5 F0060000 		.4byte	0x6f0
+ 1959 06e9 15       		.uleb128 0x15
+ 1960 06ea 01       		.uleb128 0x1
+ 1961 06eb 50       		.byte	0x50
+ 1962 06ec 02       		.uleb128 0x2
+ 1963 06ed 74       		.byte	0x74
+ 1964 06ee 00       		.sleb128 0
+ 1965 06ef 00       		.byte	0
+ 1966 06f0 16       		.uleb128 0x16
+ 1967 06f1 36000000 		.4byte	.LVL108
+ 1968 06f5 E0040000 		.4byte	0x4e0
+ 1969 06f9 07070000 		.4byte	0x707
+ 1970 06fd 15       		.uleb128 0x15
+ 1971 06fe 01       		.uleb128 0x1
+ 1972 06ff 50       		.byte	0x50
+ 1973 0700 05       		.uleb128 0x5
+ 1974 0701 03       		.byte	0x3
+ 1975 0702 00000000 		.4byte	InBuff
+ 1976 0706 00       		.byte	0
+ 1977 0707 13       		.uleb128 0x13
+ 1978 0708 3E000000 		.4byte	.LVL109
+ 1979 070c 3A040000 		.4byte	0x43a
+ 1980 0710 16       		.uleb128 0x16
+ 1981 0711 64000000 		.4byte	.LVL110
+ 1982 0715 A0080000 		.4byte	0x8a0
+ 1983 0719 27070000 		.4byte	0x727
+ 1984 071d 15       		.uleb128 0x15
+ 1985 071e 01       		.uleb128 0x1
+ 1986 071f 50       		.byte	0x50
+ 1987 0720 05       		.uleb128 0x5
+ 1988 0721 03       		.byte	0x3
+ 1989 0722 FC000000 		.4byte	.LANCHOR0+252
+ 1990 0726 00       		.byte	0
+ 1991 0727 13       		.uleb128 0x13
+ 1992 0728 6C000000 		.4byte	.LVL111
+ 1993 072c 3A040000 		.4byte	0x43a
+ 1994 0730 00       		.byte	0
+ 1995 0731 13       		.uleb128 0x13
+ 1996 0732 06000000 		.4byte	.LVL104
+ 1997 0736 E3080000 		.4byte	0x8e3
+ 1998 073a 00       		.byte	0
+ 1999 073b 22       		.uleb128 0x22
+ 2000 073c 1D010000 		.4byte	.LASF40
+ 2001 0740 01       		.byte	0x1
+ 2002 0741 24       		.byte	0x24
+ 2003 0742 40010000 		.4byte	0x140
+ 2004 0746 05       		.uleb128 0x5
+ 2005 0747 03       		.byte	0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 44
+
+
+ 2006 0748 00000000 		.4byte	cliEcho
+ 2007 074c 2A       		.uleb128 0x2a
+ 2008 074d 54000000 		.4byte	.LASF41
+ 2009 0751 01       		.byte	0x1
+ 2010 0752 25       		.byte	0x25
+ 2011 0753 40010000 		.4byte	0x140
+ 2012 0757 01       		.byte	0x1
+ 2013 0758 2B       		.uleb128 0x2b
+ 2014 0759 86020000 		.4byte	.LASF42
+ 2015 075d 06       		.byte	0x6
+ 2016 075e 1207     		.2byte	0x712
+ 2017 0760 64070000 		.4byte	0x764
+ 2018 0764 2C       		.uleb128 0x2c
+ 2019 0765 8C000000 		.4byte	0x8c
+ 2020 0769 27       		.uleb128 0x27
+ 2021 076a B8000000 		.4byte	0xb8
+ 2022 076e 79070000 		.4byte	0x779
+ 2023 0772 28       		.uleb128 0x28
+ 2024 0773 9E000000 		.4byte	0x9e
+ 2025 0777 15       		.byte	0x15
+ 2026 0778 00       		.byte	0
+ 2027 0779 2D       		.uleb128 0x2d
+ 2028 077a 41020000 		.4byte	.LASF43
+ 2029 077e 05       		.byte	0x5
+ 2030 077f 18       		.byte	0x18
+ 2031 0780 8A070000 		.4byte	0x78a
+ 2032 0784 05       		.uleb128 0x5
+ 2033 0785 03       		.byte	0x3
+ 2034 0786 00000000 		.4byte	BadMsgString
+ 2035 078a 06       		.uleb128 0x6
+ 2036 078b 69070000 		.4byte	0x769
+ 2037 078f 27       		.uleb128 0x27
+ 2038 0790 B8000000 		.4byte	0xb8
+ 2039 0794 9F070000 		.4byte	0x79f
+ 2040 0798 28       		.uleb128 0x28
+ 2041 0799 9E000000 		.4byte	0x9e
+ 2042 079d 1D       		.byte	0x1d
+ 2043 079e 00       		.byte	0
+ 2044 079f 2D       		.uleb128 0x2d
+ 2045 07a0 25010000 		.4byte	.LASF44
+ 2046 07a4 05       		.byte	0x5
+ 2047 07a5 19       		.byte	0x19
+ 2048 07a6 B0070000 		.4byte	0x7b0
+ 2049 07aa 05       		.uleb128 0x5
+ 2050 07ab 03       		.byte	0x3
+ 2051 07ac 00000000 		.4byte	CmdTooLong
+ 2052 07b0 06       		.uleb128 0x6
+ 2053 07b1 8F070000 		.4byte	0x78f
+ 2054 07b5 27       		.uleb128 0x27
+ 2055 07b6 B8000000 		.4byte	0xb8
+ 2056 07ba C5070000 		.4byte	0x7c5
+ 2057 07be 28       		.uleb128 0x28
+ 2058 07bf 9E000000 		.4byte	0x9e
+ 2059 07c3 02       		.byte	0x2
+ 2060 07c4 00       		.byte	0
+ 2061 07c5 2D       		.uleb128 0x2d
+ 2062 07c6 92000000 		.4byte	.LASF45
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 45
+
+
+ 2063 07ca 05       		.byte	0x5
+ 2064 07cb 1A       		.byte	0x1a
+ 2065 07cc D6070000 		.4byte	0x7d6
+ 2066 07d0 05       		.uleb128 0x5
+ 2067 07d1 03       		.byte	0x3
+ 2068 07d2 00000000 		.4byte	Prompt
+ 2069 07d6 06       		.uleb128 0x6
+ 2070 07d7 B5070000 		.4byte	0x7b5
+ 2071 07db 27       		.uleb128 0x27
+ 2072 07dc B7020000 		.4byte	0x2b7
+ 2073 07e0 EB070000 		.4byte	0x7eb
+ 2074 07e4 28       		.uleb128 0x28
+ 2075 07e5 9E000000 		.4byte	0x9e
+ 2076 07e9 0B       		.byte	0xb
+ 2077 07ea 00       		.byte	0
+ 2078 07eb 2D       		.uleb128 0x2d
+ 2079 07ec 08000000 		.4byte	.LASF46
+ 2080 07f0 05       		.byte	0x5
+ 2081 07f1 25       		.byte	0x25
+ 2082 07f2 FC070000 		.4byte	0x7fc
+ 2083 07f6 05       		.uleb128 0x5
+ 2084 07f7 03       		.byte	0x3
+ 2085 07f8 00000000 		.4byte	CMD_Parse_Table
+ 2086 07fc 06       		.uleb128 0x6
+ 2087 07fd DB070000 		.4byte	0x7db
+ 2088 0801 27       		.uleb128 0x27
+ 2089 0802 B8000000 		.4byte	0xb8
+ 2090 0806 11080000 		.4byte	0x811
+ 2091 080a 28       		.uleb128 0x28
+ 2092 080b 9E000000 		.4byte	0x9e
+ 2093 080f 18       		.byte	0x18
+ 2094 0810 00       		.byte	0
+ 2095 0811 2D       		.uleb128 0x2d
+ 2096 0812 10010000 		.4byte	.LASF47
+ 2097 0816 05       		.byte	0x5
+ 2098 0817 35       		.byte	0x35
+ 2099 0818 22080000 		.4byte	0x822
+ 2100 081c 05       		.uleb128 0x5
+ 2101 081d 03       		.byte	0x3
+ 2102 081e 00000000 		.4byte	HelpDiv
+ 2103 0822 06       		.uleb128 0x6
+ 2104 0823 01080000 		.4byte	0x801
+ 2105 0827 27       		.uleb128 0x27
+ 2106 0828 AC020000 		.4byte	0x2ac
+ 2107 082c 37080000 		.4byte	0x837
+ 2108 0830 28       		.uleb128 0x28
+ 2109 0831 9E000000 		.4byte	0x9e
+ 2110 0835 07       		.byte	0x7
+ 2111 0836 00       		.byte	0
+ 2112 0837 2D       		.uleb128 0x2d
+ 2113 0838 1D020000 		.4byte	.LASF48
+ 2114 083c 05       		.byte	0x5
+ 2115 083d 37       		.byte	0x37
+ 2116 083e 48080000 		.4byte	0x848
+ 2117 0842 05       		.uleb128 0x5
+ 2118 0843 03       		.byte	0x3
+ 2119 0844 00000000 		.4byte	HelpHeader
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 46
+
+
+ 2120 0848 06       		.uleb128 0x6
+ 2121 0849 27080000 		.4byte	0x827
+ 2122 084d 27       		.uleb128 0x27
+ 2123 084e AB000000 		.4byte	0xab
+ 2124 0852 5D080000 		.4byte	0x85d
+ 2125 0856 28       		.uleb128 0x28
+ 2126 0857 9E000000 		.4byte	0x9e
+ 2127 085b 4F       		.byte	0x4f
+ 2128 085c 00       		.byte	0
+ 2129 085d 2D       		.uleb128 0x2d
+ 2130 085e 44000000 		.4byte	.LASF49
+ 2131 0862 01       		.byte	0x1
+ 2132 0863 21       		.byte	0x21
+ 2133 0864 4D080000 		.4byte	0x84d
+ 2134 0868 05       		.uleb128 0x5
+ 2135 0869 03       		.byte	0x3
+ 2136 086a 00000000 		.4byte	InBuff
+ 2137 086e 2D       		.uleb128 0x2d
+ 2138 086f 63020000 		.4byte	.LASF50
+ 2139 0873 01       		.byte	0x1
+ 2140 0874 22       		.byte	0x22
+ 2141 0875 81000000 		.4byte	0x81
+ 2142 0879 05       		.uleb128 0x5
+ 2143 087a 03       		.byte	0x3
+ 2144 087b 00000000 		.4byte	InBuffCnt
+ 2145 087f 27       		.uleb128 0x27
+ 2146 0880 AB000000 		.4byte	0xab
+ 2147 0884 8F080000 		.4byte	0x88f
+ 2148 0888 28       		.uleb128 0x28
+ 2149 0889 9E000000 		.4byte	0x9e
+ 2150 088d 1F       		.byte	0x1f
+ 2151 088e 00       		.byte	0
+ 2152 088f 2E       		.uleb128 0x2e
+ 2153 0890 6D736700 		.ascii	"msg\000"
+ 2154 0894 01       		.byte	0x1
+ 2155 0895 27       		.byte	0x27
+ 2156 0896 7F080000 		.4byte	0x87f
+ 2157 089a 05       		.uleb128 0x5
+ 2158 089b 03       		.byte	0x3
+ 2159 089c 00000000 		.4byte	msg
+ 2160 08a0 2F       		.uleb128 0x2f
+ 2161 08a1 7E000000 		.4byte	.LASF51
+ 2162 08a5 7E000000 		.4byte	.LASF51
+ 2163 08a9 07       		.byte	0x7
+ 2164 08aa 4A       		.byte	0x4a
+ 2165 08ab 2F       		.uleb128 0x2f
+ 2166 08ac 99000000 		.4byte	.LASF52
+ 2167 08b0 99000000 		.4byte	.LASF52
+ 2168 08b4 07       		.byte	0x7
+ 2169 08b5 49       		.byte	0x49
+ 2170 08b6 2F       		.uleb128 0x2f
+ 2171 08b7 6D020000 		.4byte	.LASF53
+ 2172 08bb 6D020000 		.4byte	.LASF53
+ 2173 08bf 08       		.byte	0x8
+ 2174 08c0 1C       		.byte	0x1c
+ 2175 08c1 30       		.uleb128 0x30
+ 2176 08c2 AB000000 		.4byte	.LASF54
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 47
+
+
+ 2177 08c6 AB000000 		.4byte	.LASF54
+ 2178 08ca 09       		.byte	0x9
+ 2179 08cb 2D01     		.2byte	0x12d
+ 2180 08cd 2F       		.uleb128 0x2f
+ 2181 08ce 78010000 		.4byte	.LASF55
+ 2182 08d2 78010000 		.4byte	.LASF55
+ 2183 08d6 0A       		.byte	0xa
+ 2184 08d7 E7       		.byte	0xe7
+ 2185 08d8 2F       		.uleb128 0x2f
+ 2186 08d9 97010000 		.4byte	.LASF56
+ 2187 08dd 97010000 		.4byte	.LASF56
+ 2188 08e1 07       		.byte	0x7
+ 2189 08e2 48       		.byte	0x48
+ 2190 08e3 2F       		.uleb128 0x2f
+ 2191 08e4 AE010000 		.4byte	.LASF57
+ 2192 08e8 AE010000 		.4byte	.LASF57
+ 2193 08ec 07       		.byte	0x7
+ 2194 08ed 47       		.byte	0x47
+ 2195 08ee 00       		.byte	0
+ 2196              		.section	.debug_abbrev,"",%progbits
+ 2197              	.Ldebug_abbrev0:
+ 2198 0000 01       		.uleb128 0x1
+ 2199 0001 11       		.uleb128 0x11
+ 2200 0002 01       		.byte	0x1
+ 2201 0003 25       		.uleb128 0x25
+ 2202 0004 0E       		.uleb128 0xe
+ 2203 0005 13       		.uleb128 0x13
+ 2204 0006 0B       		.uleb128 0xb
+ 2205 0007 03       		.uleb128 0x3
+ 2206 0008 0E       		.uleb128 0xe
+ 2207 0009 1B       		.uleb128 0x1b
+ 2208 000a 0E       		.uleb128 0xe
+ 2209 000b 55       		.uleb128 0x55
+ 2210 000c 17       		.uleb128 0x17
+ 2211 000d 11       		.uleb128 0x11
+ 2212 000e 01       		.uleb128 0x1
+ 2213 000f 10       		.uleb128 0x10
+ 2214 0010 17       		.uleb128 0x17
+ 2215 0011 00       		.byte	0
+ 2216 0012 00       		.byte	0
+ 2217 0013 02       		.uleb128 0x2
+ 2218 0014 24       		.uleb128 0x24
+ 2219 0015 00       		.byte	0
+ 2220 0016 0B       		.uleb128 0xb
+ 2221 0017 0B       		.uleb128 0xb
+ 2222 0018 3E       		.uleb128 0x3e
+ 2223 0019 0B       		.uleb128 0xb
+ 2224 001a 03       		.uleb128 0x3
+ 2225 001b 0E       		.uleb128 0xe
+ 2226 001c 00       		.byte	0
+ 2227 001d 00       		.byte	0
+ 2228 001e 03       		.uleb128 0x3
+ 2229 001f 16       		.uleb128 0x16
+ 2230 0020 00       		.byte	0
+ 2231 0021 03       		.uleb128 0x3
+ 2232 0022 0E       		.uleb128 0xe
+ 2233 0023 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 48
+
+
+ 2234 0024 0B       		.uleb128 0xb
+ 2235 0025 3B       		.uleb128 0x3b
+ 2236 0026 0B       		.uleb128 0xb
+ 2237 0027 49       		.uleb128 0x49
+ 2238 0028 13       		.uleb128 0x13
+ 2239 0029 00       		.byte	0
+ 2240 002a 00       		.byte	0
+ 2241 002b 04       		.uleb128 0x4
+ 2242 002c 24       		.uleb128 0x24
+ 2243 002d 00       		.byte	0
+ 2244 002e 0B       		.uleb128 0xb
+ 2245 002f 0B       		.uleb128 0xb
+ 2246 0030 3E       		.uleb128 0x3e
+ 2247 0031 0B       		.uleb128 0xb
+ 2248 0032 03       		.uleb128 0x3
+ 2249 0033 08       		.uleb128 0x8
+ 2250 0034 00       		.byte	0
+ 2251 0035 00       		.byte	0
+ 2252 0036 05       		.uleb128 0x5
+ 2253 0037 0F       		.uleb128 0xf
+ 2254 0038 00       		.byte	0
+ 2255 0039 0B       		.uleb128 0xb
+ 2256 003a 0B       		.uleb128 0xb
+ 2257 003b 49       		.uleb128 0x49
+ 2258 003c 13       		.uleb128 0x13
+ 2259 003d 00       		.byte	0
+ 2260 003e 00       		.byte	0
+ 2261 003f 06       		.uleb128 0x6
+ 2262 0040 26       		.uleb128 0x26
+ 2263 0041 00       		.byte	0
+ 2264 0042 49       		.uleb128 0x49
+ 2265 0043 13       		.uleb128 0x13
+ 2266 0044 00       		.byte	0
+ 2267 0045 00       		.byte	0
+ 2268 0046 07       		.uleb128 0x7
+ 2269 0047 16       		.uleb128 0x16
+ 2270 0048 00       		.byte	0
+ 2271 0049 03       		.uleb128 0x3
+ 2272 004a 0E       		.uleb128 0xe
+ 2273 004b 3A       		.uleb128 0x3a
+ 2274 004c 0B       		.uleb128 0xb
+ 2275 004d 3B       		.uleb128 0x3b
+ 2276 004e 05       		.uleb128 0x5
+ 2277 004f 49       		.uleb128 0x49
+ 2278 0050 13       		.uleb128 0x13
+ 2279 0051 00       		.byte	0
+ 2280 0052 00       		.byte	0
+ 2281 0053 08       		.uleb128 0x8
+ 2282 0054 13       		.uleb128 0x13
+ 2283 0055 01       		.byte	0x1
+ 2284 0056 03       		.uleb128 0x3
+ 2285 0057 0E       		.uleb128 0xe
+ 2286 0058 0B       		.uleb128 0xb
+ 2287 0059 0B       		.uleb128 0xb
+ 2288 005a 3A       		.uleb128 0x3a
+ 2289 005b 0B       		.uleb128 0xb
+ 2290 005c 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 49
+
+
+ 2291 005d 0B       		.uleb128 0xb
+ 2292 005e 01       		.uleb128 0x1
+ 2293 005f 13       		.uleb128 0x13
+ 2294 0060 00       		.byte	0
+ 2295 0061 00       		.byte	0
+ 2296 0062 09       		.uleb128 0x9
+ 2297 0063 0D       		.uleb128 0xd
+ 2298 0064 00       		.byte	0
+ 2299 0065 03       		.uleb128 0x3
+ 2300 0066 0E       		.uleb128 0xe
+ 2301 0067 3A       		.uleb128 0x3a
+ 2302 0068 0B       		.uleb128 0xb
+ 2303 0069 3B       		.uleb128 0x3b
+ 2304 006a 0B       		.uleb128 0xb
+ 2305 006b 49       		.uleb128 0x49
+ 2306 006c 13       		.uleb128 0x13
+ 2307 006d 38       		.uleb128 0x38
+ 2308 006e 0B       		.uleb128 0xb
+ 2309 006f 00       		.byte	0
+ 2310 0070 00       		.byte	0
+ 2311 0071 0A       		.uleb128 0xa
+ 2312 0072 15       		.uleb128 0x15
+ 2313 0073 01       		.byte	0x1
+ 2314 0074 27       		.uleb128 0x27
+ 2315 0075 19       		.uleb128 0x19
+ 2316 0076 49       		.uleb128 0x49
+ 2317 0077 13       		.uleb128 0x13
+ 2318 0078 01       		.uleb128 0x1
+ 2319 0079 13       		.uleb128 0x13
+ 2320 007a 00       		.byte	0
+ 2321 007b 00       		.byte	0
+ 2322 007c 0B       		.uleb128 0xb
+ 2323 007d 05       		.uleb128 0x5
+ 2324 007e 00       		.byte	0
+ 2325 007f 49       		.uleb128 0x49
+ 2326 0080 13       		.uleb128 0x13
+ 2327 0081 00       		.byte	0
+ 2328 0082 00       		.byte	0
+ 2329 0083 0C       		.uleb128 0xc
+ 2330 0084 2E       		.uleb128 0x2e
+ 2331 0085 00       		.byte	0
+ 2332 0086 03       		.uleb128 0x3
+ 2333 0087 0E       		.uleb128 0xe
+ 2334 0088 3A       		.uleb128 0x3a
+ 2335 0089 0B       		.uleb128 0xb
+ 2336 008a 3B       		.uleb128 0x3b
+ 2337 008b 0B       		.uleb128 0xb
+ 2338 008c 49       		.uleb128 0x49
+ 2339 008d 13       		.uleb128 0x13
+ 2340 008e 20       		.uleb128 0x20
+ 2341 008f 0B       		.uleb128 0xb
+ 2342 0090 00       		.byte	0
+ 2343 0091 00       		.byte	0
+ 2344 0092 0D       		.uleb128 0xd
+ 2345 0093 2E       		.uleb128 0x2e
+ 2346 0094 01       		.byte	0x1
+ 2347 0095 03       		.uleb128 0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 50
+
+
+ 2348 0096 0E       		.uleb128 0xe
+ 2349 0097 3A       		.uleb128 0x3a
+ 2350 0098 0B       		.uleb128 0xb
+ 2351 0099 3B       		.uleb128 0x3b
+ 2352 009a 0B       		.uleb128 0xb
+ 2353 009b 27       		.uleb128 0x27
+ 2354 009c 19       		.uleb128 0x19
+ 2355 009d 20       		.uleb128 0x20
+ 2356 009e 0B       		.uleb128 0xb
+ 2357 009f 01       		.uleb128 0x1
+ 2358 00a0 13       		.uleb128 0x13
+ 2359 00a1 00       		.byte	0
+ 2360 00a2 00       		.byte	0
+ 2361 00a3 0E       		.uleb128 0xe
+ 2362 00a4 05       		.uleb128 0x5
+ 2363 00a5 00       		.byte	0
+ 2364 00a6 03       		.uleb128 0x3
+ 2365 00a7 08       		.uleb128 0x8
+ 2366 00a8 3A       		.uleb128 0x3a
+ 2367 00a9 0B       		.uleb128 0xb
+ 2368 00aa 3B       		.uleb128 0x3b
+ 2369 00ab 0B       		.uleb128 0xb
+ 2370 00ac 49       		.uleb128 0x49
+ 2371 00ad 13       		.uleb128 0x13
+ 2372 00ae 00       		.byte	0
+ 2373 00af 00       		.byte	0
+ 2374 00b0 0F       		.uleb128 0xf
+ 2375 00b1 2E       		.uleb128 0x2e
+ 2376 00b2 01       		.byte	0x1
+ 2377 00b3 3F       		.uleb128 0x3f
+ 2378 00b4 19       		.uleb128 0x19
+ 2379 00b5 03       		.uleb128 0x3
+ 2380 00b6 0E       		.uleb128 0xe
+ 2381 00b7 3A       		.uleb128 0x3a
+ 2382 00b8 0B       		.uleb128 0xb
+ 2383 00b9 3B       		.uleb128 0x3b
+ 2384 00ba 0B       		.uleb128 0xb
+ 2385 00bb 27       		.uleb128 0x27
+ 2386 00bc 19       		.uleb128 0x19
+ 2387 00bd 49       		.uleb128 0x49
+ 2388 00be 13       		.uleb128 0x13
+ 2389 00bf 11       		.uleb128 0x11
+ 2390 00c0 01       		.uleb128 0x1
+ 2391 00c1 12       		.uleb128 0x12
+ 2392 00c2 06       		.uleb128 0x6
+ 2393 00c3 40       		.uleb128 0x40
+ 2394 00c4 18       		.uleb128 0x18
+ 2395 00c5 9742     		.uleb128 0x2117
+ 2396 00c7 19       		.uleb128 0x19
+ 2397 00c8 01       		.uleb128 0x1
+ 2398 00c9 13       		.uleb128 0x13
+ 2399 00ca 00       		.byte	0
+ 2400 00cb 00       		.byte	0
+ 2401 00cc 10       		.uleb128 0x10
+ 2402 00cd 05       		.uleb128 0x5
+ 2403 00ce 00       		.byte	0
+ 2404 00cf 03       		.uleb128 0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 51
+
+
+ 2405 00d0 0E       		.uleb128 0xe
+ 2406 00d1 3A       		.uleb128 0x3a
+ 2407 00d2 0B       		.uleb128 0xb
+ 2408 00d3 3B       		.uleb128 0x3b
+ 2409 00d4 0B       		.uleb128 0xb
+ 2410 00d5 49       		.uleb128 0x49
+ 2411 00d6 13       		.uleb128 0x13
+ 2412 00d7 02       		.uleb128 0x2
+ 2413 00d8 17       		.uleb128 0x17
+ 2414 00d9 00       		.byte	0
+ 2415 00da 00       		.byte	0
+ 2416 00db 11       		.uleb128 0x11
+ 2417 00dc 0B       		.uleb128 0xb
+ 2418 00dd 01       		.byte	0x1
+ 2419 00de 11       		.uleb128 0x11
+ 2420 00df 01       		.uleb128 0x1
+ 2421 00e0 12       		.uleb128 0x12
+ 2422 00e1 06       		.uleb128 0x6
+ 2423 00e2 01       		.uleb128 0x1
+ 2424 00e3 13       		.uleb128 0x13
+ 2425 00e4 00       		.byte	0
+ 2426 00e5 00       		.byte	0
+ 2427 00e6 12       		.uleb128 0x12
+ 2428 00e7 34       		.uleb128 0x34
+ 2429 00e8 00       		.byte	0
+ 2430 00e9 03       		.uleb128 0x3
+ 2431 00ea 08       		.uleb128 0x8
+ 2432 00eb 3A       		.uleb128 0x3a
+ 2433 00ec 0B       		.uleb128 0xb
+ 2434 00ed 3B       		.uleb128 0x3b
+ 2435 00ee 0B       		.uleb128 0xb
+ 2436 00ef 49       		.uleb128 0x49
+ 2437 00f0 13       		.uleb128 0x13
+ 2438 00f1 02       		.uleb128 0x2
+ 2439 00f2 17       		.uleb128 0x17
+ 2440 00f3 00       		.byte	0
+ 2441 00f4 00       		.byte	0
+ 2442 00f5 13       		.uleb128 0x13
+ 2443 00f6 898201   		.uleb128 0x4109
+ 2444 00f9 00       		.byte	0
+ 2445 00fa 11       		.uleb128 0x11
+ 2446 00fb 01       		.uleb128 0x1
+ 2447 00fc 31       		.uleb128 0x31
+ 2448 00fd 13       		.uleb128 0x13
+ 2449 00fe 00       		.byte	0
+ 2450 00ff 00       		.byte	0
+ 2451 0100 14       		.uleb128 0x14
+ 2452 0101 898201   		.uleb128 0x4109
+ 2453 0104 01       		.byte	0x1
+ 2454 0105 11       		.uleb128 0x11
+ 2455 0106 01       		.uleb128 0x1
+ 2456 0107 31       		.uleb128 0x31
+ 2457 0108 13       		.uleb128 0x13
+ 2458 0109 00       		.byte	0
+ 2459 010a 00       		.byte	0
+ 2460 010b 15       		.uleb128 0x15
+ 2461 010c 8A8201   		.uleb128 0x410a
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 52
+
+
+ 2462 010f 00       		.byte	0
+ 2463 0110 02       		.uleb128 0x2
+ 2464 0111 18       		.uleb128 0x18
+ 2465 0112 9142     		.uleb128 0x2111
+ 2466 0114 18       		.uleb128 0x18
+ 2467 0115 00       		.byte	0
+ 2468 0116 00       		.byte	0
+ 2469 0117 16       		.uleb128 0x16
+ 2470 0118 898201   		.uleb128 0x4109
+ 2471 011b 01       		.byte	0x1
+ 2472 011c 11       		.uleb128 0x11
+ 2473 011d 01       		.uleb128 0x1
+ 2474 011e 31       		.uleb128 0x31
+ 2475 011f 13       		.uleb128 0x13
+ 2476 0120 01       		.uleb128 0x1
+ 2477 0121 13       		.uleb128 0x13
+ 2478 0122 00       		.byte	0
+ 2479 0123 00       		.byte	0
+ 2480 0124 17       		.uleb128 0x17
+ 2481 0125 1D       		.uleb128 0x1d
+ 2482 0126 00       		.byte	0
+ 2483 0127 31       		.uleb128 0x31
+ 2484 0128 13       		.uleb128 0x13
+ 2485 0129 11       		.uleb128 0x11
+ 2486 012a 01       		.uleb128 0x1
+ 2487 012b 12       		.uleb128 0x12
+ 2488 012c 06       		.uleb128 0x6
+ 2489 012d 58       		.uleb128 0x58
+ 2490 012e 0B       		.uleb128 0xb
+ 2491 012f 59       		.uleb128 0x59
+ 2492 0130 0B       		.uleb128 0xb
+ 2493 0131 00       		.byte	0
+ 2494 0132 00       		.byte	0
+ 2495 0133 18       		.uleb128 0x18
+ 2496 0134 1D       		.uleb128 0x1d
+ 2497 0135 01       		.byte	0x1
+ 2498 0136 31       		.uleb128 0x31
+ 2499 0137 13       		.uleb128 0x13
+ 2500 0138 11       		.uleb128 0x11
+ 2501 0139 01       		.uleb128 0x1
+ 2502 013a 12       		.uleb128 0x12
+ 2503 013b 06       		.uleb128 0x6
+ 2504 013c 58       		.uleb128 0x58
+ 2505 013d 0B       		.uleb128 0xb
+ 2506 013e 59       		.uleb128 0x59
+ 2507 013f 0B       		.uleb128 0xb
+ 2508 0140 01       		.uleb128 0x1
+ 2509 0141 13       		.uleb128 0x13
+ 2510 0142 00       		.byte	0
+ 2511 0143 00       		.byte	0
+ 2512 0144 19       		.uleb128 0x19
+ 2513 0145 05       		.uleb128 0x5
+ 2514 0146 00       		.byte	0
+ 2515 0147 31       		.uleb128 0x31
+ 2516 0148 13       		.uleb128 0x13
+ 2517 0149 02       		.uleb128 0x2
+ 2518 014a 17       		.uleb128 0x17
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 53
+
+
+ 2519 014b 00       		.byte	0
+ 2520 014c 00       		.byte	0
+ 2521 014d 1A       		.uleb128 0x1a
+ 2522 014e 34       		.uleb128 0x34
+ 2523 014f 00       		.byte	0
+ 2524 0150 03       		.uleb128 0x3
+ 2525 0151 0E       		.uleb128 0xe
+ 2526 0152 3A       		.uleb128 0x3a
+ 2527 0153 0B       		.uleb128 0xb
+ 2528 0154 3B       		.uleb128 0x3b
+ 2529 0155 0B       		.uleb128 0xb
+ 2530 0156 49       		.uleb128 0x49
+ 2531 0157 13       		.uleb128 0x13
+ 2532 0158 02       		.uleb128 0x2
+ 2533 0159 17       		.uleb128 0x17
+ 2534 015a 00       		.byte	0
+ 2535 015b 00       		.byte	0
+ 2536 015c 1B       		.uleb128 0x1b
+ 2537 015d 2E       		.uleb128 0x2e
+ 2538 015e 01       		.byte	0x1
+ 2539 015f 3F       		.uleb128 0x3f
+ 2540 0160 19       		.uleb128 0x19
+ 2541 0161 03       		.uleb128 0x3
+ 2542 0162 0E       		.uleb128 0xe
+ 2543 0163 3A       		.uleb128 0x3a
+ 2544 0164 0B       		.uleb128 0xb
+ 2545 0165 3B       		.uleb128 0x3b
+ 2546 0166 0B       		.uleb128 0xb
+ 2547 0167 27       		.uleb128 0x27
+ 2548 0168 19       		.uleb128 0x19
+ 2549 0169 11       		.uleb128 0x11
+ 2550 016a 01       		.uleb128 0x1
+ 2551 016b 12       		.uleb128 0x12
+ 2552 016c 06       		.uleb128 0x6
+ 2553 016d 40       		.uleb128 0x40
+ 2554 016e 18       		.uleb128 0x18
+ 2555 016f 9742     		.uleb128 0x2117
+ 2556 0171 19       		.uleb128 0x19
+ 2557 0172 01       		.uleb128 0x1
+ 2558 0173 13       		.uleb128 0x13
+ 2559 0174 00       		.byte	0
+ 2560 0175 00       		.byte	0
+ 2561 0176 1C       		.uleb128 0x1c
+ 2562 0177 05       		.uleb128 0x5
+ 2563 0178 00       		.byte	0
+ 2564 0179 03       		.uleb128 0x3
+ 2565 017a 08       		.uleb128 0x8
+ 2566 017b 3A       		.uleb128 0x3a
+ 2567 017c 0B       		.uleb128 0xb
+ 2568 017d 3B       		.uleb128 0x3b
+ 2569 017e 0B       		.uleb128 0xb
+ 2570 017f 49       		.uleb128 0x49
+ 2571 0180 13       		.uleb128 0x13
+ 2572 0181 02       		.uleb128 0x2
+ 2573 0182 18       		.uleb128 0x18
+ 2574 0183 00       		.byte	0
+ 2575 0184 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 54
+
+
+ 2576 0185 1D       		.uleb128 0x1d
+ 2577 0186 0B       		.uleb128 0xb
+ 2578 0187 01       		.byte	0x1
+ 2579 0188 11       		.uleb128 0x11
+ 2580 0189 01       		.uleb128 0x1
+ 2581 018a 12       		.uleb128 0x12
+ 2582 018b 06       		.uleb128 0x6
+ 2583 018c 00       		.byte	0
+ 2584 018d 00       		.byte	0
+ 2585 018e 1E       		.uleb128 0x1e
+ 2586 018f 2E       		.uleb128 0x2e
+ 2587 0190 01       		.byte	0x1
+ 2588 0191 03       		.uleb128 0x3
+ 2589 0192 0E       		.uleb128 0xe
+ 2590 0193 3A       		.uleb128 0x3a
+ 2591 0194 0B       		.uleb128 0xb
+ 2592 0195 3B       		.uleb128 0x3b
+ 2593 0196 0B       		.uleb128 0xb
+ 2594 0197 27       		.uleb128 0x27
+ 2595 0198 19       		.uleb128 0x19
+ 2596 0199 49       		.uleb128 0x49
+ 2597 019a 13       		.uleb128 0x13
+ 2598 019b 20       		.uleb128 0x20
+ 2599 019c 0B       		.uleb128 0xb
+ 2600 019d 01       		.uleb128 0x1
+ 2601 019e 13       		.uleb128 0x13
+ 2602 019f 00       		.byte	0
+ 2603 01a0 00       		.byte	0
+ 2604 01a1 1F       		.uleb128 0x1f
+ 2605 01a2 34       		.uleb128 0x34
+ 2606 01a3 00       		.byte	0
+ 2607 01a4 03       		.uleb128 0x3
+ 2608 01a5 08       		.uleb128 0x8
+ 2609 01a6 3A       		.uleb128 0x3a
+ 2610 01a7 0B       		.uleb128 0xb
+ 2611 01a8 3B       		.uleb128 0x3b
+ 2612 01a9 0B       		.uleb128 0xb
+ 2613 01aa 49       		.uleb128 0x49
+ 2614 01ab 13       		.uleb128 0x13
+ 2615 01ac 00       		.byte	0
+ 2616 01ad 00       		.byte	0
+ 2617 01ae 20       		.uleb128 0x20
+ 2618 01af 34       		.uleb128 0x34
+ 2619 01b0 00       		.byte	0
+ 2620 01b1 03       		.uleb128 0x3
+ 2621 01b2 0E       		.uleb128 0xe
+ 2622 01b3 3A       		.uleb128 0x3a
+ 2623 01b4 0B       		.uleb128 0xb
+ 2624 01b5 3B       		.uleb128 0x3b
+ 2625 01b6 0B       		.uleb128 0xb
+ 2626 01b7 49       		.uleb128 0x49
+ 2627 01b8 13       		.uleb128 0x13
+ 2628 01b9 00       		.byte	0
+ 2629 01ba 00       		.byte	0
+ 2630 01bb 21       		.uleb128 0x21
+ 2631 01bc 05       		.uleb128 0x5
+ 2632 01bd 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 55
+
+
+ 2633 01be 03       		.uleb128 0x3
+ 2634 01bf 08       		.uleb128 0x8
+ 2635 01c0 3A       		.uleb128 0x3a
+ 2636 01c1 0B       		.uleb128 0xb
+ 2637 01c2 3B       		.uleb128 0x3b
+ 2638 01c3 0B       		.uleb128 0xb
+ 2639 01c4 49       		.uleb128 0x49
+ 2640 01c5 13       		.uleb128 0x13
+ 2641 01c6 02       		.uleb128 0x2
+ 2642 01c7 17       		.uleb128 0x17
+ 2643 01c8 00       		.byte	0
+ 2644 01c9 00       		.byte	0
+ 2645 01ca 22       		.uleb128 0x22
+ 2646 01cb 34       		.uleb128 0x34
+ 2647 01cc 00       		.byte	0
+ 2648 01cd 03       		.uleb128 0x3
+ 2649 01ce 0E       		.uleb128 0xe
+ 2650 01cf 3A       		.uleb128 0x3a
+ 2651 01d0 0B       		.uleb128 0xb
+ 2652 01d1 3B       		.uleb128 0x3b
+ 2653 01d2 0B       		.uleb128 0xb
+ 2654 01d3 49       		.uleb128 0x49
+ 2655 01d4 13       		.uleb128 0x13
+ 2656 01d5 02       		.uleb128 0x2
+ 2657 01d6 18       		.uleb128 0x18
+ 2658 01d7 00       		.byte	0
+ 2659 01d8 00       		.byte	0
+ 2660 01d9 23       		.uleb128 0x23
+ 2661 01da 34       		.uleb128 0x34
+ 2662 01db 00       		.byte	0
+ 2663 01dc 31       		.uleb128 0x31
+ 2664 01dd 13       		.uleb128 0x13
+ 2665 01de 02       		.uleb128 0x2
+ 2666 01df 17       		.uleb128 0x17
+ 2667 01e0 00       		.byte	0
+ 2668 01e1 00       		.byte	0
+ 2669 01e2 24       		.uleb128 0x24
+ 2670 01e3 34       		.uleb128 0x34
+ 2671 01e4 00       		.byte	0
+ 2672 01e5 31       		.uleb128 0x31
+ 2673 01e6 13       		.uleb128 0x13
+ 2674 01e7 02       		.uleb128 0x2
+ 2675 01e8 18       		.uleb128 0x18
+ 2676 01e9 00       		.byte	0
+ 2677 01ea 00       		.byte	0
+ 2678 01eb 25       		.uleb128 0x25
+ 2679 01ec 0B       		.uleb128 0xb
+ 2680 01ed 01       		.byte	0x1
+ 2681 01ee 55       		.uleb128 0x55
+ 2682 01ef 17       		.uleb128 0x17
+ 2683 01f0 01       		.uleb128 0x1
+ 2684 01f1 13       		.uleb128 0x13
+ 2685 01f2 00       		.byte	0
+ 2686 01f3 00       		.byte	0
+ 2687 01f4 26       		.uleb128 0x26
+ 2688 01f5 898201   		.uleb128 0x4109
+ 2689 01f8 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 56
+
+
+ 2690 01f9 11       		.uleb128 0x11
+ 2691 01fa 01       		.uleb128 0x1
+ 2692 01fb 9342     		.uleb128 0x2113
+ 2693 01fd 18       		.uleb128 0x18
+ 2694 01fe 01       		.uleb128 0x1
+ 2695 01ff 13       		.uleb128 0x13
+ 2696 0200 00       		.byte	0
+ 2697 0201 00       		.byte	0
+ 2698 0202 27       		.uleb128 0x27
+ 2699 0203 01       		.uleb128 0x1
+ 2700 0204 01       		.byte	0x1
+ 2701 0205 49       		.uleb128 0x49
+ 2702 0206 13       		.uleb128 0x13
+ 2703 0207 01       		.uleb128 0x1
+ 2704 0208 13       		.uleb128 0x13
+ 2705 0209 00       		.byte	0
+ 2706 020a 00       		.byte	0
+ 2707 020b 28       		.uleb128 0x28
+ 2708 020c 21       		.uleb128 0x21
+ 2709 020d 00       		.byte	0
+ 2710 020e 49       		.uleb128 0x49
+ 2711 020f 13       		.uleb128 0x13
+ 2712 0210 2F       		.uleb128 0x2f
+ 2713 0211 0B       		.uleb128 0xb
+ 2714 0212 00       		.byte	0
+ 2715 0213 00       		.byte	0
+ 2716 0214 29       		.uleb128 0x29
+ 2717 0215 2E       		.uleb128 0x2e
+ 2718 0216 01       		.byte	0x1
+ 2719 0217 3F       		.uleb128 0x3f
+ 2720 0218 19       		.uleb128 0x19
+ 2721 0219 03       		.uleb128 0x3
+ 2722 021a 08       		.uleb128 0x8
+ 2723 021b 3A       		.uleb128 0x3a
+ 2724 021c 0B       		.uleb128 0xb
+ 2725 021d 3B       		.uleb128 0x3b
+ 2726 021e 0B       		.uleb128 0xb
+ 2727 021f 27       		.uleb128 0x27
+ 2728 0220 19       		.uleb128 0x19
+ 2729 0221 11       		.uleb128 0x11
+ 2730 0222 01       		.uleb128 0x1
+ 2731 0223 12       		.uleb128 0x12
+ 2732 0224 06       		.uleb128 0x6
+ 2733 0225 40       		.uleb128 0x40
+ 2734 0226 18       		.uleb128 0x18
+ 2735 0227 9742     		.uleb128 0x2117
+ 2736 0229 19       		.uleb128 0x19
+ 2737 022a 01       		.uleb128 0x1
+ 2738 022b 13       		.uleb128 0x13
+ 2739 022c 00       		.byte	0
+ 2740 022d 00       		.byte	0
+ 2741 022e 2A       		.uleb128 0x2a
+ 2742 022f 34       		.uleb128 0x34
+ 2743 0230 00       		.byte	0
+ 2744 0231 03       		.uleb128 0x3
+ 2745 0232 0E       		.uleb128 0xe
+ 2746 0233 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 57
+
+
+ 2747 0234 0B       		.uleb128 0xb
+ 2748 0235 3B       		.uleb128 0x3b
+ 2749 0236 0B       		.uleb128 0xb
+ 2750 0237 49       		.uleb128 0x49
+ 2751 0238 13       		.uleb128 0x13
+ 2752 0239 1C       		.uleb128 0x1c
+ 2753 023a 0B       		.uleb128 0xb
+ 2754 023b 00       		.byte	0
+ 2755 023c 00       		.byte	0
+ 2756 023d 2B       		.uleb128 0x2b
+ 2757 023e 34       		.uleb128 0x34
+ 2758 023f 00       		.byte	0
+ 2759 0240 03       		.uleb128 0x3
+ 2760 0241 0E       		.uleb128 0xe
+ 2761 0242 3A       		.uleb128 0x3a
+ 2762 0243 0B       		.uleb128 0xb
+ 2763 0244 3B       		.uleb128 0x3b
+ 2764 0245 05       		.uleb128 0x5
+ 2765 0246 49       		.uleb128 0x49
+ 2766 0247 13       		.uleb128 0x13
+ 2767 0248 3F       		.uleb128 0x3f
+ 2768 0249 19       		.uleb128 0x19
+ 2769 024a 3C       		.uleb128 0x3c
+ 2770 024b 19       		.uleb128 0x19
+ 2771 024c 00       		.byte	0
+ 2772 024d 00       		.byte	0
+ 2773 024e 2C       		.uleb128 0x2c
+ 2774 024f 35       		.uleb128 0x35
+ 2775 0250 00       		.byte	0
+ 2776 0251 49       		.uleb128 0x49
+ 2777 0252 13       		.uleb128 0x13
+ 2778 0253 00       		.byte	0
+ 2779 0254 00       		.byte	0
+ 2780 0255 2D       		.uleb128 0x2d
+ 2781 0256 34       		.uleb128 0x34
+ 2782 0257 00       		.byte	0
+ 2783 0258 03       		.uleb128 0x3
+ 2784 0259 0E       		.uleb128 0xe
+ 2785 025a 3A       		.uleb128 0x3a
+ 2786 025b 0B       		.uleb128 0xb
+ 2787 025c 3B       		.uleb128 0x3b
+ 2788 025d 0B       		.uleb128 0xb
+ 2789 025e 49       		.uleb128 0x49
+ 2790 025f 13       		.uleb128 0x13
+ 2791 0260 3F       		.uleb128 0x3f
+ 2792 0261 19       		.uleb128 0x19
+ 2793 0262 02       		.uleb128 0x2
+ 2794 0263 18       		.uleb128 0x18
+ 2795 0264 00       		.byte	0
+ 2796 0265 00       		.byte	0
+ 2797 0266 2E       		.uleb128 0x2e
+ 2798 0267 34       		.uleb128 0x34
+ 2799 0268 00       		.byte	0
+ 2800 0269 03       		.uleb128 0x3
+ 2801 026a 08       		.uleb128 0x8
+ 2802 026b 3A       		.uleb128 0x3a
+ 2803 026c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 58
+
+
+ 2804 026d 3B       		.uleb128 0x3b
+ 2805 026e 0B       		.uleb128 0xb
+ 2806 026f 49       		.uleb128 0x49
+ 2807 0270 13       		.uleb128 0x13
+ 2808 0271 3F       		.uleb128 0x3f
+ 2809 0272 19       		.uleb128 0x19
+ 2810 0273 02       		.uleb128 0x2
+ 2811 0274 18       		.uleb128 0x18
+ 2812 0275 00       		.byte	0
+ 2813 0276 00       		.byte	0
+ 2814 0277 2F       		.uleb128 0x2f
+ 2815 0278 2E       		.uleb128 0x2e
+ 2816 0279 00       		.byte	0
+ 2817 027a 3F       		.uleb128 0x3f
+ 2818 027b 19       		.uleb128 0x19
+ 2819 027c 3C       		.uleb128 0x3c
+ 2820 027d 19       		.uleb128 0x19
+ 2821 027e 6E       		.uleb128 0x6e
+ 2822 027f 0E       		.uleb128 0xe
+ 2823 0280 03       		.uleb128 0x3
+ 2824 0281 0E       		.uleb128 0xe
+ 2825 0282 3A       		.uleb128 0x3a
+ 2826 0283 0B       		.uleb128 0xb
+ 2827 0284 3B       		.uleb128 0x3b
+ 2828 0285 0B       		.uleb128 0xb
+ 2829 0286 00       		.byte	0
+ 2830 0287 00       		.byte	0
+ 2831 0288 30       		.uleb128 0x30
+ 2832 0289 2E       		.uleb128 0x2e
+ 2833 028a 00       		.byte	0
+ 2834 028b 3F       		.uleb128 0x3f
+ 2835 028c 19       		.uleb128 0x19
+ 2836 028d 3C       		.uleb128 0x3c
+ 2837 028e 19       		.uleb128 0x19
+ 2838 028f 6E       		.uleb128 0x6e
+ 2839 0290 0E       		.uleb128 0xe
+ 2840 0291 03       		.uleb128 0x3
+ 2841 0292 0E       		.uleb128 0xe
+ 2842 0293 3A       		.uleb128 0x3a
+ 2843 0294 0B       		.uleb128 0xb
+ 2844 0295 3B       		.uleb128 0x3b
+ 2845 0296 05       		.uleb128 0x5
+ 2846 0297 00       		.byte	0
+ 2847 0298 00       		.byte	0
+ 2848 0299 00       		.byte	0
+ 2849              		.section	.debug_loc,"",%progbits
+ 2850              	.Ldebug_loc0:
+ 2851              	.LLST0:
+ 2852 0000 00000000 		.4byte	.LVL0
+ 2853 0004 08000000 		.4byte	.LVL1
+ 2854 0008 0100     		.2byte	0x1
+ 2855 000a 50       		.byte	0x50
+ 2856 000b 08000000 		.4byte	.LVL1
+ 2857 000f 24000000 		.4byte	.LFE71
+ 2858 0013 0100     		.2byte	0x1
+ 2859 0015 55       		.byte	0x55
+ 2860 0016 00000000 		.4byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 59
+
+
+ 2861 001a 00000000 		.4byte	0
+ 2862              	.LLST1:
+ 2863 001e 00000000 		.4byte	.LVL0
+ 2864 0022 0B000000 		.4byte	.LVL2-1
+ 2865 0026 0100     		.2byte	0x1
+ 2866 0028 51       		.byte	0x51
+ 2867 0029 0B000000 		.4byte	.LVL2-1
+ 2868 002d 24000000 		.4byte	.LFE71
+ 2869 0031 0100     		.2byte	0x1
+ 2870 0033 56       		.byte	0x56
+ 2871 0034 00000000 		.4byte	0
+ 2872 0038 00000000 		.4byte	0
+ 2873              	.LLST2:
+ 2874 003c 0C000000 		.4byte	.LVL2
+ 2875 0040 10000000 		.4byte	.LVL3
+ 2876 0044 0200     		.2byte	0x2
+ 2877 0046 30       		.byte	0x30
+ 2878 0047 9F       		.byte	0x9f
+ 2879 0048 10000000 		.4byte	.LVL3
+ 2880 004c 1A000000 		.4byte	.LVL5
+ 2881 0050 0100     		.2byte	0x1
+ 2882 0052 54       		.byte	0x54
+ 2883 0053 1C000000 		.4byte	.LVL6
+ 2884 0057 24000000 		.4byte	.LFE71
+ 2885 005b 0100     		.2byte	0x1
+ 2886 005d 54       		.byte	0x54
+ 2887 005e 00000000 		.4byte	0
+ 2888 0062 00000000 		.4byte	0
+ 2889              	.LLST3:
+ 2890 0066 00000000 		.4byte	.LVL7
+ 2891 006a 06000000 		.4byte	.LVL9
+ 2892 006e 0100     		.2byte	0x1
+ 2893 0070 50       		.byte	0x50
+ 2894 0071 06000000 		.4byte	.LVL9
+ 2895 0075 64000000 		.4byte	.LFE72
+ 2896 0079 0400     		.2byte	0x4
+ 2897 007b F3       		.byte	0xf3
+ 2898 007c 01       		.uleb128 0x1
+ 2899 007d 50       		.byte	0x50
+ 2900 007e 9F       		.byte	0x9f
+ 2901 007f 00000000 		.4byte	0
+ 2902 0083 00000000 		.4byte	0
+ 2903              	.LLST4:
+ 2904 0087 00000000 		.4byte	.LVL7
+ 2905 008b 06000000 		.4byte	.LVL9
+ 2906 008f 0100     		.2byte	0x1
+ 2907 0091 51       		.byte	0x51
+ 2908 0092 06000000 		.4byte	.LVL9
+ 2909 0096 64000000 		.4byte	.LFE72
+ 2910 009a 0400     		.2byte	0x4
+ 2911 009c F3       		.byte	0xf3
+ 2912 009d 01       		.uleb128 0x1
+ 2913 009e 51       		.byte	0x51
+ 2914 009f 9F       		.byte	0x9f
+ 2915 00a0 00000000 		.4byte	0
+ 2916 00a4 00000000 		.4byte	0
+ 2917              	.LLST5:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 60
+
+
+ 2918 00a8 02000000 		.4byte	.LVL8
+ 2919 00ac 06000000 		.4byte	.LVL9
+ 2920 00b0 0600     		.2byte	0x6
+ 2921 00b2 03       		.byte	0x3
+ 2922 00b3 00000000 		.4byte	HelpHeader
+ 2923 00b7 9F       		.byte	0x9f
+ 2924 00b8 06000000 		.4byte	.LVL9
+ 2925 00bc 1C000000 		.4byte	.LVL13
+ 2926 00c0 0100     		.2byte	0x1
+ 2927 00c2 54       		.byte	0x54
+ 2928 00c3 00000000 		.4byte	0
+ 2929 00c7 00000000 		.4byte	0
+ 2930              	.LLST6:
+ 2931 00cb 1E000000 		.4byte	.LVL14
+ 2932 00cf 58000000 		.4byte	.LVL24
+ 2933 00d3 0100     		.2byte	0x1
+ 2934 00d5 54       		.byte	0x54
+ 2935 00d6 00000000 		.4byte	0
+ 2936 00da 00000000 		.4byte	0
+ 2937              	.LLST7:
+ 2938 00de 1E000000 		.4byte	.LVL14
+ 2939 00e2 4E000000 		.4byte	.LVL22
+ 2940 00e6 0100     		.2byte	0x1
+ 2941 00e8 55       		.byte	0x55
+ 2942 00e9 50000000 		.4byte	.LVL23
+ 2943 00ed 58000000 		.4byte	.LVL24
+ 2944 00f1 0100     		.2byte	0x1
+ 2945 00f3 55       		.byte	0x55
+ 2946 00f4 00000000 		.4byte	0
+ 2947 00f8 00000000 		.4byte	0
+ 2948              	.LLST8:
+ 2949 00fc 00000000 		.4byte	.LVL25
+ 2950 0100 08000000 		.4byte	.LVL26
+ 2951 0104 0100     		.2byte	0x1
+ 2952 0106 50       		.byte	0x50
+ 2953 0107 08000000 		.4byte	.LVL26
+ 2954 010b 24000000 		.4byte	.LVL30
+ 2955 010f 0400     		.2byte	0x4
+ 2956 0111 F3       		.byte	0xf3
+ 2957 0112 01       		.uleb128 0x1
+ 2958 0113 50       		.byte	0x50
+ 2959 0114 9F       		.byte	0x9f
+ 2960 0115 24000000 		.4byte	.LVL30
+ 2961 0119 2A000000 		.4byte	.LVL32
+ 2962 011d 0100     		.2byte	0x1
+ 2963 011f 50       		.byte	0x50
+ 2964 0120 2A000000 		.4byte	.LVL32
+ 2965 0124 70000000 		.4byte	.LFE73
+ 2966 0128 0400     		.2byte	0x4
+ 2967 012a F3       		.byte	0xf3
+ 2968 012b 01       		.uleb128 0x1
+ 2969 012c 50       		.byte	0x50
+ 2970 012d 9F       		.byte	0x9f
+ 2971 012e 00000000 		.4byte	0
+ 2972 0132 00000000 		.4byte	0
+ 2973              	.LLST9:
+ 2974 0136 00000000 		.4byte	.LVL25
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 61
+
+
+ 2975 013a 0B000000 		.4byte	.LVL27-1
+ 2976 013e 0100     		.2byte	0x1
+ 2977 0140 51       		.byte	0x51
+ 2978 0141 0B000000 		.4byte	.LVL27-1
+ 2979 0145 24000000 		.4byte	.LVL30
+ 2980 0149 0400     		.2byte	0x4
+ 2981 014b F3       		.byte	0xf3
+ 2982 014c 01       		.uleb128 0x1
+ 2983 014d 51       		.byte	0x51
+ 2984 014e 9F       		.byte	0x9f
+ 2985 014f 24000000 		.4byte	.LVL30
+ 2986 0153 28000000 		.4byte	.LVL31
+ 2987 0157 0100     		.2byte	0x1
+ 2988 0159 51       		.byte	0x51
+ 2989 015a 28000000 		.4byte	.LVL31
+ 2990 015e 70000000 		.4byte	.LFE73
+ 2991 0162 0400     		.2byte	0x4
+ 2992 0164 F3       		.byte	0xf3
+ 2993 0165 01       		.uleb128 0x1
+ 2994 0166 51       		.byte	0x51
+ 2995 0167 9F       		.byte	0x9f
+ 2996 0168 00000000 		.4byte	0
+ 2997 016c 00000000 		.4byte	0
+ 2998              	.LLST10:
+ 2999 0170 30000000 		.4byte	.LVL34
+ 3000 0174 38000000 		.4byte	.LVL35
+ 3001 0178 0200     		.2byte	0x2
+ 3002 017a 30       		.byte	0x30
+ 3003 017b 9F       		.byte	0x9f
+ 3004 017c 00000000 		.4byte	0
+ 3005 0180 00000000 		.4byte	0
+ 3006              	.LLST11:
+ 3007 0184 42000000 		.4byte	.LVL37
+ 3008 0188 4A000000 		.4byte	.LVL38
+ 3009 018c 0200     		.2byte	0x2
+ 3010 018e 31       		.byte	0x31
+ 3011 018f 9F       		.byte	0x9f
+ 3012 0190 00000000 		.4byte	0
+ 3013 0194 00000000 		.4byte	0
+ 3014              	.LLST12:
+ 3015 0198 00000000 		.4byte	.LVL40
+ 3016 019c 05000000 		.4byte	.LVL41-1
+ 3017 01a0 0100     		.2byte	0x1
+ 3018 01a2 50       		.byte	0x50
+ 3019 01a3 05000000 		.4byte	.LVL41-1
+ 3020 01a7 24000000 		.4byte	.LFE74
+ 3021 01ab 0400     		.2byte	0x4
+ 3022 01ad F3       		.byte	0xf3
+ 3023 01ae 01       		.uleb128 0x1
+ 3024 01af 50       		.byte	0x50
+ 3025 01b0 9F       		.byte	0x9f
+ 3026 01b1 00000000 		.4byte	0
+ 3027 01b5 00000000 		.4byte	0
+ 3028              	.LLST13:
+ 3029 01b9 00000000 		.4byte	.LVL40
+ 3030 01bd 05000000 		.4byte	.LVL41-1
+ 3031 01c1 0100     		.2byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 62
+
+
+ 3032 01c3 51       		.byte	0x51
+ 3033 01c4 05000000 		.4byte	.LVL41-1
+ 3034 01c8 24000000 		.4byte	.LFE74
+ 3035 01cc 0400     		.2byte	0x4
+ 3036 01ce F3       		.byte	0xf3
+ 3037 01cf 01       		.uleb128 0x1
+ 3038 01d0 51       		.byte	0x51
+ 3039 01d1 9F       		.byte	0x9f
+ 3040 01d2 00000000 		.4byte	0
+ 3041 01d6 00000000 		.4byte	0
+ 3042              	.LLST14:
+ 3043 01da 06000000 		.4byte	.LVL41
+ 3044 01de 0E000000 		.4byte	.LVL42
+ 3045 01e2 0100     		.2byte	0x1
+ 3046 01e4 50       		.byte	0x50
+ 3047 01e5 00000000 		.4byte	0
+ 3048 01e9 00000000 		.4byte	0
+ 3049              	.LLST15:
+ 3050 01ed 00000000 		.4byte	.LVL45
+ 3051 01f1 04000000 		.4byte	.LVL46
+ 3052 01f5 0200     		.2byte	0x2
+ 3053 01f7 30       		.byte	0x30
+ 3054 01f8 9F       		.byte	0x9f
+ 3055 01f9 04000000 		.4byte	.LVL46
+ 3056 01fd 0C000000 		.4byte	.LVL47
+ 3057 0201 0100     		.2byte	0x1
+ 3058 0203 53       		.byte	0x53
+ 3059 0204 0E000000 		.4byte	.LVL48
+ 3060 0208 16000000 		.4byte	.LVL49
+ 3061 020c 0100     		.2byte	0x1
+ 3062 020e 53       		.byte	0x53
+ 3063 020f 00000000 		.4byte	0
+ 3064 0213 00000000 		.4byte	0
+ 3065              	.LLST16:
+ 3066 0217 00000000 		.4byte	.LVL51
+ 3067 021b 0A000000 		.4byte	.LVL52
+ 3068 021f 0100     		.2byte	0x1
+ 3069 0221 50       		.byte	0x50
+ 3070 0222 0A000000 		.4byte	.LVL52
+ 3071 0226 12000000 		.4byte	.LVL54
+ 3072 022a 0400     		.2byte	0x4
+ 3073 022c F3       		.byte	0xf3
+ 3074 022d 01       		.uleb128 0x1
+ 3075 022e 50       		.byte	0x50
+ 3076 022f 9F       		.byte	0x9f
+ 3077 0230 12000000 		.4byte	.LVL54
+ 3078 0234 1A000000 		.4byte	.LVL55
+ 3079 0238 0100     		.2byte	0x1
+ 3080 023a 50       		.byte	0x50
+ 3081 023b 1A000000 		.4byte	.LVL55
+ 3082 023f A8010000 		.4byte	.LFE70
+ 3083 0243 0400     		.2byte	0x4
+ 3084 0245 F3       		.byte	0xf3
+ 3085 0246 01       		.uleb128 0x1
+ 3086 0247 50       		.byte	0x50
+ 3087 0248 9F       		.byte	0x9f
+ 3088 0249 00000000 		.4byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 63
+
+
+ 3089 024d 00000000 		.4byte	0
+ 3090              	.LLST17:
+ 3091 0251 12000000 		.4byte	.LVL54
+ 3092 0255 A6000000 		.4byte	.LVL68
+ 3093 0259 0200     		.2byte	0x2
+ 3094 025b 30       		.byte	0x30
+ 3095 025c 9F       		.byte	0x9f
+ 3096 025d A6000000 		.4byte	.LVL68
+ 3097 0261 A8000000 		.4byte	.LVL69
+ 3098 0265 0100     		.2byte	0x1
+ 3099 0267 55       		.byte	0x55
+ 3100 0268 A8000000 		.4byte	.LVL69
+ 3101 026c 3E010000 		.4byte	.LVL85
+ 3102 0270 0100     		.2byte	0x1
+ 3103 0272 54       		.byte	0x54
+ 3104 0273 3E010000 		.4byte	.LVL85
+ 3105 0277 98010000 		.4byte	.LVL103
+ 3106 027b 0100     		.2byte	0x1
+ 3107 027d 55       		.byte	0x55
+ 3108 027e 00000000 		.4byte	0
+ 3109 0282 00000000 		.4byte	0
+ 3110              	.LLST18:
+ 3111 0286 A6000000 		.4byte	.LVL68
+ 3112 028a B4000000 		.4byte	.LVL71
+ 3113 028e 0100     		.2byte	0x1
+ 3114 0290 53       		.byte	0x53
+ 3115 0291 B4000000 		.4byte	.LVL71
+ 3116 0295 E6000000 		.4byte	.LVL75
+ 3117 0299 0300     		.2byte	0x3
+ 3118 029b 75       		.byte	0x75
+ 3119 029c 887F     		.sleb128 -120
+ 3120 029e E6000000 		.4byte	.LVL75
+ 3121 02a2 E8000000 		.4byte	.LVL76
+ 3122 02a6 0A00     		.2byte	0xa
+ 3123 02a8 74       		.byte	0x74
+ 3124 02a9 7F       		.sleb128 -1
+ 3125 02aa 32       		.byte	0x32
+ 3126 02ab 24       		.byte	0x24
+ 3127 02ac 91       		.byte	0x91
+ 3128 02ad 00       		.sleb128 0
+ 3129 02ae 22       		.byte	0x22
+ 3130 02af 08       		.byte	0x8
+ 3131 02b0 90       		.byte	0x90
+ 3132 02b1 1C       		.byte	0x1c
+ 3133 02b2 36010000 		.4byte	.LVL82
+ 3134 02b6 3A010000 		.4byte	.LVL83
+ 3135 02ba 0300     		.2byte	0x3
+ 3136 02bc 75       		.byte	0x75
+ 3137 02bd 887F     		.sleb128 -120
+ 3138 02bf 3E010000 		.4byte	.LVL85
+ 3139 02c3 4A010000 		.4byte	.LVL86
+ 3140 02c7 0100     		.2byte	0x1
+ 3141 02c9 53       		.byte	0x53
+ 3142 02ca 7C010000 		.4byte	.LVL98
+ 3143 02ce 7E010000 		.4byte	.LVL99
+ 3144 02d2 0100     		.2byte	0x1
+ 3145 02d4 53       		.byte	0x53
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 64
+
+
+ 3146 02d5 00000000 		.4byte	0
+ 3147 02d9 00000000 		.4byte	0
+ 3148              	.LLST19:
+ 3149 02dd 50010000 		.4byte	.LVL87
+ 3150 02e1 57010000 		.4byte	.LVL88-1
+ 3151 02e5 0200     		.2byte	0x2
+ 3152 02e7 73       		.byte	0x73
+ 3153 02e8 20       		.sleb128 32
+ 3154 02e9 57010000 		.4byte	.LVL88-1
+ 3155 02ed 5C010000 		.4byte	.LVL89
+ 3156 02f1 0A00     		.2byte	0xa
+ 3157 02f3 74       		.byte	0x74
+ 3158 02f4 00       		.sleb128 0
+ 3159 02f5 34       		.byte	0x34
+ 3160 02f6 24       		.byte	0x24
+ 3161 02f7 03       		.byte	0x3
+ 3162 02f8 20000000 		.4byte	.LANCHOR0+32
+ 3163 02fc 22       		.byte	0x22
+ 3164 02fd 5C010000 		.4byte	.LVL89
+ 3165 0301 60010000 		.4byte	.LVL90
+ 3166 0305 0900     		.2byte	0x9
+ 3167 0307 74       		.byte	0x74
+ 3168 0308 00       		.sleb128 0
+ 3169 0309 34       		.byte	0x34
+ 3170 030a 24       		.byte	0x24
+ 3171 030b 77       		.byte	0x77
+ 3172 030c 00       		.sleb128 0
+ 3173 030d 22       		.byte	0x22
+ 3174 030e 23       		.byte	0x23
+ 3175 030f 20       		.uleb128 0x20
+ 3176 0310 60010000 		.4byte	.LVL90
+ 3177 0314 76010000 		.4byte	.LVL95
+ 3178 0318 0200     		.2byte	0x2
+ 3179 031a 76       		.byte	0x76
+ 3180 031b 20       		.sleb128 32
+ 3181 031c 76010000 		.4byte	.LVL95
+ 3182 0320 78010000 		.4byte	.LVL96
+ 3183 0324 0A00     		.2byte	0xa
+ 3184 0326 74       		.byte	0x74
+ 3185 0327 00       		.sleb128 0
+ 3186 0328 34       		.byte	0x34
+ 3187 0329 24       		.byte	0x24
+ 3188 032a 03       		.byte	0x3
+ 3189 032b 20000000 		.4byte	.LANCHOR0+32
+ 3190 032f 22       		.byte	0x22
+ 3191 0330 78010000 		.4byte	.LVL96
+ 3192 0334 7A010000 		.4byte	.LVL97
+ 3193 0338 0A00     		.2byte	0xa
+ 3194 033a 74       		.byte	0x74
+ 3195 033b 7F       		.sleb128 -1
+ 3196 033c 34       		.byte	0x34
+ 3197 033d 24       		.byte	0x24
+ 3198 033e 03       		.byte	0x3
+ 3199 033f 20000000 		.4byte	.LANCHOR0+32
+ 3200 0343 22       		.byte	0x22
+ 3201 0344 00000000 		.4byte	0
+ 3202 0348 00000000 		.4byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 65
+
+
+ 3203              	.LLST20:
+ 3204 034c 12000000 		.4byte	.LVL54
+ 3205 0350 1A000000 		.4byte	.LVL55
+ 3206 0354 0100     		.2byte	0x1
+ 3207 0356 50       		.byte	0x50
+ 3208 0357 1A000000 		.4byte	.LVL55
+ 3209 035b A2000000 		.4byte	.LVL67
+ 3210 035f 0400     		.2byte	0x4
+ 3211 0361 F3       		.byte	0xf3
+ 3212 0362 01       		.uleb128 0x1
+ 3213 0363 50       		.byte	0x50
+ 3214 0364 9F       		.byte	0x9f
+ 3215 0365 00000000 		.4byte	0
+ 3216 0369 00000000 		.4byte	0
+ 3217              	.LLST21:
+ 3218 036d 4C000000 		.4byte	.LVL59
+ 3219 0371 9C000000 		.4byte	.LVL65
+ 3220 0375 0100     		.2byte	0x1
+ 3221 0377 54       		.byte	0x54
+ 3222 0378 A0000000 		.4byte	.LVL66
+ 3223 037c A2000000 		.4byte	.LVL67
+ 3224 0380 0100     		.2byte	0x1
+ 3225 0382 54       		.byte	0x54
+ 3226 0383 00000000 		.4byte	0
+ 3227 0387 00000000 		.4byte	0
+ 3228              	.LLST22:
+ 3229 038b 54000000 		.4byte	.LVL60
+ 3230 038f 5C000000 		.4byte	.LVL62
+ 3231 0393 0100     		.2byte	0x1
+ 3232 0395 53       		.byte	0x53
+ 3233 0396 5E000000 		.4byte	.LVL63
+ 3234 039a 68000000 		.4byte	.LVL64
+ 3235 039e 0100     		.2byte	0x1
+ 3236 03a0 53       		.byte	0x53
+ 3237 03a1 00000000 		.4byte	0
+ 3238 03a5 00000000 		.4byte	0
+ 3239              	.LLST23:
+ 3240 03a9 12000000 		.4byte	.LVL54
+ 3241 03ad 3E000000 		.4byte	.LVL56
+ 3242 03b1 0300     		.2byte	0x3
+ 3243 03b3 08       		.byte	0x8
+ 3244 03b4 20       		.byte	0x20
+ 3245 03b5 9F       		.byte	0x9f
+ 3246 03b6 3E000000 		.4byte	.LVL56
+ 3247 03ba 46000000 		.4byte	.LVL57
+ 3248 03be 0100     		.2byte	0x1
+ 3249 03c0 50       		.byte	0x50
+ 3250 03c1 46000000 		.4byte	.LVL57
+ 3251 03c5 48000000 		.4byte	.LVL58
+ 3252 03c9 0300     		.2byte	0x3
+ 3253 03cb 08       		.byte	0x8
+ 3254 03cc 20       		.byte	0x20
+ 3255 03cd 9F       		.byte	0x9f
+ 3256 03ce 48000000 		.4byte	.LVL58
+ 3257 03d2 9C000000 		.4byte	.LVL65
+ 3258 03d6 0100     		.2byte	0x1
+ 3259 03d8 50       		.byte	0x50
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 66
+
+
+ 3260 03d9 9C000000 		.4byte	.LVL65
+ 3261 03dd A0000000 		.4byte	.LVL66
+ 3262 03e1 0300     		.2byte	0x3
+ 3263 03e3 08       		.byte	0x8
+ 3264 03e4 20       		.byte	0x20
+ 3265 03e5 9F       		.byte	0x9f
+ 3266 03e6 A0000000 		.4byte	.LVL66
+ 3267 03ea A2000000 		.4byte	.LVL67
+ 3268 03ee 0100     		.2byte	0x1
+ 3269 03f0 50       		.byte	0x50
+ 3270 03f1 00000000 		.4byte	0
+ 3271 03f5 00000000 		.4byte	0
+ 3272              	.LLST24:
+ 3273 03f9 B2000000 		.4byte	.LVL70
+ 3274 03fd 3C010000 		.4byte	.LVL84
+ 3275 0401 0200     		.2byte	0x2
+ 3276 0403 30       		.byte	0x30
+ 3277 0404 9F       		.byte	0x9f
+ 3278 0405 00000000 		.4byte	0
+ 3279 0409 00000000 		.4byte	0
+ 3280              	.LLST25:
+ 3281 040d E6000000 		.4byte	.LVL75
+ 3282 0411 36010000 		.4byte	.LVL82
+ 3283 0415 0100     		.2byte	0x1
+ 3284 0417 55       		.byte	0x55
+ 3285 0418 3A010000 		.4byte	.LVL83
+ 3286 041c 3C010000 		.4byte	.LVL84
+ 3287 0420 0100     		.2byte	0x1
+ 3288 0422 55       		.byte	0x55
+ 3289 0423 00000000 		.4byte	0
+ 3290 0427 00000000 		.4byte	0
+ 3291              	.LLST26:
+ 3292 042b EE000000 		.4byte	.LVL77
+ 3293 042f F6000000 		.4byte	.LVL79
+ 3294 0433 0100     		.2byte	0x1
+ 3295 0435 53       		.byte	0x53
+ 3296 0436 F8000000 		.4byte	.LVL80
+ 3297 043a 02010000 		.4byte	.LVL81
+ 3298 043e 0100     		.2byte	0x1
+ 3299 0440 53       		.byte	0x53
+ 3300 0441 00000000 		.4byte	0
+ 3301 0445 00000000 		.4byte	0
+ 3302              	.LLST27:
+ 3303 0449 B2000000 		.4byte	.LVL70
+ 3304 044d D8000000 		.4byte	.LVL72
+ 3305 0451 0300     		.2byte	0x3
+ 3306 0453 08       		.byte	0x8
+ 3307 0454 20       		.byte	0x20
+ 3308 0455 9F       		.byte	0x9f
+ 3309 0456 D8000000 		.4byte	.LVL72
+ 3310 045a E0000000 		.4byte	.LVL73
+ 3311 045e 0100     		.2byte	0x1
+ 3312 0460 50       		.byte	0x50
+ 3313 0461 E0000000 		.4byte	.LVL73
+ 3314 0465 E2000000 		.4byte	.LVL74
+ 3315 0469 0300     		.2byte	0x3
+ 3316 046b 08       		.byte	0x8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 67
+
+
+ 3317 046c 20       		.byte	0x20
+ 3318 046d 9F       		.byte	0x9f
+ 3319 046e E2000000 		.4byte	.LVL74
+ 3320 0472 36010000 		.4byte	.LVL82
+ 3321 0476 0100     		.2byte	0x1
+ 3322 0478 50       		.byte	0x50
+ 3323 0479 36010000 		.4byte	.LVL82
+ 3324 047d 3A010000 		.4byte	.LVL83
+ 3325 0481 0300     		.2byte	0x3
+ 3326 0483 08       		.byte	0x8
+ 3327 0484 20       		.byte	0x20
+ 3328 0485 9F       		.byte	0x9f
+ 3329 0486 3A010000 		.4byte	.LVL83
+ 3330 048a 3C010000 		.4byte	.LVL84
+ 3331 048e 0100     		.2byte	0x1
+ 3332 0490 50       		.byte	0x50
+ 3333 0491 00000000 		.4byte	0
+ 3334 0495 00000000 		.4byte	0
+ 3335              	.LLST28:
+ 3336 0499 4A010000 		.4byte	.LVL86
+ 3337 049d 6A010000 		.4byte	.LVL92
+ 3338 04a1 0100     		.2byte	0x1
+ 3339 04a3 54       		.byte	0x54
+ 3340 04a4 76010000 		.4byte	.LVL95
+ 3341 04a8 78010000 		.4byte	.LVL96
+ 3342 04ac 0100     		.2byte	0x1
+ 3343 04ae 54       		.byte	0x54
+ 3344 04af 7A010000 		.4byte	.LVL97
+ 3345 04b3 7C010000 		.4byte	.LVL98
+ 3346 04b7 0100     		.2byte	0x1
+ 3347 04b9 54       		.byte	0x54
+ 3348 04ba 7E010000 		.4byte	.LVL99
+ 3349 04be 84010000 		.4byte	.LVL100
+ 3350 04c2 0100     		.2byte	0x1
+ 3351 04c4 54       		.byte	0x54
+ 3352 04c5 00000000 		.4byte	0
+ 3353 04c9 00000000 		.4byte	0
+ 3354              	.LLST29:
+ 3355 04cd 6A010000 		.4byte	.LVL92
+ 3356 04d1 6E010000 		.4byte	.LVL93
+ 3357 04d5 0100     		.2byte	0x1
+ 3358 04d7 50       		.byte	0x50
+ 3359 04d8 6E010000 		.4byte	.LVL93
+ 3360 04dc 76010000 		.4byte	.LVL95
+ 3361 04e0 0100     		.2byte	0x1
+ 3362 04e2 54       		.byte	0x54
+ 3363 04e3 00000000 		.4byte	0
+ 3364 04e7 00000000 		.4byte	0
+ 3365              	.LLST30:
+ 3366 04eb 10000000 		.4byte	.LVL106
+ 3367 04ef 19000000 		.4byte	.LVL107-1
+ 3368 04f3 0100     		.2byte	0x1
+ 3369 04f5 50       		.byte	0x50
+ 3370 04f6 00000000 		.4byte	0
+ 3371 04fa 00000000 		.4byte	0
+ 3372              		.section	.debug_aranges,"",%progbits
+ 3373 0000 54000000 		.4byte	0x54
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 68
+
+
+ 3374 0004 0200     		.2byte	0x2
+ 3375 0006 00000000 		.4byte	.Ldebug_info0
+ 3376 000a 04       		.byte	0x4
+ 3377 000b 00       		.byte	0
+ 3378 000c 0000     		.2byte	0
+ 3379 000e 0000     		.2byte	0
+ 3380 0010 00000000 		.4byte	.LFB71
+ 3381 0014 24000000 		.4byte	.LFE71-.LFB71
+ 3382 0018 00000000 		.4byte	.LFB72
+ 3383 001c 64000000 		.4byte	.LFE72-.LFB72
+ 3384 0020 00000000 		.4byte	.LFB73
+ 3385 0024 70000000 		.4byte	.LFE73-.LFB73
+ 3386 0028 00000000 		.4byte	.LFB74
+ 3387 002c 24000000 		.4byte	.LFE74-.LFB74
+ 3388 0030 00000000 		.4byte	.LFB68
+ 3389 0034 24000000 		.4byte	.LFE68-.LFB68
+ 3390 0038 00000000 		.4byte	.LFB66
+ 3391 003c 14000000 		.4byte	.LFE66-.LFB66
+ 3392 0040 00000000 		.4byte	.LFB70
+ 3393 0044 A8010000 		.4byte	.LFE70-.LFB70
+ 3394 0048 00000000 		.4byte	.LFB67
+ 3395 004c 8C000000 		.4byte	.LFE67-.LFB67
+ 3396 0050 00000000 		.4byte	0
+ 3397 0054 00000000 		.4byte	0
+ 3398              		.section	.debug_ranges,"",%progbits
+ 3399              	.Ldebug_ranges0:
+ 3400 0000 4A010000 		.4byte	.LBB27
+ 3401 0004 7C010000 		.4byte	.LBE27
+ 3402 0008 7E010000 		.4byte	.LBB29
+ 3403 000c 82010000 		.4byte	.LBE29
+ 3404 0010 00000000 		.4byte	0
+ 3405 0014 00000000 		.4byte	0
+ 3406 0018 00000000 		.4byte	.LFB71
+ 3407 001c 24000000 		.4byte	.LFE71
+ 3408 0020 00000000 		.4byte	.LFB72
+ 3409 0024 64000000 		.4byte	.LFE72
+ 3410 0028 00000000 		.4byte	.LFB73
+ 3411 002c 70000000 		.4byte	.LFE73
+ 3412 0030 00000000 		.4byte	.LFB74
+ 3413 0034 24000000 		.4byte	.LFE74
+ 3414 0038 00000000 		.4byte	.LFB68
+ 3415 003c 24000000 		.4byte	.LFE68
+ 3416 0040 00000000 		.4byte	.LFB66
+ 3417 0044 14000000 		.4byte	.LFE66
+ 3418 0048 00000000 		.4byte	.LFB70
+ 3419 004c A8010000 		.4byte	.LFE70
+ 3420 0050 00000000 		.4byte	.LFB67
+ 3421 0054 8C000000 		.4byte	.LFE67
+ 3422 0058 00000000 		.4byte	0
+ 3423 005c 00000000 		.4byte	0
+ 3424              		.section	.debug_line,"",%progbits
+ 3425              	.Ldebug_line0:
+ 3426 0000 90030000 		.section	.debug_str,"MS",%progbits,1
+ 3426      0200F301 
+ 3426      00000201 
+ 3426      FB0E0D00 
+ 3426      01010101 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 69
+
+
+ 3427              	.LASF37:
+ 3428 0000 50737472 		.ascii	"PstrPtr\000"
+ 3428      50747200 
+ 3429              	.LASF46:
+ 3430 0008 434D445F 		.ascii	"CMD_Parse_Table\000"
+ 3430      50617273 
+ 3430      655F5461 
+ 3430      626C6500 
+ 3431              	.LASF31:
+ 3432 0018 436C6561 		.ascii	"ClearInputBufferN\000"
+ 3432      72496E70 
+ 3432      75744275 
+ 3432      66666572 
+ 3432      4E00
+ 3433              	.LASF27:
+ 3434 002a 48656C70 		.ascii	"HelpScreen\000"
+ 3434      53637265 
+ 3434      656E00
+ 3435              	.LASF30:
+ 3436 0035 74656D70 		.ascii	"temp\000"
+ 3436      00
+ 3437              	.LASF2:
+ 3438 003a 73686F72 		.ascii	"short int\000"
+ 3438      7420696E 
+ 3438      7400
+ 3439              	.LASF49:
+ 3440 0044 496E4275 		.ascii	"InBuff\000"
+ 3440      666600
+ 3441              	.LASF14:
+ 3442 004b 73697A65 		.ascii	"sizetype\000"
+ 3442      74797065 
+ 3442      00
+ 3443              	.LASF41:
+ 3444 0054 636C694F 		.ascii	"cliOn\000"
+ 3444      6E00
+ 3445              	.LASF63:
+ 3446 005a 53657443 		.ascii	"SetCliEcho\000"
+ 3446      6C694563 
+ 3446      686F00
+ 3447              	.LASF28:
+ 3448 0065 4563686F 		.ascii	"Echo_Cmd\000"
+ 3448      5F436D64 
+ 3448      00
+ 3449              	.LASF61:
+ 3450 006e 436D6444 		.ascii	"CmdDesc\000"
+ 3450      65736300 
+ 3451              	.LASF11:
+ 3452 0076 75696E74 		.ascii	"uint8_t\000"
+ 3452      385F7400 
+ 3453              	.LASF51:
+ 3454 007e 5553425F 		.ascii	"USB_PutString\000"
+ 3454      50757453 
+ 3454      7472696E 
+ 3454      6700
+ 3455              	.LASF16:
+ 3456 008c 75696E74 		.ascii	"uint8\000"
+ 3456      3800
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 70
+
+
+ 3457              	.LASF45:
+ 3458 0092 50726F6D 		.ascii	"Prompt\000"
+ 3458      707400
+ 3459              	.LASF52:
+ 3460 0099 5553425F 		.ascii	"USB_PutChar\000"
+ 3460      50757443 
+ 3460      68617200 
+ 3461              	.LASF17:
+ 3462 00a5 666C6F61 		.ascii	"float\000"
+ 3462      7400
+ 3463              	.LASF54:
+ 3464 00ab 55534255 		.ascii	"USBUART_GetConfiguration\000"
+ 3464      4152545F 
+ 3464      47657443 
+ 3464      6F6E6669 
+ 3464      67757261 
+ 3465              	.LASF29:
+ 3466 00c4 55736243 		.ascii	"UsbCfg_Cmd\000"
+ 3466      66675F43 
+ 3466      6D6400
+ 3467              	.LASF22:
+ 3468 00cf 66756E63 		.ascii	"func\000"
+ 3468      00
+ 3469              	.LASF8:
+ 3470 00d4 6C6F6E67 		.ascii	"long long int\000"
+ 3470      206C6F6E 
+ 3470      6720696E 
+ 3470      7400
+ 3471              	.LASF32:
+ 3472 00e2 496E6974 		.ascii	"Init_CLI\000"
+ 3472      5F434C49 
+ 3472      00
+ 3473              	.LASF6:
+ 3474 00eb 6C6F6E67 		.ascii	"long int\000"
+ 3474      20696E74 
+ 3474      00
+ 3475              	.LASF36:
+ 3476 00f4 50617273 		.ascii	"ParseCommand\000"
+ 3476      65436F6D 
+ 3476      6D616E64 
+ 3476      00
+ 3477              	.LASF38:
+ 3478 0101 7276616C 		.ascii	"rval\000"
+ 3478      00
+ 3479              	.LASF4:
+ 3480 0106 5F5F7569 		.ascii	"__uint8_t\000"
+ 3480      6E74385F 
+ 3480      7400
+ 3481              	.LASF47:
+ 3482 0110 48656C70 		.ascii	"HelpDiv\000"
+ 3482      44697600 
+ 3483              	.LASF35:
+ 3484 0118 7465726D 		.ascii	"term\000"
+ 3484      00
+ 3485              	.LASF40:
+ 3486 011d 636C6945 		.ascii	"cliEcho\000"
+ 3486      63686F00 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 71
+
+
+ 3487              	.LASF44:
+ 3488 0125 436D6454 		.ascii	"CmdTooLong\000"
+ 3488      6F6F4C6F 
+ 3488      6E6700
+ 3489              	.LASF59:
+ 3490 0130 434C492E 		.ascii	"CLI.c\000"
+ 3490      6300
+ 3491              	.LASF13:
+ 3492 0136 6C6F6E67 		.ascii	"long double\000"
+ 3492      20646F75 
+ 3492      626C6500 
+ 3493              	.LASF1:
+ 3494 0142 756E7369 		.ascii	"unsigned char\000"
+ 3494      676E6564 
+ 3494      20636861 
+ 3494      7200
+ 3495              	.LASF24:
+ 3496 0150 61726763 		.ascii	"argc\000"
+ 3496      00
+ 3497              	.LASF0:
+ 3498 0155 7369676E 		.ascii	"signed char\000"
+ 3498      65642063 
+ 3498      68617200 
+ 3499              	.LASF9:
+ 3500 0161 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3500      206C6F6E 
+ 3500      6720756E 
+ 3500      7369676E 
+ 3500      65642069 
+ 3501              	.LASF55:
+ 3502 0178 73707269 		.ascii	"sprintf\000"
+ 3502      6E746600 
+ 3503              	.LASF10:
+ 3504 0180 756E7369 		.ascii	"unsigned int\000"
+ 3504      676E6564 
+ 3504      20696E74 
+ 3504      00
+ 3505              	.LASF20:
+ 3506 018d 61726773 		.ascii	"args\000"
+ 3506      00
+ 3507              	.LASF25:
+ 3508 0192 61726776 		.ascii	"argv\000"
+ 3508      00
+ 3509              	.LASF56:
+ 3510 0197 5553425F 		.ascii	"USB_Buff_GetChar\000"
+ 3510      42756666 
+ 3510      5F476574 
+ 3510      43686172 
+ 3510      00
+ 3511              	.LASF33:
+ 3512 01a8 73746172 		.ascii	"start\000"
+ 3512      7400
+ 3513              	.LASF57:
+ 3514 01ae 43686563 		.ascii	"Check_USB\000"
+ 3514      6B5F5553 
+ 3514      4200
+ 3515              	.LASF15:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 72
+
+
+ 3516 01b8 63686172 		.ascii	"char\000"
+ 3516      00
+ 3517              	.LASF12:
+ 3518 01bd 696E7433 		.ascii	"int32_t\000"
+ 3518      325F7400 
+ 3519              	.LASF3:
+ 3520 01c5 73686F72 		.ascii	"short unsigned int\000"
+ 3520      7420756E 
+ 3520      7369676E 
+ 3520      65642069 
+ 3520      6E7400
+ 3521              	.LASF23:
+ 3522 01d8 5F426F6F 		.ascii	"_Bool\000"
+ 3522      6C00
+ 3523              	.LASF39:
+ 3524 01de 64617461 		.ascii	"data\000"
+ 3524      00
+ 3525              	.LASF60:
+ 3526 01e3 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\MPG\\ARM Code\\MPG\\M"
+ 3526      616E5C45 
+ 3526      6E672050 
+ 3526      726F6A65 
+ 3526      6374735C 
+ 3527 020f 50475F50 		.ascii	"PG_PSoC.cydsn\000"
+ 3527      536F432E 
+ 3527      63796473 
+ 3527      6E00
+ 3528              	.LASF48:
+ 3529 021d 48656C70 		.ascii	"HelpHeader\000"
+ 3529      48656164 
+ 3529      657200
+ 3530              	.LASF7:
+ 3531 0228 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3531      20756E73 
+ 3531      69676E65 
+ 3531      6420696E 
+ 3531      7400
+ 3532              	.LASF18:
+ 3533 023a 646F7562 		.ascii	"double\000"
+ 3533      6C6500
+ 3534              	.LASF43:
+ 3535 0241 4261644D 		.ascii	"BadMsgString\000"
+ 3535      73675374 
+ 3535      72696E67 
+ 3535      00
+ 3536              	.LASF62:
+ 3537 024e 47657443 		.ascii	"GetCliEcho\000"
+ 3537      6C694563 
+ 3537      686F00
+ 3538              	.LASF5:
+ 3539 0259 5F5F696E 		.ascii	"__int32_t\000"
+ 3539      7433325F 
+ 3539      7400
+ 3540              	.LASF50:
+ 3541 0263 496E4275 		.ascii	"InBuffCnt\000"
+ 3541      6666436E 
+ 3541      7400
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccgifRnG.s 			page 73
+
+
+ 3542              	.LASF53:
+ 3543 026d 73747263 		.ascii	"strcmp\000"
+ 3543      6D7000
+ 3544              	.LASF34:
+ 3545 0274 7363616E 		.ascii	"scan\000"
+ 3545      00
+ 3546              	.LASF19:
+ 3547 0279 6E616D65 		.ascii	"name\000"
+ 3547      00
+ 3548              	.LASF64:
+ 3549 027e 67657457 		.ascii	"getWord\000"
+ 3549      6F726400 
+ 3550              	.LASF42:
+ 3551 0286 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3551      52784275 
+ 3551      66666572 
+ 3551      00
+ 3552              	.LASF58:
+ 3553 0293 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3553      43313120 
+ 3553      352E342E 
+ 3553      31203230 
+ 3553      31363036 
+ 3554 02c6 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3554      20726576 
+ 3554      6973696F 
+ 3554      6E203233 
+ 3554      37373135 
+ 3555 02f9 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3555      66756E63 
+ 3555      74696F6E 
+ 3555      2D736563 
+ 3555      74696F6E 
+ 3556              	.LASF21:
+ 3557 0321 64657363 		.ascii	"desc\000"
+ 3557      00
+ 3558              	.LASF26:
+ 3559 0326 434C495F 		.ascii	"CLI_Test\000"
+ 3559      54657374 
+ 3559      00
+ 3560              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,4 @@
+#Start recording tcl command: 12/26/2018 13:41:34
+#Project Location: C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard; Project name: KanalogBuffer
+prj_project open "C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/KanalogBuffer.ldf"
+#Stop recording: 12/26/2018 13:43:22

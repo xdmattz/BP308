@@ -50,3 +50,23 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+*.zip
+/Monitor Frame/Corner Brace v1.pdf
+/KFLOP/Parts
+/MPG/ARM Code/MPG/MPG_Bootloader.cydsn/CortexM3
+/MPG/ARM Code/MPG/MPG_Bootloader.cydsn/Generated_Source
+/TLAUX/ARM Code/TLAUX/TLAUX_Bootloader.cydsn/BUILD.log
+/TLAUX/ARM Code/TLAUX/TLAUX_Bootloader.cydsn/REBUILD.log
+/TLAUX/ARM Code/TLAUX/TLAUX_Bootloader.cydsn/TLAUX_Bootloader.rpt
+/TLAUX/ARM Code/TLAUX/TLAUX_Bootloader.cydsn/TLAUX_Bootloader.svd
+/TLAUX/ARM Code/TLAUX/TLAUX_Bootloader.cydsn/TLAUX_Bootloader_timing.html
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cycdx
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cydwr
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cyfit
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cyprj.Dan
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cyprj.Dans i7
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.cyprj.dmatthews
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.rpt
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC.svd
+/TLAUX/ARM Code/TLAUX/TLAUX_PSoC.cydsn/TLAUX_PSoC_timing.html

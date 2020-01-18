@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name conn)(type Legacy)(uri ${KICAD_SYMBOL_DIR}/conn.lib)(options "")(descr ""))
+  (lib (name Danalog-rescue)(type Legacy)(uri ${KIPRJMOD}/Danalog-rescue.lib)(options "")(descr ""))
+  (lib (name AxisEncoders-cache)(type Legacy)(uri ${KIPRJMOD}/AxisEncoders-cache.lib)(options "")(descr ""))
+  (lib (name Danalog-cache)(type Legacy)(uri ${KIPRJMOD}/Danalog-cache.lib)(options "")(descr ""))
+)

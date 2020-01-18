@@ -1,0 +1,1614 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"SerCmds.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CmdFunctionName1,"ax",%progbits
+  20              		.align	2
+  21              		.global	CmdFunctionName1
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	CmdFunctionName1, %function
+  25              	CmdFunctionName1:
+  26              	.LFB63:
+  27              		.file 1 "SerCmds.c"
+   1:SerCmds.c     **** /* ========================================
+   2:SerCmds.c     ****  *
+   3:SerCmds.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:SerCmds.c     ****  * All Rights Reserved
+   5:SerCmds.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:SerCmds.c     ****  *
+   7:SerCmds.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:SerCmds.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:SerCmds.c     ****  *
+  10:SerCmds.c     ****  * ========================================
+  11:SerCmds.c     **** */
+  12:SerCmds.c     **** 
+  13:SerCmds.c     **** #include "SerCmds.h"
+  14:SerCmds.c     **** #include "Serial_IO.h"
+  15:SerCmds.c     **** #include "Serial.h"
+  16:SerCmds.c     **** #include "ToolCmds.h"
+  17:SerCmds.c     **** // #include "SerMessages.h"
+  18:SerCmds.c     **** 
+  19:SerCmds.c     **** uint8 SerRespMsg[32];
+  20:SerCmds.c     **** 
+  21:SerCmds.c     **** SER_CMD(CmdFunctionName1)
+  22:SerCmds.c     **** {
+  28              		.loc 1 22 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 38B5     		push	{r3, r4, r5, lr}
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 2
+
+
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  23:SerCmds.c     ****     if(SerMsg[CNT_INDEX] != 0)
+  39              		.loc 1 23 0
+  40 0002 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+  41 0004 3BB9     		cbnz	r3, .L5
+  24:SerCmds.c     ****     {
+  25:SerCmds.c     **** //        SER_PutStr((uint8 *)"Function 1\r");        // write a text message
+  26:SerCmds.c     ****         for(uint8_t i = DATA_INDEX; i <= SerMsg[CNT_INDEX]; i++)
+  27:SerCmds.c     ****         {
+  28:SerCmds.c     ****             SER_PutChar(SerMsg[i]);
+  29:SerCmds.c     ****         }
+  30:SerCmds.c     ****         SER_PutChar('\r');
+  31:SerCmds.c     ****         return 1;
+  32:SerCmds.c     ****     }
+  33:SerCmds.c     ****     return 0;
+  42              		.loc 1 33 0
+  43 0006 0020     		movs	r0, #0
+  44              	.LVL1:
+  45 0008 38BD     		pop	{r3, r4, r5, pc}
+  46              	.LVL2:
+  47              	.L4:
+  48              	.LBB2:
+  28:SerCmds.c     ****         }
+  49              		.loc 1 28 0 discriminator 3
+  50 000a 285D     		ldrb	r0, [r5, r4]	@ zero_extendqisi2
+  51 000c FFF7FEFF 		bl	UART_WriteTxData
+  52              	.LVL3:
+  26:SerCmds.c     ****         {
+  53              		.loc 1 26 0 discriminator 3
+  54 0010 0134     		adds	r4, r4, #1
+  55              	.LVL4:
+  56 0012 E4B2     		uxtb	r4, r4
+  57              	.LVL5:
+  58 0014 01E0     		b	.L2
+  59              	.LVL6:
+  60              	.L5:
+  61 0016 0546     		mov	r5, r0
+  62              	.LBE2:
+  63 0018 0424     		movs	r4, #4
+  64              	.LVL7:
+  65              	.L2:
+  66              	.LBB3:
+  26:SerCmds.c     ****         {
+  67              		.loc 1 26 0 is_stmt 0 discriminator 1
+  68 001a 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+  69 001c 9C42     		cmp	r4, r3
+  70 001e F4D9     		bls	.L4
+  71              	.LBE3:
+  30:SerCmds.c     ****         return 1;
+  72              		.loc 1 30 0 is_stmt 1
+  73 0020 0D20     		movs	r0, #13
+  74 0022 FFF7FEFF 		bl	UART_WriteTxData
+  75              	.LVL8:
+  31:SerCmds.c     ****     }
+  76              		.loc 1 31 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 3
+
+
+  77 0026 0120     		movs	r0, #1
+  34:SerCmds.c     **** }
+  78              		.loc 1 34 0
+  79 0028 38BD     		pop	{r3, r4, r5, pc}
+  80              		.cfi_endproc
+  81              	.LFE63:
+  82              		.size	CmdFunctionName1, .-CmdFunctionName1
+  83 002a 00BF     		.section	.text.CmdFunctionName2,"ax",%progbits
+  84              		.align	2
+  85              		.global	CmdFunctionName2
+  86              		.thumb
+  87              		.thumb_func
+  88              		.type	CmdFunctionName2, %function
+  89              	CmdFunctionName2:
+  90              	.LFB64:
+  35:SerCmds.c     **** 
+  36:SerCmds.c     **** SER_CMD(CmdFunctionName2)
+  37:SerCmds.c     **** {
+  91              		.loc 1 37 0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              	.LVL9:
+  96 0000 38B5     		push	{r3, r4, r5, lr}
+  97              		.cfi_def_cfa_offset 16
+  98              		.cfi_offset 3, -16
+  99              		.cfi_offset 4, -12
+ 100              		.cfi_offset 5, -8
+ 101              		.cfi_offset 14, -4
+  38:SerCmds.c     ****     if(SerMsg[CNT_INDEX] != 0)
+ 102              		.loc 1 38 0
+ 103 0002 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 104 0004 3BB9     		cbnz	r3, .L11
+  39:SerCmds.c     ****     {
+  40:SerCmds.c     **** //        SER_PutStr((uint8 *)"Function 2\r");        // write a text message
+  41:SerCmds.c     ****         for(uint8_t i = DATA_INDEX; i <= SerMsg[CNT_INDEX]; i++)
+  42:SerCmds.c     ****         {
+  43:SerCmds.c     ****             SER_PutChar(SerMsg[i]);
+  44:SerCmds.c     ****         }
+  45:SerCmds.c     ****         SER_PutChar('\r');
+  46:SerCmds.c     ****         return 1;
+  47:SerCmds.c     ****     }
+  48:SerCmds.c     ****     return 0;
+ 105              		.loc 1 48 0
+ 106 0006 0020     		movs	r0, #0
+ 107              	.LVL10:
+ 108 0008 38BD     		pop	{r3, r4, r5, pc}
+ 109              	.LVL11:
+ 110              	.L10:
+ 111              	.LBB4:
+  43:SerCmds.c     ****         }
+ 112              		.loc 1 43 0 discriminator 3
+ 113 000a 285D     		ldrb	r0, [r5, r4]	@ zero_extendqisi2
+ 114 000c FFF7FEFF 		bl	UART_WriteTxData
+ 115              	.LVL12:
+  41:SerCmds.c     ****         {
+ 116              		.loc 1 41 0 discriminator 3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 4
+
+
+ 117 0010 0134     		adds	r4, r4, #1
+ 118              	.LVL13:
+ 119 0012 E4B2     		uxtb	r4, r4
+ 120              	.LVL14:
+ 121 0014 01E0     		b	.L8
+ 122              	.LVL15:
+ 123              	.L11:
+ 124 0016 0546     		mov	r5, r0
+ 125              	.LBE4:
+ 126 0018 0424     		movs	r4, #4
+ 127              	.LVL16:
+ 128              	.L8:
+ 129              	.LBB5:
+  41:SerCmds.c     ****         {
+ 130              		.loc 1 41 0 is_stmt 0 discriminator 1
+ 131 001a 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 132 001c 9C42     		cmp	r4, r3
+ 133 001e F4D9     		bls	.L10
+ 134              	.LBE5:
+  45:SerCmds.c     ****         return 1;
+ 135              		.loc 1 45 0 is_stmt 1
+ 136 0020 0D20     		movs	r0, #13
+ 137 0022 FFF7FEFF 		bl	UART_WriteTxData
+ 138              	.LVL17:
+  46:SerCmds.c     ****     }
+ 139              		.loc 1 46 0
+ 140 0026 0120     		movs	r0, #1
+  49:SerCmds.c     **** }
+ 141              		.loc 1 49 0
+ 142 0028 38BD     		pop	{r3, r4, r5, pc}
+ 143              		.cfi_endproc
+ 144              	.LFE64:
+ 145              		.size	CmdFunctionName2, .-CmdFunctionName2
+ 146 002a 00BF     		.section	.text.TC_StatusCmd,"ax",%progbits
+ 147              		.align	2
+ 148              		.global	TC_StatusCmd
+ 149              		.thumb
+ 150              		.thumb_func
+ 151              		.type	TC_StatusCmd, %function
+ 152              	TC_StatusCmd:
+ 153              	.LFB65:
+  50:SerCmds.c     **** 
+  51:SerCmds.c     **** SER_CMD(TC_StatusCmd)
+  52:SerCmds.c     **** {
+ 154              		.loc 1 52 0
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 0
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              	.LVL18:
+ 159 0000 08B5     		push	{r3, lr}
+ 160              		.cfi_def_cfa_offset 8
+ 161              		.cfi_offset 3, -8
+ 162              		.cfi_offset 14, -4
+  53:SerCmds.c     ****     UNUSED_ARG(SerMsg);
+  54:SerCmds.c     ****     // get the status
+  55:SerCmds.c     ****     uint16 status = ToolStatusQuery();
+ 163              		.loc 1 55 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 5
+
+
+ 164 0002 FFF7FEFF 		bl	ToolStatusQuery
+ 165              	.LVL19:
+  56:SerCmds.c     ****     // format a serial message to send back to KFLOP
+  57:SerCmds.c     ****     SerRespMsg[0] = TC_STATUS_QUERY;
+ 166              		.loc 1 57 0
+ 167 0006 0649     		ldr	r1, .L15
+ 168 0008 0323     		movs	r3, #3
+ 169 000a 0B70     		strb	r3, [r1]
+  58:SerCmds.c     ****     SerRespMsg[1] = (uint8) (status >> 8);  // put the two bytes into the SerRespMsg buffer
+ 170              		.loc 1 58 0
+ 171 000c C0F30722 		ubfx	r2, r0, #8, #8
+ 172 0010 4A70     		strb	r2, [r1, #1]
+  59:SerCmds.c     ****     SerRespMsg[2] = (uint8) status;
+ 173              		.loc 1 59 0
+ 174 0012 8870     		strb	r0, [r1, #2]
+  60:SerCmds.c     ****     SerResponseMsg(3, SerRespMsg);          // send the message
+ 175              		.loc 1 60 0
+ 176 0014 1846     		mov	r0, r3
+ 177              	.LVL20:
+ 178 0016 FFF7FEFF 		bl	SerResponseMsg
+ 179              	.LVL21:
+  61:SerCmds.c     ****     return 0;
+  62:SerCmds.c     **** }
+ 180              		.loc 1 62 0
+ 181 001a 0020     		movs	r0, #0
+ 182 001c 08BD     		pop	{r3, pc}
+ 183              	.L16:
+ 184 001e 00BF     		.align	2
+ 185              	.L15:
+ 186 0020 00000000 		.word	SerRespMsg
+ 187              		.cfi_endproc
+ 188              	.LFE65:
+ 189              		.size	TC_StatusCmd, .-TC_StatusCmd
+ 190              		.section	.text.TC_Arm_Cmd,"ax",%progbits
+ 191              		.align	2
+ 192              		.global	TC_Arm_Cmd
+ 193              		.thumb
+ 194              		.thumb_func
+ 195              		.type	TC_Arm_Cmd, %function
+ 196              	TC_Arm_Cmd:
+ 197              	.LFB66:
+  63:SerCmds.c     **** 
+  64:SerCmds.c     **** SER_CMD(TC_Arm_Cmd)
+  65:SerCmds.c     **** {
+ 198              		.loc 1 65 0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202              	.LVL22:
+ 203 0000 08B5     		push	{r3, lr}
+ 204              		.cfi_def_cfa_offset 8
+ 205              		.cfi_offset 3, -8
+ 206              		.cfi_offset 14, -4
+ 207              	.LVL23:
+  66:SerCmds.c     ****     // get the argument
+  67:SerCmds.c     ****     uint8 arg = SerMsg[DATA_INDEX];
+  68:SerCmds.c     ****     Arm_Cmd(arg);    
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 6
+
+
+ 208              		.loc 1 68 0
+ 209 0002 0079     		ldrb	r0, [r0, #4]	@ zero_extendqisi2
+ 210              	.LVL24:
+ 211 0004 FFF7FEFF 		bl	Arm_Cmd
+ 212              	.LVL25:
+  69:SerCmds.c     ****     return 0;
+  70:SerCmds.c     **** }
+ 213              		.loc 1 70 0
+ 214 0008 0020     		movs	r0, #0
+ 215 000a 08BD     		pop	{r3, pc}
+ 216              		.cfi_endproc
+ 217              	.LFE66:
+ 218              		.size	TC_Arm_Cmd, .-TC_Arm_Cmd
+ 219              		.section	.text.TC_Carousel_Cmd,"ax",%progbits
+ 220              		.align	2
+ 221              		.global	TC_Carousel_Cmd
+ 222              		.thumb
+ 223              		.thumb_func
+ 224              		.type	TC_Carousel_Cmd, %function
+ 225              	TC_Carousel_Cmd:
+ 226              	.LFB67:
+  71:SerCmds.c     **** 
+  72:SerCmds.c     **** SER_CMD(TC_Carousel_Cmd)
+  73:SerCmds.c     **** {
+ 227              		.loc 1 73 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 0
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231              	.LVL26:
+ 232 0000 08B5     		push	{r3, lr}
+ 233              		.cfi_def_cfa_offset 8
+ 234              		.cfi_offset 3, -8
+ 235              		.cfi_offset 14, -4
+ 236              	.LVL27:
+  74:SerCmds.c     ****     uint8 arg = SerMsg[DATA_INDEX];
+  75:SerCmds.c     ****     Carousel_Cmd(arg);
+ 237              		.loc 1 75 0
+ 238 0002 0079     		ldrb	r0, [r0, #4]	@ zero_extendqisi2
+ 239              	.LVL28:
+ 240 0004 FFF7FEFF 		bl	Carousel_Cmd
+ 241              	.LVL29:
+  76:SerCmds.c     ****     return 0;
+  77:SerCmds.c     **** }
+ 242              		.loc 1 77 0
+ 243 0008 0020     		movs	r0, #0
+ 244 000a 08BD     		pop	{r3, pc}
+ 245              		.cfi_endproc
+ 246              	.LFE67:
+ 247              		.size	TC_Carousel_Cmd, .-TC_Carousel_Cmd
+ 248              		.section	.text.TC_Clamp_Cmd,"ax",%progbits
+ 249              		.align	2
+ 250              		.global	TC_Clamp_Cmd
+ 251              		.thumb
+ 252              		.thumb_func
+ 253              		.type	TC_Clamp_Cmd, %function
+ 254              	TC_Clamp_Cmd:
+ 255              	.LFB68:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 7
+
+
+  78:SerCmds.c     **** 
+  79:SerCmds.c     **** SER_CMD(TC_Clamp_Cmd)
+  80:SerCmds.c     **** {
+ 256              		.loc 1 80 0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260              	.LVL30:
+ 261 0000 08B5     		push	{r3, lr}
+ 262              		.cfi_def_cfa_offset 8
+ 263              		.cfi_offset 3, -8
+ 264              		.cfi_offset 14, -4
+ 265              	.LVL31:
+  81:SerCmds.c     ****     uint8 arg = SerMsg[DATA_INDEX];
+  82:SerCmds.c     ****     Clamp_Cmd(arg);
+ 266              		.loc 1 82 0
+ 267 0002 0079     		ldrb	r0, [r0, #4]	@ zero_extendqisi2
+ 268              	.LVL32:
+ 269 0004 FFF7FEFF 		bl	Clamp_Cmd
+ 270              	.LVL33:
+  83:SerCmds.c     ****     return 0;
+  84:SerCmds.c     **** }
+ 271              		.loc 1 84 0
+ 272 0008 0020     		movs	r0, #0
+ 273 000a 08BD     		pop	{r3, pc}
+ 274              		.cfi_endproc
+ 275              	.LFE68:
+ 276              		.size	TC_Clamp_Cmd, .-TC_Clamp_Cmd
+ 277              		.section	.text.TC_Home_Cmd,"ax",%progbits
+ 278              		.align	2
+ 279              		.global	TC_Home_Cmd
+ 280              		.thumb
+ 281              		.thumb_func
+ 282              		.type	TC_Home_Cmd, %function
+ 283              	TC_Home_Cmd:
+ 284              	.LFB69:
+  85:SerCmds.c     **** 
+  86:SerCmds.c     **** SER_CMD(TC_Home_Cmd)
+  87:SerCmds.c     **** {
+ 285              		.loc 1 87 0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 0
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              	.LVL34:
+ 290 0000 08B5     		push	{r3, lr}
+ 291              		.cfi_def_cfa_offset 8
+ 292              		.cfi_offset 3, -8
+ 293              		.cfi_offset 14, -4
+ 294              	.LVL35:
+  88:SerCmds.c     ****     uint8 arg = SerMsg[DATA_INDEX];
+  89:SerCmds.c     ****     Home_Cmd(arg);
+ 295              		.loc 1 89 0
+ 296 0002 0079     		ldrb	r0, [r0, #4]	@ zero_extendqisi2
+ 297              	.LVL36:
+ 298 0004 FFF7FEFF 		bl	Home_Cmd
+ 299              	.LVL37:
+  90:SerCmds.c     ****     return 0;
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 8
+
+
+  91:SerCmds.c     **** }
+ 300              		.loc 1 91 0
+ 301 0008 0020     		movs	r0, #0
+ 302 000a 08BD     		pop	{r3, pc}
+ 303              		.cfi_endproc
+ 304              	.LFE69:
+ 305              		.size	TC_Home_Cmd, .-TC_Home_Cmd
+ 306              		.comm	SerRespMsg,32,4
+ 307              		.text
+ 308              	.Letext0:
+ 309              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 310              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 311              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 312              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 313              		.file 6 "Generated_Source\\PSoC5/UART.h"
+ 314              		.file 7 "ToolCmds.h"
+ 315              		.file 8 "Serial.h"
+ 316              		.section	.debug_info,"",%progbits
+ 317              	.Ldebug_info0:
+ 318 0000 61030000 		.4byte	0x361
+ 319 0004 0400     		.2byte	0x4
+ 320 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 321 000a 04       		.byte	0x4
+ 322 000b 01       		.uleb128 0x1
+ 323 000c C3000000 		.4byte	.LASF38
+ 324 0010 0C       		.byte	0xc
+ 325 0011 49020000 		.4byte	.LASF39
+ 326 0015 27000000 		.4byte	.LASF40
+ 327 0019 30000000 		.4byte	.Ldebug_ranges0+0x30
+ 328 001d 00000000 		.4byte	0
+ 329 0021 00000000 		.4byte	.Ldebug_line0
+ 330 0025 02       		.uleb128 0x2
+ 331 0026 01       		.byte	0x1
+ 332 0027 06       		.byte	0x6
+ 333 0028 6E020000 		.4byte	.LASF0
+ 334 002c 03       		.uleb128 0x3
+ 335 002d 00000000 		.4byte	.LASF4
+ 336 0031 02       		.byte	0x2
+ 337 0032 1D       		.byte	0x1d
+ 338 0033 37000000 		.4byte	0x37
+ 339 0037 02       		.uleb128 0x2
+ 340 0038 01       		.byte	0x1
+ 341 0039 08       		.byte	0x8
+ 342 003a B5000000 		.4byte	.LASF1
+ 343 003e 02       		.uleb128 0x2
+ 344 003f 02       		.byte	0x2
+ 345 0040 05       		.byte	0x5
+ 346 0041 3F020000 		.4byte	.LASF2
+ 347 0045 02       		.uleb128 0x2
+ 348 0046 02       		.byte	0x2
+ 349 0047 07       		.byte	0x7
+ 350 0048 6D010000 		.4byte	.LASF3
+ 351 004c 03       		.uleb128 0x3
+ 352 004d 67000000 		.4byte	.LASF5
+ 353 0051 02       		.byte	0x2
+ 354 0052 3F       		.byte	0x3f
+ 355 0053 57000000 		.4byte	0x57
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 9
+
+
+ 356 0057 02       		.uleb128 0x2
+ 357 0058 04       		.byte	0x4
+ 358 0059 05       		.byte	0x5
+ 359 005a 59020000 		.4byte	.LASF6
+ 360 005e 02       		.uleb128 0x2
+ 361 005f 04       		.byte	0x4
+ 362 0060 07       		.byte	0x7
+ 363 0061 5B010000 		.4byte	.LASF7
+ 364 0065 02       		.uleb128 0x2
+ 365 0066 08       		.byte	0x8
+ 366 0067 05       		.byte	0x5
+ 367 0068 0C020000 		.4byte	.LASF8
+ 368 006c 02       		.uleb128 0x2
+ 369 006d 08       		.byte	0x8
+ 370 006e 07       		.byte	0x7
+ 371 006f D1010000 		.4byte	.LASF9
+ 372 0073 04       		.uleb128 0x4
+ 373 0074 04       		.byte	0x4
+ 374 0075 05       		.byte	0x5
+ 375 0076 696E7400 		.ascii	"int\000"
+ 376 007a 02       		.uleb128 0x2
+ 377 007b 04       		.byte	0x4
+ 378 007c 07       		.byte	0x7
+ 379 007d C4010000 		.4byte	.LASF10
+ 380 0081 03       		.uleb128 0x3
+ 381 0082 E8010000 		.4byte	.LASF11
+ 382 0086 03       		.byte	0x3
+ 383 0087 18       		.byte	0x18
+ 384 0088 2C000000 		.4byte	0x2c
+ 385 008c 03       		.uleb128 0x3
+ 386 008d FB010000 		.4byte	.LASF12
+ 387 0091 03       		.byte	0x3
+ 388 0092 2C       		.byte	0x2c
+ 389 0093 4C000000 		.4byte	0x4c
+ 390 0097 05       		.uleb128 0x5
+ 391 0098 53020000 		.4byte	.LASF13
+ 392 009c 04       		.byte	0x4
+ 393 009d E401     		.2byte	0x1e4
+ 394 009f 37000000 		.4byte	0x37
+ 395 00a3 05       		.uleb128 0x5
+ 396 00a4 BD010000 		.4byte	.LASF14
+ 397 00a8 04       		.byte	0x4
+ 398 00a9 E501     		.2byte	0x1e5
+ 399 00ab 45000000 		.4byte	0x45
+ 400 00af 02       		.uleb128 0x2
+ 401 00b0 04       		.byte	0x4
+ 402 00b1 04       		.byte	0x4
+ 403 00b2 AF000000 		.4byte	.LASF15
+ 404 00b6 02       		.uleb128 0x2
+ 405 00b7 08       		.byte	0x8
+ 406 00b8 04       		.byte	0x4
+ 407 00b9 A0010000 		.4byte	.LASF16
+ 408 00bd 02       		.uleb128 0x2
+ 409 00be 01       		.byte	0x1
+ 410 00bf 08       		.byte	0x8
+ 411 00c0 29020000 		.4byte	.LASF17
+ 412 00c4 02       		.uleb128 0x2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 10
+
+
+ 413 00c5 08       		.byte	0x8
+ 414 00c6 04       		.byte	0x4
+ 415 00c7 62020000 		.4byte	.LASF18
+ 416 00cb 02       		.uleb128 0x2
+ 417 00cc 04       		.byte	0x4
+ 418 00cd 07       		.byte	0x7
+ 419 00ce 03020000 		.4byte	.LASF19
+ 420 00d2 06       		.uleb128 0x6
+ 421 00d3 7E000000 		.4byte	.LASF20
+ 422 00d7 01       		.byte	0x1
+ 423 00d8 15       		.byte	0x15
+ 424 00d9 73000000 		.4byte	0x73
+ 425 00dd 00000000 		.4byte	.LFB63
+ 426 00e1 2A000000 		.4byte	.LFE63-.LFB63
+ 427 00e5 01       		.uleb128 0x1
+ 428 00e6 9C       		.byte	0x9c
+ 429 00e7 2A010000 		.4byte	0x12a
+ 430 00eb 07       		.uleb128 0x7
+ 431 00ec 8D010000 		.4byte	.LASF22
+ 432 00f0 01       		.byte	0x1
+ 433 00f1 15       		.byte	0x15
+ 434 00f2 2A010000 		.4byte	0x12a
+ 435 00f6 00000000 		.4byte	.LLST0
+ 436 00fa 08       		.uleb128 0x8
+ 437 00fb 00000000 		.4byte	.Ldebug_ranges0+0
+ 438 00ff 1A010000 		.4byte	0x11a
+ 439 0103 09       		.uleb128 0x9
+ 440 0104 6900     		.ascii	"i\000"
+ 441 0106 01       		.byte	0x1
+ 442 0107 1A       		.byte	0x1a
+ 443 0108 81000000 		.4byte	0x81
+ 444 010c 42000000 		.4byte	.LLST1
+ 445 0110 0A       		.uleb128 0xa
+ 446 0111 10000000 		.4byte	.LVL3
+ 447 0115 17030000 		.4byte	0x317
+ 448 0119 00       		.byte	0
+ 449 011a 0B       		.uleb128 0xb
+ 450 011b 26000000 		.4byte	.LVL8
+ 451 011f 17030000 		.4byte	0x317
+ 452 0123 0C       		.uleb128 0xc
+ 453 0124 01       		.uleb128 0x1
+ 454 0125 50       		.byte	0x50
+ 455 0126 01       		.uleb128 0x1
+ 456 0127 3D       		.byte	0x3d
+ 457 0128 00       		.byte	0
+ 458 0129 00       		.byte	0
+ 459 012a 0D       		.uleb128 0xd
+ 460 012b 04       		.byte	0x4
+ 461 012c 97000000 		.4byte	0x97
+ 462 0130 06       		.uleb128 0x6
+ 463 0131 8F000000 		.4byte	.LASF21
+ 464 0135 01       		.byte	0x1
+ 465 0136 24       		.byte	0x24
+ 466 0137 73000000 		.4byte	0x73
+ 467 013b 00000000 		.4byte	.LFB64
+ 468 013f 2A000000 		.4byte	.LFE64-.LFB64
+ 469 0143 01       		.uleb128 0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 11
+
+
+ 470 0144 9C       		.byte	0x9c
+ 471 0145 88010000 		.4byte	0x188
+ 472 0149 07       		.uleb128 0x7
+ 473 014a 8D010000 		.4byte	.LASF22
+ 474 014e 01       		.byte	0x1
+ 475 014f 24       		.byte	0x24
+ 476 0150 2A010000 		.4byte	0x12a
+ 477 0154 6B000000 		.4byte	.LLST2
+ 478 0158 08       		.uleb128 0x8
+ 479 0159 18000000 		.4byte	.Ldebug_ranges0+0x18
+ 480 015d 78010000 		.4byte	0x178
+ 481 0161 09       		.uleb128 0x9
+ 482 0162 6900     		.ascii	"i\000"
+ 483 0164 01       		.byte	0x1
+ 484 0165 29       		.byte	0x29
+ 485 0166 81000000 		.4byte	0x81
+ 486 016a AD000000 		.4byte	.LLST3
+ 487 016e 0A       		.uleb128 0xa
+ 488 016f 10000000 		.4byte	.LVL12
+ 489 0173 17030000 		.4byte	0x317
+ 490 0177 00       		.byte	0
+ 491 0178 0B       		.uleb128 0xb
+ 492 0179 26000000 		.4byte	.LVL17
+ 493 017d 17030000 		.4byte	0x317
+ 494 0181 0C       		.uleb128 0xc
+ 495 0182 01       		.uleb128 0x1
+ 496 0183 50       		.byte	0x50
+ 497 0184 01       		.uleb128 0x1
+ 498 0185 3D       		.byte	0x3d
+ 499 0186 00       		.byte	0
+ 500 0187 00       		.byte	0
+ 501 0188 06       		.uleb128 0x6
+ 502 0189 B0010000 		.4byte	.LASF23
+ 503 018d 01       		.byte	0x1
+ 504 018e 33       		.byte	0x33
+ 505 018f 73000000 		.4byte	0x73
+ 506 0193 00000000 		.4byte	.LFB65
+ 507 0197 24000000 		.4byte	.LFE65-.LFB65
+ 508 019b 01       		.uleb128 0x1
+ 509 019c 9C       		.byte	0x9c
+ 510 019d E1010000 		.4byte	0x1e1
+ 511 01a1 07       		.uleb128 0x7
+ 512 01a2 8D010000 		.4byte	.LASF22
+ 513 01a6 01       		.byte	0x1
+ 514 01a7 33       		.byte	0x33
+ 515 01a8 2A010000 		.4byte	0x12a
+ 516 01ac D6000000 		.4byte	.LLST4
+ 517 01b0 0E       		.uleb128 0xe
+ 518 01b1 A0000000 		.4byte	.LASF24
+ 519 01b5 01       		.byte	0x1
+ 520 01b6 37       		.byte	0x37
+ 521 01b7 A3000000 		.4byte	0xa3
+ 522 01bb F7000000 		.4byte	.LLST5
+ 523 01bf 0A       		.uleb128 0xa
+ 524 01c0 06000000 		.4byte	.LVL19
+ 525 01c4 22030000 		.4byte	0x322
+ 526 01c8 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 12
+
+
+ 527 01c9 1A000000 		.4byte	.LVL21
+ 528 01cd 2D030000 		.4byte	0x32d
+ 529 01d1 0C       		.uleb128 0xc
+ 530 01d2 01       		.uleb128 0x1
+ 531 01d3 50       		.byte	0x50
+ 532 01d4 01       		.uleb128 0x1
+ 533 01d5 33       		.byte	0x33
+ 534 01d6 0C       		.uleb128 0xc
+ 535 01d7 01       		.uleb128 0x1
+ 536 01d8 51       		.byte	0x51
+ 537 01d9 05       		.uleb128 0x5
+ 538 01da 03       		.byte	0x3
+ 539 01db 00000000 		.4byte	SerRespMsg
+ 540 01df 00       		.byte	0
+ 541 01e0 00       		.byte	0
+ 542 01e1 06       		.uleb128 0x6
+ 543 01e2 7A020000 		.4byte	.LASF25
+ 544 01e6 01       		.byte	0x1
+ 545 01e7 40       		.byte	0x40
+ 546 01e8 73000000 		.4byte	0x73
+ 547 01ec 00000000 		.4byte	.LFB66
+ 548 01f0 0C000000 		.4byte	.LFE66-.LFB66
+ 549 01f4 01       		.uleb128 0x1
+ 550 01f5 9C       		.byte	0x9c
+ 551 01f6 22020000 		.4byte	0x222
+ 552 01fa 07       		.uleb128 0x7
+ 553 01fb 8D010000 		.4byte	.LASF22
+ 554 01ff 01       		.byte	0x1
+ 555 0200 40       		.byte	0x40
+ 556 0201 2A010000 		.4byte	0x12a
+ 557 0205 0A010000 		.4byte	.LLST6
+ 558 0209 09       		.uleb128 0x9
+ 559 020a 61726700 		.ascii	"arg\000"
+ 560 020e 01       		.byte	0x1
+ 561 020f 43       		.byte	0x43
+ 562 0210 97000000 		.4byte	0x97
+ 563 0214 2B010000 		.4byte	.LLST7
+ 564 0218 0A       		.uleb128 0xa
+ 565 0219 08000000 		.4byte	.LVL25
+ 566 021d 38030000 		.4byte	0x338
+ 567 0221 00       		.byte	0
+ 568 0222 06       		.uleb128 0x6
+ 569 0223 0A000000 		.4byte	.LASF26
+ 570 0227 01       		.byte	0x1
+ 571 0228 48       		.byte	0x48
+ 572 0229 73000000 		.4byte	0x73
+ 573 022d 00000000 		.4byte	.LFB67
+ 574 0231 0C000000 		.4byte	.LFE67-.LFB67
+ 575 0235 01       		.uleb128 0x1
+ 576 0236 9C       		.byte	0x9c
+ 577 0237 63020000 		.4byte	0x263
+ 578 023b 07       		.uleb128 0x7
+ 579 023c 8D010000 		.4byte	.LASF22
+ 580 0240 01       		.byte	0x1
+ 581 0241 48       		.byte	0x48
+ 582 0242 2A010000 		.4byte	0x12a
+ 583 0246 4A010000 		.4byte	.LLST8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 13
+
+
+ 584 024a 09       		.uleb128 0x9
+ 585 024b 61726700 		.ascii	"arg\000"
+ 586 024f 01       		.byte	0x1
+ 587 0250 4A       		.byte	0x4a
+ 588 0251 97000000 		.4byte	0x97
+ 589 0255 6B010000 		.4byte	.LLST9
+ 590 0259 0A       		.uleb128 0xa
+ 591 025a 08000000 		.4byte	.LVL29
+ 592 025e 43030000 		.4byte	0x343
+ 593 0262 00       		.byte	0
+ 594 0263 06       		.uleb128 0x6
+ 595 0264 71000000 		.4byte	.LASF27
+ 596 0268 01       		.byte	0x1
+ 597 0269 4F       		.byte	0x4f
+ 598 026a 73000000 		.4byte	0x73
+ 599 026e 00000000 		.4byte	.LFB68
+ 600 0272 0C000000 		.4byte	.LFE68-.LFB68
+ 601 0276 01       		.uleb128 0x1
+ 602 0277 9C       		.byte	0x9c
+ 603 0278 A4020000 		.4byte	0x2a4
+ 604 027c 07       		.uleb128 0x7
+ 605 027d 8D010000 		.4byte	.LASF22
+ 606 0281 01       		.byte	0x1
+ 607 0282 4F       		.byte	0x4f
+ 608 0283 2A010000 		.4byte	0x12a
+ 609 0287 8A010000 		.4byte	.LLST10
+ 610 028b 09       		.uleb128 0x9
+ 611 028c 61726700 		.ascii	"arg\000"
+ 612 0290 01       		.byte	0x1
+ 613 0291 51       		.byte	0x51
+ 614 0292 97000000 		.4byte	0x97
+ 615 0296 AB010000 		.4byte	.LLST11
+ 616 029a 0A       		.uleb128 0xa
+ 617 029b 08000000 		.4byte	.LVL33
+ 618 029f 4E030000 		.4byte	0x34e
+ 619 02a3 00       		.byte	0
+ 620 02a4 06       		.uleb128 0x6
+ 621 02a5 94010000 		.4byte	.LASF28
+ 622 02a9 01       		.byte	0x1
+ 623 02aa 56       		.byte	0x56
+ 624 02ab 73000000 		.4byte	0x73
+ 625 02af 00000000 		.4byte	.LFB69
+ 626 02b3 0C000000 		.4byte	.LFE69-.LFB69
+ 627 02b7 01       		.uleb128 0x1
+ 628 02b8 9C       		.byte	0x9c
+ 629 02b9 E5020000 		.4byte	0x2e5
+ 630 02bd 07       		.uleb128 0x7
+ 631 02be 8D010000 		.4byte	.LASF22
+ 632 02c2 01       		.byte	0x1
+ 633 02c3 56       		.byte	0x56
+ 634 02c4 2A010000 		.4byte	0x12a
+ 635 02c8 CA010000 		.4byte	.LLST12
+ 636 02cc 09       		.uleb128 0x9
+ 637 02cd 61726700 		.ascii	"arg\000"
+ 638 02d1 01       		.byte	0x1
+ 639 02d2 58       		.byte	0x58
+ 640 02d3 97000000 		.4byte	0x97
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 14
+
+
+ 641 02d7 EB010000 		.4byte	.LLST13
+ 642 02db 0A       		.uleb128 0xa
+ 643 02dc 08000000 		.4byte	.LVL37
+ 644 02e0 59030000 		.4byte	0x359
+ 645 02e4 00       		.byte	0
+ 646 02e5 0F       		.uleb128 0xf
+ 647 02e6 80010000 		.4byte	.LASF29
+ 648 02ea 05       		.byte	0x5
+ 649 02eb 1207     		.2byte	0x712
+ 650 02ed F1020000 		.4byte	0x2f1
+ 651 02f1 10       		.uleb128 0x10
+ 652 02f2 8C000000 		.4byte	0x8c
+ 653 02f6 11       		.uleb128 0x11
+ 654 02f7 97000000 		.4byte	0x97
+ 655 02fb 06030000 		.4byte	0x306
+ 656 02ff 12       		.uleb128 0x12
+ 657 0300 CB000000 		.4byte	0xcb
+ 658 0304 1F       		.byte	0x1f
+ 659 0305 00       		.byte	0
+ 660 0306 13       		.uleb128 0x13
+ 661 0307 F0010000 		.4byte	.LASF30
+ 662 030b 01       		.byte	0x1
+ 663 030c 13       		.byte	0x13
+ 664 030d F6020000 		.4byte	0x2f6
+ 665 0311 05       		.uleb128 0x5
+ 666 0312 03       		.byte	0x3
+ 667 0313 00000000 		.4byte	SerRespMsg
+ 668 0317 14       		.uleb128 0x14
+ 669 0318 2E020000 		.4byte	.LASF31
+ 670 031c 2E020000 		.4byte	.LASF31
+ 671 0320 06       		.byte	0x6
+ 672 0321 88       		.byte	0x88
+ 673 0322 14       		.uleb128 0x14
+ 674 0323 85020000 		.4byte	.LASF32
+ 675 0327 85020000 		.4byte	.LASF32
+ 676 032b 07       		.byte	0x7
+ 677 032c 58       		.byte	0x58
+ 678 032d 14       		.uleb128 0x14
+ 679 032e 1A020000 		.4byte	.LASF33
+ 680 0332 1A020000 		.4byte	.LASF33
+ 681 0336 08       		.byte	0x8
+ 682 0337 2C       		.byte	0x2c
+ 683 0338 14       		.uleb128 0x14
+ 684 0339 A7000000 		.4byte	.LASF34
+ 685 033d A7000000 		.4byte	.LASF34
+ 686 0341 07       		.byte	0x7
+ 687 0342 59       		.byte	0x59
+ 688 0343 14       		.uleb128 0x14
+ 689 0344 1A000000 		.4byte	.LASF35
+ 690 0348 1A000000 		.4byte	.LASF35
+ 691 034c 07       		.byte	0x7
+ 692 034d 5A       		.byte	0x5a
+ 693 034e 14       		.uleb128 0x14
+ 694 034f 51010000 		.4byte	.LASF36
+ 695 0353 51010000 		.4byte	.LASF36
+ 696 0357 07       		.byte	0x7
+ 697 0358 5B       		.byte	0x5b
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 15
+
+
+ 698 0359 14       		.uleb128 0x14
+ 699 035a A7010000 		.4byte	.LASF37
+ 700 035e A7010000 		.4byte	.LASF37
+ 701 0362 07       		.byte	0x7
+ 702 0363 5C       		.byte	0x5c
+ 703 0364 00       		.byte	0
+ 704              		.section	.debug_abbrev,"",%progbits
+ 705              	.Ldebug_abbrev0:
+ 706 0000 01       		.uleb128 0x1
+ 707 0001 11       		.uleb128 0x11
+ 708 0002 01       		.byte	0x1
+ 709 0003 25       		.uleb128 0x25
+ 710 0004 0E       		.uleb128 0xe
+ 711 0005 13       		.uleb128 0x13
+ 712 0006 0B       		.uleb128 0xb
+ 713 0007 03       		.uleb128 0x3
+ 714 0008 0E       		.uleb128 0xe
+ 715 0009 1B       		.uleb128 0x1b
+ 716 000a 0E       		.uleb128 0xe
+ 717 000b 55       		.uleb128 0x55
+ 718 000c 17       		.uleb128 0x17
+ 719 000d 11       		.uleb128 0x11
+ 720 000e 01       		.uleb128 0x1
+ 721 000f 10       		.uleb128 0x10
+ 722 0010 17       		.uleb128 0x17
+ 723 0011 00       		.byte	0
+ 724 0012 00       		.byte	0
+ 725 0013 02       		.uleb128 0x2
+ 726 0014 24       		.uleb128 0x24
+ 727 0015 00       		.byte	0
+ 728 0016 0B       		.uleb128 0xb
+ 729 0017 0B       		.uleb128 0xb
+ 730 0018 3E       		.uleb128 0x3e
+ 731 0019 0B       		.uleb128 0xb
+ 732 001a 03       		.uleb128 0x3
+ 733 001b 0E       		.uleb128 0xe
+ 734 001c 00       		.byte	0
+ 735 001d 00       		.byte	0
+ 736 001e 03       		.uleb128 0x3
+ 737 001f 16       		.uleb128 0x16
+ 738 0020 00       		.byte	0
+ 739 0021 03       		.uleb128 0x3
+ 740 0022 0E       		.uleb128 0xe
+ 741 0023 3A       		.uleb128 0x3a
+ 742 0024 0B       		.uleb128 0xb
+ 743 0025 3B       		.uleb128 0x3b
+ 744 0026 0B       		.uleb128 0xb
+ 745 0027 49       		.uleb128 0x49
+ 746 0028 13       		.uleb128 0x13
+ 747 0029 00       		.byte	0
+ 748 002a 00       		.byte	0
+ 749 002b 04       		.uleb128 0x4
+ 750 002c 24       		.uleb128 0x24
+ 751 002d 00       		.byte	0
+ 752 002e 0B       		.uleb128 0xb
+ 753 002f 0B       		.uleb128 0xb
+ 754 0030 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 16
+
+
+ 755 0031 0B       		.uleb128 0xb
+ 756 0032 03       		.uleb128 0x3
+ 757 0033 08       		.uleb128 0x8
+ 758 0034 00       		.byte	0
+ 759 0035 00       		.byte	0
+ 760 0036 05       		.uleb128 0x5
+ 761 0037 16       		.uleb128 0x16
+ 762 0038 00       		.byte	0
+ 763 0039 03       		.uleb128 0x3
+ 764 003a 0E       		.uleb128 0xe
+ 765 003b 3A       		.uleb128 0x3a
+ 766 003c 0B       		.uleb128 0xb
+ 767 003d 3B       		.uleb128 0x3b
+ 768 003e 05       		.uleb128 0x5
+ 769 003f 49       		.uleb128 0x49
+ 770 0040 13       		.uleb128 0x13
+ 771 0041 00       		.byte	0
+ 772 0042 00       		.byte	0
+ 773 0043 06       		.uleb128 0x6
+ 774 0044 2E       		.uleb128 0x2e
+ 775 0045 01       		.byte	0x1
+ 776 0046 3F       		.uleb128 0x3f
+ 777 0047 19       		.uleb128 0x19
+ 778 0048 03       		.uleb128 0x3
+ 779 0049 0E       		.uleb128 0xe
+ 780 004a 3A       		.uleb128 0x3a
+ 781 004b 0B       		.uleb128 0xb
+ 782 004c 3B       		.uleb128 0x3b
+ 783 004d 0B       		.uleb128 0xb
+ 784 004e 27       		.uleb128 0x27
+ 785 004f 19       		.uleb128 0x19
+ 786 0050 49       		.uleb128 0x49
+ 787 0051 13       		.uleb128 0x13
+ 788 0052 11       		.uleb128 0x11
+ 789 0053 01       		.uleb128 0x1
+ 790 0054 12       		.uleb128 0x12
+ 791 0055 06       		.uleb128 0x6
+ 792 0056 40       		.uleb128 0x40
+ 793 0057 18       		.uleb128 0x18
+ 794 0058 9742     		.uleb128 0x2117
+ 795 005a 19       		.uleb128 0x19
+ 796 005b 01       		.uleb128 0x1
+ 797 005c 13       		.uleb128 0x13
+ 798 005d 00       		.byte	0
+ 799 005e 00       		.byte	0
+ 800 005f 07       		.uleb128 0x7
+ 801 0060 05       		.uleb128 0x5
+ 802 0061 00       		.byte	0
+ 803 0062 03       		.uleb128 0x3
+ 804 0063 0E       		.uleb128 0xe
+ 805 0064 3A       		.uleb128 0x3a
+ 806 0065 0B       		.uleb128 0xb
+ 807 0066 3B       		.uleb128 0x3b
+ 808 0067 0B       		.uleb128 0xb
+ 809 0068 49       		.uleb128 0x49
+ 810 0069 13       		.uleb128 0x13
+ 811 006a 02       		.uleb128 0x2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 17
+
+
+ 812 006b 17       		.uleb128 0x17
+ 813 006c 00       		.byte	0
+ 814 006d 00       		.byte	0
+ 815 006e 08       		.uleb128 0x8
+ 816 006f 0B       		.uleb128 0xb
+ 817 0070 01       		.byte	0x1
+ 818 0071 55       		.uleb128 0x55
+ 819 0072 17       		.uleb128 0x17
+ 820 0073 01       		.uleb128 0x1
+ 821 0074 13       		.uleb128 0x13
+ 822 0075 00       		.byte	0
+ 823 0076 00       		.byte	0
+ 824 0077 09       		.uleb128 0x9
+ 825 0078 34       		.uleb128 0x34
+ 826 0079 00       		.byte	0
+ 827 007a 03       		.uleb128 0x3
+ 828 007b 08       		.uleb128 0x8
+ 829 007c 3A       		.uleb128 0x3a
+ 830 007d 0B       		.uleb128 0xb
+ 831 007e 3B       		.uleb128 0x3b
+ 832 007f 0B       		.uleb128 0xb
+ 833 0080 49       		.uleb128 0x49
+ 834 0081 13       		.uleb128 0x13
+ 835 0082 02       		.uleb128 0x2
+ 836 0083 17       		.uleb128 0x17
+ 837 0084 00       		.byte	0
+ 838 0085 00       		.byte	0
+ 839 0086 0A       		.uleb128 0xa
+ 840 0087 898201   		.uleb128 0x4109
+ 841 008a 00       		.byte	0
+ 842 008b 11       		.uleb128 0x11
+ 843 008c 01       		.uleb128 0x1
+ 844 008d 31       		.uleb128 0x31
+ 845 008e 13       		.uleb128 0x13
+ 846 008f 00       		.byte	0
+ 847 0090 00       		.byte	0
+ 848 0091 0B       		.uleb128 0xb
+ 849 0092 898201   		.uleb128 0x4109
+ 850 0095 01       		.byte	0x1
+ 851 0096 11       		.uleb128 0x11
+ 852 0097 01       		.uleb128 0x1
+ 853 0098 31       		.uleb128 0x31
+ 854 0099 13       		.uleb128 0x13
+ 855 009a 00       		.byte	0
+ 856 009b 00       		.byte	0
+ 857 009c 0C       		.uleb128 0xc
+ 858 009d 8A8201   		.uleb128 0x410a
+ 859 00a0 00       		.byte	0
+ 860 00a1 02       		.uleb128 0x2
+ 861 00a2 18       		.uleb128 0x18
+ 862 00a3 9142     		.uleb128 0x2111
+ 863 00a5 18       		.uleb128 0x18
+ 864 00a6 00       		.byte	0
+ 865 00a7 00       		.byte	0
+ 866 00a8 0D       		.uleb128 0xd
+ 867 00a9 0F       		.uleb128 0xf
+ 868 00aa 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 18
+
+
+ 869 00ab 0B       		.uleb128 0xb
+ 870 00ac 0B       		.uleb128 0xb
+ 871 00ad 49       		.uleb128 0x49
+ 872 00ae 13       		.uleb128 0x13
+ 873 00af 00       		.byte	0
+ 874 00b0 00       		.byte	0
+ 875 00b1 0E       		.uleb128 0xe
+ 876 00b2 34       		.uleb128 0x34
+ 877 00b3 00       		.byte	0
+ 878 00b4 03       		.uleb128 0x3
+ 879 00b5 0E       		.uleb128 0xe
+ 880 00b6 3A       		.uleb128 0x3a
+ 881 00b7 0B       		.uleb128 0xb
+ 882 00b8 3B       		.uleb128 0x3b
+ 883 00b9 0B       		.uleb128 0xb
+ 884 00ba 49       		.uleb128 0x49
+ 885 00bb 13       		.uleb128 0x13
+ 886 00bc 02       		.uleb128 0x2
+ 887 00bd 17       		.uleb128 0x17
+ 888 00be 00       		.byte	0
+ 889 00bf 00       		.byte	0
+ 890 00c0 0F       		.uleb128 0xf
+ 891 00c1 34       		.uleb128 0x34
+ 892 00c2 00       		.byte	0
+ 893 00c3 03       		.uleb128 0x3
+ 894 00c4 0E       		.uleb128 0xe
+ 895 00c5 3A       		.uleb128 0x3a
+ 896 00c6 0B       		.uleb128 0xb
+ 897 00c7 3B       		.uleb128 0x3b
+ 898 00c8 05       		.uleb128 0x5
+ 899 00c9 49       		.uleb128 0x49
+ 900 00ca 13       		.uleb128 0x13
+ 901 00cb 3F       		.uleb128 0x3f
+ 902 00cc 19       		.uleb128 0x19
+ 903 00cd 3C       		.uleb128 0x3c
+ 904 00ce 19       		.uleb128 0x19
+ 905 00cf 00       		.byte	0
+ 906 00d0 00       		.byte	0
+ 907 00d1 10       		.uleb128 0x10
+ 908 00d2 35       		.uleb128 0x35
+ 909 00d3 00       		.byte	0
+ 910 00d4 49       		.uleb128 0x49
+ 911 00d5 13       		.uleb128 0x13
+ 912 00d6 00       		.byte	0
+ 913 00d7 00       		.byte	0
+ 914 00d8 11       		.uleb128 0x11
+ 915 00d9 01       		.uleb128 0x1
+ 916 00da 01       		.byte	0x1
+ 917 00db 49       		.uleb128 0x49
+ 918 00dc 13       		.uleb128 0x13
+ 919 00dd 01       		.uleb128 0x1
+ 920 00de 13       		.uleb128 0x13
+ 921 00df 00       		.byte	0
+ 922 00e0 00       		.byte	0
+ 923 00e1 12       		.uleb128 0x12
+ 924 00e2 21       		.uleb128 0x21
+ 925 00e3 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 19
+
+
+ 926 00e4 49       		.uleb128 0x49
+ 927 00e5 13       		.uleb128 0x13
+ 928 00e6 2F       		.uleb128 0x2f
+ 929 00e7 0B       		.uleb128 0xb
+ 930 00e8 00       		.byte	0
+ 931 00e9 00       		.byte	0
+ 932 00ea 13       		.uleb128 0x13
+ 933 00eb 34       		.uleb128 0x34
+ 934 00ec 00       		.byte	0
+ 935 00ed 03       		.uleb128 0x3
+ 936 00ee 0E       		.uleb128 0xe
+ 937 00ef 3A       		.uleb128 0x3a
+ 938 00f0 0B       		.uleb128 0xb
+ 939 00f1 3B       		.uleb128 0x3b
+ 940 00f2 0B       		.uleb128 0xb
+ 941 00f3 49       		.uleb128 0x49
+ 942 00f4 13       		.uleb128 0x13
+ 943 00f5 3F       		.uleb128 0x3f
+ 944 00f6 19       		.uleb128 0x19
+ 945 00f7 02       		.uleb128 0x2
+ 946 00f8 18       		.uleb128 0x18
+ 947 00f9 00       		.byte	0
+ 948 00fa 00       		.byte	0
+ 949 00fb 14       		.uleb128 0x14
+ 950 00fc 2E       		.uleb128 0x2e
+ 951 00fd 00       		.byte	0
+ 952 00fe 3F       		.uleb128 0x3f
+ 953 00ff 19       		.uleb128 0x19
+ 954 0100 3C       		.uleb128 0x3c
+ 955 0101 19       		.uleb128 0x19
+ 956 0102 6E       		.uleb128 0x6e
+ 957 0103 0E       		.uleb128 0xe
+ 958 0104 03       		.uleb128 0x3
+ 959 0105 0E       		.uleb128 0xe
+ 960 0106 3A       		.uleb128 0x3a
+ 961 0107 0B       		.uleb128 0xb
+ 962 0108 3B       		.uleb128 0x3b
+ 963 0109 0B       		.uleb128 0xb
+ 964 010a 00       		.byte	0
+ 965 010b 00       		.byte	0
+ 966 010c 00       		.byte	0
+ 967              		.section	.debug_loc,"",%progbits
+ 968              	.Ldebug_loc0:
+ 969              	.LLST0:
+ 970 0000 00000000 		.4byte	.LVL0
+ 971 0004 08000000 		.4byte	.LVL1
+ 972 0008 0100     		.2byte	0x1
+ 973 000a 50       		.byte	0x50
+ 974 000b 08000000 		.4byte	.LVL1
+ 975 000f 0A000000 		.4byte	.LVL2
+ 976 0013 0400     		.2byte	0x4
+ 977 0015 F3       		.byte	0xf3
+ 978 0016 01       		.uleb128 0x1
+ 979 0017 50       		.byte	0x50
+ 980 0018 9F       		.byte	0x9f
+ 981 0019 0A000000 		.4byte	.LVL2
+ 982 001d 16000000 		.4byte	.LVL6
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 20
+
+
+ 983 0021 0100     		.2byte	0x1
+ 984 0023 55       		.byte	0x55
+ 985 0024 16000000 		.4byte	.LVL6
+ 986 0028 1A000000 		.4byte	.LVL7
+ 987 002c 0100     		.2byte	0x1
+ 988 002e 50       		.byte	0x50
+ 989 002f 1A000000 		.4byte	.LVL7
+ 990 0033 2A000000 		.4byte	.LFE63
+ 991 0037 0100     		.2byte	0x1
+ 992 0039 55       		.byte	0x55
+ 993 003a 00000000 		.4byte	0
+ 994 003e 00000000 		.4byte	0
+ 995              	.LLST1:
+ 996 0042 0A000000 		.4byte	.LVL2
+ 997 0046 12000000 		.4byte	.LVL4
+ 998 004a 0100     		.2byte	0x1
+ 999 004c 54       		.byte	0x54
+ 1000 004d 14000000 		.4byte	.LVL5
+ 1001 0051 16000000 		.4byte	.LVL6
+ 1002 0055 0100     		.2byte	0x1
+ 1003 0057 54       		.byte	0x54
+ 1004 0058 1A000000 		.4byte	.LVL7
+ 1005 005c 2A000000 		.4byte	.LFE63
+ 1006 0060 0100     		.2byte	0x1
+ 1007 0062 54       		.byte	0x54
+ 1008 0063 00000000 		.4byte	0
+ 1009 0067 00000000 		.4byte	0
+ 1010              	.LLST2:
+ 1011 006b 00000000 		.4byte	.LVL9
+ 1012 006f 08000000 		.4byte	.LVL10
+ 1013 0073 0100     		.2byte	0x1
+ 1014 0075 50       		.byte	0x50
+ 1015 0076 08000000 		.4byte	.LVL10
+ 1016 007a 0A000000 		.4byte	.LVL11
+ 1017 007e 0400     		.2byte	0x4
+ 1018 0080 F3       		.byte	0xf3
+ 1019 0081 01       		.uleb128 0x1
+ 1020 0082 50       		.byte	0x50
+ 1021 0083 9F       		.byte	0x9f
+ 1022 0084 0A000000 		.4byte	.LVL11
+ 1023 0088 16000000 		.4byte	.LVL15
+ 1024 008c 0100     		.2byte	0x1
+ 1025 008e 55       		.byte	0x55
+ 1026 008f 16000000 		.4byte	.LVL15
+ 1027 0093 1A000000 		.4byte	.LVL16
+ 1028 0097 0100     		.2byte	0x1
+ 1029 0099 50       		.byte	0x50
+ 1030 009a 1A000000 		.4byte	.LVL16
+ 1031 009e 2A000000 		.4byte	.LFE64
+ 1032 00a2 0100     		.2byte	0x1
+ 1033 00a4 55       		.byte	0x55
+ 1034 00a5 00000000 		.4byte	0
+ 1035 00a9 00000000 		.4byte	0
+ 1036              	.LLST3:
+ 1037 00ad 0A000000 		.4byte	.LVL11
+ 1038 00b1 12000000 		.4byte	.LVL13
+ 1039 00b5 0100     		.2byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 21
+
+
+ 1040 00b7 54       		.byte	0x54
+ 1041 00b8 14000000 		.4byte	.LVL14
+ 1042 00bc 16000000 		.4byte	.LVL15
+ 1043 00c0 0100     		.2byte	0x1
+ 1044 00c2 54       		.byte	0x54
+ 1045 00c3 1A000000 		.4byte	.LVL16
+ 1046 00c7 2A000000 		.4byte	.LFE64
+ 1047 00cb 0100     		.2byte	0x1
+ 1048 00cd 54       		.byte	0x54
+ 1049 00ce 00000000 		.4byte	0
+ 1050 00d2 00000000 		.4byte	0
+ 1051              	.LLST4:
+ 1052 00d6 00000000 		.4byte	.LVL18
+ 1053 00da 05000000 		.4byte	.LVL19-1
+ 1054 00de 0100     		.2byte	0x1
+ 1055 00e0 50       		.byte	0x50
+ 1056 00e1 05000000 		.4byte	.LVL19-1
+ 1057 00e5 24000000 		.4byte	.LFE65
+ 1058 00e9 0400     		.2byte	0x4
+ 1059 00eb F3       		.byte	0xf3
+ 1060 00ec 01       		.uleb128 0x1
+ 1061 00ed 50       		.byte	0x50
+ 1062 00ee 9F       		.byte	0x9f
+ 1063 00ef 00000000 		.4byte	0
+ 1064 00f3 00000000 		.4byte	0
+ 1065              	.LLST5:
+ 1066 00f7 06000000 		.4byte	.LVL19
+ 1067 00fb 16000000 		.4byte	.LVL20
+ 1068 00ff 0100     		.2byte	0x1
+ 1069 0101 50       		.byte	0x50
+ 1070 0102 00000000 		.4byte	0
+ 1071 0106 00000000 		.4byte	0
+ 1072              	.LLST6:
+ 1073 010a 00000000 		.4byte	.LVL22
+ 1074 010e 04000000 		.4byte	.LVL24
+ 1075 0112 0100     		.2byte	0x1
+ 1076 0114 50       		.byte	0x50
+ 1077 0115 04000000 		.4byte	.LVL24
+ 1078 0119 0C000000 		.4byte	.LFE66
+ 1079 011d 0400     		.2byte	0x4
+ 1080 011f F3       		.byte	0xf3
+ 1081 0120 01       		.uleb128 0x1
+ 1082 0121 50       		.byte	0x50
+ 1083 0122 9F       		.byte	0x9f
+ 1084 0123 00000000 		.4byte	0
+ 1085 0127 00000000 		.4byte	0
+ 1086              	.LLST7:
+ 1087 012b 02000000 		.4byte	.LVL23
+ 1088 012f 04000000 		.4byte	.LVL24
+ 1089 0133 0200     		.2byte	0x2
+ 1090 0135 70       		.byte	0x70
+ 1091 0136 04       		.sleb128 4
+ 1092 0137 04000000 		.4byte	.LVL24
+ 1093 013b 07000000 		.4byte	.LVL25-1
+ 1094 013f 0100     		.2byte	0x1
+ 1095 0141 50       		.byte	0x50
+ 1096 0142 00000000 		.4byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 22
+
+
+ 1097 0146 00000000 		.4byte	0
+ 1098              	.LLST8:
+ 1099 014a 00000000 		.4byte	.LVL26
+ 1100 014e 04000000 		.4byte	.LVL28
+ 1101 0152 0100     		.2byte	0x1
+ 1102 0154 50       		.byte	0x50
+ 1103 0155 04000000 		.4byte	.LVL28
+ 1104 0159 0C000000 		.4byte	.LFE67
+ 1105 015d 0400     		.2byte	0x4
+ 1106 015f F3       		.byte	0xf3
+ 1107 0160 01       		.uleb128 0x1
+ 1108 0161 50       		.byte	0x50
+ 1109 0162 9F       		.byte	0x9f
+ 1110 0163 00000000 		.4byte	0
+ 1111 0167 00000000 		.4byte	0
+ 1112              	.LLST9:
+ 1113 016b 02000000 		.4byte	.LVL27
+ 1114 016f 04000000 		.4byte	.LVL28
+ 1115 0173 0200     		.2byte	0x2
+ 1116 0175 70       		.byte	0x70
+ 1117 0176 04       		.sleb128 4
+ 1118 0177 04000000 		.4byte	.LVL28
+ 1119 017b 07000000 		.4byte	.LVL29-1
+ 1120 017f 0100     		.2byte	0x1
+ 1121 0181 50       		.byte	0x50
+ 1122 0182 00000000 		.4byte	0
+ 1123 0186 00000000 		.4byte	0
+ 1124              	.LLST10:
+ 1125 018a 00000000 		.4byte	.LVL30
+ 1126 018e 04000000 		.4byte	.LVL32
+ 1127 0192 0100     		.2byte	0x1
+ 1128 0194 50       		.byte	0x50
+ 1129 0195 04000000 		.4byte	.LVL32
+ 1130 0199 0C000000 		.4byte	.LFE68
+ 1131 019d 0400     		.2byte	0x4
+ 1132 019f F3       		.byte	0xf3
+ 1133 01a0 01       		.uleb128 0x1
+ 1134 01a1 50       		.byte	0x50
+ 1135 01a2 9F       		.byte	0x9f
+ 1136 01a3 00000000 		.4byte	0
+ 1137 01a7 00000000 		.4byte	0
+ 1138              	.LLST11:
+ 1139 01ab 02000000 		.4byte	.LVL31
+ 1140 01af 04000000 		.4byte	.LVL32
+ 1141 01b3 0200     		.2byte	0x2
+ 1142 01b5 70       		.byte	0x70
+ 1143 01b6 04       		.sleb128 4
+ 1144 01b7 04000000 		.4byte	.LVL32
+ 1145 01bb 07000000 		.4byte	.LVL33-1
+ 1146 01bf 0100     		.2byte	0x1
+ 1147 01c1 50       		.byte	0x50
+ 1148 01c2 00000000 		.4byte	0
+ 1149 01c6 00000000 		.4byte	0
+ 1150              	.LLST12:
+ 1151 01ca 00000000 		.4byte	.LVL34
+ 1152 01ce 04000000 		.4byte	.LVL36
+ 1153 01d2 0100     		.2byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 23
+
+
+ 1154 01d4 50       		.byte	0x50
+ 1155 01d5 04000000 		.4byte	.LVL36
+ 1156 01d9 0C000000 		.4byte	.LFE69
+ 1157 01dd 0400     		.2byte	0x4
+ 1158 01df F3       		.byte	0xf3
+ 1159 01e0 01       		.uleb128 0x1
+ 1160 01e1 50       		.byte	0x50
+ 1161 01e2 9F       		.byte	0x9f
+ 1162 01e3 00000000 		.4byte	0
+ 1163 01e7 00000000 		.4byte	0
+ 1164              	.LLST13:
+ 1165 01eb 02000000 		.4byte	.LVL35
+ 1166 01ef 04000000 		.4byte	.LVL36
+ 1167 01f3 0200     		.2byte	0x2
+ 1168 01f5 70       		.byte	0x70
+ 1169 01f6 04       		.sleb128 4
+ 1170 01f7 04000000 		.4byte	.LVL36
+ 1171 01fb 07000000 		.4byte	.LVL37-1
+ 1172 01ff 0100     		.2byte	0x1
+ 1173 0201 50       		.byte	0x50
+ 1174 0202 00000000 		.4byte	0
+ 1175 0206 00000000 		.4byte	0
+ 1176              		.section	.debug_aranges,"",%progbits
+ 1177 0000 4C000000 		.4byte	0x4c
+ 1178 0004 0200     		.2byte	0x2
+ 1179 0006 00000000 		.4byte	.Ldebug_info0
+ 1180 000a 04       		.byte	0x4
+ 1181 000b 00       		.byte	0
+ 1182 000c 0000     		.2byte	0
+ 1183 000e 0000     		.2byte	0
+ 1184 0010 00000000 		.4byte	.LFB63
+ 1185 0014 2A000000 		.4byte	.LFE63-.LFB63
+ 1186 0018 00000000 		.4byte	.LFB64
+ 1187 001c 2A000000 		.4byte	.LFE64-.LFB64
+ 1188 0020 00000000 		.4byte	.LFB65
+ 1189 0024 24000000 		.4byte	.LFE65-.LFB65
+ 1190 0028 00000000 		.4byte	.LFB66
+ 1191 002c 0C000000 		.4byte	.LFE66-.LFB66
+ 1192 0030 00000000 		.4byte	.LFB67
+ 1193 0034 0C000000 		.4byte	.LFE67-.LFB67
+ 1194 0038 00000000 		.4byte	.LFB68
+ 1195 003c 0C000000 		.4byte	.LFE68-.LFB68
+ 1196 0040 00000000 		.4byte	.LFB69
+ 1197 0044 0C000000 		.4byte	.LFE69-.LFB69
+ 1198 0048 00000000 		.4byte	0
+ 1199 004c 00000000 		.4byte	0
+ 1200              		.section	.debug_ranges,"",%progbits
+ 1201              	.Ldebug_ranges0:
+ 1202 0000 0A000000 		.4byte	.LBB2
+ 1203 0004 18000000 		.4byte	.LBE2
+ 1204 0008 1A000000 		.4byte	.LBB3
+ 1205 000c 20000000 		.4byte	.LBE3
+ 1206 0010 00000000 		.4byte	0
+ 1207 0014 00000000 		.4byte	0
+ 1208 0018 0A000000 		.4byte	.LBB4
+ 1209 001c 18000000 		.4byte	.LBE4
+ 1210 0020 1A000000 		.4byte	.LBB5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 24
+
+
+ 1211 0024 20000000 		.4byte	.LBE5
+ 1212 0028 00000000 		.4byte	0
+ 1213 002c 00000000 		.4byte	0
+ 1214 0030 00000000 		.4byte	.LFB63
+ 1215 0034 2A000000 		.4byte	.LFE63
+ 1216 0038 00000000 		.4byte	.LFB64
+ 1217 003c 2A000000 		.4byte	.LFE64
+ 1218 0040 00000000 		.4byte	.LFB65
+ 1219 0044 24000000 		.4byte	.LFE65
+ 1220 0048 00000000 		.4byte	.LFB66
+ 1221 004c 0C000000 		.4byte	.LFE66
+ 1222 0050 00000000 		.4byte	.LFB67
+ 1223 0054 0C000000 		.4byte	.LFE67
+ 1224 0058 00000000 		.4byte	.LFB68
+ 1225 005c 0C000000 		.4byte	.LFE68
+ 1226 0060 00000000 		.4byte	.LFB69
+ 1227 0064 0C000000 		.4byte	.LFE69
+ 1228 0068 00000000 		.4byte	0
+ 1229 006c 00000000 		.4byte	0
+ 1230              		.section	.debug_line,"",%progbits
+ 1231              	.Ldebug_line0:
+ 1232 0000 24020000 		.section	.debug_str,"MS",%progbits,1
+ 1232      02007301 
+ 1232      00000201 
+ 1232      FB0E0D00 
+ 1232      01010101 
+ 1233              	.LASF4:
+ 1234 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 1234      6E74385F 
+ 1234      7400
+ 1235              	.LASF26:
+ 1236 000a 54435F43 		.ascii	"TC_Carousel_Cmd\000"
+ 1236      61726F75 
+ 1236      73656C5F 
+ 1236      436D6400 
+ 1237              	.LASF35:
+ 1238 001a 4361726F 		.ascii	"Carousel_Cmd\000"
+ 1238      7573656C 
+ 1238      5F436D64 
+ 1238      00
+ 1239              	.LASF40:
+ 1240 0027 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\TLAUX\\ARM Code\\TLAU"
+ 1240      616E5C45 
+ 1240      6E672050 
+ 1240      726F6A65 
+ 1240      6374735C 
+ 1241 0054 585C544C 		.ascii	"X\\TLAUX_PSoC.cydsn\000"
+ 1241      4155585F 
+ 1241      50536F43 
+ 1241      2E637964 
+ 1241      736E00
+ 1242              	.LASF5:
+ 1243 0067 5F5F696E 		.ascii	"__int32_t\000"
+ 1243      7433325F 
+ 1243      7400
+ 1244              	.LASF27:
+ 1245 0071 54435F43 		.ascii	"TC_Clamp_Cmd\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 25
+
+
+ 1245      6C616D70 
+ 1245      5F436D64 
+ 1245      00
+ 1246              	.LASF20:
+ 1247 007e 436D6446 		.ascii	"CmdFunctionName1\000"
+ 1247      756E6374 
+ 1247      696F6E4E 
+ 1247      616D6531 
+ 1247      00
+ 1248              	.LASF21:
+ 1249 008f 436D6446 		.ascii	"CmdFunctionName2\000"
+ 1249      756E6374 
+ 1249      696F6E4E 
+ 1249      616D6532 
+ 1249      00
+ 1250              	.LASF24:
+ 1251 00a0 73746174 		.ascii	"status\000"
+ 1251      757300
+ 1252              	.LASF34:
+ 1253 00a7 41726D5F 		.ascii	"Arm_Cmd\000"
+ 1253      436D6400 
+ 1254              	.LASF15:
+ 1255 00af 666C6F61 		.ascii	"float\000"
+ 1255      7400
+ 1256              	.LASF1:
+ 1257 00b5 756E7369 		.ascii	"unsigned char\000"
+ 1257      676E6564 
+ 1257      20636861 
+ 1257      7200
+ 1258              	.LASF38:
+ 1259 00c3 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1259      43313120 
+ 1259      352E342E 
+ 1259      31203230 
+ 1259      31363036 
+ 1260 00f6 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1260      20726576 
+ 1260      6973696F 
+ 1260      6E203233 
+ 1260      37373135 
+ 1261 0129 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1261      66756E63 
+ 1261      74696F6E 
+ 1261      2D736563 
+ 1261      74696F6E 
+ 1262              	.LASF36:
+ 1263 0151 436C616D 		.ascii	"Clamp_Cmd\000"
+ 1263      705F436D 
+ 1263      6400
+ 1264              	.LASF7:
+ 1265 015b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1265      20756E73 
+ 1265      69676E65 
+ 1265      6420696E 
+ 1265      7400
+ 1266              	.LASF3:
+ 1267 016d 73686F72 		.ascii	"short unsigned int\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 26
+
+
+ 1267      7420756E 
+ 1267      7369676E 
+ 1267      65642069 
+ 1267      6E7400
+ 1268              	.LASF29:
+ 1269 0180 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1269      52784275 
+ 1269      66666572 
+ 1269      00
+ 1270              	.LASF22:
+ 1271 018d 5365724D 		.ascii	"SerMsg\000"
+ 1271      736700
+ 1272              	.LASF28:
+ 1273 0194 54435F48 		.ascii	"TC_Home_Cmd\000"
+ 1273      6F6D655F 
+ 1273      436D6400 
+ 1274              	.LASF16:
+ 1275 01a0 646F7562 		.ascii	"double\000"
+ 1275      6C6500
+ 1276              	.LASF37:
+ 1277 01a7 486F6D65 		.ascii	"Home_Cmd\000"
+ 1277      5F436D64 
+ 1277      00
+ 1278              	.LASF23:
+ 1279 01b0 54435F53 		.ascii	"TC_StatusCmd\000"
+ 1279      74617475 
+ 1279      73436D64 
+ 1279      00
+ 1280              	.LASF14:
+ 1281 01bd 75696E74 		.ascii	"uint16\000"
+ 1281      313600
+ 1282              	.LASF10:
+ 1283 01c4 756E7369 		.ascii	"unsigned int\000"
+ 1283      676E6564 
+ 1283      20696E74 
+ 1283      00
+ 1284              	.LASF9:
+ 1285 01d1 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1285      206C6F6E 
+ 1285      6720756E 
+ 1285      7369676E 
+ 1285      65642069 
+ 1286              	.LASF11:
+ 1287 01e8 75696E74 		.ascii	"uint8_t\000"
+ 1287      385F7400 
+ 1288              	.LASF30:
+ 1289 01f0 53657252 		.ascii	"SerRespMsg\000"
+ 1289      6573704D 
+ 1289      736700
+ 1290              	.LASF12:
+ 1291 01fb 696E7433 		.ascii	"int32_t\000"
+ 1291      325F7400 
+ 1292              	.LASF19:
+ 1293 0203 73697A65 		.ascii	"sizetype\000"
+ 1293      74797065 
+ 1293      00
+ 1294              	.LASF8:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccPM49Gc.s 			page 27
+
+
+ 1295 020c 6C6F6E67 		.ascii	"long long int\000"
+ 1295      206C6F6E 
+ 1295      6720696E 
+ 1295      7400
+ 1296              	.LASF33:
+ 1297 021a 53657252 		.ascii	"SerResponseMsg\000"
+ 1297      6573706F 
+ 1297      6E73654D 
+ 1297      736700
+ 1298              	.LASF17:
+ 1299 0229 63686172 		.ascii	"char\000"
+ 1299      00
+ 1300              	.LASF31:
+ 1301 022e 55415254 		.ascii	"UART_WriteTxData\000"
+ 1301      5F577269 
+ 1301      74655478 
+ 1301      44617461 
+ 1301      00
+ 1302              	.LASF2:
+ 1303 023f 73686F72 		.ascii	"short int\000"
+ 1303      7420696E 
+ 1303      7400
+ 1304              	.LASF39:
+ 1305 0249 53657243 		.ascii	"SerCmds.c\000"
+ 1305      6D64732E 
+ 1305      6300
+ 1306              	.LASF13:
+ 1307 0253 75696E74 		.ascii	"uint8\000"
+ 1307      3800
+ 1308              	.LASF6:
+ 1309 0259 6C6F6E67 		.ascii	"long int\000"
+ 1309      20696E74 
+ 1309      00
+ 1310              	.LASF18:
+ 1311 0262 6C6F6E67 		.ascii	"long double\000"
+ 1311      20646F75 
+ 1311      626C6500 
+ 1312              	.LASF0:
+ 1313 026e 7369676E 		.ascii	"signed char\000"
+ 1313      65642063 
+ 1313      68617200 
+ 1314              	.LASF25:
+ 1315 027a 54435F41 		.ascii	"TC_Arm_Cmd\000"
+ 1315      726D5F43 
+ 1315      6D6400
+ 1316              	.LASF32:
+ 1317 0285 546F6F6C 		.ascii	"ToolStatusQuery\000"
+ 1317      53746174 
+ 1317      75735175 
+ 1317      65727900 
+ 1318              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

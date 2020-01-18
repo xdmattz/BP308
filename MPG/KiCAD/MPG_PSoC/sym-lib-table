@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name MPG_PSoC-rescue)(type Legacy)(uri ${KIPRJMOD}/MPG_PSoC-rescue.lib)(options "")(descr ""))
+)

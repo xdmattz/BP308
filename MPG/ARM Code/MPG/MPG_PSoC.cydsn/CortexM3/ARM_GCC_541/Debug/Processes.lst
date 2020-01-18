@@ -1,0 +1,4267 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Processes.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.MPG_StateMachine,"ax",%progbits
+  20              		.align	2
+  21              		.global	MPG_StateMachine
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	MPG_StateMachine, %function
+  25              	MPG_StateMachine:
+  26              	.LFB69:
+  27              		.file 1 "Processes.c"
+   1:Processes.c   **** /* ========================================
+   2:Processes.c   ****  *
+   3:Processes.c   ****  * Copyright YOUR COMPANY, THE YEAR
+   4:Processes.c   ****  * All Rights Reserved
+   5:Processes.c   ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:Processes.c   ****  *
+   7:Processes.c   ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:Processes.c   ****  * WHICH IS THE PROPERTY OF your company.
+   9:Processes.c   ****  *
+  10:Processes.c   ****  * ========================================
+  11:Processes.c   **** */
+  12:Processes.c   **** 
+  13:Processes.c   **** #include "Processes.h"
+  14:Processes.c   **** #include <project.h>
+  15:Processes.c   **** #include <stdio.h>
+  16:Processes.c   **** #include "MPGCmds.h"
+  17:Processes.c   **** #include "State_Machine.h"
+  18:Processes.c   **** 
+  19:Processes.c   **** #include "U_HW.h"
+  20:Processes.c   **** 
+  21:Processes.c   **** extern uint32_t STATUS_FLAG1;
+  22:Processes.c   **** 
+  23:Processes.c   **** extern func_ptr FastProcess[];
+  24:Processes.c   **** extern func_ptr MsProcess[];
+  25:Processes.c   **** extern func_ptr SlowProcess[];
+  26:Processes.c   **** extern volatile uint32 MS_Time;
+  27:Processes.c   **** 
+  28:Processes.c   **** extern volatile uint32 StatusMSGTime;
+  29:Processes.c   **** 
+  30:Processes.c   **** func_ptr MPG_SM;
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 2
+
+
+  31:Processes.c   **** uint8   MPG_STATE;
+  32:Processes.c   **** 
+  33:Processes.c   **** func_ptr DlyNextState;
+  34:Processes.c   **** 
+  35:Processes.c   **** func_ptr Blink_SM;
+  36:Processes.c   **** uint8 Blink_STATE;
+  37:Processes.c   **** 
+  38:Processes.c   **** uint8 Current_Tool;
+  39:Processes.c   **** uint8 Target_Tool;
+  40:Processes.c   **** int8  Carousel_Dir;
+  41:Processes.c   **** 
+  42:Processes.c   **** static uint16_t C_Count;
+  43:Processes.c   **** static uint16_t SecCount;
+  44:Processes.c   **** 
+  45:Processes.c   **** static uint16_t PrevStatus;
+  46:Processes.c   **** 
+  47:Processes.c   **** void InitCountProcess(void)
+  48:Processes.c   **** {
+  49:Processes.c   ****     C_Count = 0;
+  50:Processes.c   ****     SecCount = 1000;
+  51:Processes.c   **** }
+  52:Processes.c   **** void CountProcess(void)
+  53:Processes.c   **** {
+  54:Processes.c   ****     char msg[20];
+  55:Processes.c   ****     if((--SecCount) == 0)
+  56:Processes.c   ****     {
+  57:Processes.c   ****         SecCount = 1000; // reset the counter
+  58:Processes.c   ****         sprintf(msg, "Count = %d\r", C_Count++);
+  59:Processes.c   ****         PutStr(msg);
+  60:Processes.c   **** //        Pin_LED_Write(~(Pin_LED_Read()));    // toggle the LED
+  61:Processes.c   ****     }
+  62:Processes.c   **** }
+  63:Processes.c   **** 
+  64:Processes.c   **** static uint8 A_Count;
+  65:Processes.c   **** static uint16 S_Count;
+  66:Processes.c   **** 
+  67:Processes.c   **** void InitAlphaProcess(void)
+  68:Processes.c   **** {
+  69:Processes.c   ****     A_Count = 0;
+  70:Processes.c   ****     S_Count = 1000;
+  71:Processes.c   **** }
+  72:Processes.c   **** 
+  73:Processes.c   **** void AlphaProcess(void)
+  74:Processes.c   **** {
+  75:Processes.c   **** 
+  76:Processes.c   ****     char msg[20];
+  77:Processes.c   ****     if((--S_Count) == 0)
+  78:Processes.c   ****     {
+  79:Processes.c   ****         S_Count = 1000u; // reset the counter
+  80:Processes.c   ****         sprintf(msg, "Alpha = %c\r", (A_Count + 'A'));
+  81:Processes.c   ****         PutStr(msg);
+  82:Processes.c   ****         if(A_Count++ > 56) A_Count = 0;
+  83:Processes.c   **** //        Pin_LED_Write(~(Pin_LED_Read()));    // toggle the LED
+  84:Processes.c   ****     }
+  85:Processes.c   **** }
+  86:Processes.c   **** 
+  87:Processes.c   **** 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 3
+
+
+  88:Processes.c   **** // delay timer variables
+  89:Processes.c   **** static uint32 TC_Delay; // the amount of time to delay
+  90:Processes.c   **** static uint32 TC_DelayStart; // the time tick when the delay started
+  91:Processes.c   **** 
+  92:Processes.c   **** 
+  93:Processes.c   **** // tool changer state machine
+  94:Processes.c   **** void Init_MPG_StateMachine(void)
+  95:Processes.c   **** {
+  96:Processes.c   ****     if(Process_Running(MsProcess, MPG_StateMachine))
+  97:Processes.c   ****     {
+  98:Processes.c   ****         PutStr("Status Process already running!\n");
+  99:Processes.c   ****     } else {
+ 100:Processes.c   ****     // start all the constantaly running processes.
+ 101:Processes.c   ****     // Status Monitor
+ 102:Processes.c   ****         Add_Process(FastProcess, &(MPG_StateMachine));
+ 103:Processes.c   ****         PutStr("MPG State Machine Started");
+ 104:Processes.c   ****         MPG_SM = &MPG_Fault;
+ 105:Processes.c   ****     } 
+ 106:Processes.c   ****     if(Process_Running(MsProcess, Blink_StateMachine))
+ 107:Processes.c   ****     {
+ 108:Processes.c   ****         PutStr("Blink Process already running\n");
+ 109:Processes.c   ****     } 
+ 110:Processes.c   ****     else
+ 111:Processes.c   ****     {
+ 112:Processes.c   ****         Add_Process(MsProcess, &(Blink_StateMachine));
+ 113:Processes.c   ****         PutStr("Blink State Machine Started");
+ 114:Processes.c   ****         startLongShortBlink();
+ 115:Processes.c   ****     }
+ 116:Processes.c   ****     
+ 117:Processes.c   ****     PrevStatus = MPGStatusQuery();
+ 118:Processes.c   **** }
+ 119:Processes.c   **** 
+ 120:Processes.c   **** void MPG_StateMachine(void)
+ 121:Processes.c   **** {
+  28              		.loc 1 121 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 122:Processes.c   ****     // check for things that may cause a fault
+ 123:Processes.c   ****     // if there is a fault then MPG_SM = &TC_Fault;
+ 124:Processes.c   ****     // 
+ 125:Processes.c   ****     MPG_SM();
+  36              		.loc 1 125 0
+  37 0002 024B     		ldr	r3, .L3
+  38 0004 1B68     		ldr	r3, [r3]
+  39 0006 9847     		blx	r3
+  40              	.LVL0:
+  41 0008 08BD     		pop	{r3, pc}
+  42              	.L4:
+  43 000a 00BF     		.align	2
+  44              	.L3:
+  45 000c 00000000 		.word	MPG_SM
+  46              		.cfi_endproc
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 4
+
+
+  47              	.LFE69:
+  48              		.size	MPG_StateMachine, .-MPG_StateMachine
+  49              		.section	.text.MPG_Test_Delay,"ax",%progbits
+  50              		.align	2
+  51              		.global	MPG_Test_Delay
+  52              		.thumb
+  53              		.thumb_func
+  54              		.type	MPG_Test_Delay, %function
+  55              	MPG_Test_Delay:
+  56              	.LFB74:
+ 126:Processes.c   **** }
+ 127:Processes.c   **** 
+ 128:Processes.c   **** // state machine states
+ 129:Processes.c   **** void MPG_IDLE(void)
+ 130:Processes.c   **** {
+ 131:Processes.c   ****     MPG_STATE = MPG_STATE_IDLE;
+ 132:Processes.c   ****     // waiting for a command to start a motion
+ 133:Processes.c   ****     // check for an error condition.
+ 134:Processes.c   ****     In_Fault();
+ 135:Processes.c   ****     // if status switch is not on OFF then switch to normal
+ 136:Processes.c   ****     
+ 137:Processes.c   ****     PrevStatus = MPGStatusQuery();
+ 138:Processes.c   ****     if((PrevStatus & (1 << OFF_POS)) == 0)  
+ 139:Processes.c   ****     {
+ 140:Processes.c   ****         MPG_SM = &MPG_Normal;
+ 141:Processes.c   ****         Blink_SM = &NoBlink;
+ 142:Processes.c   ****     }
+ 143:Processes.c   ****     if((PrevStatus & (1 << ESTOP_STATUS_POS)) != 0)
+ 144:Processes.c   ****     {
+ 145:Processes.c   ****         MPG_SM = &MPG_ESTOP;
+ 146:Processes.c   ****         startFastBlink();
+ 147:Processes.c   ****     }
+ 148:Processes.c   **** }
+ 149:Processes.c   **** 
+ 150:Processes.c   **** void MPG_Normal(void)
+ 151:Processes.c   **** {
+ 152:Processes.c   ****     MPG_STATE = MPG_STATE_NORMAL;
+ 153:Processes.c   ****     In_Fault();
+ 154:Processes.c   ****     uint16_t xstatus = MPGStatusQuery();
+ 155:Processes.c   ****     if(PrevStatus != xstatus)
+ 156:Processes.c   ****     {
+ 157:Processes.c   ****         // blink the LED
+ 158:Processes.c   ****         startDoubleBlink();
+ 159:Processes.c   ****         PrevStatus = xstatus; 
+ 160:Processes.c   ****         MPG_Set_Delay(25, &MPG_Normal);
+ 161:Processes.c   ****         
+ 162:Processes.c   ****     } else if((xstatus & (1 << OFF_POS)) != 0)
+ 163:Processes.c   ****     {
+ 164:Processes.c   ****         MPG_SM = &MPG_IDLE;
+ 165:Processes.c   ****         startLongBlink();
+ 166:Processes.c   ****     }
+ 167:Processes.c   ****     if((xstatus & (1 << ESTOP_STATUS_POS)) != 0)
+ 168:Processes.c   ****     {
+ 169:Processes.c   ****         MPG_SM = &MPG_ESTOP;
+ 170:Processes.c   ****         startFastBlink();
+ 171:Processes.c   ****     }
+ 172:Processes.c   **** }
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 5
+
+
+ 173:Processes.c   **** 
+ 174:Processes.c   **** void MPG_ESTOP(void)
+ 175:Processes.c   **** {
+ 176:Processes.c   ****     MPG_STATE = MPG_STATE_ESTOP;
+ 177:Processes.c   ****     uint16 status = MPGStatusQuery();
+ 178:Processes.c   ****     if((status & (1 << ESTOP_STATUS_POS)) == 0)
+ 179:Processes.c   ****     {
+ 180:Processes.c   ****         MPG_SM = &MPG_IDLE;
+ 181:Processes.c   ****         startLongBlink();
+ 182:Processes.c   ****     }
+ 183:Processes.c   **** }
+ 184:Processes.c   **** 
+ 185:Processes.c   **** void MPG_Fault(void)
+ 186:Processes.c   **** {
+ 187:Processes.c   ****     MPG_STATE = MPG_STATE_FAULT;
+ 188:Processes.c   ****     // Fault!
+ 189:Processes.c   ****     // the way out of a fault is to get a status query message
+ 190:Processes.c   ****     if((MS_Time - StatusMSGTime) < FAULT_TIMEOUT)
+ 191:Processes.c   ****     {
+ 192:Processes.c   ****         MPG_SM =&MPG_IDLE;  // change the state back to idle
+ 193:Processes.c   ****         startLongBlink();
+ 194:Processes.c   ****     }
+ 195:Processes.c   **** }
+ 196:Processes.c   **** 
+ 197:Processes.c   **** void MPG_Test_Delay(void)
+ 198:Processes.c   **** {
+  57              		.loc 1 198 0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 0
+  60              		@ frame_needed = 0, uses_anonymous_args = 0
+  61              		@ link register save eliminated.
+ 199:Processes.c   ****     MPG_STATE = MPG_STATE_TEST;
+  62              		.loc 1 199 0
+  63 0000 0522     		movs	r2, #5
+  64 0002 074B     		ldr	r3, .L7
+  65 0004 1A70     		strb	r2, [r3]
+ 200:Processes.c   ****     
+ 201:Processes.c   ****     if((MS_Time - TC_DelayStart) > TC_Delay)
+  66              		.loc 1 201 0
+  67 0006 074B     		ldr	r3, .L7+4
+  68 0008 1B68     		ldr	r3, [r3]
+  69 000a 074A     		ldr	r2, .L7+8
+  70 000c 1168     		ldr	r1, [r2]
+  71 000e 5B1A     		subs	r3, r3, r1
+  72 0010 5268     		ldr	r2, [r2, #4]
+  73 0012 9342     		cmp	r3, r2
+  74 0014 03D9     		bls	.L5
+ 202:Processes.c   ****     {
+ 203:Processes.c   ****         // when done move state back to IDLE
+ 204:Processes.c   ****         MPG_SM = DlyNextState;    
+  75              		.loc 1 204 0
+  76 0016 054B     		ldr	r3, .L7+12
+  77 0018 1A68     		ldr	r2, [r3]
+  78 001a 054B     		ldr	r3, .L7+16
+  79 001c 1A60     		str	r2, [r3]
+  80              	.L5:
+  81 001e 7047     		bx	lr
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 6
+
+
+  82              	.L8:
+  83              		.align	2
+  84              	.L7:
+  85 0020 00000000 		.word	MPG_STATE
+  86 0024 00000000 		.word	MS_Time
+  87 0028 00000000 		.word	.LANCHOR0
+  88 002c 00000000 		.word	DlyNextState
+  89 0030 00000000 		.word	MPG_SM
+  90              		.cfi_endproc
+  91              	.LFE74:
+  92              		.size	MPG_Test_Delay, .-MPG_Test_Delay
+  93              		.section	.text.Blink_StateMachine,"ax",%progbits
+  94              		.align	2
+  95              		.global	Blink_StateMachine
+  96              		.thumb
+  97              		.thumb_func
+  98              		.type	Blink_StateMachine, %function
+  99              	Blink_StateMachine:
+ 100              	.LFB78:
+ 205:Processes.c   **** //        PutStr("Delay Done\n");
+ 206:Processes.c   ****     }
+ 207:Processes.c   **** }
+ 208:Processes.c   **** 
+ 209:Processes.c   **** void MPG_Set_Delay(uint32 delay, func_ptr NextState)
+ 210:Processes.c   **** {
+ 211:Processes.c   ****     TC_Delay = delay;
+ 212:Processes.c   ****     TC_DelayStart = MS_Time;
+ 213:Processes.c   ****     DlyNextState = NextState;
+ 214:Processes.c   ****     MPG_SM = &MPG_Test_Delay;
+ 215:Processes.c   **** }
+ 216:Processes.c   **** 
+ 217:Processes.c   **** 
+ 218:Processes.c   **** 
+ 219:Processes.c   **** void MPG_Status(void)
+ 220:Processes.c   **** {
+ 221:Processes.c   ****     switch(MPG_STATE)
+ 222:Processes.c   ****     {
+ 223:Processes.c   ****         case MPG_STATE_IDLE  : 
+ 224:Processes.c   ****             PutStr("MPG IDLE");
+ 225:Processes.c   ****             break;
+ 226:Processes.c   ****         case MPG_STATE_NORMAL :
+ 227:Processes.c   ****             PutStr("MPG Normal");
+ 228:Processes.c   ****             break;
+ 229:Processes.c   ****         case MPG_STATE_ESTOP :
+ 230:Processes.c   ****             PutStr("MPG ESTOP");
+ 231:Processes.c   ****             break;
+ 232:Processes.c   ****         case MPG_STATE_FAULT :
+ 233:Processes.c   ****             PutStr("MPG FAULT");
+ 234:Processes.c   ****             break;
+ 235:Processes.c   ****         default :
+ 236:Processes.c   ****             break;
+ 237:Processes.c   ****     }
+ 238:Processes.c   **** }
+ 239:Processes.c   **** 
+ 240:Processes.c   **** 
+ 241:Processes.c   **** // is there an existing fault condition? 1 = yes, 0 = no
+ 242:Processes.c   **** int In_Fault(void)
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 7
+
+
+ 243:Processes.c   **** {
+ 244:Processes.c   ****     // check for a fault
+ 245:Processes.c   ****     // fault is indicated by not getting a query message from the KFLOP for too long
+ 246:Processes.c   ****     if((MS_Time - StatusMSGTime) > FAULT_TIMEOUT)
+ 247:Processes.c   ****     {
+ 248:Processes.c   ****         MPG_SM = &MPG_Fault;
+ 249:Processes.c   ****         startLongShortBlink();
+ 250:Processes.c   ****         return 1;
+ 251:Processes.c   ****     }
+ 252:Processes.c   ****     else
+ 253:Processes.c   ****     {
+ 254:Processes.c   ****         return 0;   // no fault
+ 255:Processes.c   ****     }
+ 256:Processes.c   **** }
+ 257:Processes.c   **** 
+ 258:Processes.c   **** // LED Blink State Machine
+ 259:Processes.c   **** 
+ 260:Processes.c   **** void Blink_StateMachine(void)
+ 261:Processes.c   **** {
+ 101              		.loc 1 261 0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105 0000 08B5     		push	{r3, lr}
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 3, -8
+ 108              		.cfi_offset 14, -4
+ 262:Processes.c   ****     Blink_SM();
+ 109              		.loc 1 262 0
+ 110 0002 024B     		ldr	r3, .L11
+ 111 0004 1B68     		ldr	r3, [r3]
+ 112 0006 9847     		blx	r3
+ 113              	.LVL1:
+ 114 0008 08BD     		pop	{r3, pc}
+ 115              	.L12:
+ 116 000a 00BF     		.align	2
+ 117              	.L11:
+ 118 000c 00000000 		.word	Blink_SM
+ 119              		.cfi_endproc
+ 120              	.LFE78:
+ 121              		.size	Blink_StateMachine, .-Blink_StateMachine
+ 122              		.section	.text.SingleBlink,"ax",%progbits
+ 123              		.align	2
+ 124              		.global	SingleBlink
+ 125              		.thumb
+ 126              		.thumb_func
+ 127              		.type	SingleBlink, %function
+ 128              	SingleBlink:
+ 129              	.LFB80:
+ 263:Processes.c   **** }
+ 264:Processes.c   **** 
+ 265:Processes.c   **** static uint32 Blink_Timer;
+ 266:Processes.c   **** static uint32 BlinkCount;
+ 267:Processes.c   **** // LED Blink processes
+ 268:Processes.c   **** void startSingleBlink(void)
+ 269:Processes.c   **** {
+ 270:Processes.c   **** // add single blink to the MS process
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 8
+
+
+ 271:Processes.c   ****     Blink_SM = &SingleBlink;
+ 272:Processes.c   ****     Blink_Timer = MS_Time;
+ 273:Processes.c   ****     Pin_LED_Write(0); // LED off
+ 274:Processes.c   **** //    PutStr("LED Single\n");
+ 275:Processes.c   ****     
+ 276:Processes.c   **** }
+ 277:Processes.c   **** void SingleBlink(void)
+ 278:Processes.c   **** {
+ 130              		.loc 1 278 0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134              		@ link register save eliminated.
+ 279:Processes.c   ****     Blink_STATE = BLINK_STATE_SINGLE;
+ 135              		.loc 1 279 0
+ 136 0000 0222     		movs	r2, #2
+ 137 0002 064B     		ldr	r3, .L15
+ 138 0004 1A70     		strb	r2, [r3]
+ 280:Processes.c   ****     if((MS_Time - Blink_Timer) > SINGLE_BLINK_TIME)
+ 139              		.loc 1 280 0
+ 140 0006 064B     		ldr	r3, .L15+4
+ 141 0008 1B68     		ldr	r3, [r3]
+ 142 000a 064A     		ldr	r2, .L15+8
+ 143 000c 9268     		ldr	r2, [r2, #8]
+ 144 000e 9B1A     		subs	r3, r3, r2
+ 145 0010 962B     		cmp	r3, #150
+ 146 0012 02D9     		bls	.L13
+ 281:Processes.c   ****     {
+ 282:Processes.c   ****         Blink_SM = &NoBlink;
+ 147              		.loc 1 282 0
+ 148 0014 044A     		ldr	r2, .L15+12
+ 149 0016 054B     		ldr	r3, .L15+16
+ 150 0018 1A60     		str	r2, [r3]
+ 151              	.L13:
+ 152 001a 7047     		bx	lr
+ 153              	.L16:
+ 154              		.align	2
+ 155              	.L15:
+ 156 001c 00000000 		.word	Blink_STATE
+ 157 0020 00000000 		.word	MS_Time
+ 158 0024 00000000 		.word	.LANCHOR0
+ 159 0028 00000000 		.word	NoBlink
+ 160 002c 00000000 		.word	Blink_SM
+ 161              		.cfi_endproc
+ 162              	.LFE80:
+ 163              		.size	SingleBlink, .-SingleBlink
+ 164              		.section	.text.NoBlink,"ax",%progbits
+ 165              		.align	2
+ 166              		.global	NoBlink
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.type	NoBlink, %function
+ 170              	NoBlink:
+ 171              	.LFB89:
+ 283:Processes.c   ****     }
+ 284:Processes.c   **** }
+ 285:Processes.c   **** 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 9
+
+
+ 286:Processes.c   **** void startDoubleBlink(void)
+ 287:Processes.c   **** {
+ 288:Processes.c   ****     Blink_Timer = MS_Time;
+ 289:Processes.c   ****     Blink_SM = &DoubleBlink;
+ 290:Processes.c   ****     Pin_LED_Write(0);   // LED off
+ 291:Processes.c   ****     BlinkCount = 1;     
+ 292:Processes.c   **** //    PutStr("LED Double\n");
+ 293:Processes.c   **** }
+ 294:Processes.c   **** 
+ 295:Processes.c   **** void DoubleBlink(void)
+ 296:Processes.c   **** {
+ 297:Processes.c   ****     Blink_STATE = BLINK_STATE_DOUBLE;
+ 298:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 299:Processes.c   ****     {
+ 300:Processes.c   ****         if((MS_Time - Blink_Timer) > SINGLE_BLINK_TIME)
+ 301:Processes.c   ****         {
+ 302:Processes.c   ****             Pin_LED_Write(1);
+ 303:Processes.c   ****             Blink_Timer = MS_Time;
+ 304:Processes.c   ****             if(BlinkCount-- == 0)
+ 305:Processes.c   ****             {
+ 306:Processes.c   ****                 Blink_SM = &NoBlink;
+ 307:Processes.c   ****             }            
+ 308:Processes.c   ****         }
+ 309:Processes.c   ****     }
+ 310:Processes.c   ****     else
+ 311:Processes.c   ****     {
+ 312:Processes.c   **** //        PrevStatus = MPGStatusQuery();
+ 313:Processes.c   ****         if((MS_Time - Blink_Timer) > SINGLE_BLINK_TIME)
+ 314:Processes.c   ****         {
+ 315:Processes.c   ****             Pin_LED_Write(0);
+ 316:Processes.c   ****             Blink_Timer = MS_Time;
+ 317:Processes.c   ****         }
+ 318:Processes.c   ****     }
+ 319:Processes.c   **** }
+ 320:Processes.c   **** 
+ 321:Processes.c   **** void startLongBlink(void)
+ 322:Processes.c   **** {
+ 323:Processes.c   ****     Blink_SM = &LongBlink;
+ 324:Processes.c   ****     Blink_Timer = MS_Time;
+ 325:Processes.c   ****     Pin_LED_Write(0);   // LED off
+ 326:Processes.c   **** //    PutStr("LED Long\n");
+ 327:Processes.c   **** }
+ 328:Processes.c   **** 
+ 329:Processes.c   **** void LongBlink(void)
+ 330:Processes.c   **** {
+ 331:Processes.c   ****     Blink_STATE = BLINK_STATE_LONG;
+ 332:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 333:Processes.c   ****     {
+ 334:Processes.c   ****         if((MS_Time - Blink_Timer) > LONG_BLINK_TIME)
+ 335:Processes.c   ****         {
+ 336:Processes.c   ****             Pin_LED_Write(1); 
+ 337:Processes.c   ****             Blink_Timer = MS_Time;
+ 338:Processes.c   ****         }
+ 339:Processes.c   ****     } else
+ 340:Processes.c   ****     {
+ 341:Processes.c   ****         if((MS_Time - Blink_Timer) > LONG_BLINK_TIME)
+ 342:Processes.c   ****         {
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 10
+
+
+ 343:Processes.c   ****             Pin_LED_Write(0);
+ 344:Processes.c   ****             Blink_Timer = MS_Time;
+ 345:Processes.c   ****         }
+ 346:Processes.c   ****     }
+ 347:Processes.c   **** }
+ 348:Processes.c   **** 
+ 349:Processes.c   **** void startLongShortBlink(void)
+ 350:Processes.c   **** {
+ 351:Processes.c   ****     Blink_SM = &LongShortBlink;
+ 352:Processes.c   ****     Blink_Timer = MS_Time;
+ 353:Processes.c   ****     Pin_LED_Write(0);   // LED off  
+ 354:Processes.c   **** //    PutStr("LED LongShort\n");
+ 355:Processes.c   **** }
+ 356:Processes.c   **** 
+ 357:Processes.c   **** 
+ 358:Processes.c   **** void LongShortBlink(void)
+ 359:Processes.c   **** {
+ 360:Processes.c   ****     Blink_STATE = BLINK_STATE_LONGSHORT;
+ 361:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 362:Processes.c   ****     {
+ 363:Processes.c   ****         if((MS_Time - Blink_Timer) > LONG_BLINK_TIME)
+ 364:Processes.c   ****         {
+ 365:Processes.c   ****             Pin_LED_Write(1); 
+ 366:Processes.c   ****             Blink_Timer = MS_Time;
+ 367:Processes.c   ****         }
+ 368:Processes.c   ****     } else
+ 369:Processes.c   ****     {
+ 370:Processes.c   ****         if((MS_Time - Blink_Timer) > FAST_BLINK_TIME)
+ 371:Processes.c   ****         {
+ 372:Processes.c   ****             Pin_LED_Write(0);
+ 373:Processes.c   ****             Blink_Timer = MS_Time;
+ 374:Processes.c   ****         }
+ 375:Processes.c   ****     }    
+ 376:Processes.c   **** }
+ 377:Processes.c   **** 
+ 378:Processes.c   **** void startFastBlink(void)
+ 379:Processes.c   **** {
+ 380:Processes.c   ****     Blink_SM = &FastBlink;
+ 381:Processes.c   ****     Blink_Timer = MS_Time;
+ 382:Processes.c   ****     Pin_LED_Write(0);   // LED off 
+ 383:Processes.c   ****  //   PutStr("LED Fast\n");
+ 384:Processes.c   **** }
+ 385:Processes.c   **** 
+ 386:Processes.c   **** void FastBlink(void)
+ 387:Processes.c   **** {
+ 388:Processes.c   ****     Blink_STATE = BLINK_STATE_FAST;
+ 389:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 390:Processes.c   ****     {
+ 391:Processes.c   ****         if((MS_Time - Blink_Timer) > FAST_BLINK_TIME)
+ 392:Processes.c   ****         {
+ 393:Processes.c   ****             Pin_LED_Write(1);
+ 394:Processes.c   ****             Blink_Timer = MS_Time;
+ 395:Processes.c   ****         }
+ 396:Processes.c   ****     } else
+ 397:Processes.c   ****     {
+ 398:Processes.c   ****         if((MS_Time - Blink_Timer) > FAST_BLINK_TIME)
+ 399:Processes.c   ****         {
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 11
+
+
+ 400:Processes.c   ****             Pin_LED_Write(0);
+ 401:Processes.c   ****             Blink_Timer = MS_Time;
+ 402:Processes.c   ****         }
+ 403:Processes.c   ****     }
+ 404:Processes.c   **** }
+ 405:Processes.c   **** 
+ 406:Processes.c   **** void NoBlink(void)
+ 407:Processes.c   **** {
+ 172              		.loc 1 407 0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176 0000 08B5     		push	{r3, lr}
+ 177              		.cfi_def_cfa_offset 8
+ 178              		.cfi_offset 3, -8
+ 179              		.cfi_offset 14, -4
+ 408:Processes.c   ****     Blink_STATE = BLINK_STATE_NO;
+ 180              		.loc 1 408 0
+ 181 0002 0120     		movs	r0, #1
+ 182 0004 024B     		ldr	r3, .L19
+ 183 0006 1870     		strb	r0, [r3]
+ 409:Processes.c   ****     Pin_LED_Write(1);
+ 184              		.loc 1 409 0
+ 185 0008 FFF7FEFF 		bl	Pin_LED_Write
+ 186              	.LVL2:
+ 187 000c 08BD     		pop	{r3, pc}
+ 188              	.L20:
+ 189 000e 00BF     		.align	2
+ 190              	.L19:
+ 191 0010 00000000 		.word	Blink_STATE
+ 192              		.cfi_endproc
+ 193              	.LFE89:
+ 194              		.size	NoBlink, .-NoBlink
+ 195              		.section	.text.DoubleBlink,"ax",%progbits
+ 196              		.align	2
+ 197              		.global	DoubleBlink
+ 198              		.thumb
+ 199              		.thumb_func
+ 200              		.type	DoubleBlink, %function
+ 201              	DoubleBlink:
+ 202              	.LFB82:
+ 296:Processes.c   ****     Blink_STATE = BLINK_STATE_DOUBLE;
+ 203              		.loc 1 296 0
+ 204              		.cfi_startproc
+ 205              		@ args = 0, pretend = 0, frame = 0
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207 0000 08B5     		push	{r3, lr}
+ 208              		.cfi_def_cfa_offset 8
+ 209              		.cfi_offset 3, -8
+ 210              		.cfi_offset 14, -4
+ 297:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 211              		.loc 1 297 0
+ 212 0002 0322     		movs	r2, #3
+ 213 0004 144B     		ldr	r3, .L25
+ 214 0006 1A70     		strb	r2, [r3]
+ 298:Processes.c   ****     {
+ 215              		.loc 1 298 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 12
+
+
+ 216 0008 FFF7FEFF 		bl	Pin_LED_Read
+ 217              	.LVL3:
+ 218 000c A8B9     		cbnz	r0, .L22
+ 300:Processes.c   ****         {
+ 219              		.loc 1 300 0
+ 220 000e 134B     		ldr	r3, .L25+4
+ 221 0010 1B68     		ldr	r3, [r3]
+ 222 0012 134A     		ldr	r2, .L25+8
+ 223 0014 9268     		ldr	r2, [r2, #8]
+ 224 0016 9B1A     		subs	r3, r3, r2
+ 225 0018 962B     		cmp	r3, #150
+ 226 001a 1CD9     		bls	.L21
+ 302:Processes.c   ****             Blink_Timer = MS_Time;
+ 227              		.loc 1 302 0
+ 228 001c 0120     		movs	r0, #1
+ 229 001e FFF7FEFF 		bl	Pin_LED_Write
+ 230              	.LVL4:
+ 303:Processes.c   ****             if(BlinkCount-- == 0)
+ 231              		.loc 1 303 0
+ 232 0022 0E4B     		ldr	r3, .L25+4
+ 233 0024 1A68     		ldr	r2, [r3]
+ 234 0026 0E4B     		ldr	r3, .L25+8
+ 235 0028 9A60     		str	r2, [r3, #8]
+ 304:Processes.c   ****             {
+ 236              		.loc 1 304 0
+ 237 002a DA68     		ldr	r2, [r3, #12]
+ 238 002c 511E     		subs	r1, r2, #1
+ 239 002e D960     		str	r1, [r3, #12]
+ 240 0030 8AB9     		cbnz	r2, .L21
+ 306:Processes.c   ****             }            
+ 241              		.loc 1 306 0
+ 242 0032 0C4A     		ldr	r2, .L25+12
+ 243 0034 0C4B     		ldr	r3, .L25+16
+ 244 0036 1A60     		str	r2, [r3]
+ 245 0038 08BD     		pop	{r3, pc}
+ 246              	.L22:
+ 313:Processes.c   ****         {
+ 247              		.loc 1 313 0
+ 248 003a 084B     		ldr	r3, .L25+4
+ 249 003c 1B68     		ldr	r3, [r3]
+ 250 003e 084A     		ldr	r2, .L25+8
+ 251 0040 9268     		ldr	r2, [r2, #8]
+ 252 0042 9B1A     		subs	r3, r3, r2
+ 253 0044 962B     		cmp	r3, #150
+ 254 0046 06D9     		bls	.L21
+ 315:Processes.c   ****             Blink_Timer = MS_Time;
+ 255              		.loc 1 315 0
+ 256 0048 0020     		movs	r0, #0
+ 257 004a FFF7FEFF 		bl	Pin_LED_Write
+ 258              	.LVL5:
+ 316:Processes.c   ****         }
+ 259              		.loc 1 316 0
+ 260 004e 034B     		ldr	r3, .L25+4
+ 261 0050 1A68     		ldr	r2, [r3]
+ 262 0052 034B     		ldr	r3, .L25+8
+ 263 0054 9A60     		str	r2, [r3, #8]
+ 264              	.L21:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 13
+
+
+ 265 0056 08BD     		pop	{r3, pc}
+ 266              	.L26:
+ 267              		.align	2
+ 268              	.L25:
+ 269 0058 00000000 		.word	Blink_STATE
+ 270 005c 00000000 		.word	MS_Time
+ 271 0060 00000000 		.word	.LANCHOR0
+ 272 0064 00000000 		.word	NoBlink
+ 273 0068 00000000 		.word	Blink_SM
+ 274              		.cfi_endproc
+ 275              	.LFE82:
+ 276              		.size	DoubleBlink, .-DoubleBlink
+ 277              		.section	.text.LongBlink,"ax",%progbits
+ 278              		.align	2
+ 279              		.global	LongBlink
+ 280              		.thumb
+ 281              		.thumb_func
+ 282              		.type	LongBlink, %function
+ 283              	LongBlink:
+ 284              	.LFB84:
+ 330:Processes.c   ****     Blink_STATE = BLINK_STATE_LONG;
+ 285              		.loc 1 330 0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 0
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289 0000 08B5     		push	{r3, lr}
+ 290              		.cfi_def_cfa_offset 8
+ 291              		.cfi_offset 3, -8
+ 292              		.cfi_offset 14, -4
+ 331:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 293              		.loc 1 331 0
+ 294 0002 0422     		movs	r2, #4
+ 295 0004 134B     		ldr	r3, .L31
+ 296 0006 1A70     		strb	r2, [r3]
+ 332:Processes.c   ****     {
+ 297              		.loc 1 332 0
+ 298 0008 FFF7FEFF 		bl	Pin_LED_Read
+ 299              	.LVL6:
+ 300 000c 80B9     		cbnz	r0, .L28
+ 334:Processes.c   ****         {
+ 301              		.loc 1 334 0
+ 302 000e 124B     		ldr	r3, .L31+4
+ 303 0010 1B68     		ldr	r3, [r3]
+ 304 0012 124A     		ldr	r2, .L31+8
+ 305 0014 9268     		ldr	r2, [r2, #8]
+ 306 0016 9B1A     		subs	r3, r3, r2
+ 307 0018 40F2B632 		movw	r2, #950
+ 308 001c 9342     		cmp	r3, r2
+ 309 001e 17D9     		bls	.L27
+ 336:Processes.c   ****             Blink_Timer = MS_Time;
+ 310              		.loc 1 336 0
+ 311 0020 0120     		movs	r0, #1
+ 312 0022 FFF7FEFF 		bl	Pin_LED_Write
+ 313              	.LVL7:
+ 337:Processes.c   ****         }
+ 314              		.loc 1 337 0
+ 315 0026 0C4B     		ldr	r3, .L31+4
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 14
+
+
+ 316 0028 1A68     		ldr	r2, [r3]
+ 317 002a 0C4B     		ldr	r3, .L31+8
+ 318 002c 9A60     		str	r2, [r3, #8]
+ 319 002e 08BD     		pop	{r3, pc}
+ 320              	.L28:
+ 341:Processes.c   ****         {
+ 321              		.loc 1 341 0
+ 322 0030 094B     		ldr	r3, .L31+4
+ 323 0032 1B68     		ldr	r3, [r3]
+ 324 0034 094A     		ldr	r2, .L31+8
+ 325 0036 9268     		ldr	r2, [r2, #8]
+ 326 0038 9B1A     		subs	r3, r3, r2
+ 327 003a 40F2B632 		movw	r2, #950
+ 328 003e 9342     		cmp	r3, r2
+ 329 0040 06D9     		bls	.L27
+ 343:Processes.c   ****             Blink_Timer = MS_Time;
+ 330              		.loc 1 343 0
+ 331 0042 0020     		movs	r0, #0
+ 332 0044 FFF7FEFF 		bl	Pin_LED_Write
+ 333              	.LVL8:
+ 344:Processes.c   ****         }
+ 334              		.loc 1 344 0
+ 335 0048 034B     		ldr	r3, .L31+4
+ 336 004a 1A68     		ldr	r2, [r3]
+ 337 004c 034B     		ldr	r3, .L31+8
+ 338 004e 9A60     		str	r2, [r3, #8]
+ 339              	.L27:
+ 340 0050 08BD     		pop	{r3, pc}
+ 341              	.L32:
+ 342 0052 00BF     		.align	2
+ 343              	.L31:
+ 344 0054 00000000 		.word	Blink_STATE
+ 345 0058 00000000 		.word	MS_Time
+ 346 005c 00000000 		.word	.LANCHOR0
+ 347              		.cfi_endproc
+ 348              	.LFE84:
+ 349              		.size	LongBlink, .-LongBlink
+ 350              		.section	.text.LongShortBlink,"ax",%progbits
+ 351              		.align	2
+ 352              		.global	LongShortBlink
+ 353              		.thumb
+ 354              		.thumb_func
+ 355              		.type	LongShortBlink, %function
+ 356              	LongShortBlink:
+ 357              	.LFB86:
+ 359:Processes.c   ****     Blink_STATE = BLINK_STATE_LONGSHORT;
+ 358              		.loc 1 359 0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 0
+ 361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 362 0000 08B5     		push	{r3, lr}
+ 363              		.cfi_def_cfa_offset 8
+ 364              		.cfi_offset 3, -8
+ 365              		.cfi_offset 14, -4
+ 360:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 366              		.loc 1 360 0
+ 367 0002 0522     		movs	r2, #5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 15
+
+
+ 368 0004 124B     		ldr	r3, .L37
+ 369 0006 1A70     		strb	r2, [r3]
+ 361:Processes.c   ****     {
+ 370              		.loc 1 361 0
+ 371 0008 FFF7FEFF 		bl	Pin_LED_Read
+ 372              	.LVL9:
+ 373 000c 80B9     		cbnz	r0, .L34
+ 363:Processes.c   ****         {
+ 374              		.loc 1 363 0
+ 375 000e 114B     		ldr	r3, .L37+4
+ 376 0010 1B68     		ldr	r3, [r3]
+ 377 0012 114A     		ldr	r2, .L37+8
+ 378 0014 9268     		ldr	r2, [r2, #8]
+ 379 0016 9B1A     		subs	r3, r3, r2
+ 380 0018 40F2B632 		movw	r2, #950
+ 381 001c 9342     		cmp	r3, r2
+ 382 001e 15D9     		bls	.L33
+ 365:Processes.c   ****             Blink_Timer = MS_Time;
+ 383              		.loc 1 365 0
+ 384 0020 0120     		movs	r0, #1
+ 385 0022 FFF7FEFF 		bl	Pin_LED_Write
+ 386              	.LVL10:
+ 366:Processes.c   ****         }
+ 387              		.loc 1 366 0
+ 388 0026 0B4B     		ldr	r3, .L37+4
+ 389 0028 1A68     		ldr	r2, [r3]
+ 390 002a 0B4B     		ldr	r3, .L37+8
+ 391 002c 9A60     		str	r2, [r3, #8]
+ 392 002e 08BD     		pop	{r3, pc}
+ 393              	.L34:
+ 370:Processes.c   ****         {
+ 394              		.loc 1 370 0
+ 395 0030 084B     		ldr	r3, .L37+4
+ 396 0032 1B68     		ldr	r3, [r3]
+ 397 0034 084A     		ldr	r2, .L37+8
+ 398 0036 9268     		ldr	r2, [r2, #8]
+ 399 0038 9B1A     		subs	r3, r3, r2
+ 400 003a 642B     		cmp	r3, #100
+ 401 003c 06D9     		bls	.L33
+ 372:Processes.c   ****             Blink_Timer = MS_Time;
+ 402              		.loc 1 372 0
+ 403 003e 0020     		movs	r0, #0
+ 404 0040 FFF7FEFF 		bl	Pin_LED_Write
+ 405              	.LVL11:
+ 373:Processes.c   ****         }
+ 406              		.loc 1 373 0
+ 407 0044 034B     		ldr	r3, .L37+4
+ 408 0046 1A68     		ldr	r2, [r3]
+ 409 0048 034B     		ldr	r3, .L37+8
+ 410 004a 9A60     		str	r2, [r3, #8]
+ 411              	.L33:
+ 412 004c 08BD     		pop	{r3, pc}
+ 413              	.L38:
+ 414 004e 00BF     		.align	2
+ 415              	.L37:
+ 416 0050 00000000 		.word	Blink_STATE
+ 417 0054 00000000 		.word	MS_Time
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 16
+
+
+ 418 0058 00000000 		.word	.LANCHOR0
+ 419              		.cfi_endproc
+ 420              	.LFE86:
+ 421              		.size	LongShortBlink, .-LongShortBlink
+ 422              		.section	.text.FastBlink,"ax",%progbits
+ 423              		.align	2
+ 424              		.global	FastBlink
+ 425              		.thumb
+ 426              		.thumb_func
+ 427              		.type	FastBlink, %function
+ 428              	FastBlink:
+ 429              	.LFB88:
+ 387:Processes.c   ****     Blink_STATE = BLINK_STATE_FAST;
+ 430              		.loc 1 387 0
+ 431              		.cfi_startproc
+ 432              		@ args = 0, pretend = 0, frame = 0
+ 433              		@ frame_needed = 0, uses_anonymous_args = 0
+ 434 0000 08B5     		push	{r3, lr}
+ 435              		.cfi_def_cfa_offset 8
+ 436              		.cfi_offset 3, -8
+ 437              		.cfi_offset 14, -4
+ 388:Processes.c   ****     if(Pin_LED_Read() == 0)
+ 438              		.loc 1 388 0
+ 439 0002 0622     		movs	r2, #6
+ 440 0004 114B     		ldr	r3, .L43
+ 441 0006 1A70     		strb	r2, [r3]
+ 389:Processes.c   ****     {
+ 442              		.loc 1 389 0
+ 443 0008 FFF7FEFF 		bl	Pin_LED_Read
+ 444              	.LVL12:
+ 445 000c 70B9     		cbnz	r0, .L40
+ 391:Processes.c   ****         {
+ 446              		.loc 1 391 0
+ 447 000e 104B     		ldr	r3, .L43+4
+ 448 0010 1B68     		ldr	r3, [r3]
+ 449 0012 104A     		ldr	r2, .L43+8
+ 450 0014 9268     		ldr	r2, [r2, #8]
+ 451 0016 9B1A     		subs	r3, r3, r2
+ 452 0018 642B     		cmp	r3, #100
+ 453 001a 15D9     		bls	.L39
+ 393:Processes.c   ****             Blink_Timer = MS_Time;
+ 454              		.loc 1 393 0
+ 455 001c 0120     		movs	r0, #1
+ 456 001e FFF7FEFF 		bl	Pin_LED_Write
+ 457              	.LVL13:
+ 394:Processes.c   ****         }
+ 458              		.loc 1 394 0
+ 459 0022 0B4B     		ldr	r3, .L43+4
+ 460 0024 1A68     		ldr	r2, [r3]
+ 461 0026 0B4B     		ldr	r3, .L43+8
+ 462 0028 9A60     		str	r2, [r3, #8]
+ 463 002a 08BD     		pop	{r3, pc}
+ 464              	.L40:
+ 398:Processes.c   ****         {
+ 465              		.loc 1 398 0
+ 466 002c 084B     		ldr	r3, .L43+4
+ 467 002e 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 17
+
+
+ 468 0030 084A     		ldr	r2, .L43+8
+ 469 0032 9268     		ldr	r2, [r2, #8]
+ 470 0034 9B1A     		subs	r3, r3, r2
+ 471 0036 642B     		cmp	r3, #100
+ 472 0038 06D9     		bls	.L39
+ 400:Processes.c   ****             Blink_Timer = MS_Time;
+ 473              		.loc 1 400 0
+ 474 003a 0020     		movs	r0, #0
+ 475 003c FFF7FEFF 		bl	Pin_LED_Write
+ 476              	.LVL14:
+ 401:Processes.c   ****         }
+ 477              		.loc 1 401 0
+ 478 0040 034B     		ldr	r3, .L43+4
+ 479 0042 1A68     		ldr	r2, [r3]
+ 480 0044 034B     		ldr	r3, .L43+8
+ 481 0046 9A60     		str	r2, [r3, #8]
+ 482              	.L39:
+ 483 0048 08BD     		pop	{r3, pc}
+ 484              	.L44:
+ 485 004a 00BF     		.align	2
+ 486              	.L43:
+ 487 004c 00000000 		.word	Blink_STATE
+ 488 0050 00000000 		.word	MS_Time
+ 489 0054 00000000 		.word	.LANCHOR0
+ 490              		.cfi_endproc
+ 491              	.LFE88:
+ 492              		.size	FastBlink, .-FastBlink
+ 493              		.section	.text.InitCountProcess,"ax",%progbits
+ 494              		.align	2
+ 495              		.global	InitCountProcess
+ 496              		.thumb
+ 497              		.thumb_func
+ 498              		.type	InitCountProcess, %function
+ 499              	InitCountProcess:
+ 500              	.LFB64:
+  48:Processes.c   ****     C_Count = 0;
+ 501              		.loc 1 48 0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 0
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 505              		@ link register save eliminated.
+  49:Processes.c   ****     SecCount = 1000;
+ 506              		.loc 1 49 0
+ 507 0000 034B     		ldr	r3, .L46
+ 508 0002 0022     		movs	r2, #0
+ 509 0004 1A82     		strh	r2, [r3, #16]	@ movhi
+  50:Processes.c   **** }
+ 510              		.loc 1 50 0
+ 511 0006 4FF47A72 		mov	r2, #1000
+ 512 000a 5A82     		strh	r2, [r3, #18]	@ movhi
+ 513 000c 7047     		bx	lr
+ 514              	.L47:
+ 515 000e 00BF     		.align	2
+ 516              	.L46:
+ 517 0010 00000000 		.word	.LANCHOR0
+ 518              		.cfi_endproc
+ 519              	.LFE64:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 18
+
+
+ 520              		.size	InitCountProcess, .-InitCountProcess
+ 521              		.section	.text.CountProcess,"ax",%progbits
+ 522              		.align	2
+ 523              		.global	CountProcess
+ 524              		.thumb
+ 525              		.thumb_func
+ 526              		.type	CountProcess, %function
+ 527              	CountProcess:
+ 528              	.LFB65:
+  53:Processes.c   ****     char msg[20];
+ 529              		.loc 1 53 0
+ 530              		.cfi_startproc
+ 531              		@ args = 0, pretend = 0, frame = 24
+ 532              		@ frame_needed = 0, uses_anonymous_args = 0
+  55:Processes.c   ****     {
+ 533              		.loc 1 55 0
+ 534 0000 0C4A     		ldr	r2, .L52
+ 535 0002 538A     		ldrh	r3, [r2, #18]
+ 536 0004 013B     		subs	r3, r3, #1
+ 537 0006 9BB2     		uxth	r3, r3
+ 538 0008 5382     		strh	r3, [r2, #18]	@ movhi
+ 539 000a 93B9     		cbnz	r3, .L51
+  53:Processes.c   ****     char msg[20];
+ 540              		.loc 1 53 0
+ 541 000c 00B5     		push	{lr}
+ 542              		.cfi_def_cfa_offset 4
+ 543              		.cfi_offset 14, -4
+ 544 000e 87B0     		sub	sp, sp, #28
+ 545              		.cfi_def_cfa_offset 32
+  57:Processes.c   ****         sprintf(msg, "Count = %d\r", C_Count++);
+ 546              		.loc 1 57 0
+ 547 0010 1346     		mov	r3, r2
+ 548 0012 4FF47A72 		mov	r2, #1000
+ 549 0016 5A82     		strh	r2, [r3, #18]	@ movhi
+  58:Processes.c   ****         PutStr(msg);
+ 550              		.loc 1 58 0
+ 551 0018 1A8A     		ldrh	r2, [r3, #16]
+ 552 001a 511C     		adds	r1, r2, #1
+ 553 001c 1982     		strh	r1, [r3, #16]	@ movhi
+ 554 001e 0649     		ldr	r1, .L52+4
+ 555 0020 01A8     		add	r0, sp, #4
+ 556 0022 FFF7FEFF 		bl	sprintf
+ 557              	.LVL15:
+  59:Processes.c   **** //        Pin_LED_Write(~(Pin_LED_Read()));    // toggle the LED
+ 558              		.loc 1 59 0
+ 559 0026 01A8     		add	r0, sp, #4
+ 560 0028 FFF7FEFF 		bl	USB_PutString
+ 561              	.LVL16:
+  62:Processes.c   **** 
+ 562              		.loc 1 62 0
+ 563 002c 07B0     		add	sp, sp, #28
+ 564              		.cfi_def_cfa_offset 4
+ 565              		@ sp needed
+ 566 002e 5DF804FB 		ldr	pc, [sp], #4
+ 567              	.L51:
+ 568              		.cfi_def_cfa_offset 0
+ 569              		.cfi_restore 14
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 19
+
+
+ 570 0032 7047     		bx	lr
+ 571              	.L53:
+ 572              		.align	2
+ 573              	.L52:
+ 574 0034 00000000 		.word	.LANCHOR0
+ 575 0038 00000000 		.word	.LC0
+ 576              		.cfi_endproc
+ 577              	.LFE65:
+ 578              		.size	CountProcess, .-CountProcess
+ 579              		.section	.text.InitAlphaProcess,"ax",%progbits
+ 580              		.align	2
+ 581              		.global	InitAlphaProcess
+ 582              		.thumb
+ 583              		.thumb_func
+ 584              		.type	InitAlphaProcess, %function
+ 585              	InitAlphaProcess:
+ 586              	.LFB66:
+  68:Processes.c   ****     A_Count = 0;
+ 587              		.loc 1 68 0
+ 588              		.cfi_startproc
+ 589              		@ args = 0, pretend = 0, frame = 0
+ 590              		@ frame_needed = 0, uses_anonymous_args = 0
+ 591              		@ link register save eliminated.
+  69:Processes.c   ****     S_Count = 1000;
+ 592              		.loc 1 69 0
+ 593 0000 034B     		ldr	r3, .L55
+ 594 0002 0022     		movs	r2, #0
+ 595 0004 1A75     		strb	r2, [r3, #20]
+  70:Processes.c   **** }
+ 596              		.loc 1 70 0
+ 597 0006 4FF47A72 		mov	r2, #1000
+ 598 000a DA82     		strh	r2, [r3, #22]	@ movhi
+ 599 000c 7047     		bx	lr
+ 600              	.L56:
+ 601 000e 00BF     		.align	2
+ 602              	.L55:
+ 603 0010 00000000 		.word	.LANCHOR0
+ 604              		.cfi_endproc
+ 605              	.LFE66:
+ 606              		.size	InitAlphaProcess, .-InitAlphaProcess
+ 607              		.section	.text.AlphaProcess,"ax",%progbits
+ 608              		.align	2
+ 609              		.global	AlphaProcess
+ 610              		.thumb
+ 611              		.thumb_func
+ 612              		.type	AlphaProcess, %function
+ 613              	AlphaProcess:
+ 614              	.LFB67:
+  74:Processes.c   **** 
+ 615              		.loc 1 74 0
+ 616              		.cfi_startproc
+ 617              		@ args = 0, pretend = 0, frame = 24
+ 618              		@ frame_needed = 0, uses_anonymous_args = 0
+  77:Processes.c   ****     {
+ 619              		.loc 1 77 0
+ 620 0000 0F4A     		ldr	r2, .L61
+ 621 0002 D38A     		ldrh	r3, [r2, #22]
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 20
+
+
+ 622 0004 013B     		subs	r3, r3, #1
+ 623 0006 9BB2     		uxth	r3, r3
+ 624 0008 D382     		strh	r3, [r2, #22]	@ movhi
+ 625 000a BBB9     		cbnz	r3, .L60
+  74:Processes.c   **** 
+ 626              		.loc 1 74 0
+ 627 000c 10B5     		push	{r4, lr}
+ 628              		.cfi_def_cfa_offset 8
+ 629              		.cfi_offset 4, -8
+ 630              		.cfi_offset 14, -4
+ 631 000e 86B0     		sub	sp, sp, #24
+ 632              		.cfi_def_cfa_offset 32
+  79:Processes.c   ****         sprintf(msg, "Alpha = %c\r", (A_Count + 'A'));
+ 633              		.loc 1 79 0
+ 634 0010 1446     		mov	r4, r2
+ 635 0012 4FF47A73 		mov	r3, #1000
+ 636 0016 D382     		strh	r3, [r2, #22]	@ movhi
+  80:Processes.c   ****         PutStr(msg);
+ 637              		.loc 1 80 0
+ 638 0018 127D     		ldrb	r2, [r2, #20]	@ zero_extendqisi2
+ 639 001a 4132     		adds	r2, r2, #65
+ 640 001c 0949     		ldr	r1, .L61+4
+ 641 001e 01A8     		add	r0, sp, #4
+ 642 0020 FFF7FEFF 		bl	sprintf
+ 643              	.LVL17:
+  81:Processes.c   ****         if(A_Count++ > 56) A_Count = 0;
+ 644              		.loc 1 81 0
+ 645 0024 01A8     		add	r0, sp, #4
+ 646 0026 FFF7FEFF 		bl	USB_PutString
+ 647              	.LVL18:
+  82:Processes.c   **** //        Pin_LED_Write(~(Pin_LED_Read()));    // toggle the LED
+ 648              		.loc 1 82 0
+ 649 002a 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 650 002c 5A1C     		adds	r2, r3, #1
+ 651 002e 2275     		strb	r2, [r4, #20]
+ 652 0030 382B     		cmp	r3, #56
+ 653 0032 01D9     		bls	.L57
+  82:Processes.c   **** //        Pin_LED_Write(~(Pin_LED_Read()));    // toggle the LED
+ 654              		.loc 1 82 0 is_stmt 0 discriminator 1
+ 655 0034 0022     		movs	r2, #0
+ 656 0036 2275     		strb	r2, [r4, #20]
+ 657              	.L57:
+  85:Processes.c   **** 
+ 658              		.loc 1 85 0 is_stmt 1
+ 659 0038 06B0     		add	sp, sp, #24
+ 660              		.cfi_def_cfa_offset 8
+ 661              		@ sp needed
+ 662 003a 10BD     		pop	{r4, pc}
+ 663              	.L60:
+ 664              		.cfi_def_cfa_offset 0
+ 665              		.cfi_restore 4
+ 666              		.cfi_restore 14
+ 667 003c 7047     		bx	lr
+ 668              	.L62:
+ 669 003e 00BF     		.align	2
+ 670              	.L61:
+ 671 0040 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 21
+
+
+ 672 0044 0C000000 		.word	.LC1
+ 673              		.cfi_endproc
+ 674              	.LFE67:
+ 675              		.size	AlphaProcess, .-AlphaProcess
+ 676              		.section	.text.MPG_Set_Delay,"ax",%progbits
+ 677              		.align	2
+ 678              		.global	MPG_Set_Delay
+ 679              		.thumb
+ 680              		.thumb_func
+ 681              		.type	MPG_Set_Delay, %function
+ 682              	MPG_Set_Delay:
+ 683              	.LFB75:
+ 210:Processes.c   ****     TC_Delay = delay;
+ 684              		.loc 1 210 0
+ 685              		.cfi_startproc
+ 686              		@ args = 0, pretend = 0, frame = 0
+ 687              		@ frame_needed = 0, uses_anonymous_args = 0
+ 688              		@ link register save eliminated.
+ 689              	.LVL19:
+ 211:Processes.c   ****     TC_DelayStart = MS_Time;
+ 690              		.loc 1 211 0
+ 691 0000 054B     		ldr	r3, .L64
+ 692 0002 5860     		str	r0, [r3, #4]
+ 212:Processes.c   ****     DlyNextState = NextState;
+ 693              		.loc 1 212 0
+ 694 0004 054A     		ldr	r2, .L64+4
+ 695 0006 1268     		ldr	r2, [r2]
+ 696 0008 1A60     		str	r2, [r3]
+ 213:Processes.c   ****     MPG_SM = &MPG_Test_Delay;
+ 697              		.loc 1 213 0
+ 698 000a 054B     		ldr	r3, .L64+8
+ 699 000c 1960     		str	r1, [r3]
+ 214:Processes.c   **** }
+ 700              		.loc 1 214 0
+ 701 000e 054A     		ldr	r2, .L64+12
+ 702 0010 054B     		ldr	r3, .L64+16
+ 703 0012 1A60     		str	r2, [r3]
+ 704 0014 7047     		bx	lr
+ 705              	.L65:
+ 706 0016 00BF     		.align	2
+ 707              	.L64:
+ 708 0018 00000000 		.word	.LANCHOR0
+ 709 001c 00000000 		.word	MS_Time
+ 710 0020 00000000 		.word	DlyNextState
+ 711 0024 00000000 		.word	MPG_Test_Delay
+ 712 0028 00000000 		.word	MPG_SM
+ 713              		.cfi_endproc
+ 714              	.LFE75:
+ 715              		.size	MPG_Set_Delay, .-MPG_Set_Delay
+ 716              		.section	.text.MPG_Status,"ax",%progbits
+ 717              		.align	2
+ 718              		.global	MPG_Status
+ 719              		.thumb
+ 720              		.thumb_func
+ 721              		.type	MPG_Status, %function
+ 722              	MPG_Status:
+ 723              	.LFB76:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 22
+
+
+ 220:Processes.c   ****     switch(MPG_STATE)
+ 724              		.loc 1 220 0
+ 725              		.cfi_startproc
+ 726              		@ args = 0, pretend = 0, frame = 0
+ 727              		@ frame_needed = 0, uses_anonymous_args = 0
+ 728 0000 08B5     		push	{r3, lr}
+ 729              		.cfi_def_cfa_offset 8
+ 730              		.cfi_offset 3, -8
+ 731              		.cfi_offset 14, -4
+ 221:Processes.c   ****     {
+ 732              		.loc 1 221 0
+ 733 0002 0C4B     		ldr	r3, .L74
+ 734 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 735 0006 013B     		subs	r3, r3, #1
+ 736 0008 032B     		cmp	r3, #3
+ 737 000a 12D8     		bhi	.L66
+ 738 000c DFE803F0 		tbb	[pc, r3]
+ 739              	.L69:
+ 740 0010 02       		.byte	(.L68-.L69)/2
+ 741 0011 06       		.byte	(.L70-.L69)/2
+ 742 0012 0A       		.byte	(.L71-.L69)/2
+ 743 0013 0E       		.byte	(.L72-.L69)/2
+ 744              		.p2align 1
+ 745              	.L68:
+ 224:Processes.c   ****             break;
+ 746              		.loc 1 224 0
+ 747 0014 0848     		ldr	r0, .L74+4
+ 748 0016 FFF7FEFF 		bl	USB_PutString
+ 749              	.LVL20:
+ 225:Processes.c   ****         case MPG_STATE_NORMAL :
+ 750              		.loc 1 225 0
+ 751 001a 08BD     		pop	{r3, pc}
+ 752              	.L70:
+ 227:Processes.c   ****             break;
+ 753              		.loc 1 227 0
+ 754 001c 0748     		ldr	r0, .L74+8
+ 755 001e FFF7FEFF 		bl	USB_PutString
+ 756              	.LVL21:
+ 228:Processes.c   ****         case MPG_STATE_ESTOP :
+ 757              		.loc 1 228 0
+ 758 0022 08BD     		pop	{r3, pc}
+ 759              	.L71:
+ 230:Processes.c   ****             break;
+ 760              		.loc 1 230 0
+ 761 0024 0648     		ldr	r0, .L74+12
+ 762 0026 FFF7FEFF 		bl	USB_PutString
+ 763              	.LVL22:
+ 231:Processes.c   ****         case MPG_STATE_FAULT :
+ 764              		.loc 1 231 0
+ 765 002a 08BD     		pop	{r3, pc}
+ 766              	.L72:
+ 233:Processes.c   ****             break;
+ 767              		.loc 1 233 0
+ 768 002c 0548     		ldr	r0, .L74+16
+ 769 002e FFF7FEFF 		bl	USB_PutString
+ 770              	.LVL23:
+ 771              	.L66:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 23
+
+
+ 772 0032 08BD     		pop	{r3, pc}
+ 773              	.L75:
+ 774              		.align	2
+ 775              	.L74:
+ 776 0034 00000000 		.word	MPG_STATE
+ 777 0038 18000000 		.word	.LC2
+ 778 003c 24000000 		.word	.LC3
+ 779 0040 30000000 		.word	.LC4
+ 780 0044 3C000000 		.word	.LC5
+ 781              		.cfi_endproc
+ 782              	.LFE76:
+ 783              		.size	MPG_Status, .-MPG_Status
+ 784              		.section	.text.startSingleBlink,"ax",%progbits
+ 785              		.align	2
+ 786              		.global	startSingleBlink
+ 787              		.thumb
+ 788              		.thumb_func
+ 789              		.type	startSingleBlink, %function
+ 790              	startSingleBlink:
+ 791              	.LFB79:
+ 269:Processes.c   **** // add single blink to the MS process
+ 792              		.loc 1 269 0
+ 793              		.cfi_startproc
+ 794              		@ args = 0, pretend = 0, frame = 0
+ 795              		@ frame_needed = 0, uses_anonymous_args = 0
+ 796 0000 08B5     		push	{r3, lr}
+ 797              		.cfi_def_cfa_offset 8
+ 798              		.cfi_offset 3, -8
+ 799              		.cfi_offset 14, -4
+ 271:Processes.c   ****     Blink_Timer = MS_Time;
+ 800              		.loc 1 271 0
+ 801 0002 054A     		ldr	r2, .L78
+ 802 0004 054B     		ldr	r3, .L78+4
+ 803 0006 1A60     		str	r2, [r3]
+ 272:Processes.c   ****     Pin_LED_Write(0); // LED off
+ 804              		.loc 1 272 0
+ 805 0008 054B     		ldr	r3, .L78+8
+ 806 000a 1A68     		ldr	r2, [r3]
+ 807 000c 054B     		ldr	r3, .L78+12
+ 808 000e 9A60     		str	r2, [r3, #8]
+ 273:Processes.c   **** //    PutStr("LED Single\n");
+ 809              		.loc 1 273 0
+ 810 0010 0020     		movs	r0, #0
+ 811 0012 FFF7FEFF 		bl	Pin_LED_Write
+ 812              	.LVL24:
+ 813 0016 08BD     		pop	{r3, pc}
+ 814              	.L79:
+ 815              		.align	2
+ 816              	.L78:
+ 817 0018 00000000 		.word	SingleBlink
+ 818 001c 00000000 		.word	Blink_SM
+ 819 0020 00000000 		.word	MS_Time
+ 820 0024 00000000 		.word	.LANCHOR0
+ 821              		.cfi_endproc
+ 822              	.LFE79:
+ 823              		.size	startSingleBlink, .-startSingleBlink
+ 824              		.section	.text.startDoubleBlink,"ax",%progbits
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 24
+
+
+ 825              		.align	2
+ 826              		.global	startDoubleBlink
+ 827              		.thumb
+ 828              		.thumb_func
+ 829              		.type	startDoubleBlink, %function
+ 830              	startDoubleBlink:
+ 831              	.LFB81:
+ 287:Processes.c   ****     Blink_Timer = MS_Time;
+ 832              		.loc 1 287 0
+ 833              		.cfi_startproc
+ 834              		@ args = 0, pretend = 0, frame = 0
+ 835              		@ frame_needed = 0, uses_anonymous_args = 0
+ 836 0000 10B5     		push	{r4, lr}
+ 837              		.cfi_def_cfa_offset 8
+ 838              		.cfi_offset 4, -8
+ 839              		.cfi_offset 14, -4
+ 288:Processes.c   ****     Blink_SM = &DoubleBlink;
+ 840              		.loc 1 288 0
+ 841 0002 064B     		ldr	r3, .L82
+ 842 0004 1B68     		ldr	r3, [r3]
+ 843 0006 064C     		ldr	r4, .L82+4
+ 844 0008 A360     		str	r3, [r4, #8]
+ 289:Processes.c   ****     Pin_LED_Write(0);   // LED off
+ 845              		.loc 1 289 0
+ 846 000a 064A     		ldr	r2, .L82+8
+ 847 000c 064B     		ldr	r3, .L82+12
+ 848 000e 1A60     		str	r2, [r3]
+ 290:Processes.c   ****     BlinkCount = 1;     
+ 849              		.loc 1 290 0
+ 850 0010 0020     		movs	r0, #0
+ 851 0012 FFF7FEFF 		bl	Pin_LED_Write
+ 852              	.LVL25:
+ 291:Processes.c   **** //    PutStr("LED Double\n");
+ 853              		.loc 1 291 0
+ 854 0016 0123     		movs	r3, #1
+ 855 0018 E360     		str	r3, [r4, #12]
+ 856 001a 10BD     		pop	{r4, pc}
+ 857              	.L83:
+ 858              		.align	2
+ 859              	.L82:
+ 860 001c 00000000 		.word	MS_Time
+ 861 0020 00000000 		.word	.LANCHOR0
+ 862 0024 00000000 		.word	DoubleBlink
+ 863 0028 00000000 		.word	Blink_SM
+ 864              		.cfi_endproc
+ 865              	.LFE81:
+ 866              		.size	startDoubleBlink, .-startDoubleBlink
+ 867              		.section	.text.startLongBlink,"ax",%progbits
+ 868              		.align	2
+ 869              		.global	startLongBlink
+ 870              		.thumb
+ 871              		.thumb_func
+ 872              		.type	startLongBlink, %function
+ 873              	startLongBlink:
+ 874              	.LFB83:
+ 322:Processes.c   ****     Blink_SM = &LongBlink;
+ 875              		.loc 1 322 0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 25
+
+
+ 876              		.cfi_startproc
+ 877              		@ args = 0, pretend = 0, frame = 0
+ 878              		@ frame_needed = 0, uses_anonymous_args = 0
+ 879 0000 08B5     		push	{r3, lr}
+ 880              		.cfi_def_cfa_offset 8
+ 881              		.cfi_offset 3, -8
+ 882              		.cfi_offset 14, -4
+ 323:Processes.c   ****     Blink_Timer = MS_Time;
+ 883              		.loc 1 323 0
+ 884 0002 054A     		ldr	r2, .L86
+ 885 0004 054B     		ldr	r3, .L86+4
+ 886 0006 1A60     		str	r2, [r3]
+ 324:Processes.c   ****     Pin_LED_Write(0);   // LED off
+ 887              		.loc 1 324 0
+ 888 0008 054B     		ldr	r3, .L86+8
+ 889 000a 1A68     		ldr	r2, [r3]
+ 890 000c 054B     		ldr	r3, .L86+12
+ 891 000e 9A60     		str	r2, [r3, #8]
+ 325:Processes.c   **** //    PutStr("LED Long\n");
+ 892              		.loc 1 325 0
+ 893 0010 0020     		movs	r0, #0
+ 894 0012 FFF7FEFF 		bl	Pin_LED_Write
+ 895              	.LVL26:
+ 896 0016 08BD     		pop	{r3, pc}
+ 897              	.L87:
+ 898              		.align	2
+ 899              	.L86:
+ 900 0018 00000000 		.word	LongBlink
+ 901 001c 00000000 		.word	Blink_SM
+ 902 0020 00000000 		.word	MS_Time
+ 903 0024 00000000 		.word	.LANCHOR0
+ 904              		.cfi_endproc
+ 905              	.LFE83:
+ 906              		.size	startLongBlink, .-startLongBlink
+ 907              		.section	.text.MPG_ESTOP,"ax",%progbits
+ 908              		.align	2
+ 909              		.global	MPG_ESTOP
+ 910              		.thumb
+ 911              		.thumb_func
+ 912              		.type	MPG_ESTOP, %function
+ 913              	MPG_ESTOP:
+ 914              	.LFB72:
+ 175:Processes.c   ****     MPG_STATE = MPG_STATE_ESTOP;
+ 915              		.loc 1 175 0
+ 916              		.cfi_startproc
+ 917              		@ args = 0, pretend = 0, frame = 0
+ 918              		@ frame_needed = 0, uses_anonymous_args = 0
+ 919 0000 08B5     		push	{r3, lr}
+ 920              		.cfi_def_cfa_offset 8
+ 921              		.cfi_offset 3, -8
+ 922              		.cfi_offset 14, -4
+ 176:Processes.c   ****     uint16 status = MPGStatusQuery();
+ 923              		.loc 1 176 0
+ 924 0002 0322     		movs	r2, #3
+ 925 0004 064B     		ldr	r3, .L91
+ 926 0006 1A70     		strb	r2, [r3]
+ 177:Processes.c   ****     if((status & (1 << ESTOP_STATUS_POS)) == 0)
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 26
+
+
+ 927              		.loc 1 177 0
+ 928 0008 FFF7FEFF 		bl	MPGStatusQuery
+ 929              	.LVL27:
+ 178:Processes.c   ****     {
+ 930              		.loc 1 178 0
+ 931 000c 00F40050 		and	r0, r0, #8192
+ 932              	.LVL28:
+ 933 0010 80B2     		uxth	r0, r0
+ 934 0012 20B9     		cbnz	r0, .L88
+ 180:Processes.c   ****         startLongBlink();
+ 935              		.loc 1 180 0
+ 936 0014 034A     		ldr	r2, .L91+4
+ 937 0016 044B     		ldr	r3, .L91+8
+ 938 0018 1A60     		str	r2, [r3]
+ 181:Processes.c   ****     }
+ 939              		.loc 1 181 0
+ 940 001a FFF7FEFF 		bl	startLongBlink
+ 941              	.LVL29:
+ 942              	.L88:
+ 943 001e 08BD     		pop	{r3, pc}
+ 944              	.L92:
+ 945              		.align	2
+ 946              	.L91:
+ 947 0020 00000000 		.word	MPG_STATE
+ 948 0024 00000000 		.word	MPG_IDLE
+ 949 0028 00000000 		.word	MPG_SM
+ 950              		.cfi_endproc
+ 951              	.LFE72:
+ 952              		.size	MPG_ESTOP, .-MPG_ESTOP
+ 953              		.section	.text.MPG_Fault,"ax",%progbits
+ 954              		.align	2
+ 955              		.global	MPG_Fault
+ 956              		.thumb
+ 957              		.thumb_func
+ 958              		.type	MPG_Fault, %function
+ 959              	MPG_Fault:
+ 960              	.LFB73:
+ 186:Processes.c   ****     MPG_STATE = MPG_STATE_FAULT;
+ 961              		.loc 1 186 0
+ 962              		.cfi_startproc
+ 963              		@ args = 0, pretend = 0, frame = 0
+ 964              		@ frame_needed = 0, uses_anonymous_args = 0
+ 965 0000 08B5     		push	{r3, lr}
+ 966              		.cfi_def_cfa_offset 8
+ 967              		.cfi_offset 3, -8
+ 968              		.cfi_offset 14, -4
+ 187:Processes.c   ****     // Fault!
+ 969              		.loc 1 187 0
+ 970 0002 0422     		movs	r2, #4
+ 971 0004 074B     		ldr	r3, .L96
+ 972 0006 1A70     		strb	r2, [r3]
+ 190:Processes.c   ****     {
+ 973              		.loc 1 190 0
+ 974 0008 074B     		ldr	r3, .L96+4
+ 975 000a 1B68     		ldr	r3, [r3]
+ 976 000c 074A     		ldr	r2, .L96+8
+ 977 000e 1268     		ldr	r2, [r2]
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 27
+
+
+ 978 0010 9B1A     		subs	r3, r3, r2
+ 979 0012 B3F52F7F 		cmp	r3, #700
+ 980 0016 04D2     		bcs	.L93
+ 192:Processes.c   ****         startLongBlink();
+ 981              		.loc 1 192 0
+ 982 0018 054A     		ldr	r2, .L96+12
+ 983 001a 064B     		ldr	r3, .L96+16
+ 984 001c 1A60     		str	r2, [r3]
+ 193:Processes.c   ****     }
+ 985              		.loc 1 193 0
+ 986 001e FFF7FEFF 		bl	startLongBlink
+ 987              	.LVL30:
+ 988              	.L93:
+ 989 0022 08BD     		pop	{r3, pc}
+ 990              	.L97:
+ 991              		.align	2
+ 992              	.L96:
+ 993 0024 00000000 		.word	MPG_STATE
+ 994 0028 00000000 		.word	MS_Time
+ 995 002c 00000000 		.word	StatusMSGTime
+ 996 0030 00000000 		.word	MPG_IDLE
+ 997 0034 00000000 		.word	MPG_SM
+ 998              		.cfi_endproc
+ 999              	.LFE73:
+ 1000              		.size	MPG_Fault, .-MPG_Fault
+ 1001              		.section	.text.startLongShortBlink,"ax",%progbits
+ 1002              		.align	2
+ 1003              		.global	startLongShortBlink
+ 1004              		.thumb
+ 1005              		.thumb_func
+ 1006              		.type	startLongShortBlink, %function
+ 1007              	startLongShortBlink:
+ 1008              	.LFB85:
+ 350:Processes.c   ****     Blink_SM = &LongShortBlink;
+ 1009              		.loc 1 350 0
+ 1010              		.cfi_startproc
+ 1011              		@ args = 0, pretend = 0, frame = 0
+ 1012              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1013 0000 08B5     		push	{r3, lr}
+ 1014              		.cfi_def_cfa_offset 8
+ 1015              		.cfi_offset 3, -8
+ 1016              		.cfi_offset 14, -4
+ 351:Processes.c   ****     Blink_Timer = MS_Time;
+ 1017              		.loc 1 351 0
+ 1018 0002 054A     		ldr	r2, .L100
+ 1019 0004 054B     		ldr	r3, .L100+4
+ 1020 0006 1A60     		str	r2, [r3]
+ 352:Processes.c   ****     Pin_LED_Write(0);   // LED off  
+ 1021              		.loc 1 352 0
+ 1022 0008 054B     		ldr	r3, .L100+8
+ 1023 000a 1A68     		ldr	r2, [r3]
+ 1024 000c 054B     		ldr	r3, .L100+12
+ 1025 000e 9A60     		str	r2, [r3, #8]
+ 353:Processes.c   **** //    PutStr("LED LongShort\n");
+ 1026              		.loc 1 353 0
+ 1027 0010 0020     		movs	r0, #0
+ 1028 0012 FFF7FEFF 		bl	Pin_LED_Write
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 28
+
+
+ 1029              	.LVL31:
+ 1030 0016 08BD     		pop	{r3, pc}
+ 1031              	.L101:
+ 1032              		.align	2
+ 1033              	.L100:
+ 1034 0018 00000000 		.word	LongShortBlink
+ 1035 001c 00000000 		.word	Blink_SM
+ 1036 0020 00000000 		.word	MS_Time
+ 1037 0024 00000000 		.word	.LANCHOR0
+ 1038              		.cfi_endproc
+ 1039              	.LFE85:
+ 1040              		.size	startLongShortBlink, .-startLongShortBlink
+ 1041              		.section	.text.Init_MPG_StateMachine,"ax",%progbits
+ 1042              		.align	2
+ 1043              		.global	Init_MPG_StateMachine
+ 1044              		.thumb
+ 1045              		.thumb_func
+ 1046              		.type	Init_MPG_StateMachine, %function
+ 1047              	Init_MPG_StateMachine:
+ 1048              	.LFB68:
+  95:Processes.c   ****     if(Process_Running(MsProcess, MPG_StateMachine))
+ 1049              		.loc 1 95 0
+ 1050              		.cfi_startproc
+ 1051              		@ args = 0, pretend = 0, frame = 0
+ 1052              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1053 0000 08B5     		push	{r3, lr}
+ 1054              		.cfi_def_cfa_offset 8
+ 1055              		.cfi_offset 3, -8
+ 1056              		.cfi_offset 14, -4
+  96:Processes.c   ****     {
+ 1057              		.loc 1 96 0
+ 1058 0002 1549     		ldr	r1, .L108
+ 1059 0004 1548     		ldr	r0, .L108+4
+ 1060 0006 FFF7FEFF 		bl	Process_Running
+ 1061              	.LVL32:
+ 1062 000a 18B1     		cbz	r0, .L103
+  98:Processes.c   ****     } else {
+ 1063              		.loc 1 98 0
+ 1064 000c 1448     		ldr	r0, .L108+8
+ 1065 000e FFF7FEFF 		bl	USB_PutString
+ 1066              	.LVL33:
+ 1067 0012 09E0     		b	.L104
+ 1068              	.L103:
+ 102:Processes.c   ****         PutStr("MPG State Machine Started");
+ 1069              		.loc 1 102 0
+ 1070 0014 1049     		ldr	r1, .L108
+ 1071 0016 1348     		ldr	r0, .L108+12
+ 1072 0018 FFF7FEFF 		bl	Add_Process
+ 1073              	.LVL34:
+ 103:Processes.c   ****         MPG_SM = &MPG_Fault;
+ 1074              		.loc 1 103 0
+ 1075 001c 1248     		ldr	r0, .L108+16
+ 1076 001e FFF7FEFF 		bl	USB_PutString
+ 1077              	.LVL35:
+ 104:Processes.c   ****     } 
+ 1078              		.loc 1 104 0
+ 1079 0022 124A     		ldr	r2, .L108+20
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 29
+
+
+ 1080 0024 124B     		ldr	r3, .L108+24
+ 1081 0026 1A60     		str	r2, [r3]
+ 1082              	.L104:
+ 106:Processes.c   ****     {
+ 1083              		.loc 1 106 0
+ 1084 0028 1249     		ldr	r1, .L108+28
+ 1085 002a 0C48     		ldr	r0, .L108+4
+ 1086 002c FFF7FEFF 		bl	Process_Running
+ 1087              	.LVL36:
+ 1088 0030 18B1     		cbz	r0, .L105
+ 108:Processes.c   ****     } 
+ 1089              		.loc 1 108 0
+ 1090 0032 1148     		ldr	r0, .L108+32
+ 1091 0034 FFF7FEFF 		bl	USB_PutString
+ 1092              	.LVL37:
+ 1093 0038 08E0     		b	.L106
+ 1094              	.L105:
+ 112:Processes.c   ****         PutStr("Blink State Machine Started");
+ 1095              		.loc 1 112 0
+ 1096 003a 0E49     		ldr	r1, .L108+28
+ 1097 003c 0748     		ldr	r0, .L108+4
+ 1098 003e FFF7FEFF 		bl	Add_Process
+ 1099              	.LVL38:
+ 113:Processes.c   ****         startLongShortBlink();
+ 1100              		.loc 1 113 0
+ 1101 0042 0E48     		ldr	r0, .L108+36
+ 1102 0044 FFF7FEFF 		bl	USB_PutString
+ 1103              	.LVL39:
+ 114:Processes.c   ****     }
+ 1104              		.loc 1 114 0
+ 1105 0048 FFF7FEFF 		bl	startLongShortBlink
+ 1106              	.LVL40:
+ 1107              	.L106:
+ 117:Processes.c   **** }
+ 1108              		.loc 1 117 0
+ 1109 004c FFF7FEFF 		bl	MPGStatusQuery
+ 1110              	.LVL41:
+ 1111 0050 0B4B     		ldr	r3, .L108+40
+ 1112 0052 1883     		strh	r0, [r3, #24]	@ movhi
+ 1113 0054 08BD     		pop	{r3, pc}
+ 1114              	.L109:
+ 1115 0056 00BF     		.align	2
+ 1116              	.L108:
+ 1117 0058 00000000 		.word	MPG_StateMachine
+ 1118 005c 00000000 		.word	MsProcess
+ 1119 0060 48000000 		.word	.LC6
+ 1120 0064 00000000 		.word	FastProcess
+ 1121 0068 6C000000 		.word	.LC7
+ 1122 006c 00000000 		.word	MPG_Fault
+ 1123 0070 00000000 		.word	MPG_SM
+ 1124 0074 00000000 		.word	Blink_StateMachine
+ 1125 0078 88000000 		.word	.LC8
+ 1126 007c A8000000 		.word	.LC9
+ 1127 0080 00000000 		.word	.LANCHOR0
+ 1128              		.cfi_endproc
+ 1129              	.LFE68:
+ 1130              		.size	Init_MPG_StateMachine, .-Init_MPG_StateMachine
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 30
+
+
+ 1131              		.section	.text.In_Fault,"ax",%progbits
+ 1132              		.align	2
+ 1133              		.global	In_Fault
+ 1134              		.thumb
+ 1135              		.thumb_func
+ 1136              		.type	In_Fault, %function
+ 1137              	In_Fault:
+ 1138              	.LFB77:
+ 243:Processes.c   ****     // check for a fault
+ 1139              		.loc 1 243 0
+ 1140              		.cfi_startproc
+ 1141              		@ args = 0, pretend = 0, frame = 0
+ 1142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1143 0000 08B5     		push	{r3, lr}
+ 1144              		.cfi_def_cfa_offset 8
+ 1145              		.cfi_offset 3, -8
+ 1146              		.cfi_offset 14, -4
+ 246:Processes.c   ****     {
+ 1147              		.loc 1 246 0
+ 1148 0002 084B     		ldr	r3, .L114
+ 1149 0004 1B68     		ldr	r3, [r3]
+ 1150 0006 084A     		ldr	r2, .L114+4
+ 1151 0008 1268     		ldr	r2, [r2]
+ 1152 000a 9B1A     		subs	r3, r3, r2
+ 1153 000c B3F52F7F 		cmp	r3, #700
+ 1154 0010 06D9     		bls	.L112
+ 248:Processes.c   ****         startLongShortBlink();
+ 1155              		.loc 1 248 0
+ 1156 0012 064A     		ldr	r2, .L114+8
+ 1157 0014 064B     		ldr	r3, .L114+12
+ 1158 0016 1A60     		str	r2, [r3]
+ 249:Processes.c   ****         return 1;
+ 1159              		.loc 1 249 0
+ 1160 0018 FFF7FEFF 		bl	startLongShortBlink
+ 1161              	.LVL42:
+ 250:Processes.c   ****     }
+ 1162              		.loc 1 250 0
+ 1163 001c 0120     		movs	r0, #1
+ 1164 001e 08BD     		pop	{r3, pc}
+ 1165              	.L112:
+ 254:Processes.c   ****     }
+ 1166              		.loc 1 254 0
+ 1167 0020 0020     		movs	r0, #0
+ 256:Processes.c   **** 
+ 1168              		.loc 1 256 0
+ 1169 0022 08BD     		pop	{r3, pc}
+ 1170              	.L115:
+ 1171              		.align	2
+ 1172              	.L114:
+ 1173 0024 00000000 		.word	MS_Time
+ 1174 0028 00000000 		.word	StatusMSGTime
+ 1175 002c 00000000 		.word	MPG_Fault
+ 1176 0030 00000000 		.word	MPG_SM
+ 1177              		.cfi_endproc
+ 1178              	.LFE77:
+ 1179              		.size	In_Fault, .-In_Fault
+ 1180              		.section	.text.startFastBlink,"ax",%progbits
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 31
+
+
+ 1181              		.align	2
+ 1182              		.global	startFastBlink
+ 1183              		.thumb
+ 1184              		.thumb_func
+ 1185              		.type	startFastBlink, %function
+ 1186              	startFastBlink:
+ 1187              	.LFB87:
+ 379:Processes.c   ****     Blink_SM = &FastBlink;
+ 1188              		.loc 1 379 0
+ 1189              		.cfi_startproc
+ 1190              		@ args = 0, pretend = 0, frame = 0
+ 1191              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1192 0000 08B5     		push	{r3, lr}
+ 1193              		.cfi_def_cfa_offset 8
+ 1194              		.cfi_offset 3, -8
+ 1195              		.cfi_offset 14, -4
+ 380:Processes.c   ****     Blink_Timer = MS_Time;
+ 1196              		.loc 1 380 0
+ 1197 0002 054A     		ldr	r2, .L118
+ 1198 0004 054B     		ldr	r3, .L118+4
+ 1199 0006 1A60     		str	r2, [r3]
+ 381:Processes.c   ****     Pin_LED_Write(0);   // LED off 
+ 1200              		.loc 1 381 0
+ 1201 0008 054B     		ldr	r3, .L118+8
+ 1202 000a 1A68     		ldr	r2, [r3]
+ 1203 000c 054B     		ldr	r3, .L118+12
+ 1204 000e 9A60     		str	r2, [r3, #8]
+ 382:Processes.c   ****  //   PutStr("LED Fast\n");
+ 1205              		.loc 1 382 0
+ 1206 0010 0020     		movs	r0, #0
+ 1207 0012 FFF7FEFF 		bl	Pin_LED_Write
+ 1208              	.LVL43:
+ 1209 0016 08BD     		pop	{r3, pc}
+ 1210              	.L119:
+ 1211              		.align	2
+ 1212              	.L118:
+ 1213 0018 00000000 		.word	FastBlink
+ 1214 001c 00000000 		.word	Blink_SM
+ 1215 0020 00000000 		.word	MS_Time
+ 1216 0024 00000000 		.word	.LANCHOR0
+ 1217              		.cfi_endproc
+ 1218              	.LFE87:
+ 1219              		.size	startFastBlink, .-startFastBlink
+ 1220              		.section	.text.MPG_IDLE,"ax",%progbits
+ 1221              		.align	2
+ 1222              		.global	MPG_IDLE
+ 1223              		.thumb
+ 1224              		.thumb_func
+ 1225              		.type	MPG_IDLE, %function
+ 1226              	MPG_IDLE:
+ 1227              	.LFB70:
+ 130:Processes.c   ****     MPG_STATE = MPG_STATE_IDLE;
+ 1228              		.loc 1 130 0
+ 1229              		.cfi_startproc
+ 1230              		@ args = 0, pretend = 0, frame = 0
+ 1231              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1232 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 32
+
+
+ 1233              		.cfi_def_cfa_offset 8
+ 1234              		.cfi_offset 3, -8
+ 1235              		.cfi_offset 14, -4
+ 131:Processes.c   ****     // waiting for a command to start a motion
+ 1236              		.loc 1 131 0
+ 1237 0002 0122     		movs	r2, #1
+ 1238 0004 0D4B     		ldr	r3, .L124
+ 1239 0006 1A70     		strb	r2, [r3]
+ 134:Processes.c   ****     // if status switch is not on OFF then switch to normal
+ 1240              		.loc 1 134 0
+ 1241 0008 FFF7FEFF 		bl	In_Fault
+ 1242              	.LVL44:
+ 137:Processes.c   ****     if((PrevStatus & (1 << OFF_POS)) == 0)  
+ 1243              		.loc 1 137 0
+ 1244 000c FFF7FEFF 		bl	MPGStatusQuery
+ 1245              	.LVL45:
+ 1246 0010 0B4B     		ldr	r3, .L124+4
+ 1247 0012 1883     		strh	r0, [r3, #24]	@ movhi
+ 138:Processes.c   ****     {
+ 1248              		.loc 1 138 0
+ 1249 0014 00F04003 		and	r3, r0, #64
+ 1250 0018 9BB2     		uxth	r3, r3
+ 1251 001a 2BB9     		cbnz	r3, .L121
+ 140:Processes.c   ****         Blink_SM = &NoBlink;
+ 1252              		.loc 1 140 0
+ 1253 001c 094A     		ldr	r2, .L124+8
+ 1254 001e 0A4B     		ldr	r3, .L124+12
+ 1255 0020 1A60     		str	r2, [r3]
+ 141:Processes.c   ****     }
+ 1256              		.loc 1 141 0
+ 1257 0022 0A4A     		ldr	r2, .L124+16
+ 1258 0024 0A4B     		ldr	r3, .L124+20
+ 1259 0026 1A60     		str	r2, [r3]
+ 1260              	.L121:
+ 143:Processes.c   ****     {
+ 1261              		.loc 1 143 0
+ 1262 0028 00F40050 		and	r0, r0, #8192
+ 1263 002c 80B2     		uxth	r0, r0
+ 1264 002e 20B1     		cbz	r0, .L120
+ 145:Processes.c   ****         startFastBlink();
+ 1265              		.loc 1 145 0
+ 1266 0030 084A     		ldr	r2, .L124+24
+ 1267 0032 054B     		ldr	r3, .L124+12
+ 1268 0034 1A60     		str	r2, [r3]
+ 146:Processes.c   ****     }
+ 1269              		.loc 1 146 0
+ 1270 0036 FFF7FEFF 		bl	startFastBlink
+ 1271              	.LVL46:
+ 1272              	.L120:
+ 1273 003a 08BD     		pop	{r3, pc}
+ 1274              	.L125:
+ 1275              		.align	2
+ 1276              	.L124:
+ 1277 003c 00000000 		.word	MPG_STATE
+ 1278 0040 00000000 		.word	.LANCHOR0
+ 1279 0044 00000000 		.word	MPG_Normal
+ 1280 0048 00000000 		.word	MPG_SM
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 33
+
+
+ 1281 004c 00000000 		.word	NoBlink
+ 1282 0050 00000000 		.word	Blink_SM
+ 1283 0054 00000000 		.word	MPG_ESTOP
+ 1284              		.cfi_endproc
+ 1285              	.LFE70:
+ 1286              		.size	MPG_IDLE, .-MPG_IDLE
+ 1287              		.section	.text.MPG_Normal,"ax",%progbits
+ 1288              		.align	2
+ 1289              		.global	MPG_Normal
+ 1290              		.thumb
+ 1291              		.thumb_func
+ 1292              		.type	MPG_Normal, %function
+ 1293              	MPG_Normal:
+ 1294              	.LFB71:
+ 151:Processes.c   ****     MPG_STATE = MPG_STATE_NORMAL;
+ 1295              		.loc 1 151 0
+ 1296              		.cfi_startproc
+ 1297              		@ args = 0, pretend = 0, frame = 0
+ 1298              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1299 0000 10B5     		push	{r4, lr}
+ 1300              		.cfi_def_cfa_offset 8
+ 1301              		.cfi_offset 4, -8
+ 1302              		.cfi_offset 14, -4
+ 152:Processes.c   ****     In_Fault();
+ 1303              		.loc 1 152 0
+ 1304 0002 0222     		movs	r2, #2
+ 1305 0004 134B     		ldr	r3, .L131
+ 1306 0006 1A70     		strb	r2, [r3]
+ 153:Processes.c   ****     uint16_t xstatus = MPGStatusQuery();
+ 1307              		.loc 1 153 0
+ 1308 0008 FFF7FEFF 		bl	In_Fault
+ 1309              	.LVL47:
+ 154:Processes.c   ****     if(PrevStatus != xstatus)
+ 1310              		.loc 1 154 0
+ 1311 000c FFF7FEFF 		bl	MPGStatusQuery
+ 1312              	.LVL48:
+ 1313 0010 0446     		mov	r4, r0
+ 1314              	.LVL49:
+ 155:Processes.c   ****     {
+ 1315              		.loc 1 155 0
+ 1316 0012 114B     		ldr	r3, .L131+4
+ 1317 0014 1B8B     		ldrh	r3, [r3, #24]
+ 1318 0016 9842     		cmp	r0, r3
+ 1319 0018 08D0     		beq	.L127
+ 158:Processes.c   ****         PrevStatus = xstatus; 
+ 1320              		.loc 1 158 0
+ 1321 001a FFF7FEFF 		bl	startDoubleBlink
+ 1322              	.LVL50:
+ 159:Processes.c   ****         MPG_Set_Delay(25, &MPG_Normal);
+ 1323              		.loc 1 159 0
+ 1324 001e 0E4B     		ldr	r3, .L131+4
+ 1325 0020 1C83     		strh	r4, [r3, #24]	@ movhi
+ 160:Processes.c   ****         
+ 1326              		.loc 1 160 0
+ 1327 0022 0E49     		ldr	r1, .L131+8
+ 1328 0024 1920     		movs	r0, #25
+ 1329 0026 FFF7FEFF 		bl	MPG_Set_Delay
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 34
+
+
+ 1330              	.LVL51:
+ 1331 002a 08E0     		b	.L128
+ 1332              	.LVL52:
+ 1333              	.L127:
+ 162:Processes.c   ****     {
+ 1334              		.loc 1 162 0
+ 1335 002c 00F04003 		and	r3, r0, #64
+ 1336 0030 9BB2     		uxth	r3, r3
+ 1337 0032 23B1     		cbz	r3, .L128
+ 164:Processes.c   ****         startLongBlink();
+ 1338              		.loc 1 164 0
+ 1339 0034 0A4A     		ldr	r2, .L131+12
+ 1340 0036 0B4B     		ldr	r3, .L131+16
+ 1341 0038 1A60     		str	r2, [r3]
+ 165:Processes.c   ****     }
+ 1342              		.loc 1 165 0
+ 1343 003a FFF7FEFF 		bl	startLongBlink
+ 1344              	.LVL53:
+ 1345              	.L128:
+ 167:Processes.c   ****     {
+ 1346              		.loc 1 167 0
+ 1347 003e 04F40054 		and	r4, r4, #8192
+ 1348 0042 A4B2     		uxth	r4, r4
+ 1349 0044 24B1     		cbz	r4, .L126
+ 169:Processes.c   ****         startFastBlink();
+ 1350              		.loc 1 169 0
+ 1351 0046 084A     		ldr	r2, .L131+20
+ 1352 0048 064B     		ldr	r3, .L131+16
+ 1353 004a 1A60     		str	r2, [r3]
+ 170:Processes.c   ****     }
+ 1354              		.loc 1 170 0
+ 1355 004c FFF7FEFF 		bl	startFastBlink
+ 1356              	.LVL54:
+ 1357              	.L126:
+ 1358 0050 10BD     		pop	{r4, pc}
+ 1359              	.L132:
+ 1360 0052 00BF     		.align	2
+ 1361              	.L131:
+ 1362 0054 00000000 		.word	MPG_STATE
+ 1363 0058 00000000 		.word	.LANCHOR0
+ 1364 005c 00000000 		.word	MPG_Normal
+ 1365 0060 00000000 		.word	MPG_IDLE
+ 1366 0064 00000000 		.word	MPG_SM
+ 1367 0068 00000000 		.word	MPG_ESTOP
+ 1368              		.cfi_endproc
+ 1369              	.LFE71:
+ 1370              		.size	MPG_Normal, .-MPG_Normal
+ 1371              		.comm	Carousel_Dir,1,1
+ 1372              		.comm	Target_Tool,1,1
+ 1373              		.comm	Current_Tool,1,1
+ 1374              		.comm	Blink_STATE,1,1
+ 1375              		.comm	Blink_SM,4,4
+ 1376              		.comm	DlyNextState,4,4
+ 1377              		.comm	MPG_STATE,1,1
+ 1378              		.comm	MPG_SM,4,4
+ 1379              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1380              		.align	2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 35
+
+
+ 1381              	.LC0:
+ 1382 0000 436F756E 		.ascii	"Count = %d\015\000"
+ 1382      74203D20 
+ 1382      25640D00 
+ 1383              	.LC1:
+ 1384 000c 416C7068 		.ascii	"Alpha = %c\015\000"
+ 1384      61203D20 
+ 1384      25630D00 
+ 1385              	.LC2:
+ 1386 0018 4D504720 		.ascii	"MPG IDLE\000"
+ 1386      49444C45 
+ 1386      00
+ 1387 0021 000000   		.space	3
+ 1388              	.LC3:
+ 1389 0024 4D504720 		.ascii	"MPG Normal\000"
+ 1389      4E6F726D 
+ 1389      616C00
+ 1390 002f 00       		.space	1
+ 1391              	.LC4:
+ 1392 0030 4D504720 		.ascii	"MPG ESTOP\000"
+ 1392      4553544F 
+ 1392      5000
+ 1393 003a 0000     		.space	2
+ 1394              	.LC5:
+ 1395 003c 4D504720 		.ascii	"MPG FAULT\000"
+ 1395      4641554C 
+ 1395      5400
+ 1396 0046 0000     		.space	2
+ 1397              	.LC6:
+ 1398 0048 53746174 		.ascii	"Status Process already running!\012\000"
+ 1398      75732050 
+ 1398      726F6365 
+ 1398      73732061 
+ 1398      6C726561 
+ 1399 0069 000000   		.space	3
+ 1400              	.LC7:
+ 1401 006c 4D504720 		.ascii	"MPG State Machine Started\000"
+ 1401      53746174 
+ 1401      65204D61 
+ 1401      6368696E 
+ 1401      65205374 
+ 1402 0086 0000     		.space	2
+ 1403              	.LC8:
+ 1404 0088 426C696E 		.ascii	"Blink Process already running\012\000"
+ 1404      6B205072 
+ 1404      6F636573 
+ 1404      7320616C 
+ 1404      72656164 
+ 1405 00a7 00       		.space	1
+ 1406              	.LC9:
+ 1407 00a8 426C696E 		.ascii	"Blink State Machine Started\000"
+ 1407      6B205374 
+ 1407      61746520 
+ 1407      4D616368 
+ 1407      696E6520 
+ 1408              		.bss
+ 1409              		.align	2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 36
+
+
+ 1410              		.set	.LANCHOR0,. + 0
+ 1411              		.type	TC_DelayStart, %object
+ 1412              		.size	TC_DelayStart, 4
+ 1413              	TC_DelayStart:
+ 1414 0000 00000000 		.space	4
+ 1415              		.type	TC_Delay, %object
+ 1416              		.size	TC_Delay, 4
+ 1417              	TC_Delay:
+ 1418 0004 00000000 		.space	4
+ 1419              		.type	Blink_Timer, %object
+ 1420              		.size	Blink_Timer, 4
+ 1421              	Blink_Timer:
+ 1422 0008 00000000 		.space	4
+ 1423              		.type	BlinkCount, %object
+ 1424              		.size	BlinkCount, 4
+ 1425              	BlinkCount:
+ 1426 000c 00000000 		.space	4
+ 1427              		.type	C_Count, %object
+ 1428              		.size	C_Count, 2
+ 1429              	C_Count:
+ 1430 0010 0000     		.space	2
+ 1431              		.type	SecCount, %object
+ 1432              		.size	SecCount, 2
+ 1433              	SecCount:
+ 1434 0012 0000     		.space	2
+ 1435              		.type	A_Count, %object
+ 1436              		.size	A_Count, 1
+ 1437              	A_Count:
+ 1438 0014 00       		.space	1
+ 1439 0015 00       		.space	1
+ 1440              		.type	S_Count, %object
+ 1441              		.size	S_Count, 2
+ 1442              	S_Count:
+ 1443 0016 0000     		.space	2
+ 1444              		.type	PrevStatus, %object
+ 1445              		.size	PrevStatus, 2
+ 1446              	PrevStatus:
+ 1447 0018 0000     		.space	2
+ 1448              		.text
+ 1449              	.Letext0:
+ 1450              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1451              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1452              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 1453              		.file 5 "State_Machine.h"
+ 1454              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 1455              		.file 7 "Generated_Source\\PSoC5/Pin_LED.h"
+ 1456              		.file 8 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1457              		.file 9 "U_HW.h"
+ 1458              		.file 10 "MPGCmds.h"
+ 1459              		.section	.debug_info,"",%progbits
+ 1460              	.Ldebug_info0:
+ 1461 0000 52080000 		.4byte	0x852
+ 1462 0004 0400     		.2byte	0x4
+ 1463 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1464 000a 04       		.byte	0x4
+ 1465 000b 01       		.uleb128 0x1
+ 1466 000c CD030000 		.4byte	.LASF81
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 37
+
+
+ 1467 0010 0C       		.byte	0xc
+ 1468 0011 40000000 		.4byte	.LASF82
+ 1469 0015 A1020000 		.4byte	.LASF83
+ 1470 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1471 001d 00000000 		.4byte	0
+ 1472 0021 00000000 		.4byte	.Ldebug_line0
+ 1473 0025 02       		.uleb128 0x2
+ 1474 0026 01       		.byte	0x1
+ 1475 0027 06       		.byte	0x6
+ 1476 0028 5F030000 		.4byte	.LASF0
+ 1477 002c 02       		.uleb128 0x2
+ 1478 002d 01       		.byte	0x1
+ 1479 002e 08       		.byte	0x8
+ 1480 002f 87010000 		.4byte	.LASF1
+ 1481 0033 02       		.uleb128 0x2
+ 1482 0034 02       		.byte	0x2
+ 1483 0035 05       		.byte	0x5
+ 1484 0036 4C000000 		.4byte	.LASF2
+ 1485 003a 03       		.uleb128 0x3
+ 1486 003b 86000000 		.4byte	.LASF4
+ 1487 003f 02       		.byte	0x2
+ 1488 0040 2B       		.byte	0x2b
+ 1489 0041 45000000 		.4byte	0x45
+ 1490 0045 02       		.uleb128 0x2
+ 1491 0046 02       		.byte	0x2
+ 1492 0047 07       		.byte	0x7
+ 1493 0048 60020000 		.4byte	.LASF3
+ 1494 004c 03       		.uleb128 0x3
+ 1495 004d 4B030000 		.4byte	.LASF5
+ 1496 0051 02       		.byte	0x2
+ 1497 0052 3F       		.byte	0x3f
+ 1498 0053 57000000 		.4byte	0x57
+ 1499 0057 02       		.uleb128 0x2
+ 1500 0058 04       		.byte	0x4
+ 1501 0059 05       		.byte	0x5
+ 1502 005a 20010000 		.4byte	.LASF6
+ 1503 005e 02       		.uleb128 0x2
+ 1504 005f 04       		.byte	0x4
+ 1505 0060 07       		.byte	0x7
+ 1506 0061 29010000 		.4byte	.LASF7
+ 1507 0065 02       		.uleb128 0x2
+ 1508 0066 08       		.byte	0x8
+ 1509 0067 05       		.byte	0x5
+ 1510 0068 F4000000 		.4byte	.LASF8
+ 1511 006c 02       		.uleb128 0x2
+ 1512 006d 08       		.byte	0x8
+ 1513 006e 07       		.byte	0x7
+ 1514 006f CA010000 		.4byte	.LASF9
+ 1515 0073 04       		.uleb128 0x4
+ 1516 0074 04       		.byte	0x4
+ 1517 0075 05       		.byte	0x5
+ 1518 0076 696E7400 		.ascii	"int\000"
+ 1519 007a 02       		.uleb128 0x2
+ 1520 007b 04       		.byte	0x4
+ 1521 007c 07       		.byte	0x7
+ 1522 007d E1010000 		.4byte	.LASF10
+ 1523 0081 03       		.uleb128 0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 38
+
+
+ 1524 0082 EE010000 		.4byte	.LASF11
+ 1525 0086 03       		.byte	0x3
+ 1526 0087 24       		.byte	0x24
+ 1527 0088 3A000000 		.4byte	0x3a
+ 1528 008c 03       		.uleb128 0x3
+ 1529 008d 50020000 		.4byte	.LASF12
+ 1530 0091 03       		.byte	0x3
+ 1531 0092 2C       		.byte	0x2c
+ 1532 0093 4C000000 		.4byte	0x4c
+ 1533 0097 05       		.uleb128 0x5
+ 1534 0098 D0000000 		.4byte	.LASF13
+ 1535 009c 04       		.byte	0x4
+ 1536 009d E401     		.2byte	0x1e4
+ 1537 009f 2C000000 		.4byte	0x2c
+ 1538 00a3 05       		.uleb128 0x5
+ 1539 00a4 B2000000 		.4byte	.LASF14
+ 1540 00a8 04       		.byte	0x4
+ 1541 00a9 E501     		.2byte	0x1e5
+ 1542 00ab 45000000 		.4byte	0x45
+ 1543 00af 05       		.uleb128 0x5
+ 1544 00b0 EA020000 		.4byte	.LASF15
+ 1545 00b4 04       		.byte	0x4
+ 1546 00b5 E601     		.2byte	0x1e6
+ 1547 00b7 5E000000 		.4byte	0x5e
+ 1548 00bb 05       		.uleb128 0x5
+ 1549 00bc 02010000 		.4byte	.LASF16
+ 1550 00c0 04       		.byte	0x4
+ 1551 00c1 E701     		.2byte	0x1e7
+ 1552 00c3 25000000 		.4byte	0x25
+ 1553 00c7 02       		.uleb128 0x2
+ 1554 00c8 04       		.byte	0x4
+ 1555 00c9 04       		.byte	0x4
+ 1556 00ca E2000000 		.4byte	.LASF17
+ 1557 00ce 02       		.uleb128 0x2
+ 1558 00cf 08       		.byte	0x8
+ 1559 00d0 04       		.byte	0x4
+ 1560 00d1 03030000 		.4byte	.LASF18
+ 1561 00d5 02       		.uleb128 0x2
+ 1562 00d6 01       		.byte	0x1
+ 1563 00d7 08       		.byte	0x8
+ 1564 00d8 4B020000 		.4byte	.LASF19
+ 1565 00dc 06       		.uleb128 0x6
+ 1566 00dd AF000000 		.4byte	0xaf
+ 1567 00e1 07       		.uleb128 0x7
+ 1568 00e2 04       		.byte	0x4
+ 1569 00e3 E7000000 		.4byte	0xe7
+ 1570 00e7 08       		.uleb128 0x8
+ 1571 00e8 03       		.uleb128 0x3
+ 1572 00e9 8F030000 		.4byte	.LASF20
+ 1573 00ed 05       		.byte	0x5
+ 1574 00ee 10       		.byte	0x10
+ 1575 00ef E1000000 		.4byte	0xe1
+ 1576 00f3 02       		.uleb128 0x2
+ 1577 00f4 08       		.byte	0x8
+ 1578 00f5 04       		.byte	0x4
+ 1579 00f6 72010000 		.4byte	.LASF21
+ 1580 00fa 02       		.uleb128 0x2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 39
+
+
+ 1581 00fb 04       		.byte	0x4
+ 1582 00fc 07       		.byte	0x7
+ 1583 00fd 56000000 		.4byte	.LASF22
+ 1584 0101 09       		.uleb128 0x9
+ 1585 0102 2D030000 		.4byte	.LASF23
+ 1586 0106 01       		.byte	0x1
+ 1587 0107 78       		.byte	0x78
+ 1588 0108 00000000 		.4byte	.LFB69
+ 1589 010c 10000000 		.4byte	.LFE69-.LFB69
+ 1590 0110 01       		.uleb128 0x1
+ 1591 0111 9C       		.byte	0x9c
+ 1592 0112 0A       		.uleb128 0xa
+ 1593 0113 11020000 		.4byte	.LASF24
+ 1594 0117 01       		.byte	0x1
+ 1595 0118 C5       		.byte	0xc5
+ 1596 0119 00000000 		.4byte	.LFB74
+ 1597 011d 34000000 		.4byte	.LFE74-.LFB74
+ 1598 0121 01       		.uleb128 0x1
+ 1599 0122 9C       		.byte	0x9c
+ 1600 0123 0B       		.uleb128 0xb
+ 1601 0124 3B010000 		.4byte	.LASF25
+ 1602 0128 01       		.byte	0x1
+ 1603 0129 0401     		.2byte	0x104
+ 1604 012b 00000000 		.4byte	.LFB78
+ 1605 012f 10000000 		.4byte	.LFE78-.LFB78
+ 1606 0133 01       		.uleb128 0x1
+ 1607 0134 9C       		.byte	0x9c
+ 1608 0135 0C       		.uleb128 0xc
+ 1609 0136 E8000000 		.4byte	.LASF26
+ 1610 013a 01       		.byte	0x1
+ 1611 013b 1501     		.2byte	0x115
+ 1612 013d 00000000 		.4byte	.LFB80
+ 1613 0141 30000000 		.4byte	.LFE80-.LFB80
+ 1614 0145 01       		.uleb128 0x1
+ 1615 0146 9C       		.byte	0x9c
+ 1616 0147 0D       		.uleb128 0xd
+ 1617 0148 07010000 		.4byte	.LASF27
+ 1618 014c 01       		.byte	0x1
+ 1619 014d 9601     		.2byte	0x196
+ 1620 014f 00000000 		.4byte	.LFB89
+ 1621 0153 14000000 		.4byte	.LFE89-.LFB89
+ 1622 0157 01       		.uleb128 0x1
+ 1623 0158 9C       		.byte	0x9c
+ 1624 0159 6D010000 		.4byte	0x16d
+ 1625 015d 0E       		.uleb128 0xe
+ 1626 015e 0C000000 		.4byte	.LVL2
+ 1627 0162 08080000 		.4byte	0x808
+ 1628 0166 0F       		.uleb128 0xf
+ 1629 0167 01       		.uleb128 0x1
+ 1630 0168 50       		.byte	0x50
+ 1631 0169 01       		.uleb128 0x1
+ 1632 016a 31       		.byte	0x31
+ 1633 016b 00       		.byte	0
+ 1634 016c 00       		.byte	0
+ 1635 016d 0D       		.uleb128 0xd
+ 1636 016e A6000000 		.4byte	.LASF28
+ 1637 0172 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 40
+
+
+ 1638 0173 2701     		.2byte	0x127
+ 1639 0175 00000000 		.4byte	.LFB82
+ 1640 0179 6C000000 		.4byte	.LFE82-.LFB82
+ 1641 017d 01       		.uleb128 0x1
+ 1642 017e 9C       		.byte	0x9c
+ 1643 017f AF010000 		.4byte	0x1af
+ 1644 0183 10       		.uleb128 0x10
+ 1645 0184 0C000000 		.4byte	.LVL3
+ 1646 0188 13080000 		.4byte	0x813
+ 1647 018c 11       		.uleb128 0x11
+ 1648 018d 22000000 		.4byte	.LVL4
+ 1649 0191 08080000 		.4byte	0x808
+ 1650 0195 9F010000 		.4byte	0x19f
+ 1651 0199 0F       		.uleb128 0xf
+ 1652 019a 01       		.uleb128 0x1
+ 1653 019b 50       		.byte	0x50
+ 1654 019c 01       		.uleb128 0x1
+ 1655 019d 31       		.byte	0x31
+ 1656 019e 00       		.byte	0
+ 1657 019f 0E       		.uleb128 0xe
+ 1658 01a0 4E000000 		.4byte	.LVL5
+ 1659 01a4 08080000 		.4byte	0x808
+ 1660 01a8 0F       		.uleb128 0xf
+ 1661 01a9 01       		.uleb128 0x1
+ 1662 01aa 50       		.byte	0x50
+ 1663 01ab 01       		.uleb128 0x1
+ 1664 01ac 30       		.byte	0x30
+ 1665 01ad 00       		.byte	0
+ 1666 01ae 00       		.byte	0
+ 1667 01af 0D       		.uleb128 0xd
+ 1668 01b0 F1020000 		.4byte	.LASF29
+ 1669 01b4 01       		.byte	0x1
+ 1670 01b5 4901     		.2byte	0x149
+ 1671 01b7 00000000 		.4byte	.LFB84
+ 1672 01bb 60000000 		.4byte	.LFE84-.LFB84
+ 1673 01bf 01       		.uleb128 0x1
+ 1674 01c0 9C       		.byte	0x9c
+ 1675 01c1 F1010000 		.4byte	0x1f1
+ 1676 01c5 10       		.uleb128 0x10
+ 1677 01c6 0C000000 		.4byte	.LVL6
+ 1678 01ca 13080000 		.4byte	0x813
+ 1679 01ce 11       		.uleb128 0x11
+ 1680 01cf 26000000 		.4byte	.LVL7
+ 1681 01d3 08080000 		.4byte	0x808
+ 1682 01d7 E1010000 		.4byte	0x1e1
+ 1683 01db 0F       		.uleb128 0xf
+ 1684 01dc 01       		.uleb128 0x1
+ 1685 01dd 50       		.byte	0x50
+ 1686 01de 01       		.uleb128 0x1
+ 1687 01df 31       		.byte	0x31
+ 1688 01e0 00       		.byte	0
+ 1689 01e1 0E       		.uleb128 0xe
+ 1690 01e2 48000000 		.4byte	.LVL8
+ 1691 01e6 08080000 		.4byte	0x808
+ 1692 01ea 0F       		.uleb128 0xf
+ 1693 01eb 01       		.uleb128 0x1
+ 1694 01ec 50       		.byte	0x50
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 41
+
+
+ 1695 01ed 01       		.uleb128 0x1
+ 1696 01ee 30       		.byte	0x30
+ 1697 01ef 00       		.byte	0
+ 1698 01f0 00       		.byte	0
+ 1699 01f1 0D       		.uleb128 0xd
+ 1700 01f2 A9010000 		.4byte	.LASF30
+ 1701 01f6 01       		.byte	0x1
+ 1702 01f7 6601     		.2byte	0x166
+ 1703 01f9 00000000 		.4byte	.LFB86
+ 1704 01fd 5C000000 		.4byte	.LFE86-.LFB86
+ 1705 0201 01       		.uleb128 0x1
+ 1706 0202 9C       		.byte	0x9c
+ 1707 0203 33020000 		.4byte	0x233
+ 1708 0207 10       		.uleb128 0x10
+ 1709 0208 0C000000 		.4byte	.LVL9
+ 1710 020c 13080000 		.4byte	0x813
+ 1711 0210 11       		.uleb128 0x11
+ 1712 0211 26000000 		.4byte	.LVL10
+ 1713 0215 08080000 		.4byte	0x808
+ 1714 0219 23020000 		.4byte	0x223
+ 1715 021d 0F       		.uleb128 0xf
+ 1716 021e 01       		.uleb128 0x1
+ 1717 021f 50       		.byte	0x50
+ 1718 0220 01       		.uleb128 0x1
+ 1719 0221 31       		.byte	0x31
+ 1720 0222 00       		.byte	0
+ 1721 0223 0E       		.uleb128 0xe
+ 1722 0224 44000000 		.4byte	.LVL11
+ 1723 0228 08080000 		.4byte	0x808
+ 1724 022c 0F       		.uleb128 0xf
+ 1725 022d 01       		.uleb128 0x1
+ 1726 022e 50       		.byte	0x50
+ 1727 022f 01       		.uleb128 0x1
+ 1728 0230 30       		.byte	0x30
+ 1729 0231 00       		.byte	0
+ 1730 0232 00       		.byte	0
+ 1731 0233 0D       		.uleb128 0xd
+ 1732 0234 55030000 		.4byte	.LASF31
+ 1733 0238 01       		.byte	0x1
+ 1734 0239 8201     		.2byte	0x182
+ 1735 023b 00000000 		.4byte	.LFB88
+ 1736 023f 58000000 		.4byte	.LFE88-.LFB88
+ 1737 0243 01       		.uleb128 0x1
+ 1738 0244 9C       		.byte	0x9c
+ 1739 0245 75020000 		.4byte	0x275
+ 1740 0249 10       		.uleb128 0x10
+ 1741 024a 0C000000 		.4byte	.LVL12
+ 1742 024e 13080000 		.4byte	0x813
+ 1743 0252 11       		.uleb128 0x11
+ 1744 0253 22000000 		.4byte	.LVL13
+ 1745 0257 08080000 		.4byte	0x808
+ 1746 025b 65020000 		.4byte	0x265
+ 1747 025f 0F       		.uleb128 0xf
+ 1748 0260 01       		.uleb128 0x1
+ 1749 0261 50       		.byte	0x50
+ 1750 0262 01       		.uleb128 0x1
+ 1751 0263 31       		.byte	0x31
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 42
+
+
+ 1752 0264 00       		.byte	0
+ 1753 0265 0E       		.uleb128 0xe
+ 1754 0266 40000000 		.4byte	.LVL14
+ 1755 026a 08080000 		.4byte	0x808
+ 1756 026e 0F       		.uleb128 0xf
+ 1757 026f 01       		.uleb128 0x1
+ 1758 0270 50       		.byte	0x50
+ 1759 0271 01       		.uleb128 0x1
+ 1760 0272 30       		.byte	0x30
+ 1761 0273 00       		.byte	0
+ 1762 0274 00       		.byte	0
+ 1763 0275 0A       		.uleb128 0xa
+ 1764 0276 12030000 		.4byte	.LASF32
+ 1765 027a 01       		.byte	0x1
+ 1766 027b 2F       		.byte	0x2f
+ 1767 027c 00000000 		.4byte	.LFB64
+ 1768 0280 14000000 		.4byte	.LFE64-.LFB64
+ 1769 0284 01       		.uleb128 0x1
+ 1770 0285 9C       		.byte	0x9c
+ 1771 0286 12       		.uleb128 0x12
+ 1772 0287 6B030000 		.4byte	.LASF33
+ 1773 028b 01       		.byte	0x1
+ 1774 028c 34       		.byte	0x34
+ 1775 028d 00000000 		.4byte	.LFB65
+ 1776 0291 3C000000 		.4byte	.LFE65-.LFB65
+ 1777 0295 01       		.uleb128 0x1
+ 1778 0296 9C       		.byte	0x9c
+ 1779 0297 D7020000 		.4byte	0x2d7
+ 1780 029b 13       		.uleb128 0x13
+ 1781 029c 6D736700 		.ascii	"msg\000"
+ 1782 02a0 01       		.byte	0x1
+ 1783 02a1 36       		.byte	0x36
+ 1784 02a2 D7020000 		.4byte	0x2d7
+ 1785 02a6 02       		.uleb128 0x2
+ 1786 02a7 91       		.byte	0x91
+ 1787 02a8 64       		.sleb128 -28
+ 1788 02a9 11       		.uleb128 0x11
+ 1789 02aa 26000000 		.4byte	.LVL15
+ 1790 02ae 1E080000 		.4byte	0x81e
+ 1791 02b2 C6020000 		.4byte	0x2c6
+ 1792 02b6 0F       		.uleb128 0xf
+ 1793 02b7 01       		.uleb128 0x1
+ 1794 02b8 50       		.byte	0x50
+ 1795 02b9 02       		.uleb128 0x2
+ 1796 02ba 91       		.byte	0x91
+ 1797 02bb 64       		.sleb128 -28
+ 1798 02bc 0F       		.uleb128 0xf
+ 1799 02bd 01       		.uleb128 0x1
+ 1800 02be 51       		.byte	0x51
+ 1801 02bf 05       		.uleb128 0x5
+ 1802 02c0 03       		.byte	0x3
+ 1803 02c1 00000000 		.4byte	.LC0
+ 1804 02c5 00       		.byte	0
+ 1805 02c6 0E       		.uleb128 0xe
+ 1806 02c7 2C000000 		.4byte	.LVL16
+ 1807 02cb 29080000 		.4byte	0x829
+ 1808 02cf 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 43
+
+
+ 1809 02d0 01       		.uleb128 0x1
+ 1810 02d1 50       		.byte	0x50
+ 1811 02d2 02       		.uleb128 0x2
+ 1812 02d3 91       		.byte	0x91
+ 1813 02d4 64       		.sleb128 -28
+ 1814 02d5 00       		.byte	0
+ 1815 02d6 00       		.byte	0
+ 1816 02d7 14       		.uleb128 0x14
+ 1817 02d8 D5000000 		.4byte	0xd5
+ 1818 02dc E7020000 		.4byte	0x2e7
+ 1819 02e0 15       		.uleb128 0x15
+ 1820 02e1 FA000000 		.4byte	0xfa
+ 1821 02e5 13       		.byte	0x13
+ 1822 02e6 00       		.byte	0
+ 1823 02e7 0A       		.uleb128 0xa
+ 1824 02e8 98030000 		.4byte	.LASF34
+ 1825 02ec 01       		.byte	0x1
+ 1826 02ed 43       		.byte	0x43
+ 1827 02ee 00000000 		.4byte	.LFB66
+ 1828 02f2 14000000 		.4byte	.LFE66-.LFB66
+ 1829 02f6 01       		.uleb128 0x1
+ 1830 02f7 9C       		.byte	0x9c
+ 1831 02f8 12       		.uleb128 0x12
+ 1832 02f9 3E030000 		.4byte	.LASF35
+ 1833 02fd 01       		.byte	0x1
+ 1834 02fe 49       		.byte	0x49
+ 1835 02ff 00000000 		.4byte	.LFB67
+ 1836 0303 48000000 		.4byte	.LFE67-.LFB67
+ 1837 0307 01       		.uleb128 0x1
+ 1838 0308 9C       		.byte	0x9c
+ 1839 0309 49030000 		.4byte	0x349
+ 1840 030d 13       		.uleb128 0x13
+ 1841 030e 6D736700 		.ascii	"msg\000"
+ 1842 0312 01       		.byte	0x1
+ 1843 0313 4C       		.byte	0x4c
+ 1844 0314 D7020000 		.4byte	0x2d7
+ 1845 0318 02       		.uleb128 0x2
+ 1846 0319 91       		.byte	0x91
+ 1847 031a 64       		.sleb128 -28
+ 1848 031b 11       		.uleb128 0x11
+ 1849 031c 24000000 		.4byte	.LVL17
+ 1850 0320 1E080000 		.4byte	0x81e
+ 1851 0324 38030000 		.4byte	0x338
+ 1852 0328 0F       		.uleb128 0xf
+ 1853 0329 01       		.uleb128 0x1
+ 1854 032a 50       		.byte	0x50
+ 1855 032b 02       		.uleb128 0x2
+ 1856 032c 91       		.byte	0x91
+ 1857 032d 64       		.sleb128 -28
+ 1858 032e 0F       		.uleb128 0xf
+ 1859 032f 01       		.uleb128 0x1
+ 1860 0330 51       		.byte	0x51
+ 1861 0331 05       		.uleb128 0x5
+ 1862 0332 03       		.byte	0x3
+ 1863 0333 0C000000 		.4byte	.LC1
+ 1864 0337 00       		.byte	0
+ 1865 0338 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 44
+
+
+ 1866 0339 2A000000 		.4byte	.LVL18
+ 1867 033d 29080000 		.4byte	0x829
+ 1868 0341 0F       		.uleb128 0xf
+ 1869 0342 01       		.uleb128 0x1
+ 1870 0343 50       		.byte	0x50
+ 1871 0344 02       		.uleb128 0x2
+ 1872 0345 91       		.byte	0x91
+ 1873 0346 64       		.sleb128 -28
+ 1874 0347 00       		.byte	0
+ 1875 0348 00       		.byte	0
+ 1876 0349 12       		.uleb128 0x12
+ 1877 034a 36020000 		.4byte	.LASF36
+ 1878 034e 01       		.byte	0x1
+ 1879 034f D1       		.byte	0xd1
+ 1880 0350 00000000 		.4byte	.LFB75
+ 1881 0354 2C000000 		.4byte	.LFE75-.LFB75
+ 1882 0358 01       		.uleb128 0x1
+ 1883 0359 9C       		.byte	0x9c
+ 1884 035a 79030000 		.4byte	0x379
+ 1885 035e 16       		.uleb128 0x16
+ 1886 035f 74000000 		.4byte	.LASF37
+ 1887 0363 01       		.byte	0x1
+ 1888 0364 D1       		.byte	0xd1
+ 1889 0365 AF000000 		.4byte	0xaf
+ 1890 0369 01       		.uleb128 0x1
+ 1891 036a 50       		.byte	0x50
+ 1892 036b 16       		.uleb128 0x16
+ 1893 036c 2C020000 		.4byte	.LASF38
+ 1894 0370 01       		.byte	0x1
+ 1895 0371 D1       		.byte	0xd1
+ 1896 0372 E8000000 		.4byte	0xe8
+ 1897 0376 01       		.uleb128 0x1
+ 1898 0377 51       		.byte	0x51
+ 1899 0378 00       		.byte	0
+ 1900 0379 12       		.uleb128 0x12
+ 1901 037a 9E010000 		.4byte	.LASF39
+ 1902 037e 01       		.byte	0x1
+ 1903 037f DB       		.byte	0xdb
+ 1904 0380 00000000 		.4byte	.LFB76
+ 1905 0384 48000000 		.4byte	.LFE76-.LFB76
+ 1906 0388 01       		.uleb128 0x1
+ 1907 0389 9C       		.byte	0x9c
+ 1908 038a E7030000 		.4byte	0x3e7
+ 1909 038e 11       		.uleb128 0x11
+ 1910 038f 1A000000 		.4byte	.LVL20
+ 1911 0393 29080000 		.4byte	0x829
+ 1912 0397 A5030000 		.4byte	0x3a5
+ 1913 039b 0F       		.uleb128 0xf
+ 1914 039c 01       		.uleb128 0x1
+ 1915 039d 50       		.byte	0x50
+ 1916 039e 05       		.uleb128 0x5
+ 1917 039f 03       		.byte	0x3
+ 1918 03a0 18000000 		.4byte	.LC2
+ 1919 03a4 00       		.byte	0
+ 1920 03a5 11       		.uleb128 0x11
+ 1921 03a6 22000000 		.4byte	.LVL21
+ 1922 03aa 29080000 		.4byte	0x829
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 45
+
+
+ 1923 03ae BC030000 		.4byte	0x3bc
+ 1924 03b2 0F       		.uleb128 0xf
+ 1925 03b3 01       		.uleb128 0x1
+ 1926 03b4 50       		.byte	0x50
+ 1927 03b5 05       		.uleb128 0x5
+ 1928 03b6 03       		.byte	0x3
+ 1929 03b7 24000000 		.4byte	.LC3
+ 1930 03bb 00       		.byte	0
+ 1931 03bc 11       		.uleb128 0x11
+ 1932 03bd 2A000000 		.4byte	.LVL22
+ 1933 03c1 29080000 		.4byte	0x829
+ 1934 03c5 D3030000 		.4byte	0x3d3
+ 1935 03c9 0F       		.uleb128 0xf
+ 1936 03ca 01       		.uleb128 0x1
+ 1937 03cb 50       		.byte	0x50
+ 1938 03cc 05       		.uleb128 0x5
+ 1939 03cd 03       		.byte	0x3
+ 1940 03ce 30000000 		.4byte	.LC4
+ 1941 03d2 00       		.byte	0
+ 1942 03d3 0E       		.uleb128 0xe
+ 1943 03d4 32000000 		.4byte	.LVL23
+ 1944 03d8 29080000 		.4byte	0x829
+ 1945 03dc 0F       		.uleb128 0xf
+ 1946 03dd 01       		.uleb128 0x1
+ 1947 03de 50       		.byte	0x50
+ 1948 03df 05       		.uleb128 0x5
+ 1949 03e0 03       		.byte	0x3
+ 1950 03e1 3C000000 		.4byte	.LC5
+ 1951 03e5 00       		.byte	0
+ 1952 03e6 00       		.byte	0
+ 1953 03e7 0D       		.uleb128 0xd
+ 1954 03e8 76040000 		.4byte	.LASF40
+ 1955 03ec 01       		.byte	0x1
+ 1956 03ed 0C01     		.2byte	0x10c
+ 1957 03ef 00000000 		.4byte	.LFB79
+ 1958 03f3 28000000 		.4byte	.LFE79-.LFB79
+ 1959 03f7 01       		.uleb128 0x1
+ 1960 03f8 9C       		.byte	0x9c
+ 1961 03f9 0D040000 		.4byte	0x40d
+ 1962 03fd 0E       		.uleb128 0xe
+ 1963 03fe 16000000 		.4byte	.LVL24
+ 1964 0402 08080000 		.4byte	0x808
+ 1965 0406 0F       		.uleb128 0xf
+ 1966 0407 01       		.uleb128 0x1
+ 1967 0408 50       		.byte	0x50
+ 1968 0409 01       		.uleb128 0x1
+ 1969 040a 30       		.byte	0x30
+ 1970 040b 00       		.byte	0
+ 1971 040c 00       		.byte	0
+ 1972 040d 0D       		.uleb128 0xd
+ 1973 040e 0F010000 		.4byte	.LASF41
+ 1974 0412 01       		.byte	0x1
+ 1975 0413 1E01     		.2byte	0x11e
+ 1976 0415 00000000 		.4byte	.LFB81
+ 1977 0419 2C000000 		.4byte	.LFE81-.LFB81
+ 1978 041d 01       		.uleb128 0x1
+ 1979 041e 9C       		.byte	0x9c
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 46
+
+
+ 1980 041f 33040000 		.4byte	0x433
+ 1981 0423 0E       		.uleb128 0xe
+ 1982 0424 16000000 		.4byte	.LVL25
+ 1983 0428 08080000 		.4byte	0x808
+ 1984 042c 0F       		.uleb128 0xf
+ 1985 042d 01       		.uleb128 0x1
+ 1986 042e 50       		.byte	0x50
+ 1987 042f 01       		.uleb128 0x1
+ 1988 0430 30       		.byte	0x30
+ 1989 0431 00       		.byte	0
+ 1990 0432 00       		.byte	0
+ 1991 0433 0D       		.uleb128 0xd
+ 1992 0434 5B040000 		.4byte	.LASF42
+ 1993 0438 01       		.byte	0x1
+ 1994 0439 4101     		.2byte	0x141
+ 1995 043b 00000000 		.4byte	.LFB83
+ 1996 043f 28000000 		.4byte	.LFE83-.LFB83
+ 1997 0443 01       		.uleb128 0x1
+ 1998 0444 9C       		.byte	0x9c
+ 1999 0445 59040000 		.4byte	0x459
+ 2000 0449 0E       		.uleb128 0xe
+ 2001 044a 16000000 		.4byte	.LVL26
+ 2002 044e 08080000 		.4byte	0x808
+ 2003 0452 0F       		.uleb128 0xf
+ 2004 0453 01       		.uleb128 0x1
+ 2005 0454 50       		.byte	0x50
+ 2006 0455 01       		.uleb128 0x1
+ 2007 0456 30       		.byte	0x30
+ 2008 0457 00       		.byte	0
+ 2009 0458 00       		.byte	0
+ 2010 0459 12       		.uleb128 0x12
+ 2011 045a 6A000000 		.4byte	.LASF43
+ 2012 045e 01       		.byte	0x1
+ 2013 045f AE       		.byte	0xae
+ 2014 0460 00000000 		.4byte	.LFB72
+ 2015 0464 2C000000 		.4byte	.LFE72-.LFB72
+ 2016 0468 01       		.uleb128 0x1
+ 2017 0469 9C       		.byte	0x9c
+ 2018 046a 90040000 		.4byte	0x490
+ 2019 046e 17       		.uleb128 0x17
+ 2020 046f 44020000 		.4byte	.LASF44
+ 2021 0473 01       		.byte	0x1
+ 2022 0474 B1       		.byte	0xb1
+ 2023 0475 A3000000 		.4byte	0xa3
+ 2024 0479 00000000 		.4byte	.LLST0
+ 2025 047d 10       		.uleb128 0x10
+ 2026 047e 0C000000 		.4byte	.LVL27
+ 2027 0482 34080000 		.4byte	0x834
+ 2028 0486 10       		.uleb128 0x10
+ 2029 0487 1E000000 		.4byte	.LVL29
+ 2030 048b 33040000 		.4byte	0x433
+ 2031 048f 00       		.byte	0
+ 2032 0490 12       		.uleb128 0x12
+ 2033 0491 91000000 		.4byte	.LASF45
+ 2034 0495 01       		.byte	0x1
+ 2035 0496 B9       		.byte	0xb9
+ 2036 0497 00000000 		.4byte	.LFB73
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 47
+
+
+ 2037 049b 38000000 		.4byte	.LFE73-.LFB73
+ 2038 049f 01       		.uleb128 0x1
+ 2039 04a0 9C       		.byte	0x9c
+ 2040 04a1 AF040000 		.4byte	0x4af
+ 2041 04a5 10       		.uleb128 0x10
+ 2042 04a6 22000000 		.4byte	.LVL30
+ 2043 04aa 33040000 		.4byte	0x433
+ 2044 04ae 00       		.byte	0
+ 2045 04af 0D       		.uleb128 0xd
+ 2046 04b0 86020000 		.4byte	.LASF46
+ 2047 04b4 01       		.byte	0x1
+ 2048 04b5 5D01     		.2byte	0x15d
+ 2049 04b7 00000000 		.4byte	.LFB85
+ 2050 04bb 28000000 		.4byte	.LFE85-.LFB85
+ 2051 04bf 01       		.uleb128 0x1
+ 2052 04c0 9C       		.byte	0x9c
+ 2053 04c1 D5040000 		.4byte	0x4d5
+ 2054 04c5 0E       		.uleb128 0xe
+ 2055 04c6 16000000 		.4byte	.LVL31
+ 2056 04ca 08080000 		.4byte	0x808
+ 2057 04ce 0F       		.uleb128 0xf
+ 2058 04cf 01       		.uleb128 0x1
+ 2059 04d0 50       		.byte	0x50
+ 2060 04d1 01       		.uleb128 0x1
+ 2061 04d2 30       		.byte	0x30
+ 2062 04d3 00       		.byte	0
+ 2063 04d4 00       		.byte	0
+ 2064 04d5 12       		.uleb128 0x12
+ 2065 04d6 5C010000 		.4byte	.LASF47
+ 2066 04da 01       		.byte	0x1
+ 2067 04db 5E       		.byte	0x5e
+ 2068 04dc 00000000 		.4byte	.LFB68
+ 2069 04e0 84000000 		.4byte	.LFE68-.LFB68
+ 2070 04e4 01       		.uleb128 0x1
+ 2071 04e5 9C       		.byte	0x9c
+ 2072 04e6 B5050000 		.4byte	0x5b5
+ 2073 04ea 11       		.uleb128 0x11
+ 2074 04eb 0A000000 		.4byte	.LVL32
+ 2075 04ef 3F080000 		.4byte	0x83f
+ 2076 04f3 01050000 		.4byte	0x501
+ 2077 04f7 0F       		.uleb128 0xf
+ 2078 04f8 01       		.uleb128 0x1
+ 2079 04f9 51       		.byte	0x51
+ 2080 04fa 05       		.uleb128 0x5
+ 2081 04fb 03       		.byte	0x3
+ 2082 04fc 00000000 		.4byte	MPG_StateMachine
+ 2083 0500 00       		.byte	0
+ 2084 0501 11       		.uleb128 0x11
+ 2085 0502 12000000 		.4byte	.LVL33
+ 2086 0506 29080000 		.4byte	0x829
+ 2087 050a 18050000 		.4byte	0x518
+ 2088 050e 0F       		.uleb128 0xf
+ 2089 050f 01       		.uleb128 0x1
+ 2090 0510 50       		.byte	0x50
+ 2091 0511 05       		.uleb128 0x5
+ 2092 0512 03       		.byte	0x3
+ 2093 0513 48000000 		.4byte	.LC6
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 48
+
+
+ 2094 0517 00       		.byte	0
+ 2095 0518 11       		.uleb128 0x11
+ 2096 0519 1C000000 		.4byte	.LVL34
+ 2097 051d 4A080000 		.4byte	0x84a
+ 2098 0521 2F050000 		.4byte	0x52f
+ 2099 0525 0F       		.uleb128 0xf
+ 2100 0526 01       		.uleb128 0x1
+ 2101 0527 51       		.byte	0x51
+ 2102 0528 05       		.uleb128 0x5
+ 2103 0529 03       		.byte	0x3
+ 2104 052a 00000000 		.4byte	MPG_StateMachine
+ 2105 052e 00       		.byte	0
+ 2106 052f 11       		.uleb128 0x11
+ 2107 0530 22000000 		.4byte	.LVL35
+ 2108 0534 29080000 		.4byte	0x829
+ 2109 0538 46050000 		.4byte	0x546
+ 2110 053c 0F       		.uleb128 0xf
+ 2111 053d 01       		.uleb128 0x1
+ 2112 053e 50       		.byte	0x50
+ 2113 053f 05       		.uleb128 0x5
+ 2114 0540 03       		.byte	0x3
+ 2115 0541 6C000000 		.4byte	.LC7
+ 2116 0545 00       		.byte	0
+ 2117 0546 11       		.uleb128 0x11
+ 2118 0547 30000000 		.4byte	.LVL36
+ 2119 054b 3F080000 		.4byte	0x83f
+ 2120 054f 5D050000 		.4byte	0x55d
+ 2121 0553 0F       		.uleb128 0xf
+ 2122 0554 01       		.uleb128 0x1
+ 2123 0555 51       		.byte	0x51
+ 2124 0556 05       		.uleb128 0x5
+ 2125 0557 03       		.byte	0x3
+ 2126 0558 00000000 		.4byte	Blink_StateMachine
+ 2127 055c 00       		.byte	0
+ 2128 055d 11       		.uleb128 0x11
+ 2129 055e 38000000 		.4byte	.LVL37
+ 2130 0562 29080000 		.4byte	0x829
+ 2131 0566 74050000 		.4byte	0x574
+ 2132 056a 0F       		.uleb128 0xf
+ 2133 056b 01       		.uleb128 0x1
+ 2134 056c 50       		.byte	0x50
+ 2135 056d 05       		.uleb128 0x5
+ 2136 056e 03       		.byte	0x3
+ 2137 056f 88000000 		.4byte	.LC8
+ 2138 0573 00       		.byte	0
+ 2139 0574 11       		.uleb128 0x11
+ 2140 0575 42000000 		.4byte	.LVL38
+ 2141 0579 4A080000 		.4byte	0x84a
+ 2142 057d 8B050000 		.4byte	0x58b
+ 2143 0581 0F       		.uleb128 0xf
+ 2144 0582 01       		.uleb128 0x1
+ 2145 0583 51       		.byte	0x51
+ 2146 0584 05       		.uleb128 0x5
+ 2147 0585 03       		.byte	0x3
+ 2148 0586 00000000 		.4byte	Blink_StateMachine
+ 2149 058a 00       		.byte	0
+ 2150 058b 11       		.uleb128 0x11
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 49
+
+
+ 2151 058c 48000000 		.4byte	.LVL39
+ 2152 0590 29080000 		.4byte	0x829
+ 2153 0594 A2050000 		.4byte	0x5a2
+ 2154 0598 0F       		.uleb128 0xf
+ 2155 0599 01       		.uleb128 0x1
+ 2156 059a 50       		.byte	0x50
+ 2157 059b 05       		.uleb128 0x5
+ 2158 059c 03       		.byte	0x3
+ 2159 059d A8000000 		.4byte	.LC9
+ 2160 05a1 00       		.byte	0
+ 2161 05a2 10       		.uleb128 0x10
+ 2162 05a3 4C000000 		.4byte	.LVL40
+ 2163 05a7 AF040000 		.4byte	0x4af
+ 2164 05ab 10       		.uleb128 0x10
+ 2165 05ac 50000000 		.4byte	.LVL41
+ 2166 05b0 34080000 		.4byte	0x834
+ 2167 05b4 00       		.byte	0
+ 2168 05b5 18       		.uleb128 0x18
+ 2169 05b6 B9000000 		.4byte	.LASF84
+ 2170 05ba 01       		.byte	0x1
+ 2171 05bb F2       		.byte	0xf2
+ 2172 05bc 73000000 		.4byte	0x73
+ 2173 05c0 00000000 		.4byte	.LFB77
+ 2174 05c4 34000000 		.4byte	.LFE77-.LFB77
+ 2175 05c8 01       		.uleb128 0x1
+ 2176 05c9 9C       		.byte	0x9c
+ 2177 05ca D8050000 		.4byte	0x5d8
+ 2178 05ce 10       		.uleb128 0x10
+ 2179 05cf 1C000000 		.4byte	.LVL42
+ 2180 05d3 AF040000 		.4byte	0x4af
+ 2181 05d7 00       		.byte	0
+ 2182 05d8 0D       		.uleb128 0xd
+ 2183 05d9 A9030000 		.4byte	.LASF48
+ 2184 05dd 01       		.byte	0x1
+ 2185 05de 7A01     		.2byte	0x17a
+ 2186 05e0 00000000 		.4byte	.LFB87
+ 2187 05e4 28000000 		.4byte	.LFE87-.LFB87
+ 2188 05e8 01       		.uleb128 0x1
+ 2189 05e9 9C       		.byte	0x9c
+ 2190 05ea FE050000 		.4byte	0x5fe
+ 2191 05ee 0E       		.uleb128 0xe
+ 2192 05ef 16000000 		.4byte	.LVL43
+ 2193 05f3 08080000 		.4byte	0x808
+ 2194 05f7 0F       		.uleb128 0xf
+ 2195 05f8 01       		.uleb128 0x1
+ 2196 05f9 50       		.byte	0x50
+ 2197 05fa 01       		.uleb128 0x1
+ 2198 05fb 30       		.byte	0x30
+ 2199 05fc 00       		.byte	0
+ 2200 05fd 00       		.byte	0
+ 2201 05fe 12       		.uleb128 0x12
+ 2202 05ff 7E010000 		.4byte	.LASF49
+ 2203 0603 01       		.byte	0x1
+ 2204 0604 81       		.byte	0x81
+ 2205 0605 00000000 		.4byte	.LFB70
+ 2206 0609 58000000 		.4byte	.LFE70-.LFB70
+ 2207 060d 01       		.uleb128 0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 50
+
+
+ 2208 060e 9C       		.byte	0x9c
+ 2209 060f 2F060000 		.4byte	0x62f
+ 2210 0613 10       		.uleb128 0x10
+ 2211 0614 0C000000 		.4byte	.LVL44
+ 2212 0618 B5050000 		.4byte	0x5b5
+ 2213 061c 10       		.uleb128 0x10
+ 2214 061d 10000000 		.4byte	.LVL45
+ 2215 0621 34080000 		.4byte	0x834
+ 2216 0625 10       		.uleb128 0x10
+ 2217 0626 3A000000 		.4byte	.LVL46
+ 2218 062a D8050000 		.4byte	0x5d8
+ 2219 062e 00       		.byte	0
+ 2220 062f 12       		.uleb128 0x12
+ 2221 0630 5F000000 		.4byte	.LASF50
+ 2222 0634 01       		.byte	0x1
+ 2223 0635 96       		.byte	0x96
+ 2224 0636 00000000 		.4byte	.LFB71
+ 2225 063a 6C000000 		.4byte	.LFE71-.LFB71
+ 2226 063e 01       		.uleb128 0x1
+ 2227 063f 9C       		.byte	0x9c
+ 2228 0640 9D060000 		.4byte	0x69d
+ 2229 0644 17       		.uleb128 0x17
+ 2230 0645 B8030000 		.4byte	.LASF51
+ 2231 0649 01       		.byte	0x1
+ 2232 064a 9A       		.byte	0x9a
+ 2233 064b 81000000 		.4byte	0x81
+ 2234 064f 13000000 		.4byte	.LLST1
+ 2235 0653 10       		.uleb128 0x10
+ 2236 0654 0C000000 		.4byte	.LVL47
+ 2237 0658 B5050000 		.4byte	0x5b5
+ 2238 065c 10       		.uleb128 0x10
+ 2239 065d 10000000 		.4byte	.LVL48
+ 2240 0661 34080000 		.4byte	0x834
+ 2241 0665 10       		.uleb128 0x10
+ 2242 0666 1E000000 		.4byte	.LVL50
+ 2243 066a 0D040000 		.4byte	0x40d
+ 2244 066e 11       		.uleb128 0x11
+ 2245 066f 2A000000 		.4byte	.LVL51
+ 2246 0673 49030000 		.4byte	0x349
+ 2247 0677 8A060000 		.4byte	0x68a
+ 2248 067b 0F       		.uleb128 0xf
+ 2249 067c 01       		.uleb128 0x1
+ 2250 067d 50       		.byte	0x50
+ 2251 067e 01       		.uleb128 0x1
+ 2252 067f 49       		.byte	0x49
+ 2253 0680 0F       		.uleb128 0xf
+ 2254 0681 01       		.uleb128 0x1
+ 2255 0682 51       		.byte	0x51
+ 2256 0683 05       		.uleb128 0x5
+ 2257 0684 03       		.byte	0x3
+ 2258 0685 00000000 		.4byte	MPG_Normal
+ 2259 0689 00       		.byte	0
+ 2260 068a 10       		.uleb128 0x10
+ 2261 068b 3E000000 		.4byte	.LVL53
+ 2262 068f 33040000 		.4byte	0x433
+ 2263 0693 10       		.uleb128 0x10
+ 2264 0694 50000000 		.4byte	.LVL54
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 51
+
+
+ 2265 0698 D8050000 		.4byte	0x5d8
+ 2266 069c 00       		.byte	0
+ 2267 069d 19       		.uleb128 0x19
+ 2268 069e 0A030000 		.4byte	.LASF52
+ 2269 06a2 01       		.byte	0x1
+ 2270 06a3 2A       		.byte	0x2a
+ 2271 06a4 81000000 		.4byte	0x81
+ 2272 06a8 05       		.uleb128 0x5
+ 2273 06a9 03       		.byte	0x3
+ 2274 06aa 10000000 		.4byte	C_Count
+ 2275 06ae 19       		.uleb128 0x19
+ 2276 06af 78030000 		.4byte	.LASF53
+ 2277 06b3 01       		.byte	0x1
+ 2278 06b4 2B       		.byte	0x2b
+ 2279 06b5 81000000 		.4byte	0x81
+ 2280 06b9 05       		.uleb128 0x5
+ 2281 06ba 03       		.byte	0x3
+ 2282 06bb 12000000 		.4byte	SecCount
+ 2283 06bf 19       		.uleb128 0x19
+ 2284 06c0 9B000000 		.4byte	.LASF54
+ 2285 06c4 01       		.byte	0x1
+ 2286 06c5 2D       		.byte	0x2d
+ 2287 06c6 81000000 		.4byte	0x81
+ 2288 06ca 05       		.uleb128 0x5
+ 2289 06cb 03       		.byte	0x3
+ 2290 06cc 18000000 		.4byte	PrevStatus
+ 2291 06d0 19       		.uleb128 0x19
+ 2292 06d1 73020000 		.4byte	.LASF55
+ 2293 06d5 01       		.byte	0x1
+ 2294 06d6 40       		.byte	0x40
+ 2295 06d7 97000000 		.4byte	0x97
+ 2296 06db 05       		.uleb128 0x5
+ 2297 06dc 03       		.byte	0x3
+ 2298 06dd 14000000 		.4byte	A_Count
+ 2299 06e1 19       		.uleb128 0x19
+ 2300 06e2 FB020000 		.4byte	.LASF56
+ 2301 06e6 01       		.byte	0x1
+ 2302 06e7 41       		.byte	0x41
+ 2303 06e8 A3000000 		.4byte	0xa3
+ 2304 06ec 05       		.uleb128 0x5
+ 2305 06ed 03       		.byte	0x3
+ 2306 06ee 16000000 		.4byte	S_Count
+ 2307 06f2 19       		.uleb128 0x19
+ 2308 06f3 95010000 		.4byte	.LASF57
+ 2309 06f7 01       		.byte	0x1
+ 2310 06f8 59       		.byte	0x59
+ 2311 06f9 AF000000 		.4byte	0xaf
+ 2312 06fd 05       		.uleb128 0x5
+ 2313 06fe 03       		.byte	0x3
+ 2314 06ff 04000000 		.4byte	TC_Delay
+ 2315 0703 19       		.uleb128 0x19
+ 2316 0704 81030000 		.4byte	.LASF58
+ 2317 0708 01       		.byte	0x1
+ 2318 0709 5A       		.byte	0x5a
+ 2319 070a AF000000 		.4byte	0xaf
+ 2320 070e 05       		.uleb128 0x5
+ 2321 070f 03       		.byte	0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 52
+
+
+ 2322 0710 00000000 		.4byte	TC_DelayStart
+ 2323 0714 1A       		.uleb128 0x1a
+ 2324 0715 20020000 		.4byte	.LASF59
+ 2325 0719 01       		.byte	0x1
+ 2326 071a 0901     		.2byte	0x109
+ 2327 071c AF000000 		.4byte	0xaf
+ 2328 0720 05       		.uleb128 0x5
+ 2329 0721 03       		.byte	0x3
+ 2330 0722 08000000 		.4byte	Blink_Timer
+ 2331 0726 1A       		.uleb128 0x1a
+ 2332 0727 7B020000 		.4byte	.LASF60
+ 2333 072b 01       		.byte	0x1
+ 2334 072c 0A01     		.2byte	0x10a
+ 2335 072e AF000000 		.4byte	0xaf
+ 2336 0732 05       		.uleb128 0x5
+ 2337 0733 03       		.byte	0x3
+ 2338 0734 0C000000 		.4byte	BlinkCount
+ 2339 0738 1B       		.uleb128 0x1b
+ 2340 0739 C0030000 		.4byte	.LASF61
+ 2341 073d 06       		.byte	0x6
+ 2342 073e 1207     		.2byte	0x712
+ 2343 0740 44070000 		.4byte	0x744
+ 2344 0744 06       		.uleb128 0x6
+ 2345 0745 8C000000 		.4byte	0x8c
+ 2346 0749 14       		.uleb128 0x14
+ 2347 074a E8000000 		.4byte	0xe8
+ 2348 074e 54070000 		.4byte	0x754
+ 2349 0752 1C       		.uleb128 0x1c
+ 2350 0753 00       		.byte	0
+ 2351 0754 1D       		.uleb128 0x1d
+ 2352 0755 16000000 		.4byte	.LASF62
+ 2353 0759 01       		.byte	0x1
+ 2354 075a 17       		.byte	0x17
+ 2355 075b 49070000 		.4byte	0x749
+ 2356 075f 1D       		.uleb128 0x1d
+ 2357 0760 C0010000 		.4byte	.LASF63
+ 2358 0764 01       		.byte	0x1
+ 2359 0765 18       		.byte	0x18
+ 2360 0766 49070000 		.4byte	0x749
+ 2361 076a 1D       		.uleb128 0x1d
+ 2362 076b 58020000 		.4byte	.LASF64
+ 2363 076f 01       		.byte	0x1
+ 2364 0770 1A       		.byte	0x1a
+ 2365 0771 DC000000 		.4byte	0xdc
+ 2366 0775 1D       		.uleb128 0x1d
+ 2367 0776 4E010000 		.4byte	.LASF65
+ 2368 077a 01       		.byte	0x1
+ 2369 077b 1C       		.byte	0x1c
+ 2370 077c DC000000 		.4byte	0xdc
+ 2371 0780 1E       		.uleb128 0x1e
+ 2372 0781 9A020000 		.4byte	.LASF66
+ 2373 0785 01       		.byte	0x1
+ 2374 0786 1E       		.byte	0x1e
+ 2375 0787 E8000000 		.4byte	0xe8
+ 2376 078b 05       		.uleb128 0x5
+ 2377 078c 03       		.byte	0x3
+ 2378 078d 00000000 		.4byte	MPG_SM
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 53
+
+
+ 2379 0791 1E       		.uleb128 0x1e
+ 2380 0792 23030000 		.4byte	.LASF67
+ 2381 0796 01       		.byte	0x1
+ 2382 0797 1F       		.byte	0x1f
+ 2383 0798 97000000 		.4byte	0x97
+ 2384 079c 05       		.uleb128 0x5
+ 2385 079d 03       		.byte	0x3
+ 2386 079e 00000000 		.4byte	MPG_STATE
+ 2387 07a2 1E       		.uleb128 0x1e
+ 2388 07a3 04020000 		.4byte	.LASF68
+ 2389 07a7 01       		.byte	0x1
+ 2390 07a8 21       		.byte	0x21
+ 2391 07a9 E8000000 		.4byte	0xe8
+ 2392 07ad 05       		.uleb128 0x5
+ 2393 07ae 03       		.byte	0x3
+ 2394 07af 00000000 		.4byte	DlyNextState
+ 2395 07b3 1E       		.uleb128 0x1e
+ 2396 07b4 00000000 		.4byte	.LASF69
+ 2397 07b8 01       		.byte	0x1
+ 2398 07b9 23       		.byte	0x23
+ 2399 07ba E8000000 		.4byte	0xe8
+ 2400 07be 05       		.uleb128 0x5
+ 2401 07bf 03       		.byte	0x3
+ 2402 07c0 00000000 		.4byte	Blink_SM
+ 2403 07c4 1E       		.uleb128 0x1e
+ 2404 07c5 7A000000 		.4byte	.LASF70
+ 2405 07c9 01       		.byte	0x1
+ 2406 07ca 24       		.byte	0x24
+ 2407 07cb 97000000 		.4byte	0x97
+ 2408 07cf 05       		.uleb128 0x5
+ 2409 07d0 03       		.byte	0x3
+ 2410 07d1 00000000 		.4byte	Blink_STATE
+ 2411 07d5 1E       		.uleb128 0x1e
+ 2412 07d6 F7010000 		.4byte	.LASF71
+ 2413 07da 01       		.byte	0x1
+ 2414 07db 26       		.byte	0x26
+ 2415 07dc 97000000 		.4byte	0x97
+ 2416 07e0 05       		.uleb128 0x5
+ 2417 07e1 03       		.byte	0x3
+ 2418 07e2 00000000 		.4byte	Current_Tool
+ 2419 07e6 1E       		.uleb128 0x1e
+ 2420 07e7 D6000000 		.4byte	.LASF72
+ 2421 07eb 01       		.byte	0x1
+ 2422 07ec 27       		.byte	0x27
+ 2423 07ed 97000000 		.4byte	0x97
+ 2424 07f1 05       		.uleb128 0x5
+ 2425 07f2 03       		.byte	0x3
+ 2426 07f3 00000000 		.4byte	Target_Tool
+ 2427 07f7 1E       		.uleb128 0x1e
+ 2428 07f8 09000000 		.4byte	.LASF73
+ 2429 07fc 01       		.byte	0x1
+ 2430 07fd 28       		.byte	0x28
+ 2431 07fe BB000000 		.4byte	0xbb
+ 2432 0802 05       		.uleb128 0x5
+ 2433 0803 03       		.byte	0x3
+ 2434 0804 00000000 		.4byte	Carousel_Dir
+ 2435 0808 1F       		.uleb128 0x1f
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 54
+
+
+ 2436 0809 32000000 		.4byte	.LASF74
+ 2437 080d 32000000 		.4byte	.LASF74
+ 2438 0811 07       		.byte	0x7
+ 2439 0812 26       		.byte	0x26
+ 2440 0813 1F       		.uleb128 0x1f
+ 2441 0814 87040000 		.4byte	.LASF75
+ 2442 0818 87040000 		.4byte	.LASF75
+ 2443 081c 07       		.byte	0x7
+ 2444 081d 29       		.byte	0x29
+ 2445 081e 1F       		.uleb128 0x1f
+ 2446 081f B8010000 		.4byte	.LASF76
+ 2447 0823 B8010000 		.4byte	.LASF76
+ 2448 0827 08       		.byte	0x8
+ 2449 0828 E7       		.byte	0xe7
+ 2450 0829 1F       		.uleb128 0x1f
+ 2451 082a C2000000 		.4byte	.LASF77
+ 2452 082e C2000000 		.4byte	.LASF77
+ 2453 0832 09       		.byte	0x9
+ 2454 0833 4A       		.byte	0x4a
+ 2455 0834 1F       		.uleb128 0x1f
+ 2456 0835 DB020000 		.4byte	.LASF78
+ 2457 0839 DB020000 		.4byte	.LASF78
+ 2458 083d 0A       		.byte	0xa
+ 2459 083e 58       		.byte	0x58
+ 2460 083f 1F       		.uleb128 0x1f
+ 2461 0840 22000000 		.4byte	.LASF79
+ 2462 0844 22000000 		.4byte	.LASF79
+ 2463 0848 05       		.byte	0x5
+ 2464 0849 15       		.byte	0x15
+ 2465 084a 1F       		.uleb128 0x1f
+ 2466 084b 6A040000 		.4byte	.LASF80
+ 2467 084f 6A040000 		.4byte	.LASF80
+ 2468 0853 05       		.byte	0x5
+ 2469 0854 13       		.byte	0x13
+ 2470 0855 00       		.byte	0
+ 2471              		.section	.debug_abbrev,"",%progbits
+ 2472              	.Ldebug_abbrev0:
+ 2473 0000 01       		.uleb128 0x1
+ 2474 0001 11       		.uleb128 0x11
+ 2475 0002 01       		.byte	0x1
+ 2476 0003 25       		.uleb128 0x25
+ 2477 0004 0E       		.uleb128 0xe
+ 2478 0005 13       		.uleb128 0x13
+ 2479 0006 0B       		.uleb128 0xb
+ 2480 0007 03       		.uleb128 0x3
+ 2481 0008 0E       		.uleb128 0xe
+ 2482 0009 1B       		.uleb128 0x1b
+ 2483 000a 0E       		.uleb128 0xe
+ 2484 000b 55       		.uleb128 0x55
+ 2485 000c 17       		.uleb128 0x17
+ 2486 000d 11       		.uleb128 0x11
+ 2487 000e 01       		.uleb128 0x1
+ 2488 000f 10       		.uleb128 0x10
+ 2489 0010 17       		.uleb128 0x17
+ 2490 0011 00       		.byte	0
+ 2491 0012 00       		.byte	0
+ 2492 0013 02       		.uleb128 0x2
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 55
+
+
+ 2493 0014 24       		.uleb128 0x24
+ 2494 0015 00       		.byte	0
+ 2495 0016 0B       		.uleb128 0xb
+ 2496 0017 0B       		.uleb128 0xb
+ 2497 0018 3E       		.uleb128 0x3e
+ 2498 0019 0B       		.uleb128 0xb
+ 2499 001a 03       		.uleb128 0x3
+ 2500 001b 0E       		.uleb128 0xe
+ 2501 001c 00       		.byte	0
+ 2502 001d 00       		.byte	0
+ 2503 001e 03       		.uleb128 0x3
+ 2504 001f 16       		.uleb128 0x16
+ 2505 0020 00       		.byte	0
+ 2506 0021 03       		.uleb128 0x3
+ 2507 0022 0E       		.uleb128 0xe
+ 2508 0023 3A       		.uleb128 0x3a
+ 2509 0024 0B       		.uleb128 0xb
+ 2510 0025 3B       		.uleb128 0x3b
+ 2511 0026 0B       		.uleb128 0xb
+ 2512 0027 49       		.uleb128 0x49
+ 2513 0028 13       		.uleb128 0x13
+ 2514 0029 00       		.byte	0
+ 2515 002a 00       		.byte	0
+ 2516 002b 04       		.uleb128 0x4
+ 2517 002c 24       		.uleb128 0x24
+ 2518 002d 00       		.byte	0
+ 2519 002e 0B       		.uleb128 0xb
+ 2520 002f 0B       		.uleb128 0xb
+ 2521 0030 3E       		.uleb128 0x3e
+ 2522 0031 0B       		.uleb128 0xb
+ 2523 0032 03       		.uleb128 0x3
+ 2524 0033 08       		.uleb128 0x8
+ 2525 0034 00       		.byte	0
+ 2526 0035 00       		.byte	0
+ 2527 0036 05       		.uleb128 0x5
+ 2528 0037 16       		.uleb128 0x16
+ 2529 0038 00       		.byte	0
+ 2530 0039 03       		.uleb128 0x3
+ 2531 003a 0E       		.uleb128 0xe
+ 2532 003b 3A       		.uleb128 0x3a
+ 2533 003c 0B       		.uleb128 0xb
+ 2534 003d 3B       		.uleb128 0x3b
+ 2535 003e 05       		.uleb128 0x5
+ 2536 003f 49       		.uleb128 0x49
+ 2537 0040 13       		.uleb128 0x13
+ 2538 0041 00       		.byte	0
+ 2539 0042 00       		.byte	0
+ 2540 0043 06       		.uleb128 0x6
+ 2541 0044 35       		.uleb128 0x35
+ 2542 0045 00       		.byte	0
+ 2543 0046 49       		.uleb128 0x49
+ 2544 0047 13       		.uleb128 0x13
+ 2545 0048 00       		.byte	0
+ 2546 0049 00       		.byte	0
+ 2547 004a 07       		.uleb128 0x7
+ 2548 004b 0F       		.uleb128 0xf
+ 2549 004c 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 56
+
+
+ 2550 004d 0B       		.uleb128 0xb
+ 2551 004e 0B       		.uleb128 0xb
+ 2552 004f 49       		.uleb128 0x49
+ 2553 0050 13       		.uleb128 0x13
+ 2554 0051 00       		.byte	0
+ 2555 0052 00       		.byte	0
+ 2556 0053 08       		.uleb128 0x8
+ 2557 0054 15       		.uleb128 0x15
+ 2558 0055 00       		.byte	0
+ 2559 0056 27       		.uleb128 0x27
+ 2560 0057 19       		.uleb128 0x19
+ 2561 0058 00       		.byte	0
+ 2562 0059 00       		.byte	0
+ 2563 005a 09       		.uleb128 0x9
+ 2564 005b 2E       		.uleb128 0x2e
+ 2565 005c 00       		.byte	0
+ 2566 005d 3F       		.uleb128 0x3f
+ 2567 005e 19       		.uleb128 0x19
+ 2568 005f 03       		.uleb128 0x3
+ 2569 0060 0E       		.uleb128 0xe
+ 2570 0061 3A       		.uleb128 0x3a
+ 2571 0062 0B       		.uleb128 0xb
+ 2572 0063 3B       		.uleb128 0x3b
+ 2573 0064 0B       		.uleb128 0xb
+ 2574 0065 27       		.uleb128 0x27
+ 2575 0066 19       		.uleb128 0x19
+ 2576 0067 11       		.uleb128 0x11
+ 2577 0068 01       		.uleb128 0x1
+ 2578 0069 12       		.uleb128 0x12
+ 2579 006a 06       		.uleb128 0x6
+ 2580 006b 40       		.uleb128 0x40
+ 2581 006c 18       		.uleb128 0x18
+ 2582 006d 9642     		.uleb128 0x2116
+ 2583 006f 19       		.uleb128 0x19
+ 2584 0070 00       		.byte	0
+ 2585 0071 00       		.byte	0
+ 2586 0072 0A       		.uleb128 0xa
+ 2587 0073 2E       		.uleb128 0x2e
+ 2588 0074 00       		.byte	0
+ 2589 0075 3F       		.uleb128 0x3f
+ 2590 0076 19       		.uleb128 0x19
+ 2591 0077 03       		.uleb128 0x3
+ 2592 0078 0E       		.uleb128 0xe
+ 2593 0079 3A       		.uleb128 0x3a
+ 2594 007a 0B       		.uleb128 0xb
+ 2595 007b 3B       		.uleb128 0x3b
+ 2596 007c 0B       		.uleb128 0xb
+ 2597 007d 27       		.uleb128 0x27
+ 2598 007e 19       		.uleb128 0x19
+ 2599 007f 11       		.uleb128 0x11
+ 2600 0080 01       		.uleb128 0x1
+ 2601 0081 12       		.uleb128 0x12
+ 2602 0082 06       		.uleb128 0x6
+ 2603 0083 40       		.uleb128 0x40
+ 2604 0084 18       		.uleb128 0x18
+ 2605 0085 9742     		.uleb128 0x2117
+ 2606 0087 19       		.uleb128 0x19
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 57
+
+
+ 2607 0088 00       		.byte	0
+ 2608 0089 00       		.byte	0
+ 2609 008a 0B       		.uleb128 0xb
+ 2610 008b 2E       		.uleb128 0x2e
+ 2611 008c 00       		.byte	0
+ 2612 008d 3F       		.uleb128 0x3f
+ 2613 008e 19       		.uleb128 0x19
+ 2614 008f 03       		.uleb128 0x3
+ 2615 0090 0E       		.uleb128 0xe
+ 2616 0091 3A       		.uleb128 0x3a
+ 2617 0092 0B       		.uleb128 0xb
+ 2618 0093 3B       		.uleb128 0x3b
+ 2619 0094 05       		.uleb128 0x5
+ 2620 0095 27       		.uleb128 0x27
+ 2621 0096 19       		.uleb128 0x19
+ 2622 0097 11       		.uleb128 0x11
+ 2623 0098 01       		.uleb128 0x1
+ 2624 0099 12       		.uleb128 0x12
+ 2625 009a 06       		.uleb128 0x6
+ 2626 009b 40       		.uleb128 0x40
+ 2627 009c 18       		.uleb128 0x18
+ 2628 009d 9642     		.uleb128 0x2116
+ 2629 009f 19       		.uleb128 0x19
+ 2630 00a0 00       		.byte	0
+ 2631 00a1 00       		.byte	0
+ 2632 00a2 0C       		.uleb128 0xc
+ 2633 00a3 2E       		.uleb128 0x2e
+ 2634 00a4 00       		.byte	0
+ 2635 00a5 3F       		.uleb128 0x3f
+ 2636 00a6 19       		.uleb128 0x19
+ 2637 00a7 03       		.uleb128 0x3
+ 2638 00a8 0E       		.uleb128 0xe
+ 2639 00a9 3A       		.uleb128 0x3a
+ 2640 00aa 0B       		.uleb128 0xb
+ 2641 00ab 3B       		.uleb128 0x3b
+ 2642 00ac 05       		.uleb128 0x5
+ 2643 00ad 27       		.uleb128 0x27
+ 2644 00ae 19       		.uleb128 0x19
+ 2645 00af 11       		.uleb128 0x11
+ 2646 00b0 01       		.uleb128 0x1
+ 2647 00b1 12       		.uleb128 0x12
+ 2648 00b2 06       		.uleb128 0x6
+ 2649 00b3 40       		.uleb128 0x40
+ 2650 00b4 18       		.uleb128 0x18
+ 2651 00b5 9742     		.uleb128 0x2117
+ 2652 00b7 19       		.uleb128 0x19
+ 2653 00b8 00       		.byte	0
+ 2654 00b9 00       		.byte	0
+ 2655 00ba 0D       		.uleb128 0xd
+ 2656 00bb 2E       		.uleb128 0x2e
+ 2657 00bc 01       		.byte	0x1
+ 2658 00bd 3F       		.uleb128 0x3f
+ 2659 00be 19       		.uleb128 0x19
+ 2660 00bf 03       		.uleb128 0x3
+ 2661 00c0 0E       		.uleb128 0xe
+ 2662 00c1 3A       		.uleb128 0x3a
+ 2663 00c2 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 58
+
+
+ 2664 00c3 3B       		.uleb128 0x3b
+ 2665 00c4 05       		.uleb128 0x5
+ 2666 00c5 27       		.uleb128 0x27
+ 2667 00c6 19       		.uleb128 0x19
+ 2668 00c7 11       		.uleb128 0x11
+ 2669 00c8 01       		.uleb128 0x1
+ 2670 00c9 12       		.uleb128 0x12
+ 2671 00ca 06       		.uleb128 0x6
+ 2672 00cb 40       		.uleb128 0x40
+ 2673 00cc 18       		.uleb128 0x18
+ 2674 00cd 9742     		.uleb128 0x2117
+ 2675 00cf 19       		.uleb128 0x19
+ 2676 00d0 01       		.uleb128 0x1
+ 2677 00d1 13       		.uleb128 0x13
+ 2678 00d2 00       		.byte	0
+ 2679 00d3 00       		.byte	0
+ 2680 00d4 0E       		.uleb128 0xe
+ 2681 00d5 898201   		.uleb128 0x4109
+ 2682 00d8 01       		.byte	0x1
+ 2683 00d9 11       		.uleb128 0x11
+ 2684 00da 01       		.uleb128 0x1
+ 2685 00db 31       		.uleb128 0x31
+ 2686 00dc 13       		.uleb128 0x13
+ 2687 00dd 00       		.byte	0
+ 2688 00de 00       		.byte	0
+ 2689 00df 0F       		.uleb128 0xf
+ 2690 00e0 8A8201   		.uleb128 0x410a
+ 2691 00e3 00       		.byte	0
+ 2692 00e4 02       		.uleb128 0x2
+ 2693 00e5 18       		.uleb128 0x18
+ 2694 00e6 9142     		.uleb128 0x2111
+ 2695 00e8 18       		.uleb128 0x18
+ 2696 00e9 00       		.byte	0
+ 2697 00ea 00       		.byte	0
+ 2698 00eb 10       		.uleb128 0x10
+ 2699 00ec 898201   		.uleb128 0x4109
+ 2700 00ef 00       		.byte	0
+ 2701 00f0 11       		.uleb128 0x11
+ 2702 00f1 01       		.uleb128 0x1
+ 2703 00f2 31       		.uleb128 0x31
+ 2704 00f3 13       		.uleb128 0x13
+ 2705 00f4 00       		.byte	0
+ 2706 00f5 00       		.byte	0
+ 2707 00f6 11       		.uleb128 0x11
+ 2708 00f7 898201   		.uleb128 0x4109
+ 2709 00fa 01       		.byte	0x1
+ 2710 00fb 11       		.uleb128 0x11
+ 2711 00fc 01       		.uleb128 0x1
+ 2712 00fd 31       		.uleb128 0x31
+ 2713 00fe 13       		.uleb128 0x13
+ 2714 00ff 01       		.uleb128 0x1
+ 2715 0100 13       		.uleb128 0x13
+ 2716 0101 00       		.byte	0
+ 2717 0102 00       		.byte	0
+ 2718 0103 12       		.uleb128 0x12
+ 2719 0104 2E       		.uleb128 0x2e
+ 2720 0105 01       		.byte	0x1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 59
+
+
+ 2721 0106 3F       		.uleb128 0x3f
+ 2722 0107 19       		.uleb128 0x19
+ 2723 0108 03       		.uleb128 0x3
+ 2724 0109 0E       		.uleb128 0xe
+ 2725 010a 3A       		.uleb128 0x3a
+ 2726 010b 0B       		.uleb128 0xb
+ 2727 010c 3B       		.uleb128 0x3b
+ 2728 010d 0B       		.uleb128 0xb
+ 2729 010e 27       		.uleb128 0x27
+ 2730 010f 19       		.uleb128 0x19
+ 2731 0110 11       		.uleb128 0x11
+ 2732 0111 01       		.uleb128 0x1
+ 2733 0112 12       		.uleb128 0x12
+ 2734 0113 06       		.uleb128 0x6
+ 2735 0114 40       		.uleb128 0x40
+ 2736 0115 18       		.uleb128 0x18
+ 2737 0116 9742     		.uleb128 0x2117
+ 2738 0118 19       		.uleb128 0x19
+ 2739 0119 01       		.uleb128 0x1
+ 2740 011a 13       		.uleb128 0x13
+ 2741 011b 00       		.byte	0
+ 2742 011c 00       		.byte	0
+ 2743 011d 13       		.uleb128 0x13
+ 2744 011e 34       		.uleb128 0x34
+ 2745 011f 00       		.byte	0
+ 2746 0120 03       		.uleb128 0x3
+ 2747 0121 08       		.uleb128 0x8
+ 2748 0122 3A       		.uleb128 0x3a
+ 2749 0123 0B       		.uleb128 0xb
+ 2750 0124 3B       		.uleb128 0x3b
+ 2751 0125 0B       		.uleb128 0xb
+ 2752 0126 49       		.uleb128 0x49
+ 2753 0127 13       		.uleb128 0x13
+ 2754 0128 02       		.uleb128 0x2
+ 2755 0129 18       		.uleb128 0x18
+ 2756 012a 00       		.byte	0
+ 2757 012b 00       		.byte	0
+ 2758 012c 14       		.uleb128 0x14
+ 2759 012d 01       		.uleb128 0x1
+ 2760 012e 01       		.byte	0x1
+ 2761 012f 49       		.uleb128 0x49
+ 2762 0130 13       		.uleb128 0x13
+ 2763 0131 01       		.uleb128 0x1
+ 2764 0132 13       		.uleb128 0x13
+ 2765 0133 00       		.byte	0
+ 2766 0134 00       		.byte	0
+ 2767 0135 15       		.uleb128 0x15
+ 2768 0136 21       		.uleb128 0x21
+ 2769 0137 00       		.byte	0
+ 2770 0138 49       		.uleb128 0x49
+ 2771 0139 13       		.uleb128 0x13
+ 2772 013a 2F       		.uleb128 0x2f
+ 2773 013b 0B       		.uleb128 0xb
+ 2774 013c 00       		.byte	0
+ 2775 013d 00       		.byte	0
+ 2776 013e 16       		.uleb128 0x16
+ 2777 013f 05       		.uleb128 0x5
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 60
+
+
+ 2778 0140 00       		.byte	0
+ 2779 0141 03       		.uleb128 0x3
+ 2780 0142 0E       		.uleb128 0xe
+ 2781 0143 3A       		.uleb128 0x3a
+ 2782 0144 0B       		.uleb128 0xb
+ 2783 0145 3B       		.uleb128 0x3b
+ 2784 0146 0B       		.uleb128 0xb
+ 2785 0147 49       		.uleb128 0x49
+ 2786 0148 13       		.uleb128 0x13
+ 2787 0149 02       		.uleb128 0x2
+ 2788 014a 18       		.uleb128 0x18
+ 2789 014b 00       		.byte	0
+ 2790 014c 00       		.byte	0
+ 2791 014d 17       		.uleb128 0x17
+ 2792 014e 34       		.uleb128 0x34
+ 2793 014f 00       		.byte	0
+ 2794 0150 03       		.uleb128 0x3
+ 2795 0151 0E       		.uleb128 0xe
+ 2796 0152 3A       		.uleb128 0x3a
+ 2797 0153 0B       		.uleb128 0xb
+ 2798 0154 3B       		.uleb128 0x3b
+ 2799 0155 0B       		.uleb128 0xb
+ 2800 0156 49       		.uleb128 0x49
+ 2801 0157 13       		.uleb128 0x13
+ 2802 0158 02       		.uleb128 0x2
+ 2803 0159 17       		.uleb128 0x17
+ 2804 015a 00       		.byte	0
+ 2805 015b 00       		.byte	0
+ 2806 015c 18       		.uleb128 0x18
+ 2807 015d 2E       		.uleb128 0x2e
+ 2808 015e 01       		.byte	0x1
+ 2809 015f 3F       		.uleb128 0x3f
+ 2810 0160 19       		.uleb128 0x19
+ 2811 0161 03       		.uleb128 0x3
+ 2812 0162 0E       		.uleb128 0xe
+ 2813 0163 3A       		.uleb128 0x3a
+ 2814 0164 0B       		.uleb128 0xb
+ 2815 0165 3B       		.uleb128 0x3b
+ 2816 0166 0B       		.uleb128 0xb
+ 2817 0167 27       		.uleb128 0x27
+ 2818 0168 19       		.uleb128 0x19
+ 2819 0169 49       		.uleb128 0x49
+ 2820 016a 13       		.uleb128 0x13
+ 2821 016b 11       		.uleb128 0x11
+ 2822 016c 01       		.uleb128 0x1
+ 2823 016d 12       		.uleb128 0x12
+ 2824 016e 06       		.uleb128 0x6
+ 2825 016f 40       		.uleb128 0x40
+ 2826 0170 18       		.uleb128 0x18
+ 2827 0171 9742     		.uleb128 0x2117
+ 2828 0173 19       		.uleb128 0x19
+ 2829 0174 01       		.uleb128 0x1
+ 2830 0175 13       		.uleb128 0x13
+ 2831 0176 00       		.byte	0
+ 2832 0177 00       		.byte	0
+ 2833 0178 19       		.uleb128 0x19
+ 2834 0179 34       		.uleb128 0x34
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 61
+
+
+ 2835 017a 00       		.byte	0
+ 2836 017b 03       		.uleb128 0x3
+ 2837 017c 0E       		.uleb128 0xe
+ 2838 017d 3A       		.uleb128 0x3a
+ 2839 017e 0B       		.uleb128 0xb
+ 2840 017f 3B       		.uleb128 0x3b
+ 2841 0180 0B       		.uleb128 0xb
+ 2842 0181 49       		.uleb128 0x49
+ 2843 0182 13       		.uleb128 0x13
+ 2844 0183 02       		.uleb128 0x2
+ 2845 0184 18       		.uleb128 0x18
+ 2846 0185 00       		.byte	0
+ 2847 0186 00       		.byte	0
+ 2848 0187 1A       		.uleb128 0x1a
+ 2849 0188 34       		.uleb128 0x34
+ 2850 0189 00       		.byte	0
+ 2851 018a 03       		.uleb128 0x3
+ 2852 018b 0E       		.uleb128 0xe
+ 2853 018c 3A       		.uleb128 0x3a
+ 2854 018d 0B       		.uleb128 0xb
+ 2855 018e 3B       		.uleb128 0x3b
+ 2856 018f 05       		.uleb128 0x5
+ 2857 0190 49       		.uleb128 0x49
+ 2858 0191 13       		.uleb128 0x13
+ 2859 0192 02       		.uleb128 0x2
+ 2860 0193 18       		.uleb128 0x18
+ 2861 0194 00       		.byte	0
+ 2862 0195 00       		.byte	0
+ 2863 0196 1B       		.uleb128 0x1b
+ 2864 0197 34       		.uleb128 0x34
+ 2865 0198 00       		.byte	0
+ 2866 0199 03       		.uleb128 0x3
+ 2867 019a 0E       		.uleb128 0xe
+ 2868 019b 3A       		.uleb128 0x3a
+ 2869 019c 0B       		.uleb128 0xb
+ 2870 019d 3B       		.uleb128 0x3b
+ 2871 019e 05       		.uleb128 0x5
+ 2872 019f 49       		.uleb128 0x49
+ 2873 01a0 13       		.uleb128 0x13
+ 2874 01a1 3F       		.uleb128 0x3f
+ 2875 01a2 19       		.uleb128 0x19
+ 2876 01a3 3C       		.uleb128 0x3c
+ 2877 01a4 19       		.uleb128 0x19
+ 2878 01a5 00       		.byte	0
+ 2879 01a6 00       		.byte	0
+ 2880 01a7 1C       		.uleb128 0x1c
+ 2881 01a8 21       		.uleb128 0x21
+ 2882 01a9 00       		.byte	0
+ 2883 01aa 00       		.byte	0
+ 2884 01ab 00       		.byte	0
+ 2885 01ac 1D       		.uleb128 0x1d
+ 2886 01ad 34       		.uleb128 0x34
+ 2887 01ae 00       		.byte	0
+ 2888 01af 03       		.uleb128 0x3
+ 2889 01b0 0E       		.uleb128 0xe
+ 2890 01b1 3A       		.uleb128 0x3a
+ 2891 01b2 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 62
+
+
+ 2892 01b3 3B       		.uleb128 0x3b
+ 2893 01b4 0B       		.uleb128 0xb
+ 2894 01b5 49       		.uleb128 0x49
+ 2895 01b6 13       		.uleb128 0x13
+ 2896 01b7 3F       		.uleb128 0x3f
+ 2897 01b8 19       		.uleb128 0x19
+ 2898 01b9 3C       		.uleb128 0x3c
+ 2899 01ba 19       		.uleb128 0x19
+ 2900 01bb 00       		.byte	0
+ 2901 01bc 00       		.byte	0
+ 2902 01bd 1E       		.uleb128 0x1e
+ 2903 01be 34       		.uleb128 0x34
+ 2904 01bf 00       		.byte	0
+ 2905 01c0 03       		.uleb128 0x3
+ 2906 01c1 0E       		.uleb128 0xe
+ 2907 01c2 3A       		.uleb128 0x3a
+ 2908 01c3 0B       		.uleb128 0xb
+ 2909 01c4 3B       		.uleb128 0x3b
+ 2910 01c5 0B       		.uleb128 0xb
+ 2911 01c6 49       		.uleb128 0x49
+ 2912 01c7 13       		.uleb128 0x13
+ 2913 01c8 3F       		.uleb128 0x3f
+ 2914 01c9 19       		.uleb128 0x19
+ 2915 01ca 02       		.uleb128 0x2
+ 2916 01cb 18       		.uleb128 0x18
+ 2917 01cc 00       		.byte	0
+ 2918 01cd 00       		.byte	0
+ 2919 01ce 1F       		.uleb128 0x1f
+ 2920 01cf 2E       		.uleb128 0x2e
+ 2921 01d0 00       		.byte	0
+ 2922 01d1 3F       		.uleb128 0x3f
+ 2923 01d2 19       		.uleb128 0x19
+ 2924 01d3 3C       		.uleb128 0x3c
+ 2925 01d4 19       		.uleb128 0x19
+ 2926 01d5 6E       		.uleb128 0x6e
+ 2927 01d6 0E       		.uleb128 0xe
+ 2928 01d7 03       		.uleb128 0x3
+ 2929 01d8 0E       		.uleb128 0xe
+ 2930 01d9 3A       		.uleb128 0x3a
+ 2931 01da 0B       		.uleb128 0xb
+ 2932 01db 3B       		.uleb128 0x3b
+ 2933 01dc 0B       		.uleb128 0xb
+ 2934 01dd 00       		.byte	0
+ 2935 01de 00       		.byte	0
+ 2936 01df 00       		.byte	0
+ 2937              		.section	.debug_loc,"",%progbits
+ 2938              	.Ldebug_loc0:
+ 2939              	.LLST0:
+ 2940 0000 0C000000 		.4byte	.LVL27
+ 2941 0004 10000000 		.4byte	.LVL28
+ 2942 0008 0100     		.2byte	0x1
+ 2943 000a 50       		.byte	0x50
+ 2944 000b 00000000 		.4byte	0
+ 2945 000f 00000000 		.4byte	0
+ 2946              	.LLST1:
+ 2947 0013 12000000 		.4byte	.LVL49
+ 2948 0017 1D000000 		.4byte	.LVL50-1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 63
+
+
+ 2949 001b 0100     		.2byte	0x1
+ 2950 001d 50       		.byte	0x50
+ 2951 001e 2C000000 		.4byte	.LVL52
+ 2952 0022 3D000000 		.4byte	.LVL53-1
+ 2953 0026 0100     		.2byte	0x1
+ 2954 0028 50       		.byte	0x50
+ 2955 0029 00000000 		.4byte	0
+ 2956 002d 00000000 		.4byte	0
+ 2957              		.section	.debug_aranges,"",%progbits
+ 2958 0000 E4000000 		.4byte	0xe4
+ 2959 0004 0200     		.2byte	0x2
+ 2960 0006 00000000 		.4byte	.Ldebug_info0
+ 2961 000a 04       		.byte	0x4
+ 2962 000b 00       		.byte	0
+ 2963 000c 0000     		.2byte	0
+ 2964 000e 0000     		.2byte	0
+ 2965 0010 00000000 		.4byte	.LFB69
+ 2966 0014 10000000 		.4byte	.LFE69-.LFB69
+ 2967 0018 00000000 		.4byte	.LFB74
+ 2968 001c 34000000 		.4byte	.LFE74-.LFB74
+ 2969 0020 00000000 		.4byte	.LFB78
+ 2970 0024 10000000 		.4byte	.LFE78-.LFB78
+ 2971 0028 00000000 		.4byte	.LFB80
+ 2972 002c 30000000 		.4byte	.LFE80-.LFB80
+ 2973 0030 00000000 		.4byte	.LFB89
+ 2974 0034 14000000 		.4byte	.LFE89-.LFB89
+ 2975 0038 00000000 		.4byte	.LFB82
+ 2976 003c 6C000000 		.4byte	.LFE82-.LFB82
+ 2977 0040 00000000 		.4byte	.LFB84
+ 2978 0044 60000000 		.4byte	.LFE84-.LFB84
+ 2979 0048 00000000 		.4byte	.LFB86
+ 2980 004c 5C000000 		.4byte	.LFE86-.LFB86
+ 2981 0050 00000000 		.4byte	.LFB88
+ 2982 0054 58000000 		.4byte	.LFE88-.LFB88
+ 2983 0058 00000000 		.4byte	.LFB64
+ 2984 005c 14000000 		.4byte	.LFE64-.LFB64
+ 2985 0060 00000000 		.4byte	.LFB65
+ 2986 0064 3C000000 		.4byte	.LFE65-.LFB65
+ 2987 0068 00000000 		.4byte	.LFB66
+ 2988 006c 14000000 		.4byte	.LFE66-.LFB66
+ 2989 0070 00000000 		.4byte	.LFB67
+ 2990 0074 48000000 		.4byte	.LFE67-.LFB67
+ 2991 0078 00000000 		.4byte	.LFB75
+ 2992 007c 2C000000 		.4byte	.LFE75-.LFB75
+ 2993 0080 00000000 		.4byte	.LFB76
+ 2994 0084 48000000 		.4byte	.LFE76-.LFB76
+ 2995 0088 00000000 		.4byte	.LFB79
+ 2996 008c 28000000 		.4byte	.LFE79-.LFB79
+ 2997 0090 00000000 		.4byte	.LFB81
+ 2998 0094 2C000000 		.4byte	.LFE81-.LFB81
+ 2999 0098 00000000 		.4byte	.LFB83
+ 3000 009c 28000000 		.4byte	.LFE83-.LFB83
+ 3001 00a0 00000000 		.4byte	.LFB72
+ 3002 00a4 2C000000 		.4byte	.LFE72-.LFB72
+ 3003 00a8 00000000 		.4byte	.LFB73
+ 3004 00ac 38000000 		.4byte	.LFE73-.LFB73
+ 3005 00b0 00000000 		.4byte	.LFB85
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 64
+
+
+ 3006 00b4 28000000 		.4byte	.LFE85-.LFB85
+ 3007 00b8 00000000 		.4byte	.LFB68
+ 3008 00bc 84000000 		.4byte	.LFE68-.LFB68
+ 3009 00c0 00000000 		.4byte	.LFB77
+ 3010 00c4 34000000 		.4byte	.LFE77-.LFB77
+ 3011 00c8 00000000 		.4byte	.LFB87
+ 3012 00cc 28000000 		.4byte	.LFE87-.LFB87
+ 3013 00d0 00000000 		.4byte	.LFB70
+ 3014 00d4 58000000 		.4byte	.LFE70-.LFB70
+ 3015 00d8 00000000 		.4byte	.LFB71
+ 3016 00dc 6C000000 		.4byte	.LFE71-.LFB71
+ 3017 00e0 00000000 		.4byte	0
+ 3018 00e4 00000000 		.4byte	0
+ 3019              		.section	.debug_ranges,"",%progbits
+ 3020              	.Ldebug_ranges0:
+ 3021 0000 00000000 		.4byte	.LFB69
+ 3022 0004 10000000 		.4byte	.LFE69
+ 3023 0008 00000000 		.4byte	.LFB74
+ 3024 000c 34000000 		.4byte	.LFE74
+ 3025 0010 00000000 		.4byte	.LFB78
+ 3026 0014 10000000 		.4byte	.LFE78
+ 3027 0018 00000000 		.4byte	.LFB80
+ 3028 001c 30000000 		.4byte	.LFE80
+ 3029 0020 00000000 		.4byte	.LFB89
+ 3030 0024 14000000 		.4byte	.LFE89
+ 3031 0028 00000000 		.4byte	.LFB82
+ 3032 002c 6C000000 		.4byte	.LFE82
+ 3033 0030 00000000 		.4byte	.LFB84
+ 3034 0034 60000000 		.4byte	.LFE84
+ 3035 0038 00000000 		.4byte	.LFB86
+ 3036 003c 5C000000 		.4byte	.LFE86
+ 3037 0040 00000000 		.4byte	.LFB88
+ 3038 0044 58000000 		.4byte	.LFE88
+ 3039 0048 00000000 		.4byte	.LFB64
+ 3040 004c 14000000 		.4byte	.LFE64
+ 3041 0050 00000000 		.4byte	.LFB65
+ 3042 0054 3C000000 		.4byte	.LFE65
+ 3043 0058 00000000 		.4byte	.LFB66
+ 3044 005c 14000000 		.4byte	.LFE66
+ 3045 0060 00000000 		.4byte	.LFB67
+ 3046 0064 48000000 		.4byte	.LFE67
+ 3047 0068 00000000 		.4byte	.LFB75
+ 3048 006c 2C000000 		.4byte	.LFE75
+ 3049 0070 00000000 		.4byte	.LFB76
+ 3050 0074 48000000 		.4byte	.LFE76
+ 3051 0078 00000000 		.4byte	.LFB79
+ 3052 007c 28000000 		.4byte	.LFE79
+ 3053 0080 00000000 		.4byte	.LFB81
+ 3054 0084 2C000000 		.4byte	.LFE81
+ 3055 0088 00000000 		.4byte	.LFB83
+ 3056 008c 28000000 		.4byte	.LFE83
+ 3057 0090 00000000 		.4byte	.LFB72
+ 3058 0094 2C000000 		.4byte	.LFE72
+ 3059 0098 00000000 		.4byte	.LFB73
+ 3060 009c 38000000 		.4byte	.LFE73
+ 3061 00a0 00000000 		.4byte	.LFB85
+ 3062 00a4 28000000 		.4byte	.LFE85
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 65
+
+
+ 3063 00a8 00000000 		.4byte	.LFB68
+ 3064 00ac 84000000 		.4byte	.LFE68
+ 3065 00b0 00000000 		.4byte	.LFB77
+ 3066 00b4 34000000 		.4byte	.LFE77
+ 3067 00b8 00000000 		.4byte	.LFB87
+ 3068 00bc 28000000 		.4byte	.LFE87
+ 3069 00c0 00000000 		.4byte	.LFB70
+ 3070 00c4 58000000 		.4byte	.LFE70
+ 3071 00c8 00000000 		.4byte	.LFB71
+ 3072 00cc 6C000000 		.4byte	.LFE71
+ 3073 00d0 00000000 		.4byte	0
+ 3074 00d4 00000000 		.4byte	0
+ 3075              		.section	.debug_line,"",%progbits
+ 3076              	.Ldebug_line0:
+ 3077 0000 2E040000 		.section	.debug_str,"MS",%progbits,1
+ 3077      0200FB01 
+ 3077      00000201 
+ 3077      FB0E0D00 
+ 3077      01010101 
+ 3078              	.LASF69:
+ 3079 0000 426C696E 		.ascii	"Blink_SM\000"
+ 3079      6B5F534D 
+ 3079      00
+ 3080              	.LASF73:
+ 3081 0009 4361726F 		.ascii	"Carousel_Dir\000"
+ 3081      7573656C 
+ 3081      5F446972 
+ 3081      00
+ 3082              	.LASF62:
+ 3083 0016 46617374 		.ascii	"FastProcess\000"
+ 3083      50726F63 
+ 3083      65737300 
+ 3084              	.LASF79:
+ 3085 0022 50726F63 		.ascii	"Process_Running\000"
+ 3085      6573735F 
+ 3085      52756E6E 
+ 3085      696E6700 
+ 3086              	.LASF74:
+ 3087 0032 50696E5F 		.ascii	"Pin_LED_Write\000"
+ 3087      4C45445F 
+ 3087      57726974 
+ 3087      6500
+ 3088              	.LASF82:
+ 3089 0040 50726F63 		.ascii	"Processes.c\000"
+ 3089      65737365 
+ 3089      732E6300 
+ 3090              	.LASF2:
+ 3091 004c 73686F72 		.ascii	"short int\000"
+ 3091      7420696E 
+ 3091      7400
+ 3092              	.LASF22:
+ 3093 0056 73697A65 		.ascii	"sizetype\000"
+ 3093      74797065 
+ 3093      00
+ 3094              	.LASF50:
+ 3095 005f 4D50475F 		.ascii	"MPG_Normal\000"
+ 3095      4E6F726D 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 66
+
+
+ 3095      616C00
+ 3096              	.LASF43:
+ 3097 006a 4D50475F 		.ascii	"MPG_ESTOP\000"
+ 3097      4553544F 
+ 3097      5000
+ 3098              	.LASF37:
+ 3099 0074 64656C61 		.ascii	"delay\000"
+ 3099      7900
+ 3100              	.LASF70:
+ 3101 007a 426C696E 		.ascii	"Blink_STATE\000"
+ 3101      6B5F5354 
+ 3101      41544500 
+ 3102              	.LASF4:
+ 3103 0086 5F5F7569 		.ascii	"__uint16_t\000"
+ 3103      6E743136 
+ 3103      5F7400
+ 3104              	.LASF45:
+ 3105 0091 4D50475F 		.ascii	"MPG_Fault\000"
+ 3105      4661756C 
+ 3105      7400
+ 3106              	.LASF54:
+ 3107 009b 50726576 		.ascii	"PrevStatus\000"
+ 3107      53746174 
+ 3107      757300
+ 3108              	.LASF28:
+ 3109 00a6 446F7562 		.ascii	"DoubleBlink\000"
+ 3109      6C65426C 
+ 3109      696E6B00 
+ 3110              	.LASF14:
+ 3111 00b2 75696E74 		.ascii	"uint16\000"
+ 3111      313600
+ 3112              	.LASF84:
+ 3113 00b9 496E5F46 		.ascii	"In_Fault\000"
+ 3113      61756C74 
+ 3113      00
+ 3114              	.LASF77:
+ 3115 00c2 5553425F 		.ascii	"USB_PutString\000"
+ 3115      50757453 
+ 3115      7472696E 
+ 3115      6700
+ 3116              	.LASF13:
+ 3117 00d0 75696E74 		.ascii	"uint8\000"
+ 3117      3800
+ 3118              	.LASF72:
+ 3119 00d6 54617267 		.ascii	"Target_Tool\000"
+ 3119      65745F54 
+ 3119      6F6F6C00 
+ 3120              	.LASF17:
+ 3121 00e2 666C6F61 		.ascii	"float\000"
+ 3121      7400
+ 3122              	.LASF26:
+ 3123 00e8 53696E67 		.ascii	"SingleBlink\000"
+ 3123      6C65426C 
+ 3123      696E6B00 
+ 3124              	.LASF8:
+ 3125 00f4 6C6F6E67 		.ascii	"long long int\000"
+ 3125      206C6F6E 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 67
+
+
+ 3125      6720696E 
+ 3125      7400
+ 3126              	.LASF16:
+ 3127 0102 696E7438 		.ascii	"int8\000"
+ 3127      00
+ 3128              	.LASF27:
+ 3129 0107 4E6F426C 		.ascii	"NoBlink\000"
+ 3129      696E6B00 
+ 3130              	.LASF41:
+ 3131 010f 73746172 		.ascii	"startDoubleBlink\000"
+ 3131      74446F75 
+ 3131      626C6542 
+ 3131      6C696E6B 
+ 3131      00
+ 3132              	.LASF6:
+ 3133 0120 6C6F6E67 		.ascii	"long int\000"
+ 3133      20696E74 
+ 3133      00
+ 3134              	.LASF7:
+ 3135 0129 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3135      20756E73 
+ 3135      69676E65 
+ 3135      6420696E 
+ 3135      7400
+ 3136              	.LASF25:
+ 3137 013b 426C696E 		.ascii	"Blink_StateMachine\000"
+ 3137      6B5F5374 
+ 3137      6174654D 
+ 3137      61636869 
+ 3137      6E6500
+ 3138              	.LASF65:
+ 3139 014e 53746174 		.ascii	"StatusMSGTime\000"
+ 3139      75734D53 
+ 3139      4754696D 
+ 3139      6500
+ 3140              	.LASF47:
+ 3141 015c 496E6974 		.ascii	"Init_MPG_StateMachine\000"
+ 3141      5F4D5047 
+ 3141      5F537461 
+ 3141      74654D61 
+ 3141      6368696E 
+ 3142              	.LASF21:
+ 3143 0172 6C6F6E67 		.ascii	"long double\000"
+ 3143      20646F75 
+ 3143      626C6500 
+ 3144              	.LASF49:
+ 3145 017e 4D50475F 		.ascii	"MPG_IDLE\000"
+ 3145      49444C45 
+ 3145      00
+ 3146              	.LASF1:
+ 3147 0187 756E7369 		.ascii	"unsigned char\000"
+ 3147      676E6564 
+ 3147      20636861 
+ 3147      7200
+ 3148              	.LASF57:
+ 3149 0195 54435F44 		.ascii	"TC_Delay\000"
+ 3149      656C6179 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 68
+
+
+ 3149      00
+ 3150              	.LASF39:
+ 3151 019e 4D50475F 		.ascii	"MPG_Status\000"
+ 3151      53746174 
+ 3151      757300
+ 3152              	.LASF30:
+ 3153 01a9 4C6F6E67 		.ascii	"LongShortBlink\000"
+ 3153      53686F72 
+ 3153      74426C69 
+ 3153      6E6B00
+ 3154              	.LASF76:
+ 3155 01b8 73707269 		.ascii	"sprintf\000"
+ 3155      6E746600 
+ 3156              	.LASF63:
+ 3157 01c0 4D735072 		.ascii	"MsProcess\000"
+ 3157      6F636573 
+ 3157      7300
+ 3158              	.LASF9:
+ 3159 01ca 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3159      206C6F6E 
+ 3159      6720756E 
+ 3159      7369676E 
+ 3159      65642069 
+ 3160              	.LASF10:
+ 3161 01e1 756E7369 		.ascii	"unsigned int\000"
+ 3161      676E6564 
+ 3161      20696E74 
+ 3161      00
+ 3162              	.LASF11:
+ 3163 01ee 75696E74 		.ascii	"uint16_t\000"
+ 3163      31365F74 
+ 3163      00
+ 3164              	.LASF71:
+ 3165 01f7 43757272 		.ascii	"Current_Tool\000"
+ 3165      656E745F 
+ 3165      546F6F6C 
+ 3165      00
+ 3166              	.LASF68:
+ 3167 0204 446C794E 		.ascii	"DlyNextState\000"
+ 3167      65787453 
+ 3167      74617465 
+ 3167      00
+ 3168              	.LASF24:
+ 3169 0211 4D50475F 		.ascii	"MPG_Test_Delay\000"
+ 3169      54657374 
+ 3169      5F44656C 
+ 3169      617900
+ 3170              	.LASF59:
+ 3171 0220 426C696E 		.ascii	"Blink_Timer\000"
+ 3171      6B5F5469 
+ 3171      6D657200 
+ 3172              	.LASF38:
+ 3173 022c 4E657874 		.ascii	"NextState\000"
+ 3173      53746174 
+ 3173      6500
+ 3174              	.LASF36:
+ 3175 0236 4D50475F 		.ascii	"MPG_Set_Delay\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 69
+
+
+ 3175      5365745F 
+ 3175      44656C61 
+ 3175      7900
+ 3176              	.LASF44:
+ 3177 0244 73746174 		.ascii	"status\000"
+ 3177      757300
+ 3178              	.LASF19:
+ 3179 024b 63686172 		.ascii	"char\000"
+ 3179      00
+ 3180              	.LASF12:
+ 3181 0250 696E7433 		.ascii	"int32_t\000"
+ 3181      325F7400 
+ 3182              	.LASF64:
+ 3183 0258 4D535F54 		.ascii	"MS_Time\000"
+ 3183      696D6500 
+ 3184              	.LASF3:
+ 3185 0260 73686F72 		.ascii	"short unsigned int\000"
+ 3185      7420756E 
+ 3185      7369676E 
+ 3185      65642069 
+ 3185      6E7400
+ 3186              	.LASF55:
+ 3187 0273 415F436F 		.ascii	"A_Count\000"
+ 3187      756E7400 
+ 3188              	.LASF60:
+ 3189 027b 426C696E 		.ascii	"BlinkCount\000"
+ 3189      6B436F75 
+ 3189      6E7400
+ 3190              	.LASF46:
+ 3191 0286 73746172 		.ascii	"startLongShortBlink\000"
+ 3191      744C6F6E 
+ 3191      6753686F 
+ 3191      7274426C 
+ 3191      696E6B00 
+ 3192              	.LASF66:
+ 3193 029a 4D50475F 		.ascii	"MPG_SM\000"
+ 3193      534D00
+ 3194              	.LASF83:
+ 3195 02a1 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\MPG\\ARM Code\\MPG\\M"
+ 3195      616E5C45 
+ 3195      6E672050 
+ 3195      726F6A65 
+ 3195      6374735C 
+ 3196 02cd 50475F50 		.ascii	"PG_PSoC.cydsn\000"
+ 3196      536F432E 
+ 3196      63796473 
+ 3196      6E00
+ 3197              	.LASF78:
+ 3198 02db 4D504753 		.ascii	"MPGStatusQuery\000"
+ 3198      74617475 
+ 3198      73517565 
+ 3198      727900
+ 3199              	.LASF15:
+ 3200 02ea 75696E74 		.ascii	"uint32\000"
+ 3200      333200
+ 3201              	.LASF29:
+ 3202 02f1 4C6F6E67 		.ascii	"LongBlink\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 70
+
+
+ 3202      426C696E 
+ 3202      6B00
+ 3203              	.LASF56:
+ 3204 02fb 535F436F 		.ascii	"S_Count\000"
+ 3204      756E7400 
+ 3205              	.LASF18:
+ 3206 0303 646F7562 		.ascii	"double\000"
+ 3206      6C6500
+ 3207              	.LASF52:
+ 3208 030a 435F436F 		.ascii	"C_Count\000"
+ 3208      756E7400 
+ 3209              	.LASF32:
+ 3210 0312 496E6974 		.ascii	"InitCountProcess\000"
+ 3210      436F756E 
+ 3210      7450726F 
+ 3210      63657373 
+ 3210      00
+ 3211              	.LASF67:
+ 3212 0323 4D50475F 		.ascii	"MPG_STATE\000"
+ 3212      53544154 
+ 3212      4500
+ 3213              	.LASF23:
+ 3214 032d 4D50475F 		.ascii	"MPG_StateMachine\000"
+ 3214      53746174 
+ 3214      654D6163 
+ 3214      68696E65 
+ 3214      00
+ 3215              	.LASF35:
+ 3216 033e 416C7068 		.ascii	"AlphaProcess\000"
+ 3216      6150726F 
+ 3216      63657373 
+ 3216      00
+ 3217              	.LASF5:
+ 3218 034b 5F5F696E 		.ascii	"__int32_t\000"
+ 3218      7433325F 
+ 3218      7400
+ 3219              	.LASF31:
+ 3220 0355 46617374 		.ascii	"FastBlink\000"
+ 3220      426C696E 
+ 3220      6B00
+ 3221              	.LASF0:
+ 3222 035f 7369676E 		.ascii	"signed char\000"
+ 3222      65642063 
+ 3222      68617200 
+ 3223              	.LASF33:
+ 3224 036b 436F756E 		.ascii	"CountProcess\000"
+ 3224      7450726F 
+ 3224      63657373 
+ 3224      00
+ 3225              	.LASF53:
+ 3226 0378 53656343 		.ascii	"SecCount\000"
+ 3226      6F756E74 
+ 3226      00
+ 3227              	.LASF58:
+ 3228 0381 54435F44 		.ascii	"TC_DelayStart\000"
+ 3228      656C6179 
+ 3228      53746172 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 71
+
+
+ 3228      7400
+ 3229              	.LASF20:
+ 3230 038f 66756E63 		.ascii	"func_ptr\000"
+ 3230      5F707472 
+ 3230      00
+ 3231              	.LASF34:
+ 3232 0398 496E6974 		.ascii	"InitAlphaProcess\000"
+ 3232      416C7068 
+ 3232      6150726F 
+ 3232      63657373 
+ 3232      00
+ 3233              	.LASF48:
+ 3234 03a9 73746172 		.ascii	"startFastBlink\000"
+ 3234      74466173 
+ 3234      74426C69 
+ 3234      6E6B00
+ 3235              	.LASF51:
+ 3236 03b8 78737461 		.ascii	"xstatus\000"
+ 3236      74757300 
+ 3237              	.LASF61:
+ 3238 03c0 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3238      52784275 
+ 3238      66666572 
+ 3238      00
+ 3239              	.LASF81:
+ 3240 03cd 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3240      43313120 
+ 3240      352E342E 
+ 3240      31203230 
+ 3240      31363036 
+ 3241 0400 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3241      20726576 
+ 3241      6973696F 
+ 3241      6E203233 
+ 3241      37373135 
+ 3242 0433 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3242      66756E63 
+ 3242      74696F6E 
+ 3242      2D736563 
+ 3242      74696F6E 
+ 3243              	.LASF42:
+ 3244 045b 73746172 		.ascii	"startLongBlink\000"
+ 3244      744C6F6E 
+ 3244      67426C69 
+ 3244      6E6B00
+ 3245              	.LASF80:
+ 3246 046a 4164645F 		.ascii	"Add_Process\000"
+ 3246      50726F63 
+ 3246      65737300 
+ 3247              	.LASF40:
+ 3248 0476 73746172 		.ascii	"startSingleBlink\000"
+ 3248      7453696E 
+ 3248      676C6542 
+ 3248      6C696E6B 
+ 3248      00
+ 3249              	.LASF75:
+ 3250 0487 50696E5F 		.ascii	"Pin_LED_Read\000"
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\cc6MxKM4.s 			page 72
+
+
+ 3250      4C45445F 
+ 3250      52656164 
+ 3250      00
+ 3251              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

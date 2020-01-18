@@ -1,0 +1,25 @@
+PAR: Place And Route Diamond (64-bit) 3.10.2.115.
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+Copyright (c) 1995 AT&T Corp.   All rights reserved.
+Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+Copyright (c) 2001 Agere Systems   All rights reserved.
+Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
+Sat Dec 08 15:54:09 2018
+
+C:/lscc/diamond/3.10_x64/ispfpga\bin\nt64\par -f KanalogBuffer_kabuf1.p2t
+KanalogBuffer_kabuf1_map.ncd KanalogBuffer_kabuf1.dir KanalogBuffer_kabuf1.prf
+-gui -msgset C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/promote.xml
+
+
+Preference file: KanalogBuffer_kabuf1.prf.
+
+Level/       Number       Worst        Timing       Worst        Timing       Run          NCD
+Cost [ncd]   Unrouted     Slack        Score        Slack(hold)  Score(hold)  Time         Status
+----------   --------     -----        ------       -----------  -----------  ----         ------
+5_1   *      0            6.993        0            0.304        0            10           Success
+
+* : Design saved.
+
+Total (real) run time for 1-seed: 10 secs 
+
+par done!

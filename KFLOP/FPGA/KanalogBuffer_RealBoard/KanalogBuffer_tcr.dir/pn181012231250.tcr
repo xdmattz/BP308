@@ -1,0 +1,6 @@
+#Start recording tcl command: 10/12/2018 23:07:27
+#Project Location: C:/Dan/Engineering/Lattice/Learning/KanalogBuffer; Project name: KanalogBuffer
+prj_project open "C:/Dan/Engineering/Lattice/Learning/KanalogBuffer/KanalogBuffer.ldf"
+prj_project archive -includeAll "C:/Dan/Engineering/Lattice/Learning/KanalogBuffer.zip"
+prj_project close
+#Stop recording: 10/12/2018 23:12:50

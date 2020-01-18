@@ -1,0 +1,14 @@
+Last Modified Date & Time: 03/12/2019 21:53:50
+
+TLAUX_Bootloader: TLAUX_Bootloader.cydwr
+	cy_boot [v5.70] to [v5.80]
+	Em_EEPROM_Dynamic [v2.0] to [v2.20]
+
+
+Last Modified Date & Time: 03/12/2019 21:54:22
+
+TLAUX_PSoC: TLAUX_PSoC.cydwr
+	cy_boot [v5.70] to [v5.80]
+	Em_EEPROM_Dynamic [v2.0] to [v2.20]
+
+

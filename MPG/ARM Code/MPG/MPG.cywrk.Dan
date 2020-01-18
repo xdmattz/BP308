@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="MPG\MPG_PSoC\Source Files\MPGCmds.c">
+<ExpandedNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\TopDesign</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Pins</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Analog</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Clocks</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Interrupts</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\DMA</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\System</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Directives</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\Flash Security</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr\EEPROM</v>
+<v>MPG\MPG_Bootloader\Header Files</v>
+<v>MPG\MPG_Bootloader\Header Files\cyapicallbacks.h</v>
+<v>MPG\MPG_Bootloader\Source Files</v>
+<v>MPG\MPG_Bootloader\Source Files\main.c</v>
+<v>MPG\MPG_Bootloader\Generated_Source\PSoC5</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\TopDesign</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Pins</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Analog</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Clocks</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Interrupts</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\DMA</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\System</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Directives</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Flash Security</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\EEPROM</v>
+<v>MPG\MPG_PSoC\Header Files</v>
+<v>MPG\MPG_PSoC\Header Files\CLI.h</v>
+<v>MPG\MPG_PSoC\Header Files\Cmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\cyapicallbacks.h</v>
+<v>MPG\MPG_PSoC\Header Files\MPGCmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\Processes.h</v>
+<v>MPG\MPG_PSoC\Header Files\SerCmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\Serial.h</v>
+<v>MPG\MPG_PSoC\Header Files\Serial_IO.h</v>
+<v>MPG\MPG_PSoC\Header Files\SerMessages.h</v>
+<v>MPG\MPG_PSoC\Header Files\State_Machine.h</v>
+<v>MPG\MPG_PSoC\Header Files\TestMessages.h</v>
+<v>MPG\MPG_PSoC\Header Files\U_HW.h</v>
+<v>MPG\MPG_PSoC\Source Files</v>
+<v>MPG\MPG_PSoC\Source Files\CLI.c</v>
+<v>MPG\MPG_PSoC\Source Files\Cmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\main.c</v>
+<v>MPG\MPG_PSoC\Source Files\MPGCmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\Processes.c</v>
+<v>MPG\MPG_PSoC\Source Files\SerCmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\Serial.c</v>
+<v>MPG\MPG_PSoC\Source Files\Serial_IO.c</v>
+<v>MPG\MPG_PSoC\Source Files\State_Machine.c</v>
+<v>MPG\MPG_PSoC\Source Files\U_HW.c</v>
+<v>MPG\MPG_PSoC\Generated_Source\PSoC5</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>MPG\MPG_Bootloader\TopDesign</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr</v>
+<v>MPG\MPG_Bootloader\Header Files</v>
+<v>MPG\MPG_Bootloader\Header Files\cyapicallbacks.h</v>
+<v>MPG\MPG_Bootloader\Source Files</v>
+<v>MPG\MPG_Bootloader\Source Files\main.c</v>
+<v>MPG\MPG_Bootloader\Generated_Source</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\TopDesign</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Pins</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Analog</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Clocks</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Interrupts</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\DMA</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\System</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Directives</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Flash Security</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\EEPROM</v>
+<v>MPG\MPG_PSoC\Header Files</v>
+<v>MPG\MPG_PSoC\Header Files\CLI.h</v>
+<v>MPG\MPG_PSoC\Header Files\Cmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\cyapicallbacks.h</v>
+<v>MPG\MPG_PSoC\Header Files\MPGCmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\Processes.h</v>
+<v>MPG\MPG_PSoC\Header Files\SerCmds.h</v>
+<v>MPG\MPG_PSoC\Header Files\Serial.h</v>
+<v>MPG\MPG_PSoC\Header Files\Serial_IO.h</v>
+<v>MPG\MPG_PSoC\Header Files\SerMessages.h</v>
+<v>MPG\MPG_PSoC\Header Files\State_Machine.h</v>
+<v>MPG\MPG_PSoC\Header Files\TestMessages.h</v>
+<v>MPG\MPG_PSoC\Header Files\U_HW.h</v>
+<v>MPG\MPG_PSoC\Source Files</v>
+<v>MPG\MPG_PSoC\Source Files\CLI.c</v>
+<v>MPG\MPG_PSoC\Source Files\Cmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\main.c</v>
+<v>MPG\MPG_PSoC\Source Files\MPGCmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\Processes.c</v>
+<v>MPG\MPG_PSoC\Source Files\SerCmds.c</v>
+<v>MPG\MPG_PSoC\Source Files\Serial.c</v>
+<v>MPG\MPG_PSoC\Source Files\Serial_IO.c</v>
+<v>MPG\MPG_PSoC\Source Files\State_Machine.c</v>
+<v>MPG\MPG_PSoC\Source Files\U_HW.c</v>
+<v>MPG\MPG_PSoC\Generated_Source</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="MPG\MPG_PSoC\TopDesign\TopDesign.cysch">
+<ExpandedNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\TopDesign</v>
+<v>MPG\MPG_Bootloader\TopDesign\TopDesign.cysch</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\TopDesign</v>
+<v>MPG\MPG_PSoC\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\TopDesign</v>
+<v>MPG\MPG_Bootloader\TopDesign\TopDesign.cysch</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\TopDesign</v>
+<v>MPG\MPG_PSoC\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\CortexM3</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Bootloader.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Blink.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LED.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Timer_1.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Timer_1_PM.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\timer_clock.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_audio.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_boot.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_cdc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_cls.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_descr.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_Dm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_Dp.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_drv.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_episr.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_hid.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_midi.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_msc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_pm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_std.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_vnd.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.elf</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.hex</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.map</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.gpdsc</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.rpt</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader_timing.html</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\CortexM3</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Bootloadable.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CLI.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Cmds.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_MPG.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Control_Reg_MPG_PM.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cybootloader.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Loc_Dec.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Loc_Inc.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Rem_Dec.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Rem_Inc.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\MPGCmds.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_A.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_EN_SW.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_ESTOP.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LED.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LocMPG_A.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LocMPG_B.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_MPG_An.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_MPG_Ap.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_MPG_Bn.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_MPG_Bp.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_RemMPG_Ap.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_RemMPG_Bp.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_SW1.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_SW2.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_TP5.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_TP6.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_TP7.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_X.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_X1.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_X10.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_X100.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Y.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_Z.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Processes.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\SerCmds.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Serial.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\Serial_IO.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\State_Machine.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\TX_EN.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\U_HW.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_BOOT.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_INT.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_IntClock.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_PM.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_audio.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_boot.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_cdc.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_cls.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_descr.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_Dm.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_Dp.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_drv.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_episr.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_hid.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_midi.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_msc.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_pm.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_std.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\Listing Files\USBUART_vnd.lst</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\MPG_PSoC.cyacd</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\MPG_PSoC.elf</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\MPG_PSoC.hex</v>
+<v>MPG\MPG_PSoC\CortexM3\ARM_GCC_541\Debug\MPG_PSoC.map</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.gpdsc</v>
+<v>MPG\MPG_PSoC\MPG_PSoC.rpt</v>
+<v>MPG\MPG_PSoC\MPG_PSoC_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\CortexM3</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Bootloader.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\isr_Blink.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Pin_LED.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Timer_1.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\Timer_1_PM.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\timer_clock.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_audio.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_boot.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_cdc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_cls.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_descr.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_Dm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_Dp.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_drv.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_episr.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_hid.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_midi.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_msc.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_pm.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_std.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\Listing Files\USBFS_vnd.lst</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.elf</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.hex</v>
+<v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.map</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.gpdsc</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\PSoC 5LP Architecture TRM</v>
+<v>MPG\MPG_Bootloader\CY8C58LP Family Datasheet</v>
+<v>MPG\MPG_Bootloader\System Reference Guides</v>
+<v>MPG\MPG_Bootloader\System Reference Guides\cy_boot_v5_80</v>
+<v>MPG\MPG_Bootloader\Bootloader_v1_60.pdf</v>
+<v>MPG\MPG_Bootloader\cy_clock_v2_20.pdf</v>
+<v>MPG\MPG_Bootloader\cy_isr_v1_70.pdf</v>
+<v>MPG\MPG_Bootloader\cy_pins_v2_20.pdf</v>
+<v>MPG\MPG_Bootloader\Timer_v2_80.pdf</v>
+<v>MPG\MPG_Bootloader\USBFS_v3_20.pdf</v>
+<v>MPG\MPG_Bootloader\ZeroTerminal.pdf</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\PSoC 5LP Architecture TRM</v>
+<v>MPG\MPG_PSoC\CY8C58LP Family Datasheet</v>
+<v>MPG\MPG_PSoC\System Reference Guides</v>
+<v>MPG\MPG_PSoC\System Reference Guides\cy_boot_v5_80</v>
+<v>MPG\MPG_PSoC\Bootloadable_v1_60.pdf</v>
+<v>MPG\MPG_PSoC\cy_clock_v2_20.pdf</v>
+<v>MPG\MPG_PSoC\cy_constant_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\cy_isr_v1_70</v>
+<v>MPG\MPG_PSoC\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>MPG\MPG_PSoC\cy_pins_v2_20</v>
+<v>MPG\MPG_PSoC\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>MPG\MPG_PSoC\cy_sync_v1_0</v>
+<v>MPG\MPG_PSoC\cy_sync_v1_0\cy_sync_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\CyControlReg_v1_80.pdf</v>
+<v>MPG\MPG_PSoC\cydff_v1_30</v>
+<v>MPG\MPG_PSoC\cydff_v1_30\cydff_v1_30.pdf</v>
+<v>MPG\MPG_PSoC\LUT_v1_60</v>
+<v>MPG\MPG_PSoC\LUT_v1_60\LUT_v1_60.pdf</v>
+<v>MPG\MPG_PSoC\not_v1_0</v>
+<v>MPG\MPG_PSoC\not_v1_0\not_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\UART_v2_50.pdf</v>
+<v>MPG\MPG_PSoC\USBFS_v3_20.pdf</v>
+<v>MPG\MPG_PSoC\xor_v1_0.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
+<v>MPG\MPG_Bootloader\PSoC 5LP Architecture TRM</v>
+<v>MPG\MPG_Bootloader\CY8C58LP Family Datasheet</v>
+<v>MPG\MPG_Bootloader\System Reference Guides</v>
+<v>MPG\MPG_Bootloader\System Reference Guides\cy_boot_v5_80</v>
+<v>MPG\MPG_Bootloader\Bootloader_v1_60.pdf</v>
+<v>MPG\MPG_Bootloader\cy_clock_v2_20.pdf</v>
+<v>MPG\MPG_Bootloader\cy_isr_v1_70.pdf</v>
+<v>MPG\MPG_Bootloader\cy_pins_v2_20.pdf</v>
+<v>MPG\MPG_Bootloader\Timer_v2_80.pdf</v>
+<v>MPG\MPG_Bootloader\USBFS_v3_20.pdf</v>
+<v>MPG\MPG_Bootloader\ZeroTerminal.pdf</v>
+<v>MPG\MPG_PSoC</v>
+<v>MPG\MPG_PSoC\PSoC 5LP Architecture TRM</v>
+<v>MPG\MPG_PSoC\CY8C58LP Family Datasheet</v>
+<v>MPG\MPG_PSoC\System Reference Guides</v>
+<v>MPG\MPG_PSoC\System Reference Guides\cy_boot_v5_80</v>
+<v>MPG\MPG_PSoC\Bootloadable_v1_60.pdf</v>
+<v>MPG\MPG_PSoC\cy_clock_v2_20.pdf</v>
+<v>MPG\MPG_PSoC\cy_constant_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\cy_isr_v1_70</v>
+<v>MPG\MPG_PSoC\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>MPG\MPG_PSoC\cy_pins_v2_20</v>
+<v>MPG\MPG_PSoC\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>MPG\MPG_PSoC\cy_sync_v1_0</v>
+<v>MPG\MPG_PSoC\cy_sync_v1_0\cy_sync_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\CyControlReg_v1_80.pdf</v>
+<v>MPG\MPG_PSoC\cydff_v1_30</v>
+<v>MPG\MPG_PSoC\cydff_v1_30\cydff_v1_30.pdf</v>
+<v>MPG\MPG_PSoC\LUT_v1_60</v>
+<v>MPG\MPG_PSoC\LUT_v1_60\LUT_v1_60.pdf</v>
+<v>MPG\MPG_PSoC\not_v1_0</v>
+<v>MPG\MPG_PSoC\not_v1_0\not_v1_0.pdf</v>
+<v>MPG\MPG_PSoC\UART_v2_50.pdf</v>
+<v>MPG\MPG_PSoC\USBFS_v3_20.pdf</v>
+<v>MPG\MPG_PSoC\xor_v1_0.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+<dataGuid v="5f2be1a5-0687-4501-bb8c-cf21cb8211bf">
+<CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf type_name="CyDesigner.Common.ProjMgmt.GUI.CyBookmarkData" version="1">
+<indicators />
+</CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\MPG_PSoC.cydsn\main.c" />
+<name v=".\MPG_PSoC.cydsn\TestMessages.h" />
+<name v=".\MPG_PSoC.cydsn\TopDesign\TopDesign.cysch" />
+<name v=".\MPG_PSoC.cydsn\MPGCmds.h" />
+<name v=".\MPG_PSoC.cydsn\U_HW.c" />
+<name v=".\MPG_PSoC.cydsn\U_HW.h" />
+<name v=".\MPG_PSoC.cydsn\Cmds.c" />
+<name v=".\MPG_PSoC.cydsn\MPG_PSoC.cydwr" />
+<name v=".\MPG_PSoC.cydsn\CLI.c" />
+<name v=".\MPG_PSoC.cydsn\MPGCmds.c" />
+<name v=".\MPG_PSoC.cydsn\Generated_Source\PSoC5\Control_Reg_MPG.c" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1216, 665" SelectedTabbedMdiWindow="252bd499-f127-4232-9538-9d862008353f"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\main.c" Guid="05116811-52e6-457d-8e70-6a56fb329633" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TestMessages.h" Guid="dae38f54-91bd-4ada-978e-338a9360eca5" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TopDesign\TopDesign.cysch" Guid="851caa77-b9bd-45a7-a81a-e77e30b883ea" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.h" Guid="ca420335-06c2-4a37-893b-9342d7954455" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.c" Guid="252bd499-f127-4232-9538-9d862008353f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.h" Guid="683792a4-0c37-451d-8e2a-5874809a149c" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Cmds.c" Guid="d5730d5a-4c49-4867-acba-e5bd74e7bf87" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPG_PSoC.cydwr" Guid="d13ea58f-d9a4-47b4-b1a4-122647cfd542" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\CLI.c" Guid="8a1454c6-8cae-4167-b28d-02804ecf2700" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.c" Guid="862bcf8a-5992-4993-9041-7bd03781f481" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Generated_Source\PSoC5\Control_Reg_MPG.c" Guid="bd973bc4-b00e-44a4-86b2-1cd7fdc99b77" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>

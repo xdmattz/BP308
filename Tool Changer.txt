@@ -1,0 +1,472 @@
+Tool Changer State Machine ideas from 
+http://www.mycncuk.com/archive/index.php/t-10344.html
+
+19-02-2017, 09:34 PM
+So onto getting movement from the toolchanger.
+I'll start with a short video showing that it does indeed function -
+
+https://youtu.be/-1MxrLbhfTo
+
+I'm sure toolchangers initially challenge the best programmers, but as with all things, you just need to figure out the process required to make it work, then convert that into some form of code that your controller of choice will understand.
+
+First is working out the process. As at the time I had a Denford Novamill running on Denford's VRMilling software, I had access to the machine files for all their modern machines, which includes the Triac.
+Buried in the relevant Triac file, were all the macros for running a fully kitted out Triac, including the toolchange code-
+
+
+
+REM ~~~~~~~~~~~~~~~ Tool Changer Routines ~~~~~~~~~~~~~~
+
+#ArmIn
+GOSUB SpindleStop
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+IF !(OUT & 1) DO : REM Check spindle is stopped
+OUT3 = 1 : REM Switch the solenoid
+REPEAT : REM Wait for the IN switch (inverse logic)
+UNTIL !IN0 OR STOPSW
+WAIT = 500
+ENDIF
+RETURN
+
+#ArmOut
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+OUT3 = 0: REM Switch the solenoid
+REPEAT : REM Wait for the OUT switch (inverse logic)
+UNTIL !IN1 OR STOPSW
+WAIT = 500
+RETURN
+
+#ArmDown
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+IF !(OUT & 1) DO : REM Check spindle is stopped
+OUT4 = 1 : REM Switch the solenoid
+REPEAT : REM Wait for the DOWN switch (inverse logic)
+UNTIL !IN3 OR STOPSW
+WAIT = 500
+ENDIF
+RETURN
+
+#ArmUp
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+OUT4 = 0: REM Switch the solenoid
+REPEAT : REM Wait for the UP switch (inverse logic)
+UNTIL !IN2 OR STOPSW
+WAIT = 500
+RETURN
+
+#DrawbarUnClamp
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+IF !(OUT & 1) DO : REM Check spindle is stopped
+OUT5 = 1
+WAIT = 500
+ENDIF
+RETURN
+
+#DrawbarClamp
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+OUT5 = 0
+WAIT = 500
+RETURN
+
+#CarouselCW
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+IF !IN3 OR !IN1 DO :REM If arm is back or down
+OUT7 = 1 : REM Set Direction Output
+OUT6 = 1 : REM Set the Power output
+WAIT = 50
+REPEAT
+UNTIL IN4 OR STOPSW
+REPEAT
+UNTIL !IN4 OR STOPSW
+REPEAT
+UNTIL IN4 OR STOPSW
+REPEAT
+UNTIL !IN4 OR STOPSW
+WAIT = 40
+OUT6 = 0
+Pocket = Pocket + 1 : REM Inc the Pocket Counter
+IF Pocket > MaxPockets THEN Pocket = 1
+ENDIF
+RETURN
+
+#CarouselHalf
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+OUT7 = 1 : REM Set Direction Output
+OUT6 = 1 : REM Set the Power output
+WAIT = 50
+REPEAT
+UNTIL IN4 OR STOPSW
+REPEAT
+UNTIL !IN4 OR STOPSW
+WAIT = 40
+OUT6 = 0
+RETURN
+
+#CarouselCCW
+IF !comms(10) THEN RETURN : REM ignore it if we're none ATC
+IF !IN3 OR !IN1 DO :REM If arm is back or down
+OUT7 = 0 : REM Set Direction Output
+OUT6 = 1 : REM Set the Power output
+WAIT = 50
+REPEAT
+UNTIL IN4 OR STOPSW
+REPEAT
+UNTIL !IN4 OR STOPSW
+REPEAT
+UNTIL IN4 OR STOPSW
+REPEAT
+UNTIL !IN4 OR STOPSW
+WAIT = 40
+OUT6 = 0
+Pocket = Pocket - 1 : REM Dec the Pocket Counter
+IF Pocket < 1 THEN Pocket = MaxPockets
+ENDIF
+RETURN
+
+#toolChange
+GOSUB SpindleStop
+if !comms(10) THEN Pocket=Comms(7) : REM store last tool if not ATC
+IF (comms(7) = Pocket) OR !comms(10) THEN RETURN : REM ignore it if we're already there or none ATC
+IF !(OUT & 57) DO : REM If atc is back,Up and drawbar safe
+IF STOPSW THEN RETURN
+GOSUB ArmIn
+IF STOPSW THEN RETURN
+GOSUB DrawbarUnclamp
+IF STOPSW THEN RETURN
+GOSUB ArmDown
+
+REM Calculate the shortest path...
+steps = (comms(7) - Pocket + MaxPockets) MOD MaxPockets
+IF steps > (MaxPockets / 2) DO
+WHILE Pocket <> comms(7)
+GOSUB CarouselCCW
+ENDW
+ELSE
+WHILE Pocket <> comms(7)
+GOSUB CarouselCW
+ENDW
+ENDIF
+
+GOSUB ArmUp
+IF STOPSW THEN RETURN
+GOSUB DrawbarClamp
+IF STOPSW THEN RETURN
+GOSUB ArmOut
+IF STOPSW THEN RETURN
+ENDIF
+RETURN
+
+REM ~~~~~~~~~ End of Tool Changer Routines ~~~~~~~
+
+The official language is Mint, which is specific to Baldor/Denstep controllers, but it's very Basic like, and I'm sure by reading through it, most people will be able to understand what's going on.
+The basic process is-
+Move arm in.
+Activate drawbar.
+Move arm down.
+Rotate to next tool.
+Move arm up.
+Release drawbar.
+Move arm out.
+
+There are various delays involved at each step, but that's the basic process.
+
+Now with a KFlop, there are a few different ways I could of implemented this, but I'd better explain how a KFlop runs user programs.
+KFlop has 7 threads, where separate user programs can be run, each getting an equal slice of time when running (for those interested in the exact details, check here (http://dynomotion.com/Help/Multitasking.htm)).
+This gives you a lot of flexibility. My basic init.c file, that will also monitors things like conditions for E-stops, soft limits, and button presses, runs continually in thread 1 (for those familiar with Mach, think of it like the macropump script).
+I then have 3 homing programs (one for each axis), that when activated, each run in their own threads. This means I can start homing in any order, and all axes can be homing at the same time. I'm not restricted by them having to be done in any specific order (I could program that if I really wanted, and I may change to that for simplicity, but I'll stick to separate buttons for easy testing).
+
+What this means, is for the toolchanger, I could simply create a program that runs in it's own thread, and does it's thing. However at some point I want to add external buttons to help with changing/setting tools, which using the separate thread method, would get quite messy, with very similar code being needed in various different programs.
+The solution is to incorporate the main toolchange functionality into the main init.c thread that runs permanently, but that introduces a bit of a problem, in that it has to be programmed in a way that doesn't block the main thread execution.
+
+Blocking is something you have to consider for any programming, and I'm sure some people are wondering what blocking is.
+Using the tool changer as an example, after the arm moves in and the arm in switch is activated, there should be a 500mS delay before the drawbar is activated.
+If you were to program using the following simple method-
+
+
+Start toolchange
+activate armin
+when(arm in)
+delay(500)
+activate drawbar
+
+(it's not in any specific language before anybody comments!)
+While the toolchange is running, the program stalls, firstly while waiting for the arm in switch to become active, then again during the delay.
+Now if this was the only thing running (i.e. I had put it in it's own thread), it wouldn't be a problem. However, as it's part of the main monitoring thread, that would result in nothing else being monitored until the toolchange had completed.
+This is what blocking is. The program is stalled on a single line of code, until the condition is met to move to the next line.
+
+So how do you avoid this?
+A state machine.
+Now I'm sure people are now wondering what a state machine is. In it's simplest form, it's the terminology used for a process that can be halted at any time, and then restarted from exactly from where it was halted.
+To apply it to the example above, you'd end up with something like this-
+
+
+variable state == idle;
+variable delaytime;
+if toolchange started{
+activate arminoutput;
+state = movearmin;
+}
+if state == movearmin{
+if armin = true{
+delaytime = currenttime + 500ms;
+state = armindelay;
+}
+}
+if state == armindelay{
+if delaytime > delaytime{
+activate drawbar;
+state = releasingtool;
+}
+}
+.
+.
+.
+if state == toolchangecomplete{
+state = idle;
+}
+
+
+As you'll see, it involves a lot more code, but the key thing is, the program is never blocked.
+Looking at it in more detail, you start of with a state of idle.
+There are no if statements, where idle is a requirement, so everything gets skipped over.
+When you command a change, the armin output is activated, and the state changes to movearmin, and everything then gets skipped over.
+On each loop of the code, the if state == movearmin, then tests to see if the arm is in, if it isn't, nothing happens and the program continues on it's merry way until the next loop, where it tests again.
+Once the armin input is activated, it sets the delay time.
+To do this, we use a variable to store the current time, plus the delay time, and then we update the state to armindelay.
+Then on each loop, within the if state == armindelay code, we test to see if the delaytime is greater than the currenttime. If it doesn't, again nothing happens, and the program continues on it's way until the next loop, where it tests again.
+
+Now hopefully that gives you a reasonable idea of what a state machine is. Now why put yourself through the pain of creating all that extra code?
+Overall simplicity. I can add buttons that the KFlop monitors, which can be activated with no input needed from the PC to swap tools, (off course various safety checks also need to be applied to ensure you can't don't when you really don't want to), and it means should something go wrong mid change, I know exactly where, and things can be resumed easily.
+
+And for those wondering what the current code looks like, here's the first version that just provides enough functionality to carry out a tool change. I used one of the Dynomotion example files as a basis for this, and instead of using a series of If statements, it uses a Switch with Case statements.
+
+#include "KMotionDef.h"
+#include "Triac.h"
+
+// Services Tool Changer using non-blocking State Machine approach
+// The Service routines maintain their state so they can always return
+// immediately and later resume from their previous state.
+
+// T O O L C H A N G E R S E Q U E N C E
+//
+// define state that the tool changer may be in
+
+#define TOOL_CLAMP_BIT 20 // IO bit number to clamp turret
+#define TOOL_DIST 4250.0	// Steps/counts to move turret to next tool
+#define CLAMP_TIME 1.5 // seconds to wait for the clamp/unclamp
+
+#define TOOLPOCKETS 6	// Number of tool pockets
+#define TURRET_AXIS 2 // axis channel for the turret motor
+#define CRSLIN_DELAY 0.5	// seconds to delay after carousel in switch triggered
+#define CRSLDN_DELAY 0.5	// seconds to delay after carousel down switch triggered
+#define DRBUNCLAMP_DELAY 0.5	// seconds to wait for unclamp
+#define CRSLSTOP_DELAY	0.04	// Seconds to wait before stopping carousel
+#define CRSLUP_DELAY 0.5	// seconds to delay after carousel up switch triggered
+#define DRBCLAMP_DELAY 0.5	// seconds to delay after drawbar clamped
+#define CRSLOUT_DELAY 0.5	// seconds to delay after carousel out switch triggered
+#define CRSLIDX_DEBOUNCE 0.3	//
+
+int *ChangerState = &persist.UserData[TOOL_STATE_VAR];
+int *Tool = &persist.UserData[TOOL_VAR];
+int *LastTool = &persist.UserData[LAST_TOOL_VAR];
+
+double ToolTime;	// used for non blocking time delays
+double PrintTime;
+int ToolPockets;	// used to store number of tool pockets still to move
+int CrslDir;	// use to remember what direction to turn carousel
+int IndexState;	// use this to track if we're waiting for index to go high or low
+
+// Services Tool Change Sequence
+void ServiceToolChange(void)
+{
+if(Time_sec() > PrintTime){
+//printf(" ChangerState=%d\n",*ChangerState);
+//printf("Current Tool=%d, toolpockets=%d\n",*Tool, ToolPockets);
+
+PrintTime = Time_sec() + 2;
+}
+switch (*ChangerState)
+{
+case T_IDLE:
+{
+break;
+}
+case T_START:
+{
+if (*LastTool==0)
+{
+printf("Error Turret Position Never defined\n");
+*ChangerState = T_IDLE; // go idle
+}
+else if (*Tool > TOOLPOCKETS || *Tool < 1)
+// is requested tool valid?
+{
+printf("Invalid Tool Number %d\n",*Tool);
+*ChangerState = T_IDLE; // go idle
+}
+else if(*LastTool == *Tool)
+// is requested tool already in spindle?
+{
+printf("Requested tool already in spindle\n");
+*ChangerState = T_IDLE;
+}
+else
+{
+printf("Move Z to toolchange height\n");
+Move(Z,TCZHEIGHT);	// Move Z to required height
+*ChangerState = T_CRSLIN;
+}
+break;
+}
+case T_CRSLIN:
+{
+if(CheckDone(Z))
+// once Z at height, move arm in
+{
+SetBit(CRSLINR);
+if(ReadBit(CRSLIN))
+{
+printf("Move carousel In\n");
+ToolTime = Time_sec() + CRSLIN_DELAY; // wait until this time
+*ChangerState = T_DBUNCLAMP;
+}
+}
+break;
+}
+case T_DBUNCLAMP:
+{
+// wait for time delay for carousel to settle
+if (Time_sec() > ToolTime)
+{
+printf("Unclamp Tool\n");
+SetBit(DRBR);
+ToolTime = Time_sec() + DRBUNCLAMP_DELAY;
+*ChangerState = T_CRSLDOWN;
+}
+break;
+}
+case T_CRSLDOWN:
+{
+if (Time_sec() > ToolTime)
+{
+SetBit(CRSLDWNR);
+if(ReadBit(CRSLDWN))
+{
+printf("Move carousel down\n");
+ToolTime = Time_sec() + CRSLDN_DELAY;
+*ChangerState = T_CRSLROTATE;
+}
+}
+break;
+}
+case T_CRSLROTATE:
+{
+if (Time_sec() > ToolTime)
+{
+// compute shortest rotation direction
+ToolPockets = (*Tool - *LastTool + TOOLPOCKETS) % TOOLPOCKETS;
+printf("ToolPockets pre direction = %d\n", ToolPockets);
+
+if(ToolPockets < (TOOLPOCKETS / 2))
+{
+CrslDir = T_CW;
+IndexState = T_IDX_HIGH;
+ToolPockets = ToolPockets*2;	// multiply tool positions by 2, as we need 2 revolutions per tool pocket
+printf("Rotate CW %d steps, from %d to %d\n", ToolPockets, *LastTool, *Tool);
+*ChangerState = T_CRSLRUN;
+} else {
+CrslDir = T_CCW;
+IndexState = T_IDX_HIGH;
+ToolPockets = (TOOLPOCKETS - ToolPockets)*2;
+printf("Rotate CCW %d steps, from %d to %d\n", ToolPockets, *LastTool, *Tool);
+*ChangerState = T_CRSLRUN;
+}
+}
+break;
+}
+case T_CRSLRUN:
+{
+if(CrslDir == T_CW) SetBit(CRSLREV);	// if we need CCW, enable CCW relay
+SetBit(CRSLRUN);	// and enable run relay
+if(IndexState == T_IDX_HIGH && (Time_sec() > ToolTime))	// wait for index to go low
+{
+if(ReadBit(CRSLIDX)){	// when index goes low
+printf("Index High\n");
+printf("Time_sec=%f\n",Time_sec());
+ToolTime = Time_sec() + CRSLIDX_DEBOUNCE;
+IndexState = T_IDX_LOW;	// we now need to wait for index to go high
+}
+}
+else if(IndexState == T_IDX_LOW)
+{
+if(!ReadBit(CRSLIDX) && (Time_sec() > ToolTime))
+{	// when index goes high
+if(ToolPockets > 1)
+{	// if we still need to move
+ToolPockets--;	// reduce counter by one
+printf("ToolPockets=%d\n",ToolPockets);
+ToolTime = Time_sec() + CRSLIDX_DEBOUNCE;
+IndexState = T_IDX_HIGH;	// and reset state so we continue
+} else {	// else we've reached the required position
+printf("ToolPockets=%d\n",ToolPockets);
+ToolTime = Time_sec() + CRSLSTOP_DELAY;	// so set stop time delay
+*ChangerState = T_CRSLUP;	// and move onto next stage
+}
+}
+}
+break;
+}
+case T_CRSLUP:
+{
+if (Time_sec() > ToolTime)
+{
+//printf("Carousel Stopped\n");
+ClearBit(CRSLRUN);	// once timer elapsed, disable all rotation
+ClearBit(CRSLREV);
+ClearBit(CRSLDWNR);	// disable down relay so carousel moves up
+if(ReadBit(CRSLUP))
+{
+ToolTime = Time_sec() + CRSLUP_DELAY;	// set delay and move onto next stage
+*ChangerState = T_DBCLAMP;
+}
+}
+break;
+}
+case T_DBCLAMP:
+{
+if(Time_sec() > ToolTime)
+{
+ClearBit(DRBR);
+ToolTime = Time_sec() + DRBCLAMP_DELAY;
+*ChangerState = T_CRSLOUT;
+}
+break;
+}
+case T_CRSLOUT:
+{
+if(Time_sec() > ToolTime)
+{
+ClearBit(CRSLINR);
+if(ReadBit(CRSLOUT))
+{	// when carousle out switch triggered
+ToolTime = Time_sec() + CRSLOUT_DELAY;	// set delay and move to next stage
+*ChangerState = T_END;
+}
+}
+break;
+}
+case T_END:
+{
+if(Time_sec() > ToolTime)
+{
+printf("Tool Change Complete\n");
+*LastTool = *Tool; // remember where we are
+*ChangerState = T_IDLE;
+}
+break;
+}
+}
+}
+
+
+
+This will be altered again, as it won't quite do what I'd like it do in it's current form, but it gives you an idea of the code required. There are also a few coding practises I'll discuss in another post.

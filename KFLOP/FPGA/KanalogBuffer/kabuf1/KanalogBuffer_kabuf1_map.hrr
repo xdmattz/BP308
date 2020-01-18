@@ -1,0 +1,102 @@
+---------------------------------------------------
+Report for cell kbuf_top
+   Instance path: kbuf_top
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	      31.00        100.0
+                                  LUT4	      25.00        100.0
+                                 IOBUF	         51        100.0
+                                PFUREG	         58        100.0
+SUB MODULES
+                                  cell	      count    SLC Usage(%)
+                           edge_det_U0	          1         3.2
+                           edge_det_U1	          1         4.3
+                              delay_U2	          1         1.6
+                              delay_U4	          1         1.6
+                              delay_U3	          1         1.6
+                                 delay	          1         1.6
+                            SR_Latch_N	          1        21.0
+                      SR_Latch_N(N=24)	          1        25.8
+                            Latch_SR_N	          1        14.0
+                              sig_sync	          1         2.2
+                              edge_det	          1        18.0
+---------------------------------------------------
+Report for cell edge_det
+   Instance path: kbuf_top/ser_load_edge
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       5.58        18.0
+                                  LUT4	      17.00        68.0
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell delay_U2
+   Instance path: kbuf_top/dly3
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       0.50         1.6
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell delay_U4
+   Instance path: kbuf_top/dly1
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       0.50         1.6
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell SR_Latch_N
+   Instance path: kbuf_top/dac_out_7__I_0
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       6.50        21.0
+                                PFUREG	         16        27.6
+---------------------------------------------------
+Report for cell edge_det_U0
+   Instance path: kbuf_top/s_edge
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       1.00         3.2
+                                  LUT4	       2.00         8.0
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell Latch_SR_N
+   Instance path: kbuf_top/ka_in_latch
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       4.33        14.0
+                                PFUREG	         16        27.6
+---------------------------------------------------
+Report for cell SR_Latch_N(N=24)
+   Instance path: kbuf_top/ka_out_latch
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       8.00        25.8
+                                PFUREG	         16        27.6
+---------------------------------------------------
+Report for cell edge_det_U1
+   Instance path: kbuf_top/r_edge
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       1.33         4.3
+                                  LUT4	       3.00        12.0
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell delay
+   Instance path: kbuf_top/dly4
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       0.50         1.6
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell delay_U3
+   Instance path: kbuf_top/dly2
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       0.50         1.6
+                                PFUREG	          1         1.7
+---------------------------------------------------
+Report for cell sig_sync
+   Instance path: kbuf_top/ser_edge
+                     Cell usage:
+                                  cell	      count    Res Usage(%)
+                                  SLIC	       0.67         2.2
+                                PFUREG	          2         3.4

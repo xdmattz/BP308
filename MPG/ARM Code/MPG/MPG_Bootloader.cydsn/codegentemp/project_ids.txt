@@ -1,0 +1,7 @@
+C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPG_PSoC.cyprj|e9c55deb-6e76-4792-b648-6c6a3394d507
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|24fc1c98-2a1c-4b2d-8529-e03811194d09
+C:\Users\Dan\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|5266bd5c-4b57-4dd8-b46b-545d059cafce
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|afccc764-32dd-4329-b01b-e441659b77bb
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|c7efa780-ce0d-403b-832a-1d26c4557613
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|93e7929b-4d11-49fe-8060-c638ccbb8b40
+C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_Bootloader.cydsn\MPG_Bootloader.cyprj|a7b8ab8d-cb0a-4bac-926a-628b947cf38e

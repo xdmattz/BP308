@@ -1,0 +1,5 @@
+#Start recording tcl command: 12/12/2018 07:19:47
+#Project Location: C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1; Project name: KanalogBuffer
+prj_project open "C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.ldf"
+prj_project archive -includeAll "C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.zip"
+#Stop recording: 12/12/2018 07:20:26

@@ -1,0 +1,1446 @@
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"USBFS_descr.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	USBFS_TABLE
+  20              		.global	USBFS_DEVICE0_TABLE
+  21              		.global	USBFS_DEVICE0_CONFIGURATION0_TABLE
+  22              		.global	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS
+  23              		.global	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE
+  24              		.global	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE
+  25              		.global	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE
+  26              		.global	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE
+  27              		.comm	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_BUF,65,4
+  28              		.comm	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_SCB,4,4
+  29              		.global	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE
+  30              		.comm	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_BUF,65,4
+  31              		.comm	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_SCB,4,4
+  32              		.global	USBFS_HIDREPORT_DESCRIPTOR1
+  33              		.global	USBFS_SN_STRING_DESCRIPTOR
+  34              		.global	USBFS_STRING_DESCRIPTORS
+  35              		.global	USBFS_DEVICE0_CONFIGURATION0_DESCR
+  36              		.global	USBFS_DEVICE0_DESCR
+  37              		.section	.rodata
+  38              		.align	2
+  39              		.type	USBFS_TABLE, %object
+  40              		.size	USBFS_TABLE, 8
+  41              	USBFS_TABLE:
+  42 0000 01       		.byte	1
+  43 0001 000000   		.space	3
+  44 0004 00000000 		.word	USBFS_DEVICE0_TABLE
+  45              		.type	USBFS_DEVICE0_TABLE, %object
+  46              		.size	USBFS_DEVICE0_TABLE, 24
+  47              	USBFS_DEVICE0_TABLE:
+  48 0008 01       		.byte	1
+  49 0009 000000   		.space	3
+  50 000c 00000000 		.word	USBFS_DEVICE0_DESCR
+  51 0010 00       		.byte	0
+  52 0011 000000   		.space	3
+  53 0014 00000000 		.word	0
+  54 0018 01       		.byte	1
+  55 0019 000000   		.space	3
+  56 001c 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_TABLE
+  57              		.type	USBFS_DEVICE0_CONFIGURATION0_TABLE, %object
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 2
+
+
+  58              		.size	USBFS_DEVICE0_CONFIGURATION0_TABLE, 32
+  59              	USBFS_DEVICE0_CONFIGURATION0_TABLE:
+  60 0020 01       		.byte	1
+  61 0021 000000   		.space	3
+  62 0024 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_DESCR
+  63 0028 02       		.byte	2
+  64 0029 000000   		.space	3
+  65 002c 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE
+  66 0030 01       		.byte	1
+  67 0031 000000   		.space	3
+  68 0034 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE
+  69 0038 00       		.byte	0
+  70 0039 000000   		.space	3
+  71 003c 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS
+  72              		.type	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS, %object
+  73              		.size	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS, 1
+  74              	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS:
+  75 0040 03       		.byte	3
+  76 0041 000000   		.space	3
+  77              		.type	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE, %object
+  78              		.size	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE, 16
+  79              	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE:
+  80 0044 00       		.byte	0
+  81 0045 00       		.byte	0
+  82 0046 01       		.byte	1
+  83 0047 03       		.byte	3
+  84 0048 4000     		.short	64
+  85 004a 03       		.byte	3
+  86 004b 00       		.space	1
+  87 004c 00       		.byte	0
+  88 004d 00       		.byte	0
+  89 004e 82       		.byte	-126
+  90 004f 03       		.byte	3
+  91 0050 4000     		.short	64
+  92 0052 03       		.byte	3
+  93 0053 00       		.space	1
+  94              		.type	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE, %object
+  95              		.size	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE, 8
+  96              	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE:
+  97 0054 01       		.byte	1
+  98 0055 000000   		.space	3
+  99 0058 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE
+ 100              		.type	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE, %object
+ 101              		.size	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE, 40
+ 102              	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE:
+ 103 005c 00       		.byte	0
+ 104 005d 000000   		.space	3
+ 105 0060 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE
+ 106 0064 00       		.byte	0
+ 107 0065 000000   		.space	3
+ 108 0068 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE
+ 109 006c 00       		.byte	0
+ 110 006d 000000   		.space	3
+ 111 0070 00000000 		.word	0
+ 112 0074 01       		.byte	1
+ 113 0075 000000   		.space	3
+ 114 0078 00000000 		.word	USBFS_HIDREPORT_DESCRIPTOR1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 3
+
+
+ 115 007c 01       		.byte	1
+ 116 007d 000000   		.space	3
+ 117 0080 12000000 		.word	USBFS_DEVICE0_CONFIGURATION0_DESCR+18
+ 118              		.type	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE, %object
+ 119              		.size	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE, 12
+ 120              	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE:
+ 121 0084 4100     		.short	65
+ 122 0086 0000     		.space	2
+ 123 0088 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_BUF
+ 124 008c 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_SCB
+ 125              		.type	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE, %object
+ 126              		.size	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE, 12
+ 127              	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE:
+ 128 0090 4100     		.short	65
+ 129 0092 0000     		.space	2
+ 130 0094 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_BUF
+ 131 0098 00000000 		.word	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_SCB
+ 132              		.type	USBFS_HIDREPORT_DESCRIPTOR1, %object
+ 133              		.size	USBFS_HIDREPORT_DESCRIPTOR1, 40
+ 134              	USBFS_HIDREPORT_DESCRIPTOR1:
+ 135 009c 24       		.byte	36
+ 136 009d 00       		.byte	0
+ 137 009e 05       		.byte	5
+ 138 009f 01       		.byte	1
+ 139 00a0 09       		.byte	9
+ 140 00a1 00       		.byte	0
+ 141 00a2 A1       		.byte	-95
+ 142 00a3 00       		.byte	0
+ 143 00a4 09       		.byte	9
+ 144 00a5 00       		.byte	0
+ 145 00a6 A1       		.byte	-95
+ 146 00a7 00       		.byte	0
+ 147 00a8 09       		.byte	9
+ 148 00a9 00       		.byte	0
+ 149 00aa 15       		.byte	21
+ 150 00ab 00       		.byte	0
+ 151 00ac 25       		.byte	37
+ 152 00ad FF       		.byte	-1
+ 153 00ae 75       		.byte	117
+ 154 00af 08       		.byte	8
+ 155 00b0 95       		.byte	-107
+ 156 00b1 40       		.byte	64
+ 157 00b2 91       		.byte	-111
+ 158 00b3 02       		.byte	2
+ 159 00b4 09       		.byte	9
+ 160 00b5 00       		.byte	0
+ 161 00b6 15       		.byte	21
+ 162 00b7 00       		.byte	0
+ 163 00b8 25       		.byte	37
+ 164 00b9 FF       		.byte	-1
+ 165 00ba 75       		.byte	117
+ 166 00bb 08       		.byte	8
+ 167 00bc 95       		.byte	-107
+ 168 00bd 40       		.byte	64
+ 169 00be 81       		.byte	-127
+ 170 00bf 02       		.byte	2
+ 171 00c0 C0       		.byte	-64
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 4
+
+
+ 172 00c1 C0       		.byte	-64
+ 173 00c2 00       		.byte	0
+ 174 00c3 00       		.byte	0
+ 175              		.type	USBFS_SN_STRING_DESCRIPTOR, %object
+ 176              		.size	USBFS_SN_STRING_DESCRIPTOR, 10
+ 177              	USBFS_SN_STRING_DESCRIPTOR:
+ 178 00c4 0A       		.byte	10
+ 179 00c5 03       		.byte	3
+ 180 00c6 30       		.byte	48
+ 181 00c7 00       		.byte	0
+ 182 00c8 30       		.byte	48
+ 183 00c9 00       		.byte	0
+ 184 00ca 30       		.byte	48
+ 185 00cb 00       		.byte	0
+ 186 00cc 31       		.byte	49
+ 187 00cd 00       		.byte	0
+ 188 00ce 0000     		.space	2
+ 189              		.type	USBFS_STRING_DESCRIPTORS, %object
+ 190              		.size	USBFS_STRING_DESCRIPTORS, 117
+ 191              	USBFS_STRING_DESCRIPTORS:
+ 192 00d0 04       		.byte	4
+ 193 00d1 03       		.byte	3
+ 194 00d2 09       		.byte	9
+ 195 00d3 04       		.byte	4
+ 196 00d4 2C       		.byte	44
+ 197 00d5 03       		.byte	3
+ 198 00d6 43       		.byte	67
+ 199 00d7 00       		.byte	0
+ 200 00d8 79       		.byte	121
+ 201 00d9 00       		.byte	0
+ 202 00da 70       		.byte	112
+ 203 00db 00       		.byte	0
+ 204 00dc 72       		.byte	114
+ 205 00dd 00       		.byte	0
+ 206 00de 65       		.byte	101
+ 207 00df 00       		.byte	0
+ 208 00e0 73       		.byte	115
+ 209 00e1 00       		.byte	0
+ 210 00e2 73       		.byte	115
+ 211 00e3 00       		.byte	0
+ 212 00e4 20       		.byte	32
+ 213 00e5 00       		.byte	0
+ 214 00e6 53       		.byte	83
+ 215 00e7 00       		.byte	0
+ 216 00e8 65       		.byte	101
+ 217 00e9 00       		.byte	0
+ 218 00ea 6D       		.byte	109
+ 219 00eb 00       		.byte	0
+ 220 00ec 69       		.byte	105
+ 221 00ed 00       		.byte	0
+ 222 00ee 63       		.byte	99
+ 223 00ef 00       		.byte	0
+ 224 00f0 6F       		.byte	111
+ 225 00f1 00       		.byte	0
+ 226 00f2 6E       		.byte	110
+ 227 00f3 00       		.byte	0
+ 228 00f4 64       		.byte	100
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 5
+
+
+ 229 00f5 00       		.byte	0
+ 230 00f6 75       		.byte	117
+ 231 00f7 00       		.byte	0
+ 232 00f8 63       		.byte	99
+ 233 00f9 00       		.byte	0
+ 234 00fa 74       		.byte	116
+ 235 00fb 00       		.byte	0
+ 236 00fc 6F       		.byte	111
+ 237 00fd 00       		.byte	0
+ 238 00fe 72       		.byte	114
+ 239 00ff 00       		.byte	0
+ 240 0100 22       		.byte	34
+ 241 0101 03       		.byte	3
+ 242 0102 50       		.byte	80
+ 243 0103 00       		.byte	0
+ 244 0104 53       		.byte	83
+ 245 0105 00       		.byte	0
+ 246 0106 6F       		.byte	111
+ 247 0107 00       		.byte	0
+ 248 0108 43       		.byte	67
+ 249 0109 00       		.byte	0
+ 250 010a 33       		.byte	51
+ 251 010b 00       		.byte	0
+ 252 010c 20       		.byte	32
+ 253 010d 00       		.byte	0
+ 254 010e 42       		.byte	66
+ 255 010f 00       		.byte	0
+ 256 0110 6F       		.byte	111
+ 257 0111 00       		.byte	0
+ 258 0112 6F       		.byte	111
+ 259 0113 00       		.byte	0
+ 260 0114 74       		.byte	116
+ 261 0115 00       		.byte	0
+ 262 0116 6C       		.byte	108
+ 263 0117 00       		.byte	0
+ 264 0118 6F       		.byte	111
+ 265 0119 00       		.byte	0
+ 266 011a 61       		.byte	97
+ 267 011b 00       		.byte	0
+ 268 011c 64       		.byte	100
+ 269 011d 00       		.byte	0
+ 270 011e 65       		.byte	101
+ 271 011f 00       		.byte	0
+ 272 0120 72       		.byte	114
+ 273 0121 00       		.byte	0
+ 274 0122 22       		.byte	34
+ 275 0123 03       		.byte	3
+ 276 0124 50       		.byte	80
+ 277 0125 00       		.byte	0
+ 278 0126 53       		.byte	83
+ 279 0127 00       		.byte	0
+ 280 0128 6F       		.byte	111
+ 281 0129 00       		.byte	0
+ 282 012a 43       		.byte	67
+ 283 012b 00       		.byte	0
+ 284 012c 35       		.byte	53
+ 285 012d 00       		.byte	0
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 6
+
+
+ 286 012e 20       		.byte	32
+ 287 012f 00       		.byte	0
+ 288 0130 42       		.byte	66
+ 289 0131 00       		.byte	0
+ 290 0132 6F       		.byte	111
+ 291 0133 00       		.byte	0
+ 292 0134 6F       		.byte	111
+ 293 0135 00       		.byte	0
+ 294 0136 74       		.byte	116
+ 295 0137 00       		.byte	0
+ 296 0138 6C       		.byte	108
+ 297 0139 00       		.byte	0
+ 298 013a 6F       		.byte	111
+ 299 013b 00       		.byte	0
+ 300 013c 61       		.byte	97
+ 301 013d 00       		.byte	0
+ 302 013e 64       		.byte	100
+ 303 013f 00       		.byte	0
+ 304 0140 65       		.byte	101
+ 305 0141 00       		.byte	0
+ 306 0142 72       		.byte	114
+ 307 0143 00       		.byte	0
+ 308 0144 00       		.byte	0
+ 309 0145 000000   		.space	3
+ 310              		.type	USBFS_DEVICE0_CONFIGURATION0_DESCR, %object
+ 311              		.size	USBFS_DEVICE0_CONFIGURATION0_DESCR, 41
+ 312              	USBFS_DEVICE0_CONFIGURATION0_DESCR:
+ 313 0148 09       		.byte	9
+ 314 0149 02       		.byte	2
+ 315 014a 29       		.byte	41
+ 316 014b 00       		.byte	0
+ 317 014c 01       		.byte	1
+ 318 014d 01       		.byte	1
+ 319 014e 00       		.byte	0
+ 320 014f 80       		.byte	-128
+ 321 0150 00       		.byte	0
+ 322 0151 09       		.byte	9
+ 323 0152 04       		.byte	4
+ 324 0153 00       		.byte	0
+ 325 0154 00       		.byte	0
+ 326 0155 02       		.byte	2
+ 327 0156 03       		.byte	3
+ 328 0157 00       		.byte	0
+ 329 0158 00       		.byte	0
+ 330 0159 02       		.byte	2
+ 331 015a 09       		.byte	9
+ 332 015b 21       		.byte	33
+ 333 015c 11       		.byte	17
+ 334 015d 01       		.byte	1
+ 335 015e 00       		.byte	0
+ 336 015f 01       		.byte	1
+ 337 0160 22       		.byte	34
+ 338 0161 24       		.byte	36
+ 339 0162 00       		.byte	0
+ 340 0163 07       		.byte	7
+ 341 0164 05       		.byte	5
+ 342 0165 01       		.byte	1
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 7
+
+
+ 343 0166 03       		.byte	3
+ 344 0167 40       		.byte	64
+ 345 0168 00       		.byte	0
+ 346 0169 01       		.byte	1
+ 347 016a 07       		.byte	7
+ 348 016b 05       		.byte	5
+ 349 016c 82       		.byte	-126
+ 350 016d 03       		.byte	3
+ 351 016e 40       		.byte	64
+ 352 016f 00       		.byte	0
+ 353 0170 01       		.byte	1
+ 354 0171 000000   		.space	3
+ 355              		.type	USBFS_DEVICE0_DESCR, %object
+ 356              		.size	USBFS_DEVICE0_DESCR, 18
+ 357              	USBFS_DEVICE0_DESCR:
+ 358 0174 12       		.byte	18
+ 359 0175 01       		.byte	1
+ 360 0176 00       		.byte	0
+ 361 0177 02       		.byte	2
+ 362 0178 00       		.byte	0
+ 363 0179 00       		.byte	0
+ 364 017a 00       		.byte	0
+ 365 017b 08       		.byte	8
+ 366 017c B4       		.byte	-76
+ 367 017d 04       		.byte	4
+ 368 017e 1D       		.byte	29
+ 369 017f B7       		.byte	-73
+ 370 0180 01       		.byte	1
+ 371 0181 30       		.byte	48
+ 372 0182 01       		.byte	1
+ 373 0183 03       		.byte	3
+ 374 0184 80       		.byte	-128
+ 375 0185 01       		.byte	1
+ 376              		.text
+ 377              	.Letext0:
+ 378              		.file 1 "Generated_Source\\PSoC5\\cytypes.h"
+ 379              		.file 2 "Generated_Source\\PSoC5\\USBFS.h"
+ 380              		.file 3 "Generated_Source\\PSoC5\\USBFS_descr.c"
+ 381              		.section	.debug_info,"",%progbits
+ 382              	.Ldebug_info0:
+ 383 0000 FC030000 		.4byte	0x3fc
+ 384 0004 0400     		.2byte	0x4
+ 385 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 386 000a 04       		.byte	0x4
+ 387 000b 01       		.uleb128 0x1
+ 388 000c 43020000 		.4byte	.LASF50
+ 389 0010 0C       		.byte	0xc
+ 390 0011 48040000 		.4byte	.LASF51
+ 391 0015 17010000 		.4byte	.LASF52
+ 392 0019 00000000 		.4byte	.Ldebug_line0
+ 393 001d 02       		.uleb128 0x2
+ 394 001e 01       		.byte	0x1
+ 395 001f 06       		.byte	0x6
+ 396 0020 63050000 		.4byte	.LASF0
+ 397 0024 02       		.uleb128 0x2
+ 398 0025 01       		.byte	0x1
+ 399 0026 08       		.byte	0x8
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 8
+
+
+ 400 0027 8E040000 		.4byte	.LASF1
+ 401 002b 02       		.uleb128 0x2
+ 402 002c 02       		.byte	0x2
+ 403 002d 05       		.byte	0x5
+ 404 002e CF040000 		.4byte	.LASF2
+ 405 0032 02       		.uleb128 0x2
+ 406 0033 02       		.byte	0x2
+ 407 0034 07       		.byte	0x7
+ 408 0035 5D010000 		.4byte	.LASF3
+ 409 0039 02       		.uleb128 0x2
+ 410 003a 04       		.byte	0x4
+ 411 003b 05       		.byte	0x5
+ 412 003c 47050000 		.4byte	.LASF4
+ 413 0040 02       		.uleb128 0x2
+ 414 0041 04       		.byte	0x4
+ 415 0042 07       		.byte	0x7
+ 416 0043 12040000 		.4byte	.LASF5
+ 417 0047 02       		.uleb128 0x2
+ 418 0048 08       		.byte	0x8
+ 419 0049 05       		.byte	0x5
+ 420 004a A5040000 		.4byte	.LASF6
+ 421 004e 02       		.uleb128 0x2
+ 422 004f 08       		.byte	0x8
+ 423 0050 07       		.byte	0x7
+ 424 0051 31040000 		.4byte	.LASF7
+ 425 0055 03       		.uleb128 0x3
+ 426 0056 04       		.byte	0x4
+ 427 0057 05       		.byte	0x5
+ 428 0058 696E7400 		.ascii	"int\000"
+ 429 005c 02       		.uleb128 0x2
+ 430 005d 04       		.byte	0x4
+ 431 005e 07       		.byte	0x7
+ 432 005f 24040000 		.4byte	.LASF8
+ 433 0063 04       		.uleb128 0x4
+ 434 0064 37050000 		.4byte	.LASF9
+ 435 0068 01       		.byte	0x1
+ 436 0069 E401     		.2byte	0x1e4
+ 437 006b 24000000 		.4byte	0x24
+ 438 006f 04       		.uleb128 0x4
+ 439 0070 B9030000 		.4byte	.LASF10
+ 440 0074 01       		.byte	0x1
+ 441 0075 E501     		.2byte	0x1e5
+ 442 0077 32000000 		.4byte	0x32
+ 443 007b 02       		.uleb128 0x2
+ 444 007c 04       		.byte	0x4
+ 445 007d 04       		.byte	0x4
+ 446 007e E5010000 		.4byte	.LASF11
+ 447 0082 02       		.uleb128 0x2
+ 448 0083 08       		.byte	0x8
+ 449 0084 04       		.byte	0x4
+ 450 0085 B2030000 		.4byte	.LASF12
+ 451 0089 02       		.uleb128 0x2
+ 452 008a 01       		.byte	0x1
+ 453 008b 08       		.byte	0x8
+ 454 008c BF040000 		.4byte	.LASF13
+ 455 0090 05       		.uleb128 0x5
+ 456 0091 63000000 		.4byte	0x63
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 9
+
+
+ 457 0095 02       		.uleb128 0x2
+ 458 0096 08       		.byte	0x8
+ 459 0097 04       		.byte	0x4
+ 460 0098 57050000 		.4byte	.LASF14
+ 461 009c 02       		.uleb128 0x2
+ 462 009d 04       		.byte	0x4
+ 463 009e 07       		.byte	0x7
+ 464 009f 9C040000 		.4byte	.LASF15
+ 465 00a3 06       		.uleb128 0x6
+ 466 00a4 08       		.byte	0x8
+ 467 00a5 02       		.byte	0x2
+ 468 00a6 A0       		.byte	0xa0
+ 469 00a7 F4000000 		.4byte	0xf4
+ 470 00ab 07       		.uleb128 0x7
+ 471 00ac 3D050000 		.4byte	.LASF16
+ 472 00b0 02       		.byte	0x2
+ 473 00b1 A2       		.byte	0xa2
+ 474 00b2 63000000 		.4byte	0x63
+ 475 00b6 00       		.byte	0
+ 476 00b7 07       		.uleb128 0x7
+ 477 00b8 CF010000 		.4byte	.LASF17
+ 478 00bc 02       		.byte	0x2
+ 479 00bd A3       		.byte	0xa3
+ 480 00be 63000000 		.4byte	0x63
+ 481 00c2 01       		.byte	0x1
+ 482 00c3 07       		.uleb128 0x7
+ 483 00c4 19030000 		.4byte	.LASF18
+ 484 00c8 02       		.byte	0x2
+ 485 00c9 A4       		.byte	0xa4
+ 486 00ca 63000000 		.4byte	0x63
+ 487 00ce 02       		.byte	0x2
+ 488 00cf 07       		.uleb128 0x7
+ 489 00d0 D1020000 		.4byte	.LASF19
+ 490 00d4 02       		.byte	0x2
+ 491 00d5 A5       		.byte	0xa5
+ 492 00d6 63000000 		.4byte	0x63
+ 493 00da 03       		.byte	0x3
+ 494 00db 07       		.uleb128 0x7
+ 495 00dc C4040000 		.4byte	.LASF20
+ 496 00e0 02       		.byte	0x2
+ 497 00e1 A6       		.byte	0xa6
+ 498 00e2 6F000000 		.4byte	0x6f
+ 499 00e6 04       		.byte	0x4
+ 500 00e7 07       		.uleb128 0x7
+ 501 00e8 76050000 		.4byte	.LASF21
+ 502 00ec 02       		.byte	0x2
+ 503 00ed A7       		.byte	0xa7
+ 504 00ee 63000000 		.4byte	0x63
+ 505 00f2 06       		.byte	0x6
+ 506 00f3 00       		.byte	0
+ 507 00f4 08       		.uleb128 0x8
+ 508 00f5 74040000 		.4byte	.LASF22
+ 509 00f9 02       		.byte	0x2
+ 510 00fa A8       		.byte	0xa8
+ 511 00fb A3000000 		.4byte	0xa3
+ 512 00ff 06       		.uleb128 0x6
+ 513 0100 04       		.byte	0x4
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 10
+
+
+ 514 0101 02       		.byte	0x2
+ 515 0102 AA       		.byte	0xaa
+ 516 0103 20010000 		.4byte	0x120
+ 517 0107 07       		.uleb128 0x7
+ 518 0108 50050000 		.4byte	.LASF23
+ 519 010c 02       		.byte	0x2
+ 520 010d AC       		.byte	0xac
+ 521 010e 63000000 		.4byte	0x63
+ 522 0112 00       		.byte	0
+ 523 0113 07       		.uleb128 0x7
+ 524 0114 6F050000 		.4byte	.LASF24
+ 525 0118 02       		.byte	0x2
+ 526 0119 AD       		.byte	0xad
+ 527 011a 6F000000 		.4byte	0x6f
+ 528 011e 02       		.byte	0x2
+ 529 011f 00       		.byte	0
+ 530 0120 08       		.uleb128 0x8
+ 531 0121 DC020000 		.4byte	.LASF25
+ 532 0125 02       		.byte	0x2
+ 533 0126 AE       		.byte	0xae
+ 534 0127 FF000000 		.4byte	0xff
+ 535 012b 06       		.uleb128 0x6
+ 536 012c 0C       		.byte	0xc
+ 537 012d 02       		.byte	0x2
+ 538 012e B0       		.byte	0xb0
+ 539 012f 58010000 		.4byte	0x158
+ 540 0133 07       		.uleb128 0x7
+ 541 0134 E3000000 		.4byte	.LASF26
+ 542 0138 02       		.byte	0x2
+ 543 0139 B2       		.byte	0xb2
+ 544 013a 6F000000 		.4byte	0x6f
+ 545 013e 00       		.byte	0
+ 546 013f 07       		.uleb128 0x7
+ 547 0140 C9010000 		.4byte	.LASF27
+ 548 0144 02       		.byte	0x2
+ 549 0145 B3       		.byte	0xb3
+ 550 0146 58010000 		.4byte	0x158
+ 551 014a 04       		.byte	0x4
+ 552 014b 07       		.uleb128 0x7
+ 553 014c 14000000 		.4byte	.LASF28
+ 554 0150 02       		.byte	0x2
+ 555 0151 B4       		.byte	0xb4
+ 556 0152 5E010000 		.4byte	0x15e
+ 557 0156 08       		.byte	0x8
+ 558 0157 00       		.byte	0
+ 559 0158 09       		.uleb128 0x9
+ 560 0159 04       		.byte	0x4
+ 561 015a 90000000 		.4byte	0x90
+ 562 015e 09       		.uleb128 0x9
+ 563 015f 04       		.byte	0x4
+ 564 0160 20010000 		.4byte	0x120
+ 565 0164 08       		.uleb128 0x8
+ 566 0165 DA010000 		.4byte	.LASF29
+ 567 0169 02       		.byte	0x2
+ 568 016a B5       		.byte	0xb5
+ 569 016b 2B010000 		.4byte	0x12b
+ 570 016f 06       		.uleb128 0x6
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 11
+
+
+ 571 0170 08       		.byte	0x8
+ 572 0171 02       		.byte	0x2
+ 573 0172 B7       		.byte	0xb7
+ 574 0173 8E010000 		.4byte	0x18e
+ 575 0177 0A       		.uleb128 0xa
+ 576 0178 6300     		.ascii	"c\000"
+ 577 017a 02       		.byte	0x2
+ 578 017b B9       		.byte	0xb9
+ 579 017c 63000000 		.4byte	0x63
+ 580 0180 00       		.byte	0
+ 581 0181 07       		.uleb128 0x7
+ 582 0182 6D040000 		.4byte	.LASF30
+ 583 0186 02       		.byte	0x2
+ 584 0187 BA       		.byte	0xba
+ 585 0188 8E010000 		.4byte	0x18e
+ 586 018c 04       		.byte	0x4
+ 587 018d 00       		.byte	0
+ 588 018e 09       		.uleb128 0x9
+ 589 018f 04       		.byte	0x4
+ 590 0190 94010000 		.4byte	0x194
+ 591 0194 0B       		.uleb128 0xb
+ 592 0195 08       		.uleb128 0x8
+ 593 0196 B3040000 		.4byte	.LASF31
+ 594 019a 02       		.byte	0x2
+ 595 019b BB       		.byte	0xbb
+ 596 019c 6F010000 		.4byte	0x16f
+ 597 01a0 0C       		.uleb128 0xc
+ 598 01a1 B0010000 		.4byte	0x1b0
+ 599 01a5 B0010000 		.4byte	0x1b0
+ 600 01a9 0D       		.uleb128 0xd
+ 601 01aa 9C000000 		.4byte	0x9c
+ 602 01ae 11       		.byte	0x11
+ 603 01af 00       		.byte	0
+ 604 01b0 0E       		.uleb128 0xe
+ 605 01b1 63000000 		.4byte	0x63
+ 606 01b5 0F       		.uleb128 0xf
+ 607 01b6 00000000 		.4byte	.LASF32
+ 608 01ba 03       		.byte	0x3
+ 609 01bb 24       		.byte	0x24
+ 610 01bc C6010000 		.4byte	0x1c6
+ 611 01c0 05       		.uleb128 0x5
+ 612 01c1 03       		.byte	0x3
+ 613 01c2 00000000 		.4byte	USBFS_DEVICE0_DESCR
+ 614 01c6 0E       		.uleb128 0xe
+ 615 01c7 A0010000 		.4byte	0x1a0
+ 616 01cb 0C       		.uleb128 0xc
+ 617 01cc B0010000 		.4byte	0x1b0
+ 618 01d0 DB010000 		.4byte	0x1db
+ 619 01d4 0D       		.uleb128 0xd
+ 620 01d5 9C000000 		.4byte	0x9c
+ 621 01d9 28       		.byte	0x28
+ 622 01da 00       		.byte	0
+ 623 01db 0F       		.uleb128 0xf
+ 624 01dc EF030000 		.4byte	.LASF33
+ 625 01e0 03       		.byte	0x3
+ 626 01e1 37       		.byte	0x37
+ 627 01e2 EC010000 		.4byte	0x1ec
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 12
+
+
+ 628 01e6 05       		.uleb128 0x5
+ 629 01e7 03       		.byte	0x3
+ 630 01e8 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_DESCR
+ 631 01ec 0E       		.uleb128 0xe
+ 632 01ed CB010000 		.4byte	0x1cb
+ 633 01f1 0C       		.uleb128 0xc
+ 634 01f2 01020000 		.4byte	0x201
+ 635 01f6 01020000 		.4byte	0x201
+ 636 01fa 0D       		.uleb128 0xd
+ 637 01fb 9C000000 		.4byte	0x9c
+ 638 01ff 00       		.byte	0
+ 639 0200 00       		.byte	0
+ 640 0201 0E       		.uleb128 0xe
+ 641 0202 95010000 		.4byte	0x195
+ 642 0206 0F       		.uleb128 0xf
+ 643 0207 E9000000 		.4byte	.LASF34
+ 644 020b 03       		.byte	0x3
+ 645 020c EE       		.byte	0xee
+ 646 020d 17020000 		.4byte	0x217
+ 647 0211 05       		.uleb128 0x5
+ 648 0212 03       		.byte	0x3
+ 649 0213 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE
+ 650 0217 0E       		.uleb128 0xe
+ 651 0218 F1010000 		.4byte	0x1f1
+ 652 021c 0C       		.uleb128 0xc
+ 653 021d 2C020000 		.4byte	0x22c
+ 654 0221 2C020000 		.4byte	0x22c
+ 655 0225 0D       		.uleb128 0xd
+ 656 0226 9C000000 		.4byte	0x9c
+ 657 022a 01       		.byte	0x1
+ 658 022b 00       		.byte	0
+ 659 022c 0E       		.uleb128 0xe
+ 660 022d F4000000 		.4byte	0xf4
+ 661 0231 0F       		.uleb128 0xf
+ 662 0232 C0030000 		.4byte	.LASF35
+ 663 0236 03       		.byte	0x3
+ 664 0237 F9       		.byte	0xf9
+ 665 0238 42020000 		.4byte	0x242
+ 666 023c 05       		.uleb128 0x5
+ 667 023d 03       		.byte	0x3
+ 668 023e 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE
+ 669 0242 0E       		.uleb128 0xe
+ 670 0243 1C020000 		.4byte	0x21c
+ 671 0247 0C       		.uleb128 0xc
+ 672 0248 B0010000 		.4byte	0x1b0
+ 673 024c 57020000 		.4byte	0x257
+ 674 0250 0D       		.uleb128 0xd
+ 675 0251 9C000000 		.4byte	0x9c
+ 676 0255 00       		.byte	0
+ 677 0256 00       		.byte	0
+ 678 0257 0F       		.uleb128 0xf
+ 679 0258 21000000 		.4byte	.LASF36
+ 680 025c 03       		.byte	0x3
+ 681 025d FE       		.byte	0xfe
+ 682 025e 68020000 		.4byte	0x268
+ 683 0262 05       		.uleb128 0x5
+ 684 0263 03       		.byte	0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 13
+
+
+ 685 0264 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS
+ 686 0268 0E       		.uleb128 0xe
+ 687 0269 47020000 		.4byte	0x247
+ 688 026d 0C       		.uleb128 0xc
+ 689 026e 01020000 		.4byte	0x201
+ 690 0272 7D020000 		.4byte	0x27d
+ 691 0276 0D       		.uleb128 0xd
+ 692 0277 9C000000 		.4byte	0x9c
+ 693 027b 03       		.byte	0x3
+ 694 027c 00       		.byte	0
+ 695 027d 10       		.uleb128 0x10
+ 696 027e F6020000 		.4byte	.LASF37
+ 697 0282 03       		.byte	0x3
+ 698 0283 0601     		.2byte	0x106
+ 699 0285 8F020000 		.4byte	0x28f
+ 700 0289 05       		.uleb128 0x5
+ 701 028a 03       		.byte	0x3
+ 702 028b 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_TABLE
+ 703 028f 0E       		.uleb128 0xe
+ 704 0290 6D020000 		.4byte	0x26d
+ 705 0294 0C       		.uleb128 0xc
+ 706 0295 01020000 		.4byte	0x201
+ 707 0299 A4020000 		.4byte	0x2a4
+ 708 029d 0D       		.uleb128 0xd
+ 709 029e 9C000000 		.4byte	0x9c
+ 710 02a2 02       		.byte	0x2
+ 711 02a3 00       		.byte	0
+ 712 02a4 10       		.uleb128 0x10
+ 713 02a5 1E030000 		.4byte	.LASF38
+ 714 02a9 03       		.byte	0x3
+ 715 02aa 1001     		.2byte	0x110
+ 716 02ac B6020000 		.4byte	0x2b6
+ 717 02b0 05       		.uleb128 0x5
+ 718 02b1 03       		.byte	0x3
+ 719 02b2 00000000 		.4byte	USBFS_DEVICE0_TABLE
+ 720 02b6 0E       		.uleb128 0xe
+ 721 02b7 94020000 		.4byte	0x294
+ 722 02bb 10       		.uleb128 0x10
+ 723 02bc D7000000 		.4byte	.LASF39
+ 724 02c0 03       		.byte	0x3
+ 725 02c1 1801     		.2byte	0x118
+ 726 02c3 CD020000 		.4byte	0x2cd
+ 727 02c7 05       		.uleb128 0x5
+ 728 02c8 03       		.byte	0x3
+ 729 02c9 00000000 		.4byte	USBFS_TABLE
+ 730 02cd 0E       		.uleb128 0xe
+ 731 02ce F1010000 		.4byte	0x1f1
+ 732 02d2 0C       		.uleb128 0xc
+ 733 02d3 B0010000 		.4byte	0x1b0
+ 734 02d7 E2020000 		.4byte	0x2e2
+ 735 02db 0D       		.uleb128 0xd
+ 736 02dc 9C000000 		.4byte	0x9c
+ 737 02e0 09       		.byte	0x9
+ 738 02e1 00       		.byte	0
+ 739 02e2 0F       		.uleb128 0xf
+ 740 02e3 70010000 		.4byte	.LASF40
+ 741 02e7 03       		.byte	0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 14
+
+
+ 742 02e8 98       		.byte	0x98
+ 743 02e9 F3020000 		.4byte	0x2f3
+ 744 02ed 05       		.uleb128 0x5
+ 745 02ee 03       		.byte	0x3
+ 746 02ef 00000000 		.4byte	USBFS_SN_STRING_DESCRIPTOR
+ 747 02f3 0E       		.uleb128 0xe
+ 748 02f4 D2020000 		.4byte	0x2d2
+ 749 02f8 0C       		.uleb128 0xc
+ 750 02f9 B0010000 		.4byte	0x1b0
+ 751 02fd 08030000 		.4byte	0x308
+ 752 0301 0D       		.uleb128 0xd
+ 753 0302 9C000000 		.4byte	0x9c
+ 754 0306 74       		.byte	0x74
+ 755 0307 00       		.byte	0
+ 756 0308 0F       		.uleb128 0xf
+ 757 0309 2A020000 		.4byte	.LASF41
+ 758 030d 03       		.byte	0x3
+ 759 030e 6E       		.byte	0x6e
+ 760 030f 19030000 		.4byte	0x319
+ 761 0313 05       		.uleb128 0x5
+ 762 0314 03       		.byte	0x3
+ 763 0315 00000000 		.4byte	USBFS_STRING_DESCRIPTORS
+ 764 0319 0E       		.uleb128 0xe
+ 765 031a F8020000 		.4byte	0x2f8
+ 766 031e 0F       		.uleb128 0xf
+ 767 031f F5040000 		.4byte	.LASF42
+ 768 0323 03       		.byte	0x3
+ 769 0324 BF       		.byte	0xbf
+ 770 0325 20010000 		.4byte	0x120
+ 771 0329 05       		.uleb128 0x5
+ 772 032a 03       		.byte	0x3
+ 773 032b 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_SCB
+ 774 032f 0C       		.uleb128 0xc
+ 775 0330 63000000 		.4byte	0x63
+ 776 0334 3F030000 		.4byte	0x33f
+ 777 0338 0D       		.uleb128 0xd
+ 778 0339 9C000000 		.4byte	0x9c
+ 779 033d 40       		.byte	0x40
+ 780 033e 00       		.byte	0
+ 781 033f 0F       		.uleb128 0xf
+ 782 0340 8B010000 		.4byte	.LASF43
+ 783 0344 03       		.byte	0x3
+ 784 0345 C0       		.byte	0xc0
+ 785 0346 2F030000 		.4byte	0x32f
+ 786 034a 05       		.uleb128 0x5
+ 787 034b 03       		.byte	0x3
+ 788 034c 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_BUF
+ 789 0350 0F       		.uleb128 0xf
+ 790 0351 32030000 		.4byte	.LASF44
+ 791 0355 03       		.byte	0x3
+ 792 0356 CE       		.byte	0xce
+ 793 0357 20010000 		.4byte	0x120
+ 794 035b 05       		.uleb128 0x5
+ 795 035c 03       		.byte	0x3
+ 796 035d 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_SCB
+ 797 0361 0F       		.uleb128 0xf
+ 798 0362 EB010000 		.4byte	.LASF45
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 15
+
+
+ 799 0366 03       		.byte	0x3
+ 800 0367 CF       		.byte	0xcf
+ 801 0368 2F030000 		.4byte	0x32f
+ 802 036c 05       		.uleb128 0x5
+ 803 036d 03       		.byte	0x3
+ 804 036e 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_BUF
+ 805 0372 0C       		.uleb128 0xc
+ 806 0373 B0010000 		.4byte	0x1b0
+ 807 0377 82030000 		.4byte	0x382
+ 808 037b 0D       		.uleb128 0xd
+ 809 037c 9C000000 		.4byte	0x9c
+ 810 0380 27       		.byte	0x27
+ 811 0381 00       		.byte	0
+ 812 0382 0F       		.uleb128 0xf
+ 813 0383 D9040000 		.4byte	.LASF46
+ 814 0387 03       		.byte	0x3
+ 815 0388 A1       		.byte	0xa1
+ 816 0389 93030000 		.4byte	0x393
+ 817 038d 05       		.uleb128 0x5
+ 818 038e 03       		.byte	0x3
+ 819 038f 00000000 		.4byte	USBFS_HIDREPORT_DESCRIPTOR1
+ 820 0393 0E       		.uleb128 0xe
+ 821 0394 72030000 		.4byte	0x372
+ 822 0398 0C       		.uleb128 0xc
+ 823 0399 A8030000 		.4byte	0x3a8
+ 824 039d A8030000 		.4byte	0x3a8
+ 825 03a1 0D       		.uleb128 0xd
+ 826 03a2 9C000000 		.4byte	0x9c
+ 827 03a6 00       		.byte	0
+ 828 03a7 00       		.byte	0
+ 829 03a8 0E       		.uleb128 0xe
+ 830 03a9 64010000 		.4byte	0x164
+ 831 03ad 0F       		.uleb128 0xf
+ 832 03ae 93000000 		.4byte	.LASF47
+ 833 03b2 03       		.byte	0x3
+ 834 03b3 C6       		.byte	0xc6
+ 835 03b4 BE030000 		.4byte	0x3be
+ 836 03b8 05       		.uleb128 0x5
+ 837 03b9 03       		.byte	0x3
+ 838 03ba 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_IN_RPT_TABLE
+ 839 03be 0E       		.uleb128 0xe
+ 840 03bf 98030000 		.4byte	0x398
+ 841 03c3 0F       		.uleb128 0xf
+ 842 03c4 4E000000 		.4byte	.LASF48
+ 843 03c8 03       		.byte	0x3
+ 844 03c9 D5       		.byte	0xd5
+ 845 03ca D4030000 		.4byte	0x3d4
+ 846 03ce 05       		.uleb128 0x5
+ 847 03cf 03       		.byte	0x3
+ 848 03d0 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_OUT_RPT_TABLE
+ 849 03d4 0E       		.uleb128 0xe
+ 850 03d5 98030000 		.4byte	0x398
+ 851 03d9 0C       		.uleb128 0xc
+ 852 03da 01020000 		.4byte	0x201
+ 853 03de E9030000 		.4byte	0x3e9
+ 854 03e2 0D       		.uleb128 0xd
+ 855 03e3 9C000000 		.4byte	0x9c
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 16
+
+
+ 856 03e7 04       		.byte	0x4
+ 857 03e8 00       		.byte	0
+ 858 03e9 0F       		.uleb128 0xf
+ 859 03ea 75030000 		.4byte	.LASF49
+ 860 03ee 03       		.byte	0x3
+ 861 03ef E2       		.byte	0xe2
+ 862 03f0 FA030000 		.4byte	0x3fa
+ 863 03f4 05       		.uleb128 0x5
+ 864 03f5 03       		.byte	0x3
+ 865 03f6 00000000 		.4byte	USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_HID_TABLE
+ 866 03fa 0E       		.uleb128 0xe
+ 867 03fb D9030000 		.4byte	0x3d9
+ 868 03ff 00       		.byte	0
+ 869              		.section	.debug_abbrev,"",%progbits
+ 870              	.Ldebug_abbrev0:
+ 871 0000 01       		.uleb128 0x1
+ 872 0001 11       		.uleb128 0x11
+ 873 0002 01       		.byte	0x1
+ 874 0003 25       		.uleb128 0x25
+ 875 0004 0E       		.uleb128 0xe
+ 876 0005 13       		.uleb128 0x13
+ 877 0006 0B       		.uleb128 0xb
+ 878 0007 03       		.uleb128 0x3
+ 879 0008 0E       		.uleb128 0xe
+ 880 0009 1B       		.uleb128 0x1b
+ 881 000a 0E       		.uleb128 0xe
+ 882 000b 10       		.uleb128 0x10
+ 883 000c 17       		.uleb128 0x17
+ 884 000d 00       		.byte	0
+ 885 000e 00       		.byte	0
+ 886 000f 02       		.uleb128 0x2
+ 887 0010 24       		.uleb128 0x24
+ 888 0011 00       		.byte	0
+ 889 0012 0B       		.uleb128 0xb
+ 890 0013 0B       		.uleb128 0xb
+ 891 0014 3E       		.uleb128 0x3e
+ 892 0015 0B       		.uleb128 0xb
+ 893 0016 03       		.uleb128 0x3
+ 894 0017 0E       		.uleb128 0xe
+ 895 0018 00       		.byte	0
+ 896 0019 00       		.byte	0
+ 897 001a 03       		.uleb128 0x3
+ 898 001b 24       		.uleb128 0x24
+ 899 001c 00       		.byte	0
+ 900 001d 0B       		.uleb128 0xb
+ 901 001e 0B       		.uleb128 0xb
+ 902 001f 3E       		.uleb128 0x3e
+ 903 0020 0B       		.uleb128 0xb
+ 904 0021 03       		.uleb128 0x3
+ 905 0022 08       		.uleb128 0x8
+ 906 0023 00       		.byte	0
+ 907 0024 00       		.byte	0
+ 908 0025 04       		.uleb128 0x4
+ 909 0026 16       		.uleb128 0x16
+ 910 0027 00       		.byte	0
+ 911 0028 03       		.uleb128 0x3
+ 912 0029 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 17
+
+
+ 913 002a 3A       		.uleb128 0x3a
+ 914 002b 0B       		.uleb128 0xb
+ 915 002c 3B       		.uleb128 0x3b
+ 916 002d 05       		.uleb128 0x5
+ 917 002e 49       		.uleb128 0x49
+ 918 002f 13       		.uleb128 0x13
+ 919 0030 00       		.byte	0
+ 920 0031 00       		.byte	0
+ 921 0032 05       		.uleb128 0x5
+ 922 0033 35       		.uleb128 0x35
+ 923 0034 00       		.byte	0
+ 924 0035 49       		.uleb128 0x49
+ 925 0036 13       		.uleb128 0x13
+ 926 0037 00       		.byte	0
+ 927 0038 00       		.byte	0
+ 928 0039 06       		.uleb128 0x6
+ 929 003a 13       		.uleb128 0x13
+ 930 003b 01       		.byte	0x1
+ 931 003c 0B       		.uleb128 0xb
+ 932 003d 0B       		.uleb128 0xb
+ 933 003e 3A       		.uleb128 0x3a
+ 934 003f 0B       		.uleb128 0xb
+ 935 0040 3B       		.uleb128 0x3b
+ 936 0041 0B       		.uleb128 0xb
+ 937 0042 01       		.uleb128 0x1
+ 938 0043 13       		.uleb128 0x13
+ 939 0044 00       		.byte	0
+ 940 0045 00       		.byte	0
+ 941 0046 07       		.uleb128 0x7
+ 942 0047 0D       		.uleb128 0xd
+ 943 0048 00       		.byte	0
+ 944 0049 03       		.uleb128 0x3
+ 945 004a 0E       		.uleb128 0xe
+ 946 004b 3A       		.uleb128 0x3a
+ 947 004c 0B       		.uleb128 0xb
+ 948 004d 3B       		.uleb128 0x3b
+ 949 004e 0B       		.uleb128 0xb
+ 950 004f 49       		.uleb128 0x49
+ 951 0050 13       		.uleb128 0x13
+ 952 0051 38       		.uleb128 0x38
+ 953 0052 0B       		.uleb128 0xb
+ 954 0053 00       		.byte	0
+ 955 0054 00       		.byte	0
+ 956 0055 08       		.uleb128 0x8
+ 957 0056 16       		.uleb128 0x16
+ 958 0057 00       		.byte	0
+ 959 0058 03       		.uleb128 0x3
+ 960 0059 0E       		.uleb128 0xe
+ 961 005a 3A       		.uleb128 0x3a
+ 962 005b 0B       		.uleb128 0xb
+ 963 005c 3B       		.uleb128 0x3b
+ 964 005d 0B       		.uleb128 0xb
+ 965 005e 49       		.uleb128 0x49
+ 966 005f 13       		.uleb128 0x13
+ 967 0060 00       		.byte	0
+ 968 0061 00       		.byte	0
+ 969 0062 09       		.uleb128 0x9
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 18
+
+
+ 970 0063 0F       		.uleb128 0xf
+ 971 0064 00       		.byte	0
+ 972 0065 0B       		.uleb128 0xb
+ 973 0066 0B       		.uleb128 0xb
+ 974 0067 49       		.uleb128 0x49
+ 975 0068 13       		.uleb128 0x13
+ 976 0069 00       		.byte	0
+ 977 006a 00       		.byte	0
+ 978 006b 0A       		.uleb128 0xa
+ 979 006c 0D       		.uleb128 0xd
+ 980 006d 00       		.byte	0
+ 981 006e 03       		.uleb128 0x3
+ 982 006f 08       		.uleb128 0x8
+ 983 0070 3A       		.uleb128 0x3a
+ 984 0071 0B       		.uleb128 0xb
+ 985 0072 3B       		.uleb128 0x3b
+ 986 0073 0B       		.uleb128 0xb
+ 987 0074 49       		.uleb128 0x49
+ 988 0075 13       		.uleb128 0x13
+ 989 0076 38       		.uleb128 0x38
+ 990 0077 0B       		.uleb128 0xb
+ 991 0078 00       		.byte	0
+ 992 0079 00       		.byte	0
+ 993 007a 0B       		.uleb128 0xb
+ 994 007b 26       		.uleb128 0x26
+ 995 007c 00       		.byte	0
+ 996 007d 00       		.byte	0
+ 997 007e 00       		.byte	0
+ 998 007f 0C       		.uleb128 0xc
+ 999 0080 01       		.uleb128 0x1
+ 1000 0081 01       		.byte	0x1
+ 1001 0082 49       		.uleb128 0x49
+ 1002 0083 13       		.uleb128 0x13
+ 1003 0084 01       		.uleb128 0x1
+ 1004 0085 13       		.uleb128 0x13
+ 1005 0086 00       		.byte	0
+ 1006 0087 00       		.byte	0
+ 1007 0088 0D       		.uleb128 0xd
+ 1008 0089 21       		.uleb128 0x21
+ 1009 008a 00       		.byte	0
+ 1010 008b 49       		.uleb128 0x49
+ 1011 008c 13       		.uleb128 0x13
+ 1012 008d 2F       		.uleb128 0x2f
+ 1013 008e 0B       		.uleb128 0xb
+ 1014 008f 00       		.byte	0
+ 1015 0090 00       		.byte	0
+ 1016 0091 0E       		.uleb128 0xe
+ 1017 0092 26       		.uleb128 0x26
+ 1018 0093 00       		.byte	0
+ 1019 0094 49       		.uleb128 0x49
+ 1020 0095 13       		.uleb128 0x13
+ 1021 0096 00       		.byte	0
+ 1022 0097 00       		.byte	0
+ 1023 0098 0F       		.uleb128 0xf
+ 1024 0099 34       		.uleb128 0x34
+ 1025 009a 00       		.byte	0
+ 1026 009b 03       		.uleb128 0x3
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 19
+
+
+ 1027 009c 0E       		.uleb128 0xe
+ 1028 009d 3A       		.uleb128 0x3a
+ 1029 009e 0B       		.uleb128 0xb
+ 1030 009f 3B       		.uleb128 0x3b
+ 1031 00a0 0B       		.uleb128 0xb
+ 1032 00a1 49       		.uleb128 0x49
+ 1033 00a2 13       		.uleb128 0x13
+ 1034 00a3 3F       		.uleb128 0x3f
+ 1035 00a4 19       		.uleb128 0x19
+ 1036 00a5 02       		.uleb128 0x2
+ 1037 00a6 18       		.uleb128 0x18
+ 1038 00a7 00       		.byte	0
+ 1039 00a8 00       		.byte	0
+ 1040 00a9 10       		.uleb128 0x10
+ 1041 00aa 34       		.uleb128 0x34
+ 1042 00ab 00       		.byte	0
+ 1043 00ac 03       		.uleb128 0x3
+ 1044 00ad 0E       		.uleb128 0xe
+ 1045 00ae 3A       		.uleb128 0x3a
+ 1046 00af 0B       		.uleb128 0xb
+ 1047 00b0 3B       		.uleb128 0x3b
+ 1048 00b1 05       		.uleb128 0x5
+ 1049 00b2 49       		.uleb128 0x49
+ 1050 00b3 13       		.uleb128 0x13
+ 1051 00b4 3F       		.uleb128 0x3f
+ 1052 00b5 19       		.uleb128 0x19
+ 1053 00b6 02       		.uleb128 0x2
+ 1054 00b7 18       		.uleb128 0x18
+ 1055 00b8 00       		.byte	0
+ 1056 00b9 00       		.byte	0
+ 1057 00ba 00       		.byte	0
+ 1058              		.section	.debug_aranges,"",%progbits
+ 1059 0000 14000000 		.4byte	0x14
+ 1060 0004 0200     		.2byte	0x2
+ 1061 0006 00000000 		.4byte	.Ldebug_info0
+ 1062 000a 04       		.byte	0x4
+ 1063 000b 00       		.byte	0
+ 1064 000c 0000     		.2byte	0
+ 1065 000e 0000     		.2byte	0
+ 1066 0010 00000000 		.4byte	0
+ 1067 0014 00000000 		.4byte	0
+ 1068              		.section	.debug_line,"",%progbits
+ 1069              	.Ldebug_line0:
+ 1070 0000 59000000 		.section	.debug_str,"MS",%progbits,1
+ 1070      02005300 
+ 1070      00000201 
+ 1070      FB0E0D00 
+ 1070      01010101 
+ 1071              	.LASF32:
+ 1072 0000 55534246 		.ascii	"USBFS_DEVICE0_DESCR\000"
+ 1072      535F4445 
+ 1072      56494345 
+ 1072      305F4445 
+ 1072      53435200 
+ 1073              	.LASF28:
+ 1074 0014 70537461 		.ascii	"pStatusBlock\000"
+ 1074      74757342 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 20
+
+
+ 1074      6C6F636B 
+ 1074      00
+ 1075              	.LASF36:
+ 1076 0021 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE_CLASS\000"
+ 1076      535F4445 
+ 1076      56494345 
+ 1076      305F434F 
+ 1076      4E464947 
+ 1077              	.LASF48:
+ 1078 004e 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1078      535F4445 
+ 1078      56494345 
+ 1078      305F434F 
+ 1078      4E464947 
+ 1079 0081 4849445F 		.ascii	"HID_OUT_RPT_TABLE\000"
+ 1079      4F55545F 
+ 1079      5250545F 
+ 1079      5441424C 
+ 1079      4500
+ 1080              	.LASF47:
+ 1081 0093 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1081      535F4445 
+ 1081      56494345 
+ 1081      305F434F 
+ 1081      4E464947 
+ 1082 00c6 4849445F 		.ascii	"HID_IN_RPT_TABLE\000"
+ 1082      494E5F52 
+ 1082      50545F54 
+ 1082      41424C45 
+ 1082      00
+ 1083              	.LASF39:
+ 1084 00d7 55534246 		.ascii	"USBFS_TABLE\000"
+ 1084      535F5441 
+ 1084      424C4500 
+ 1085              	.LASF26:
+ 1086 00e3 636F756E 		.ascii	"count\000"
+ 1086      7400
+ 1087              	.LASF34:
+ 1088 00e9 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_TABLE\000"
+ 1088      535F4445 
+ 1088      56494345 
+ 1088      305F434F 
+ 1088      4E464947 
+ 1089              	.LASF52:
+ 1090 0117 433A5C44 		.ascii	"C:\\Dan\\Eng Projects\\BP308\\TLAUX\\ARM Code\\TLAU"
+ 1090      616E5C45 
+ 1090      6E672050 
+ 1090      726F6A65 
+ 1090      6374735C 
+ 1091 0144 585C544C 		.ascii	"X\\TLAUX_Bootloader.cydsn\000"
+ 1091      4155585F 
+ 1091      426F6F74 
+ 1091      6C6F6164 
+ 1091      65722E63 
+ 1092              	.LASF3:
+ 1093 015d 73686F72 		.ascii	"short unsigned int\000"
+ 1093      7420756E 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 21
+
+
+ 1093      7369676E 
+ 1093      65642069 
+ 1093      6E7400
+ 1094              	.LASF40:
+ 1095 0170 55534246 		.ascii	"USBFS_SN_STRING_DESCRIPTOR\000"
+ 1095      535F534E 
+ 1095      5F535452 
+ 1095      494E475F 
+ 1095      44455343 
+ 1096              	.LASF43:
+ 1097 018b 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1097      535F4445 
+ 1097      56494345 
+ 1097      305F434F 
+ 1097      4E464947 
+ 1098 01be 4849445F 		.ascii	"HID_IN_BUF\000"
+ 1098      494E5F42 
+ 1098      554600
+ 1099              	.LASF27:
+ 1100 01c9 70446174 		.ascii	"pData\000"
+ 1100      6100
+ 1101              	.LASF17:
+ 1102 01cf 616C7453 		.ascii	"altSetting\000"
+ 1102      65747469 
+ 1102      6E6700
+ 1103              	.LASF29:
+ 1104 01da 545F5553 		.ascii	"T_USBFS_TD\000"
+ 1104      4246535F 
+ 1104      544400
+ 1105              	.LASF11:
+ 1106 01e5 666C6F61 		.ascii	"float\000"
+ 1106      7400
+ 1107              	.LASF45:
+ 1108 01eb 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1108      535F4445 
+ 1108      56494345 
+ 1108      305F434F 
+ 1108      4E464947 
+ 1109 021e 4849445F 		.ascii	"HID_OUT_BUF\000"
+ 1109      4F55545F 
+ 1109      42554600 
+ 1110              	.LASF41:
+ 1111 022a 55534246 		.ascii	"USBFS_STRING_DESCRIPTORS\000"
+ 1111      535F5354 
+ 1111      52494E47 
+ 1111      5F444553 
+ 1111      43524950 
+ 1112              	.LASF50:
+ 1113 0243 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1113      43313120 
+ 1113      352E342E 
+ 1113      31203230 
+ 1113      31363036 
+ 1114 0276 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1114      20726576 
+ 1114      6973696F 
+ 1114      6E203233 
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 22
+
+
+ 1114      37373135 
+ 1115 02a9 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1115      66756E63 
+ 1115      74696F6E 
+ 1115      2D736563 
+ 1115      74696F6E 
+ 1116              	.LASF19:
+ 1117 02d1 61747472 		.ascii	"attributes\000"
+ 1117      69627574 
+ 1117      657300
+ 1118              	.LASF25:
+ 1119 02dc 545F5553 		.ascii	"T_USBFS_XFER_STATUS_BLOCK\000"
+ 1119      4246535F 
+ 1119      58464552 
+ 1119      5F535441 
+ 1119      5455535F 
+ 1120              	.LASF37:
+ 1121 02f6 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_TABLE\000"
+ 1121      535F4445 
+ 1121      56494345 
+ 1121      305F434F 
+ 1121      4E464947 
+ 1122              	.LASF18:
+ 1123 0319 61646472 		.ascii	"addr\000"
+ 1123      00
+ 1124              	.LASF38:
+ 1125 031e 55534246 		.ascii	"USBFS_DEVICE0_TABLE\000"
+ 1125      535F4445 
+ 1125      56494345 
+ 1125      305F5441 
+ 1125      424C4500 
+ 1126              	.LASF44:
+ 1127 0332 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1127      535F4445 
+ 1127      56494345 
+ 1127      305F434F 
+ 1127      4E464947 
+ 1128 0365 4849445F 		.ascii	"HID_OUT_RPT_SCB\000"
+ 1128      4F55545F 
+ 1128      5250545F 
+ 1128      53434200 
+ 1129              	.LASF49:
+ 1130 0375 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1130      535F4445 
+ 1130      56494345 
+ 1130      305F434F 
+ 1130      4E464947 
+ 1131 03a8 4849445F 		.ascii	"HID_TABLE\000"
+ 1131      5441424C 
+ 1131      4500
+ 1132              	.LASF12:
+ 1133 03b2 646F7562 		.ascii	"double\000"
+ 1133      6C6500
+ 1134              	.LASF10:
+ 1135 03b9 75696E74 		.ascii	"uint16\000"
+ 1135      313600
+ 1136              	.LASF35:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 23
+
+
+ 1137 03c0 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_EP_SETTINGS_TABLE\000"
+ 1137      535F4445 
+ 1137      56494345 
+ 1137      305F434F 
+ 1137      4E464947 
+ 1138              	.LASF33:
+ 1139 03ef 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_DESCR\000"
+ 1139      535F4445 
+ 1139      56494345 
+ 1139      305F434F 
+ 1139      4E464947 
+ 1140              	.LASF5:
+ 1141 0412 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1141      20756E73 
+ 1141      69676E65 
+ 1141      6420696E 
+ 1141      7400
+ 1142              	.LASF8:
+ 1143 0424 756E7369 		.ascii	"unsigned int\000"
+ 1143      676E6564 
+ 1143      20696E74 
+ 1143      00
+ 1144              	.LASF7:
+ 1145 0431 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1145      206C6F6E 
+ 1145      6720756E 
+ 1145      7369676E 
+ 1145      65642069 
+ 1146              	.LASF51:
+ 1147 0448 47656E65 		.ascii	"Generated_Source\\PSoC5\\USBFS_descr.c\000"
+ 1147      72617465 
+ 1147      645F536F 
+ 1147      75726365 
+ 1147      5C50536F 
+ 1148              	.LASF30:
+ 1149 046d 705F6C69 		.ascii	"p_list\000"
+ 1149      737400
+ 1150              	.LASF22:
+ 1151 0474 545F5553 		.ascii	"T_USBFS_EP_SETTINGS_BLOCK\000"
+ 1151      4246535F 
+ 1151      45505F53 
+ 1151      45545449 
+ 1151      4E47535F 
+ 1152              	.LASF1:
+ 1153 048e 756E7369 		.ascii	"unsigned char\000"
+ 1153      676E6564 
+ 1153      20636861 
+ 1153      7200
+ 1154              	.LASF15:
+ 1155 049c 73697A65 		.ascii	"sizetype\000"
+ 1155      74797065 
+ 1155      00
+ 1156              	.LASF6:
+ 1157 04a5 6C6F6E67 		.ascii	"long long int\000"
+ 1157      206C6F6E 
+ 1157      6720696E 
+ 1157      7400
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 24
+
+
+ 1158              	.LASF31:
+ 1159 04b3 545F5553 		.ascii	"T_USBFS_LUT\000"
+ 1159      4246535F 
+ 1159      4C555400 
+ 1160              	.LASF13:
+ 1161 04bf 63686172 		.ascii	"char\000"
+ 1161      00
+ 1162              	.LASF20:
+ 1163 04c4 62756666 		.ascii	"bufferSize\000"
+ 1163      65725369 
+ 1163      7A6500
+ 1164              	.LASF2:
+ 1165 04cf 73686F72 		.ascii	"short int\000"
+ 1165      7420696E 
+ 1165      7400
+ 1166              	.LASF46:
+ 1167 04d9 55534246 		.ascii	"USBFS_HIDREPORT_DESCRIPTOR1\000"
+ 1167      535F4849 
+ 1167      44524550 
+ 1167      4F52545F 
+ 1167      44455343 
+ 1168              	.LASF42:
+ 1169 04f5 55534246 		.ascii	"USBFS_DEVICE0_CONFIGURATION0_INTERFACE0_ALTERNATE0_"
+ 1169      535F4445 
+ 1169      56494345 
+ 1169      305F434F 
+ 1169      4E464947 
+ 1170 0528 4849445F 		.ascii	"HID_IN_RPT_SCB\000"
+ 1170      494E5F52 
+ 1170      50545F53 
+ 1170      434200
+ 1171              	.LASF9:
+ 1172 0537 75696E74 		.ascii	"uint8\000"
+ 1172      3800
+ 1173              	.LASF16:
+ 1174 053d 696E7465 		.ascii	"interface\000"
+ 1174      72666163 
+ 1174      6500
+ 1175              	.LASF4:
+ 1176 0547 6C6F6E67 		.ascii	"long int\000"
+ 1176      20696E74 
+ 1176      00
+ 1177              	.LASF23:
+ 1178 0550 73746174 		.ascii	"status\000"
+ 1178      757300
+ 1179              	.LASF14:
+ 1180 0557 6C6F6E67 		.ascii	"long double\000"
+ 1180      20646F75 
+ 1180      626C6500 
+ 1181              	.LASF0:
+ 1182 0563 7369676E 		.ascii	"signed char\000"
+ 1182      65642063 
+ 1182      68617200 
+ 1183              	.LASF24:
+ 1184 056f 6C656E67 		.ascii	"length\000"
+ 1184      746800
+ 1185              	.LASF21:
+ARM GAS  C:\Users\Dan\AppData\Local\Temp\ccfuQXUC.s 			page 25
+
+
+ 1186 0576 624D6973 		.ascii	"bMisc\000"
+ 1186      6300
+ 1187              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
