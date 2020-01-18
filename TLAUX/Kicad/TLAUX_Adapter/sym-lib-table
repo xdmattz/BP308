@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name TLAUX_Adapter-rescue)(type Legacy)(uri ${KIPRJMOD}/TLAUX_Adapter-rescue.lib)(options "")(descr ""))
+)

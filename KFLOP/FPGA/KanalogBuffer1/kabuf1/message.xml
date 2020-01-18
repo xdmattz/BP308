@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BaliMessageLog>
+    <Task name="Map">
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(65): Semantic error in &quot;IOBUF PORT &quot;k_in[0]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[0]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>65</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(66): Semantic error in &quot;IOBUF PORT &quot;k_in[1]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[1]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>66</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(67): Semantic error in &quot;IOBUF PORT &quot;k_in[2]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[2]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>67</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(68): Semantic error in &quot;IOBUF PORT &quot;k_in[3]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[3]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>68</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(69): Semantic error in &quot;IOBUF PORT &quot;k_in[4]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[4]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>69</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(70): Semantic error in &quot;IOBUF PORT &quot;k_in[5]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[5]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>70</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(71): Semantic error in &quot;IOBUF PORT &quot;k_in[6]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[6]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>71</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(72): Semantic error in &quot;IOBUF PORT &quot;k_in[7]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>k_in[7]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>72</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(108): Semantic error in &quot;IOBUF PORT &quot;ka_out[8]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[8]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>108</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(109): Semantic error in &quot;IOBUF PORT &quot;ka_out[9]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[9]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>109</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(110): Semantic error in &quot;IOBUF PORT &quot;ka_out[10]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[10]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>110</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(111): Semantic error in &quot;IOBUF PORT &quot;ka_out[11]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[11]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>111</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(112): Semantic error in &quot;IOBUF PORT &quot;ka_out[12]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[12]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>112</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(113): Semantic error in &quot;IOBUF PORT &quot;ka_out[13]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[13]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>113</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(114): Semantic error in &quot;IOBUF PORT &quot;ka_out[14]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[14]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>114</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(115): Semantic error in &quot;IOBUF PORT &quot;ka_out[15]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[15]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>115</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(116): Semantic error in &quot;IOBUF PORT &quot;ka_out[16]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[16]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>116</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(117): Semantic error in &quot;IOBUF PORT &quot;ka_out[17]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[17]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>117</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(118): Semantic error in &quot;IOBUF PORT &quot;ka_out[18]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[18]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>118</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(119): Semantic error in &quot;IOBUF PORT &quot;ka_out[19]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[19]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>119</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(120): Semantic error in &quot;IOBUF PORT &quot;ka_out[20]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[20]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>120</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(121): Semantic error in &quot;IOBUF PORT &quot;ka_out[21]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[21]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>121</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(122): Semantic error in &quot;IOBUF PORT &quot;ka_out[22]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[22]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>122</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(123): Semantic error in &quot;IOBUF PORT &quot;ka_out[23]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>ka_out[23]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>123</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(124): Semantic error in &quot;IOBUF PORT &quot;leds[0]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[0]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>124</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(125): Semantic error in &quot;IOBUF PORT &quot;leds[1]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[1]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>125</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(126): Semantic error in &quot;IOBUF PORT &quot;leds[2]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[2]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>126</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(127): Semantic error in &quot;IOBUF PORT &quot;leds[3]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[3]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>127</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(128): Semantic error in &quot;IOBUF PORT &quot;leds[4]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[4]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>128</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(129): Semantic error in &quot;IOBUF PORT &quot;leds[5]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[5]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>129</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(130): Semantic error in &quot;IOBUF PORT &quot;leds[6]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[6]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>130</Navigation>
+        </Message>
+        <Message>
+            <ID>1100644</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(131): Semantic error in &quot;IOBUF PORT &quot;leds[7]&quot; IO_TYPE=LVCMOS33 ;&quot;: </Dynamic>
+            <Dynamic>leds[7]</Dynamic>
+            <Navigation>C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf</Navigation>
+            <Navigation>131</Navigation>
+        </Message>
+    </Task>
+    <Task name="Lattice_Synthesis">
+        <Message>
+            <ID>35002000</ID>
+            <Severity>Info</Severity>
+        </Message>
+        <Message>
+            <ID>35001781</ID>
+            <Severity>Info</Severity>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(1): </Dynamic>
+            <Dynamic>kbuf_top</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>C:/lscc/diamond/3.10_x64/ispfpga/userware/NT/SYNTHESIS_HEADERS/machxo2.v(1793): </Dynamic>
+            <Dynamic>OSCH(NOM_FREQ=&quot;66.50&quot;)</Dynamic>
+            <Navigation>C:/lscc/diamond/3.10_x64/ispfpga/userware/NT/SYNTHESIS_HEADERS/machxo2.v</Navigation>
+            <Navigation>1793</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/delay.v(1): </Dynamic>
+            <Dynamic>delay</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/delay.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/edge_det.v(1): </Dynamic>
+            <Dynamic>edge_det</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/edge_det.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/sig_sync.v(1): </Dynamic>
+            <Dynamic>sig_sync</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/sig_sync.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/sr_latch.v(1): </Dynamic>
+            <Dynamic>SR_Latch_N</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/sr_latch.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/latch_sr_n.v(1): </Dynamic>
+            <Dynamic>Latch_SR_N</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/latch_sr_n.v</Navigation>
+            <Navigation>1</Navigation>
+        </Message>
+        <Message>
+            <ID>35901018</ID>
+            <Severity>Info</Severity>
+            <Dynamic>C:/lscc/diamond/3.10_x64/ispfpga/userware/NT/SYNTHESIS_HEADERS/machxo2.v(82): </Dynamic>
+            <Dynamic>BB</Dynamic>
+            <Navigation>C:/lscc/diamond/3.10_x64/ispfpga/userware/NT/SYNTHESIS_HEADERS/machxo2.v</Navigation>
+            <Navigation>82</Navigation>
+        </Message>
+        <Message>
+            <ID>35901209</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(190): </Dynamic>
+            <Dynamic>32</Dynamic>
+            <Dynamic>3</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>190</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(160): </Dynamic>
+            <Dynamic>_88</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>160</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(161): </Dynamic>
+            <Dynamic>_89</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>161</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(162): </Dynamic>
+            <Dynamic>_90</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>162</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(163): </Dynamic>
+            <Dynamic>_91</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>163</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(164): </Dynamic>
+            <Dynamic>_92</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>164</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(165): </Dynamic>
+            <Dynamic>_93</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>165</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(166): </Dynamic>
+            <Dynamic>_94</Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>166</Navigation>
+        </Message>
+        <Message>
+            <ID>35935034</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v(167): </Dynamic>
+            <Dynamic></Dynamic>
+            <Navigation>c:/dan/eng projects/bp308/kflop/fpga/kanalogbuffer1/kbuf_top.v</Navigation>
+            <Navigation>167</Navigation>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[7]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[6]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[5]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[4]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[3]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[2]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[1]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001263</ID>
+            <Severity>Warning</Severity>
+            <Dynamic>kdata_io[0]</Dynamic>
+        </Message>
+        <Message>
+            <ID>35001611</ID>
+            <Severity>Warning</Severity>
+        </Message>
+    </Task>
+</BaliMessageLog>

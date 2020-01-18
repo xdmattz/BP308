@@ -1,0 +1,177 @@
+--------------------------------------------------------------------------------
+Lattice Synthesis Timing Report, Version  
+Sat Dec 08 15:54:07 2018
+
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+Copyright (c) 1995 AT&T Corp.   All rights reserved.
+Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+Copyright (c) 2001 Agere Systems   All rights reserved.
+Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
+
+Report Information
+------------------
+Design:     kbuf_top
+Constraint file:  
+Report level:    verbose report, limited to 3 items per constraint
+--------------------------------------------------------------------------------
+
+
+
+================================================================================
+Constraint: create_clock -period 5.000000 -name clk0 [get_nets fpga_clk]
+            712 items scored, 446 timing errors detected.
+--------------------------------------------------------------------------------
+
+
+Error:  The following path violates requirements by 3.223ns
+
+ Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
+
+   Source:         FD1S3IX    CK             \dly8/sync_6  (from fpga_clk +)
+   Destination:    FD1P3IX    CD             data_out__i7  (to fpga_clk +)
+
+   Delay:                   8.063ns  (26.7% logic, 73.3% route), 5 logic levels.
+
+ Constraint Details:
+
+      8.063ns data_path \dly8/sync_6 to data_out__i7 violates
+      5.000ns delay constraint less
+      0.160ns L_S requirement (totaling 4.840ns) by 3.223ns
+
+ Path Details: \dly8/sync_6 to data_out__i7
+
+   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
+L_CO        ---     0.444             CK to Q              \dly8/sync_6 (from fpga_clk)
+Route         6   e 1.515                                  ddstart_in
+LUT4        ---     0.493              D to Z              i3_4_lut_else_4_lut
+Route         1   e 0.020                                  n995
+MUXL5       ---     0.233           BLUT to Z              i581
+Route         3   e 1.258                                  n450
+LUT4        ---     0.493              A to Z              i2_3_lut
+Route         9   e 1.574                                  fpga_clk_enable_42
+LUT4        ---     0.493              B to Z              xstate_c_0_bdd_4_lut
+Route         8   e 1.540                                  n619
+                  --------
+                    8.063  (26.7% logic, 73.3% route), 5 logic levels.
+
+
+Error:  The following path violates requirements by 3.223ns
+
+ Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
+
+   Source:         FD1S3IX    CK             \dly8/sync_6  (from fpga_clk +)
+   Destination:    FD1P3IX    CD             data_out__i7  (to fpga_clk +)
+
+   Delay:                   8.063ns  (26.7% logic, 73.3% route), 5 logic levels.
+
+ Constraint Details:
+
+      8.063ns data_path \dly8/sync_6 to data_out__i7 violates
+      5.000ns delay constraint less
+      0.160ns L_S requirement (totaling 4.840ns) by 3.223ns
+
+ Path Details: \dly8/sync_6 to data_out__i7
+
+   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
+L_CO        ---     0.444             CK to Q              \dly8/sync_6 (from fpga_clk)
+Route         6   e 1.515                                  ddstart_in
+LUT4        ---     0.493              D to Z              i3_4_lut_then_4_lut
+Route         1   e 0.020                                  n996
+MUXL5       ---     0.233           ALUT to Z              i581
+Route         3   e 1.258                                  n450
+LUT4        ---     0.493              A to Z              i2_3_lut
+Route         9   e 1.574                                  fpga_clk_enable_42
+LUT4        ---     0.493              B to Z              xstate_c_0_bdd_4_lut
+Route         8   e 1.540                                  n619
+                  --------
+                    8.063  (26.7% logic, 73.3% route), 5 logic levels.
+
+
+Error:  The following path violates requirements by 3.223ns
+
+ Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
+
+   Source:         FD1S3IX    CK             \dly8/sync_6  (from fpga_clk +)
+   Destination:    FD1P3IX    CD             data_out__i6  (to fpga_clk +)
+
+   Delay:                   8.063ns  (26.7% logic, 73.3% route), 5 logic levels.
+
+ Constraint Details:
+
+      8.063ns data_path \dly8/sync_6 to data_out__i6 violates
+      5.000ns delay constraint less
+      0.160ns L_S requirement (totaling 4.840ns) by 3.223ns
+
+ Path Details: \dly8/sync_6 to data_out__i6
+
+   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
+L_CO        ---     0.444             CK to Q              \dly8/sync_6 (from fpga_clk)
+Route         6   e 1.515                                  ddstart_in
+LUT4        ---     0.493              D to Z              i3_4_lut_then_4_lut
+Route         1   e 0.020                                  n996
+MUXL5       ---     0.233           ALUT to Z              i581
+Route         3   e 1.258                                  n450
+LUT4        ---     0.493              A to Z              i2_3_lut
+Route         9   e 1.574                                  fpga_clk_enable_42
+LUT4        ---     0.493              B to Z              xstate_c_0_bdd_4_lut
+Route         8   e 1.540                                  n619
+                  --------
+                    8.063  (26.7% logic, 73.3% route), 5 logic levels.
+
+Warning: 8.223 ns is the maximum delay for this constraint.
+
+
+Timing Report Summary
+--------------
+--------------------------------------------------------------------------------
+Constraint                              |   Constraint|       Actual|Levels
+--------------------------------------------------------------------------------
+                                        |             |             |
+create_clock -period 5.000000 -name     |             |             |
+clk0 [get_nets fpga_clk]                |     5.000 ns|     8.223 ns|     5 *
+                                        |             |             |
+--------------------------------------------------------------------------------
+
+
+1 constraints not met.
+
+--------------------------------------------------------------------------------
+Critical Nets                           |   Loads|  Errors| % of total
+--------------------------------------------------------------------------------
+n450                                    |       3|     288|     64.57%
+                                        |        |        |
+fpga_clk_enable_42                      |       9|     192|     43.05%
+                                        |        |        |
+n995                                    |       1|     128|     28.70%
+                                        |        |        |
+n996                                    |       1|     128|     28.70%
+                                        |        |        |
+fpga_clk_enable_18                      |       8|      96|     21.52%
+                                        |        |        |
+n619                                    |       8|      96|     21.52%
+                                        |        |        |
+fpga_clk_enable_26                      |       8|      88|     19.73%
+                                        |        |        |
+n987                                    |       2|      72|     16.14%
+                                        |        |        |
+ddk_clk                                 |       5|      66|     14.80%
+                                        |        |        |
+resync_adj_141                          |       4|      66|     14.80%
+                                        |        |        |
+sm_en                                   |       5|      66|     14.80%
+                                        |        |        |
+ddstart_in                              |       6|      64|     14.35%
+                                        |        |        |
+--------------------------------------------------------------------------------
+
+
+Timing summary:
+---------------
+
+Timing errors: 446  Score: 707324
+
+Constraints cover  714 paths, 101 nets, and 387 connections (65.6% coverage)
+
+
+Peak memory: 60424192 bytes, TRCE: 2207744 bytes, DLYMAN: 167936 bytes
+CPU_TIME_REPORT: 0 secs 

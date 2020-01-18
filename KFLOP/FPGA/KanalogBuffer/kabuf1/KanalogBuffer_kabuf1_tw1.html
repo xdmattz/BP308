@@ -1,282 +1,0 @@
-<HTML>
-<HEAD><TITLE>Lattice Map TRACE Report</TITLE>
-<STYLE TYPE="text/css">
-<!--
- body,pre{    font-family:'Courier New', monospace;    color: #000000;    font-size:88%;    background-color: #ffffff;}h1 {    font-weight: bold;    margin-top: 24px;    margin-bottom: 10px;    border-bottom: 3px solid #000;    font-size: 1em;}h2 {    font-weight: bold;    margin-top: 18px;    margin-bottom: 5px;    font-size: 0.90em;}h3 {    font-weight: bold;    margin-top: 12px;    margin-bottom: 5px;    font-size: 0.80em;}p {    font-size:78%;}P.Table {    margin-top: 4px;    margin-bottom: 4px;    margin-right: 4px;    margin-left: 4px;}table{    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    border-collapse: collapse;}th {    font-weight:bold;    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    text-align:left;    font-size:78%;}td {    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    font-size:78%;}a {    color:#013C9A;    text-decoration:none;}a:visited {    color:#013C9A;}a:hover, a:active {    text-decoration:underline;    color:#5BAFD4;}.pass{background-color: #00ff00;}.fail{background-color: #ff0000;}.comment{    font-size: 90%;    font-style: italic;}
--->
-</STYLE>
-</HEAD>
-<PRE><A name="Map_Twr"></A><B><U><big>Map TRACE Report</big></U></B>
-
-Loading design for application trce from file kanalogbuffer_kabuf1_map.ncd.
-Design name: kbuf_top
-NCD version: 3.3
-Vendor:      LATTICE
-Device:      LCMXO2-7000HE
-Package:     TQFP144
-Performance: 4
-Loading device for application trce from file 'xo2c7000.nph' in environment: C:/lscc/diamond/3.10_x64/ispfpga.
-Package Status:                     Final          Version 1.39.
-Performance Hardware Data Status:   Final          Version 34.4.
-Setup and Hold Report
-
---------------------------------------------------------------------------------
-<A name="Map_Twr_setup"></A><B><U><big>Lattice TRACE Report - Setup, Version Diamond (64-bit) 3.10.2.115</big></U></B>
-Sun Oct 14 21:26:39 2018
-
-Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
-Copyright (c) 1995 AT&T Corp.   All rights reserved.
-Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
-Copyright (c) 2001 Agere Systems   All rights reserved.
-Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
-
-<A name="mtw1_set_ri"></A><B><U><big>Report Information</big></U></B>
-------------------
-Command line:    trce -v 1 -gt -mapchkpnt 0 -sethld -o KanalogBuffer_kabuf1.tw1 -gui -msgset C:/Dan/Engineering/Lattice/Learning/KanalogBuffer/promote.xml KanalogBuffer_kabuf1_map.ncd KanalogBuffer_kabuf1.prf 
-Design file:     kanalogbuffer_kabuf1_map.ncd
-Preference file: kanalogbuffer_kabuf1.prf
-Device,speed:    LCMXO2-7000HE,4
-Report level:    verbose report, limited to 1 item per preference
---------------------------------------------------------------------------------
-
-<A name="mtw1_set_ps"></A><B><U><big>Preference Summary</big></U></B>
-
-<LI><A href='#map_twr_pref_0_0' Target='right'>FREQUENCY NET "fpga_clk" 66.500000 MHz (0 errors)</A></LI>            173 items scored, 0 timing errors detected.
-Report:  184.298MHz is the maximum frequency for this preference.
-
-BLOCK ASYNCPATHS
-BLOCK RESETPATHS
---------------------------------------------------------------------------------
-
-
-
-================================================================================
-<A name="map_twr_pref_0_0"></A>Preference: FREQUENCY NET "fpga_clk" 66.500000 MHz ;
-            173 items scored, 0 timing errors detected.
---------------------------------------------------------------------------------
-
-
-Passed: The following path meets requirements by 9.612ns
-
- Logical Details:  Cell type  Pin type       Cell/ASIC name  (clock net +/-)
-
-   Source:         FF         Q              dly4/sync_6  (from fpga_clk +)
-   Destination:    FF         Data in        dac_out_7__I_0/par_out__i1  (to fpga_clk +)
-                   FF                        dac_out_7__I_0/par_out__i2
-
-   Delay:               5.144ns  (28.0% logic, 72.0% route), 3 logic levels.
-
- Constraint Details:
-
-      5.144ns physical path delay SLICE_12 to dac_out_7__I_0/SLICE_42 meets
-     15.038ns delay constraint less
-      0.282ns CE_SET requirement (totaling 14.756ns) by 9.612ns
-
- Physical Path Details:
-
-      Data path SLICE_12 to dac_out_7__I_0/SLICE_42:
-
-   Name    Fanout   Delay (ns)          Site               Resource
-REG_DEL     ---     0.452   SLICE_12.CLK to    SLICE_12.Q0 SLICE_12 (from fpga_clk)
-ROUTE         4   e 1.234    SLICE_12.Q0 to    SLICE_35.A1 ddDlatch
-CTOF_DEL    ---     0.495    SLICE_35.A1 to    SLICE_35.F1 SLICE_35
-ROUTE         3   e 1.234    SLICE_35.F1 to    SLICE_37.C1 rclk_rise
-CTOF_DEL    ---     0.495    SLICE_37.C1 to    SLICE_37.F1 SLICE_37
-ROUTE         4   e 1.234    SLICE_37.F1 to *0/SLICE_42.CE fpga_clk_enable_19 (to fpga_clk)
-                  --------
-                    5.144   (28.0% logic, 72.0% route), 3 logic levels.
-
-Report:  184.298MHz is the maximum frequency for this preference.
-
-<A name="mtw1_set_rs"></A><B><U><big>Report Summary</big></U></B>
---------------
-----------------------------------------------------------------------------
-Preference                              |   Constraint|       Actual|Levels
-----------------------------------------------------------------------------
-                                        |             |             |
-FREQUENCY NET "fpga_clk" 66.500000 MHz  |             |             |
-;                                       |   66.500 MHz|  184.298 MHz|   3  
-                                        |             |             |
-----------------------------------------------------------------------------
-
-
-All preferences were met.
-
-
-<A name="mtw1_set_clkda"></A><B><U><big>Clock Domains Analysis</big></U></B>
-------------------------
-
-Found 1 clocks:
-
-Clock Domain: fpga_clk   Source: rc_oscillator.OSC   Loads: 31
-   Covered under: FREQUENCY NET "fpga_clk" 66.500000 MHz ;
-
-
-<A name="mtw1_set_ts"></A><B><U><big>Timing summary (Setup):</big></U></B>
----------------
-
-Timing errors: 0  Score: 0
-Cumulative negative slack: 0
-
-Constraints cover 173 paths, 1 nets, and 197 connections (76.65% coverage)
-
---------------------------------------------------------------------------------
-<A name="Map_Twr_hold"></A><B><U><big>Lattice TRACE Report - Hold, Version Diamond (64-bit) 3.10.2.115</big></U></B>
-Sun Oct 14 21:26:39 2018
-
-Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
-Copyright (c) 1995 AT&T Corp.   All rights reserved.
-Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
-Copyright (c) 2001 Agere Systems   All rights reserved.
-Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
-
-<A name="mtw1_hold_ri"></A><B><U><big>Report Information</big></U></B>
-------------------
-Command line:    trce -v 1 -gt -mapchkpnt 0 -sethld -o KanalogBuffer_kabuf1.tw1 -gui -msgset C:/Dan/Engineering/Lattice/Learning/KanalogBuffer/promote.xml KanalogBuffer_kabuf1_map.ncd KanalogBuffer_kabuf1.prf 
-Design file:     kanalogbuffer_kabuf1_map.ncd
-Preference file: kanalogbuffer_kabuf1.prf
-Device,speed:    LCMXO2-7000HE,M
-Report level:    verbose report, limited to 1 item per preference
---------------------------------------------------------------------------------
-
-<A name="mtw1_hold_ps"></A><B><U><big>Preference Summary</big></U></B>
-
-<LI><A href='#map_twr_pref_1_0' Target='right'>FREQUENCY NET "fpga_clk" 66.500000 MHz (0 errors)</A></LI>            173 items scored, 0 timing errors detected.
-
-BLOCK ASYNCPATHS
-BLOCK RESETPATHS
---------------------------------------------------------------------------------
-
-
-
-================================================================================
-<A name="map_twr_pref_1_0"></A>Preference: FREQUENCY NET "fpga_clk" 66.500000 MHz ;
-            173 items scored, 0 timing errors detected.
---------------------------------------------------------------------------------
-
-
-Passed: The following path meets requirements by 0.351ns
-
- Logical Details:  Cell type  Pin type       Cell/ASIC name  (clock net +/-)
-
-   Source:         FF         Q              dly1/sync_6  (from fpga_clk +)
-   Destination:    FF         Data in        dly2/sync_6  (to fpga_clk +)
-
-   Delay:               0.332ns  (40.1% logic, 59.9% route), 1 logic levels.
-
- Constraint Details:
-
-      0.332ns physical path delay SLICE_11 to SLICE_11 meets
-     -0.019ns M_HLD and
-      0.000ns delay constraint requirement (totaling -0.019ns) by 0.351ns
-
- Physical Path Details:
-
-      Data path SLICE_11 to SLICE_11:
-
-   Name    Fanout   Delay (ns)          Site               Resource
-REG_DEL     ---     0.133   SLICE_11.CLK to    SLICE_11.Q1 SLICE_11 (from fpga_clk)
-ROUTE         1   e 0.199    SLICE_11.Q1 to    SLICE_11.M0 dDclk (to fpga_clk)
-                  --------
-                    0.332   (40.1% logic, 59.9% route), 1 logic levels.
-
-<A name="mtw1_hold_rs"></A><B><U><big>Report Summary</big></U></B>
---------------
-----------------------------------------------------------------------------
-Preference(MIN Delays)                  |   Constraint|       Actual|Levels
-----------------------------------------------------------------------------
-                                        |             |             |
-FREQUENCY NET "fpga_clk" 66.500000 MHz  |             |             |
-;                                       |     0.000 ns|     0.351 ns|   1  
-                                        |             |             |
-----------------------------------------------------------------------------
-
-
-All preferences were met.
-
-
-<A name="mtw1_hold_clkda"></A><B><U><big>Clock Domains Analysis</big></U></B>
-------------------------
-
-Found 1 clocks:
-
-Clock Domain: fpga_clk   Source: rc_oscillator.OSC   Loads: 31
-   Covered under: FREQUENCY NET "fpga_clk" 66.500000 MHz ;
-
-
-<A name="mtw1_hold_ts"></A><B><U><big>Timing summary (Hold):</big></U></B>
----------------
-
-Timing errors: 0  Score: 0
-Cumulative negative slack: 0
-
-Constraints cover 173 paths, 1 nets, and 197 connections (76.65% coverage)
-
-
-
-<A name="mtw1_ts"></A><B><U><big>Timing summary (Setup and Hold):</big></U></B>
----------------
-
-Timing errors: 0 (setup), 0 (hold)
-Score: 0 (setup), 0 (hold)
-Cumulative negative slack: 0 (0+0)
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
-
-
-
-
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-</PRE></FONT>
-</BODY>
-</HTML>

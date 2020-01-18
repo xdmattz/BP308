@@ -1,232 +1,0 @@
-<HTML>
-<HEAD><TITLE>Lattice Synthesis Timing Report</TITLE>
-<STYLE TYPE="text/css">
-<!--
- body,pre{    font-family:'Courier New', monospace;    color: #000000;    font-size:88%;    background-color: #ffffff;}h1 {    font-weight: bold;    margin-top: 24px;    margin-bottom: 10px;    border-bottom: 3px solid #000;    font-size: 1em;}h2 {    font-weight: bold;    margin-top: 18px;    margin-bottom: 5px;    font-size: 0.90em;}h3 {    font-weight: bold;    margin-top: 12px;    margin-bottom: 5px;    font-size: 0.80em;}p {    font-size:78%;}P.Table {    margin-top: 4px;    margin-bottom: 4px;    margin-right: 4px;    margin-left: 4px;}table{    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    border-collapse: collapse;}th {    font-weight:bold;    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    text-align:left;    font-size:78%;}td {    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    font-size:78%;}a {    color:#013C9A;    text-decoration:none;}a:visited {    color:#013C9A;}a:hover, a:active {    text-decoration:underline;    color:#5BAFD4;}.pass{background-color: #00ff00;}.fail{background-color: #ff0000;}.comment{    font-size: 90%;    font-style: italic;}
--->
-</STYLE>
-</HEAD>
-<PRE><A name="Map_Twr"></A><B><U><big>Lattice Synthesis Timing Report</big></U></B>
---------------------------------------------------------------------------------
-Lattice Synthesis Timing Report, Version  
-Thu Mar 14 22:59:16 2019
-
-Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
-Copyright (c) 1995 AT&T Corp.   All rights reserved.
-Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
-Copyright (c) 2001 Agere Systems   All rights reserved.
-Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
-
-<A name="mtw1_ri"></A><B><U><big>Report Information</big></U></B>
-------------------
-Design:     kbuf_top
-Constraint file:  
-Report level:    verbose report, limited to 3 items per constraint
---------------------------------------------------------------------------------
-
-
-
-================================================================================
-Constraint: create_clock -period 5.000000 -name clk0 [get_nets fpga_clk]
-            650 items scored, 332 timing errors detected.
---------------------------------------------------------------------------------
-
-
-Error:  The following path violates requirements by 2.491ns
-
- Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
-
-   Source:         FD1P3IX    CK             sm_en_79  (from fpga_clk +)
-   Destination:    FD1P3IX    SP             k_out__i16  (to fpga_clk +)
-
-   Delay:                   7.206ns  (26.7% logic, 73.3% route), 4 logic levels.
-
- Constraint Details:
-
-      7.206ns data_path sm_en_79 to k_out__i16 violates
-      5.000ns delay constraint less
-      0.285ns LCE_S requirement (totaling 4.715ns) by 2.491ns
-
- Path Details: sm_en_79 to k_out__i16
-
-   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
-L_CO        ---     0.444             CK to Q              sm_en_79 (from fpga_clk)
-Route         5   e 1.462                                  sm_en
-LUT4        ---     0.493              B to Z              i2_3_lut
-Route         4   e 1.340                                  n1198
-LUT4        ---     0.493              C to Z              i1_2_lut_rep_4_3_lut
-Route         1   e 0.941                                  n1259
-LUT4        ---     0.493              B to Z              i3_3_lut_4_lut_4_lut_4_lut
-Route         8   e 1.540                                  fpga_clk_enable_46
-                  --------
-                    7.206  (26.7% logic, 73.3% route), 4 logic levels.
-
-
-Error:  The following path violates requirements by 2.491ns
-
- Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
-
-   Source:         FD1P3IX    CK             sm_en_79  (from fpga_clk +)
-   Destination:    FD1P3IX    SP             k_out__i15  (to fpga_clk +)
-
-   Delay:                   7.206ns  (26.7% logic, 73.3% route), 4 logic levels.
-
- Constraint Details:
-
-      7.206ns data_path sm_en_79 to k_out__i15 violates
-      5.000ns delay constraint less
-      0.285ns LCE_S requirement (totaling 4.715ns) by 2.491ns
-
- Path Details: sm_en_79 to k_out__i15
-
-   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
-L_CO        ---     0.444             CK to Q              sm_en_79 (from fpga_clk)
-Route         5   e 1.462                                  sm_en
-LUT4        ---     0.493              B to Z              i2_3_lut
-Route         4   e 1.340                                  n1198
-LUT4        ---     0.493              C to Z              i1_2_lut_rep_4_3_lut
-Route         1   e 0.941                                  n1259
-LUT4        ---     0.493              B to Z              i3_3_lut_4_lut_4_lut_4_lut
-Route         8   e 1.540                                  fpga_clk_enable_46
-                  --------
-                    7.206  (26.7% logic, 73.3% route), 4 logic levels.
-
-
-Error:  The following path violates requirements by 2.491ns
-
- Logical Details:  Cell type  Pin type       Cell name  (clock net +/-)
-
-   Source:         FD1P3IX    CK             sm_en_79  (from fpga_clk +)
-   Destination:    FD1P3IX    SP             k_out__i14  (to fpga_clk +)
-
-   Delay:                   7.206ns  (26.7% logic, 73.3% route), 4 logic levels.
-
- Constraint Details:
-
-      7.206ns data_path sm_en_79 to k_out__i14 violates
-      5.000ns delay constraint less
-      0.285ns LCE_S requirement (totaling 4.715ns) by 2.491ns
-
- Path Details: sm_en_79 to k_out__i14
-
-   Name    Fanout   Delay (ns)          Pins               Resource(Cell.Net)
-L_CO        ---     0.444             CK to Q              sm_en_79 (from fpga_clk)
-Route         5   e 1.462                                  sm_en
-LUT4        ---     0.493              B to Z              i2_3_lut
-Route         4   e 1.340                                  n1198
-LUT4        ---     0.493              C to Z              i1_2_lut_rep_4_3_lut
-Route         1   e 0.941                                  n1259
-LUT4        ---     0.493              B to Z              i3_3_lut_4_lut_4_lut_4_lut
-Route         8   e 1.540                                  fpga_clk_enable_46
-                  --------
-                    7.206  (26.7% logic, 73.3% route), 4 logic levels.
-
-Warning: 7.491 ns is the maximum delay for this constraint.
-
-
-<A name="mtw1_rs"></A><B><U><big>Timing Report Summary</big></U></B>
---------------
---------------------------------------------------------------------------------
-Constraint                              |   Constraint|       Actual|Levels
---------------------------------------------------------------------------------
-                                        |             |             |
-create_clock -period 5.000000 -name     |             |             |
-clk0 [get_nets fpga_clk]                |     5.000 ns|     7.491 ns|     4 *
-                                        |             |             |
---------------------------------------------------------------------------------
-
-
-1 constraints not met.
-
---------------------------------------------------------------------------------
-Critical Nets                           |   Loads|  Errors| % of total
---------------------------------------------------------------------------------
-n1198                                   |       4|      96|     28.92%
-                                        |        |        |
-fpga_clk_enable_38                      |       8|      64|     19.28%
-                                        |        |        |
-fpga_clk_enable_55                      |       8|      64|     19.28%
-                                        |        |        |
-n640                                    |       8|      64|     19.28%
-                                        |        |        |
-fpga_clk_enable_46                      |       8|      56|     16.87%
-                                        |        |        |
-n1262                                   |       3|      48|     14.46%
-                                        |        |        |
-n1263                                   |       2|      48|     14.46%
-                                        |        |        |
-n1259                                   |       1|      40|     12.05%
-                                        |        |        |
-ddk_clk                                 |       4|      34|     10.24%
-                                        |        |        |
-sm_en                                   |       5|      34|     10.24%
-                                        |        |        |
---------------------------------------------------------------------------------
-
-
-<A name="mtw1_ts"></A><B><U><big>Timing summary:</big></U></B>
----------------
-
-Timing errors: 332  Score: 373200
-
-Constraints cover  670 paths, 135 nets, and 498 connections (66.1% coverage)
-
-
-Peak memory: 61390848 bytes, TRCE: 2093056 bytes, DLYMAN: 0 bytes
-CPU_TIME_REPORT: 0 secs 
-
-
-
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-</PRE></FONT>
-</BODY>
-</HTML>
