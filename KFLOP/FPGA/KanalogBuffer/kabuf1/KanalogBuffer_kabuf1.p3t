@@ -1,0 +1,5 @@
+-rem
+-distrce
+-log "KanalogBuffer_kabuf1.log"
+-o "KanalogBuffer_kabuf1.csv"
+-pr "KanalogBuffer_kabuf1.prf"

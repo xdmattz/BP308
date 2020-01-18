@@ -1,0 +1,544 @@
+<HTML>
+<HEAD><TITLE>Project Summary</TITLE>
+<STYLE TYPE="text/css">
+<!--
+ body,pre{    font-family:'Courier New', monospace;    color: #000000;    font-size:88%;    background-color: #ffffff;}h1 {    font-weight: bold;    margin-top: 24px;    margin-bottom: 10px;    border-bottom: 3px solid #000;    font-size: 1em;}h2 {    font-weight: bold;    margin-top: 18px;    margin-bottom: 5px;    font-size: 0.90em;}h3 {    font-weight: bold;    margin-top: 12px;    margin-bottom: 5px;    font-size: 0.80em;}p {    font-size:78%;}P.Table {    margin-top: 4px;    margin-bottom: 4px;    margin-right: 4px;    margin-left: 4px;}table{    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    border-collapse: collapse;}th {    font-weight:bold;    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    text-align:left;    font-size:78%;}td {    padding: 4px;    border-width: 1px 1px 1px 1px;    border-style: solid solid solid solid;    border-color: black black black black;    vertical-align:top;    font-size:78%;}a {    color:#013C9A;    text-decoration:none;}a:visited {    color:#013C9A;}a:hover, a:active {    text-decoration:underline;    color:#5BAFD4;}.pass{background-color: #00ff00;}.fail{background-color: #ff0000;}.comment{    font-size: 90%;    font-style: italic;}
+-->
+</STYLE>
+</HEAD>
+<PRE><A name="Mrp"></A>
+           Lattice Mapping Report File for Design Module 'kbuf_top'
+
+
+
+<A name="mrp_di"></A><B><U><big>Design Information</big></U></B>
+
+Command line:   map -a MachXO2 -p LCMXO2-7000HE -t TQFP144 -s 4 -oc Commercial
+     KanalogBuffer_kabuf1.ngd -o KanalogBuffer_kabuf1_map.ncd -pr
+     KanalogBuffer_kabuf1.prf -mp KanalogBuffer_kabuf1.mrp -lpf C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/kabuf1/KanalogBuffer_kabuf1.lpf
+     -lpf C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf
+     -c 0 -gui -msgset C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/promote.xml 
+Target Vendor:  LATTICE
+Target Device:  LCMXO2-7000HETQFP144
+Target Performance:   4
+Mapper:  xo2c00,  version:  Diamond (64-bit) 3.10.2.115
+Mapped on:  12/08/18  15:54:07
+
+
+<A name="mrp_ds"></A><B><U><big>Design Summary</big></U></B>
+   Number of registers:     92 out of  7209 (1%)
+      PFU registers:           92 out of  6864 (1%)
+      PIO registers:            0 out of   345 (0%)
+   Number of SLICEs:        50 out of  3432 (1%)
+      SLICEs as Logic/ROM:     50 out of  3432 (1%)
+      SLICEs as RAM:            0 out of  2574 (0%)
+      SLICEs as Carry:          0 out of  3432 (0%)
+   Number of LUT4s:         51 out of  6864 (1%)
+      Number used as logic LUTs:         51
+      Number used as distributed RAM:     0
+      Number used as ripple logic:        0
+      Number used as shift registers:     0
+   Number of PIO sites used: 78 + 4(JTAG) out of 115 (71%)
+   Number of block RAMs:  0 out of 26 (0%)
+   Number of GSRs:  0 out of 1 (0%)
+   EFB used :       No
+   JTAG used :      No
+   Readback used :  No
+   Oscillator used :  Yes
+   Startup used :   No
+   POR :            On
+   Bandgap :        On
+   Number of Power Controller:  0 out of 1 (0%)
+   Number of Dynamic Bank Controller (BCINRD):  0 out of 6 (0%)
+   Number of Dynamic Bank Controller (BCLVDSO):  0 out of 1 (0%)
+   Number of DCCA:  0 out of 8 (0%)
+   Number of DCMA:  0 out of 2 (0%)
+   Number of PLLs:  0 out of 2 (0%)
+   Number of DQSDLLs:  0 out of 2 (0%)
+   Number of CLKDIVC:  0 out of 4 (0%)
+   Number of ECLKSYNCA:  0 out of 4 (0%)
+   Number of ECLKBRIDGECS:  0 out of 2 (0%)
+   Notes:-
+      1. Total number of LUT4s = (Number of logic LUT4s) + 2*(Number of
+     distributed RAMs) + 2*(Number of ripple logic)
+      2. Number of logic LUT4s does not include count of distributed RAM and
+     ripple logic.
+   Number of clocks:  1
+     Net fpga_clk: 49 loads, 49 rising, 0 falling (Driver: rc_oscillator )
+
+   Number of Clock Enables:  11
+     Net fpga_clk_enable_35: 2 loads, 2 LSLICEs
+     Net fpga_clk_enable_18: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_42: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_9: 1 loads, 1 LSLICEs
+     Net fpga_clk_enable_10: 1 loads, 1 LSLICEs
+     Net fpga_clk_enable_26: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_77: 9 loads, 9 LSLICEs
+     Net fpga_clk_enable_56: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_49: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_63: 4 loads, 4 LSLICEs
+     Net fpga_clk_enable_33: 4 loads, 4 LSLICEs
+   Number of LSRs:  4
+     Net kreset_c: 41 loads, 41 LSLICEs
+     Net n609: 2 loads, 2 LSLICEs
+     Net n619: 4 loads, 4 LSLICEs
+     Net n990: 1 loads, 1 LSLICEs
+   Number of nets driven by tri-state buffers:  0
+   Top 10 highest fanout non-clock nets:
+     Net kreset_c: 51 loads
+     Net dac_out_c_2: 20 loads
+     Net resync_adj_140: 18 loads
+     Net xstate_c_0: 16 loads
+     Net xstate_c_1: 15 loads
+     Net xstate_c_2: 14 loads
+     Net fpga_clk_enable_77: 9 loads
+     Net t_out_N_57: 9 loads
+     Net ddstart_in: 6 loads
+     Net ddDlatch: 5 loads
+
+
+
+
+   Number of warnings:  32
+   Number of errors:    0
+     
+
+
+
+
+<A name="mrp_dwe"></A><B><U><big>Design Errors/Warnings</big></U></B>
+
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(65): Semantic
+     error in "IOBUF PORT "k_in[0]" IO_TYPE=LVCMOS33 ;": Port "k_in[0]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(66): Semantic
+     error in "IOBUF PORT "k_in[1]" IO_TYPE=LVCMOS33 ;": Port "k_in[1]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(67): Semantic
+     error in "IOBUF PORT "k_in[2]" IO_TYPE=LVCMOS33 ;": Port "k_in[2]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(68): Semantic
+     error in "IOBUF PORT "k_in[3]" IO_TYPE=LVCMOS33 ;": Port "k_in[3]" does not
+     exist in the design. This preference has been disabled.
+
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(69): Semantic
+     error in "IOBUF PORT "k_in[4]" IO_TYPE=LVCMOS33 ;": Port "k_in[4]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(70): Semantic
+     error in "IOBUF PORT "k_in[5]" IO_TYPE=LVCMOS33 ;": Port "k_in[5]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(71): Semantic
+     error in "IOBUF PORT "k_in[6]" IO_TYPE=LVCMOS33 ;": Port "k_in[6]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(72): Semantic
+     error in "IOBUF PORT "k_in[7]" IO_TYPE=LVCMOS33 ;": Port "k_in[7]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(108): Semantic
+     error in "IOBUF PORT "ka_out[8]" IO_TYPE=LVCMOS33 ;": Port "ka_out[8]" does
+     not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(109): Semantic
+     error in "IOBUF PORT "ka_out[9]" IO_TYPE=LVCMOS33 ;": Port "ka_out[9]" does
+     not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(110): Semantic
+     error in "IOBUF PORT "ka_out[10]" IO_TYPE=LVCMOS33 ;": Port "ka_out[10]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(111): Semantic
+     error in "IOBUF PORT "ka_out[11]" IO_TYPE=LVCMOS33 ;": Port "ka_out[11]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(112): Semantic
+     error in "IOBUF PORT "ka_out[12]" IO_TYPE=LVCMOS33 ;": Port "ka_out[12]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(113): Semantic
+     error in "IOBUF PORT "ka_out[13]" IO_TYPE=LVCMOS33 ;": Port "ka_out[13]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(114): Semantic
+     error in "IOBUF PORT "ka_out[14]" IO_TYPE=LVCMOS33 ;": Port "ka_out[14]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(115): Semantic
+     error in "IOBUF PORT "ka_out[15]" IO_TYPE=LVCMOS33 ;": Port "ka_out[15]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(116): Semantic
+     error in "IOBUF PORT "ka_out[16]" IO_TYPE=LVCMOS33 ;": Port "ka_out[16]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(117): Semantic
+     error in "IOBUF PORT "ka_out[17]" IO_TYPE=LVCMOS33 ;": Port "ka_out[17]"
+     does not exist in the design. This preference has been disabled.
+
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(118): Semantic
+     error in "IOBUF PORT "ka_out[18]" IO_TYPE=LVCMOS33 ;": Port "ka_out[18]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(119): Semantic
+     error in "IOBUF PORT "ka_out[19]" IO_TYPE=LVCMOS33 ;": Port "ka_out[19]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(120): Semantic
+     error in "IOBUF PORT "ka_out[20]" IO_TYPE=LVCMOS33 ;": Port "ka_out[20]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(121): Semantic
+     error in "IOBUF PORT "ka_out[21]" IO_TYPE=LVCMOS33 ;": Port "ka_out[21]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(122): Semantic
+     error in "IOBUF PORT "ka_out[22]" IO_TYPE=LVCMOS33 ;": Port "ka_out[22]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(123): Semantic
+     error in "IOBUF PORT "ka_out[23]" IO_TYPE=LVCMOS33 ;": Port "ka_out[23]"
+     does not exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(124): Semantic
+     error in "IOBUF PORT "leds[0]" IO_TYPE=LVCMOS33 ;": Port "leds[0]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(125): Semantic
+     error in "IOBUF PORT "leds[1]" IO_TYPE=LVCMOS33 ;": Port "leds[1]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(126): Semantic
+     error in "IOBUF PORT "leds[2]" IO_TYPE=LVCMOS33 ;": Port "leds[2]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(127): Semantic
+     error in "IOBUF PORT "leds[3]" IO_TYPE=LVCMOS33 ;": Port "leds[3]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(128): Semantic
+     error in "IOBUF PORT "leds[4]" IO_TYPE=LVCMOS33 ;": Port "leds[4]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(129): Semantic
+     error in "IOBUF PORT "leds[5]" IO_TYPE=LVCMOS33 ;": Port "leds[5]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(130): Semantic
+     error in "IOBUF PORT "leds[6]" IO_TYPE=LVCMOS33 ;": Port "leds[6]" does not
+     exist in the design. This preference has been disabled.
+WARNING - map: C:/Dan/Eng
+     Projects/BP308/KFLOP/FPGA/KanalogBuffer1/KanalogBuffer.lpf(131): Semantic
+     error in "IOBUF PORT "leds[7]" IO_TYPE=LVCMOS33 ;": Port "leds[7]" does not
+     exist in the design. This preference has been disabled.
+
+
+
+
+<A name="mrp_ioa"></A><B><U><big>IO (PIO) Attributes</big></U></B>
+
++---------------------+-----------+-----------+------------+
+| IO Name             | Direction | Levelmode | IO         |
+|                     |           |  IO_TYPE  | Register   |
++---------------------+-----------+-----------+------------+
+| kdata_io[7]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[4]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[5]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[2]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[1]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[6]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[5]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[4]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[3]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[2]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[1]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kdata_io[0]         | BIDIR     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[6]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[2]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[3]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[7]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Ddin                | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[3]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[4]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[5]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[6]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[7]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[0]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_out[1]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_out[0]          | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+
+| k_out[15]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[14]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[13]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[12]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[11]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[10]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[9]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[8]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[7]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[6]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[5]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[4]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[3]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[2]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[1]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_out[0]            | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xk_clk              | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xstart_in           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xstate[2]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xstate[1]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xstate[0]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[7]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[6]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[5]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[4]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[3]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[2]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| xkdata[1]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+
+| xkdata[0]           | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| t_out               | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| dac_clk             | OUTPUT    | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Dlatch              | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Dclk                | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| Ddout               | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| kreset              | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[15]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[14]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[13]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[12]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[11]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[10]           | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[9]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[8]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[7]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[6]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[5]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[4]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[3]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[2]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[1]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| ka_in[0]            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| k_clk               | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+| start_in            | INPUT     | LVCMOS33  |            |
++---------------------+-----------+-----------+------------+
+
+
+
+<A name="mrp_rm"></A><B><U><big>Removed logic</big></U></B>
+
+Block i2 undriven or does not drive anything - clipped.
+Block GSR_INST undriven or does not drive anything - clipped.
+
+Signal n994 was merged into signal kreset_c
+Signal GND_net undriven or does not drive anything - clipped.
+Signal VCC_net undriven or does not drive anything - clipped.
+Block kreset_I_0_1_lut_rep_14 was optimized away.
+Block i1 was optimized away.
+
+
+
+<A name="mrp_mem"></A><B><U><big>Memory Usage</big></U></B>
+
+
+     
+
+OSC Summary
+-----------
+
+OSC 1:                                     Pin/Node Value
+  OSC Instance Name:                                rc_oscillator
+  OSC Type:                                         OSCH
+  STDBY Input:                                      NONE
+  OSC Output:                              NODE     fpga_clk
+  OSC Nominal Frequency (MHz):                      66.50
+
+
+
+<A name="mrp_asic"></A><B><U><big>ASIC Components</big></U></B>
+---------------
+
+Instance Name: rc_oscillator
+         Type: OSCH
+
+
+
+<A name="mrp_runtime"></A><B><U><big>Run Time and Memory Usage</big></U></B>
+-------------------------
+
+   Total CPU Time: 1 secs  
+   Total REAL Time: 0 secs  
+   Peak Memory Usage: 58 MB
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+     Copyright (c) 1995 AT&T Corp.   All rights reserved.
+     Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+     Copyright (c) 2001 Agere Systems   All rights reserved.
+     Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights
+     reserved.
+
+
+
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+</PRE></FONT>
+</BODY>
+</HTML>

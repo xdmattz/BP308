@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BuildStatus>
+    <Strategy name="Strategy1">
+        <Milestone name="Export" build_result="0" build_time="0">
+            <Task name="IBIS" build_result="0" update_result="3" update_time="0"/>
+            <Task name="TimingSimFileVlg" build_result="0" update_result="3" update_time="0"/>
+            <Task name="TimingSimFileVHD" build_result="0" update_result="3" update_time="0"/>
+            <Task name="Bitgen" build_result="2" update_result="0" update_time="1539566810"/>
+            <Task name="Jedecgen" build_result="2" update_result="0" update_time="1539566813"/>
+        </Milestone>
+        <Milestone name="Map" build_result="2" build_time="1539566798">
+            <Task name="Map" build_result="2" update_result="0" update_time="1539566798"/>
+            <Task name="MapTrace" build_result="2" update_result="0" update_time="1539566799"/>
+            <Task name="MapVerilogSimFile" build_result="0" update_result="3" update_time="0"/>
+            <Task name="MapVHDLSimFile" build_result="0" update_result="3" update_time="0"/>
+        </Milestone>
+        <Milestone name="PAR" build_result="2" build_time="1539566805">
+            <Task name="PAR" build_result="2" update_result="0" update_time="1539566805"/>
+            <Task name="PARTrace" build_result="2" update_result="0" update_time="1539566806"/>
+            <Task name="IOTiming" build_result="2" update_result="0" update_time="1539566807"/>
+        </Milestone>
+        <Milestone name="Synthesis" build_result="2" build_time="1539566797">
+            <Task name="Lattice_Synthesis" build_result="2" update_result="0" update_time="1539566797"/>
+            <Task name="LSE_Compile" build_result="2" update_result="0" update_time="1539566813"/>
+        </Milestone>
+        <Milestone name="TOOL_Report" build_result="0" build_time="0">
+            <Task name="HDLE" build_result="0" update_result="2" update_time="1539564538"/>
+            <Task name="BKM" build_result="0" update_result="2" update_time="0"/>
+            <Task name="SSO" build_result="0" update_result="2" update_time="0"/>
+            <Task name="PIODRC" build_result="0" update_result="2" update_time="0"/>
+            <Task name="DEC" build_result="0" update_result="2" update_time="0"/>
+        </Milestone>
+        <Report name=".vdbs/KanalogBuffer_kabuf1_map.vdb" last_build_time="1539566798" last_build_size="51622"/>
+        <Report name="KanalogBuffer_kabuf1.bgn" last_build_time="1539566813" last_build_size="4296"/>
+        <Report name="KanalogBuffer_kabuf1.bit" last_build_time="1539566810" last_build_size="26159"/>
+        <Report name="KanalogBuffer_kabuf1.ior" last_build_time="1539566807" last_build_size="3058"/>
+        <Report name="KanalogBuffer_kabuf1.jed" last_build_time="1539566813" last_build_size="1465998"/>
+        <Report name="KanalogBuffer_kabuf1.lsedata" last_build_time="1539566797" last_build_size="113655"/>
+        <Report name="KanalogBuffer_kabuf1.ncd" last_build_time="1539566805" last_build_size="95325"/>
+        <Report name="KanalogBuffer_kabuf1.ngd" last_build_time="1539566797" last_build_size="81125"/>
+        <Report name="KanalogBuffer_kabuf1.tw1" last_build_time="1539566799" last_build_size="8179"/>
+        <Report name="KanalogBuffer_kabuf1.twr" last_build_time="1539566806" last_build_size="42733"/>
+        <Report name="KanalogBuffer_kabuf1_map.ncd" last_build_time="1539566798" last_build_size="70370"/>
+    </Strategy>
+</BuildStatus>

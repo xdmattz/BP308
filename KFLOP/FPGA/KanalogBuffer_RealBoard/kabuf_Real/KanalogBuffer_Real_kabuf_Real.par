@@ -1,0 +1,246 @@
+PAR: Place And Route Diamond (64-bit) 3.10.0.111.2.
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+Copyright (c) 1995 AT&T Corp.   All rights reserved.
+Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+Copyright (c) 2001 Agere Systems   All rights reserved.
+Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.
+Thu Mar 14 22:59:21 2019
+
+C:/lscc/diamond/3.10_x64/ispfpga\bin\nt64\par -f
+KanalogBuffer_Real_kabuf_Real.p2t KanalogBuffer_Real_kabuf_Real_map.ncd
+KanalogBuffer_Real_kabuf_Real.dir KanalogBuffer_Real_kabuf_Real.prf -gui
+-msgset
+C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/promote.xml
+
+
+Preference file: KanalogBuffer_Real_kabuf_Real.prf.
+
+Level/       Number       Worst        Timing       Worst        Timing       Run          NCD
+Cost [ncd]   Unrouted     Slack        Score        Slack(hold)  Score(hold)  Time         Status
+----------   --------     -----        ------       -----------  -----------  ----         ------
+5_1   *      0            8.492        0            0.304        0            13           Success
+
+* : Design saved.
+
+Total (real) run time for 1-seed: 13 secs 
+
+par done!
+
+Lattice Place and Route Report for Design "KanalogBuffer_Real_kabuf_Real_map.ncd"
+Thu Mar 14 22:59:21 2019
+
+PAR: Place And Route Diamond (64-bit) 3.10.0.111.2.
+Command Line: par -w -l 5 -i 6 -t 1 -c 0 -e 0 -gui -msgset "C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/promote.xml" -exp parUseNBR=1:parCDP=0:parCDR=0:parPathBased=OFF KanalogBuffer_Real_kabuf_Real_map.ncd KanalogBuffer_Real_kabuf_Real.dir/5_1.ncd KanalogBuffer_Real_kabuf_Real.prf
+Preference file: KanalogBuffer_Real_kabuf_Real.prf.
+Placement level-cost: 5-1.
+Routing Iterations: 6
+
+Loading design for application par from file KanalogBuffer_Real_kabuf_Real_map.ncd.
+Design name: kbuf_top
+NCD version: 3.3
+Vendor:      LATTICE
+Device:      LCMXO2-7000HE
+Package:     TQFP144
+Performance: 4
+Loading device for application par from file 'xo2c7000.nph' in environment: C:/lscc/diamond/3.10_x64/ispfpga.
+Package Status:                     Final          Version 1.39.
+Performance Hardware Data Status:   Final          Version 34.4.
+License checked out.
+
+
+Ignore Preference Error(s):  True
+Device utilization summary:
+
+   PIO (prelim)   94+4(JTAG)/336     29% used
+                  94+4(JTAG)/115     85% bonded
+
+   SLICE             65/3432          1% used
+
+   OSC                1/1           100% used
+
+
+Number of Signals: 223
+Number of Connections: 591
+
+Pin Constraint Summary:
+   92 out of 94 pins locked (97% locked).
+
+The following 1 signal is selected to use the primary clock routing resources:
+    fpga_clk (driver: rc_oscillator, clk load #: 65)
+
+
+The following 2 signals are selected to use the secondary clock routing resources:
+    kreset_c (driver: kreset, clk load #: 0, sr load #: 53, ce load #: 0)
+    fpga_clk_enable_80 (driver: SLICE_79, clk load #: 0, sr load #: 0, ce load #: 12)
+
+WARNING - par: Signal "kreset_c" is selected to use Secondary clock resources. However, its driver comp "kreset" is located at "94", which is not a dedicated pin for connecting to Secondary clock resources. General routing has to be used to route this signal, and it might suffer from excessive delay or skew.
+No signal is selected as Global Set/Reset.
+.
+Starting Placer Phase 0.
+..........
+Finished Placer Phase 0.  REAL time: 3 secs 
+
+Starting Placer Phase 1.
+....................
+Placer score = 103343.
+Finished Placer Phase 1.  REAL time: 6 secs 
+
+Starting Placer Phase 2.
+.
+Placer score =  103312
+Finished Placer Phase 2.  REAL time: 6 secs 
+
+
+------------------ Clock Report ------------------
+
+Global Clock Resources:
+  CLK_PIN    : 0 out of 8 (0%)
+  General PIO: 1 out of 336 (0%)
+  PLL        : 0 out of 2 (0%)
+  DCM        : 0 out of 2 (0%)
+  DCC        : 0 out of 8 (0%)
+
+Quadrants All (TL, TR, BL, BR) - Global Clocks:
+  PRIMARY "fpga_clk" from OSC on comp "rc_oscillator" on site "OSC", clk load = 65
+  SECONDARY "kreset_c" from comp "kreset" on PIO site "94 (PR11A)", clk load = 0, ce load = 0, sr load = 53
+  SECONDARY "fpga_clk_enable_80" from F0 on comp "SLICE_79" on site "R21C20D", clk load = 0, ce load = 12, sr load = 0
+
+  PRIMARY  : 1 out of 8 (12%)
+  SECONDARY: 2 out of 8 (25%)
+
+Edge Clocks:
+  No edge clock selected.
+
+--------------- End of Clock Report ---------------
+
+
+I/O Usage Summary (final):
+   94 + 4(JTAG) out of 336 (29.2%) PIO sites used.
+   94 + 4(JTAG) out of 115 (85.2%) bonded PIO sites used.
+   Number of PIO comps: 94; differential: 0.
+   Number of Vref pins used: 0.
+
+I/O Bank Usage Summary:
++----------+----------------+------------+-----------+
+| I/O Bank | Usage          | Bank Vccio | Bank Vref |
++----------+----------------+------------+-----------+
+| 0        | 18 / 28 ( 64%) | 3.3V       | -         |
+| 1        | 20 / 29 ( 68%) | 3.3V       | -         |
+| 2        | 29 / 29 (100%) | 3.3V       | -         |
+| 3        | 8 / 9 ( 88%)   | 3.3V       | -         |
+| 4        | 9 / 10 ( 90%)  | 3.3V       | -         |
+| 5        | 10 / 10 (100%) | 3.3V       | -         |
++----------+----------------+------------+-----------+
+
+Total placer CPU time: 4 secs 
+
+Dumping design to file KanalogBuffer_Real_kabuf_Real.dir/5_1.ncd.
+
+0 connections routed; 591 unrouted.
+Starting router resource preassignment
+
+Completed router resource preassignment. Real time: 12 secs 
+
+Start NBR router at 22:59:33 03/14/19
+
+*****************************************************************
+Info: NBR allows conflicts(one node used by more than one signal)
+      in the earlier iterations. In each iteration, it tries to  
+      solve the conflicts while keeping the critical connections 
+      routed as short as possible. The routing process is said to
+      be completed when no conflicts exist and all connections   
+      are routed.                                                
+Note: NBR uses a different method to calculate timing slacks. The
+      worst slack and total negative slack may not be the same as
+      that in TRCE report. You should always run TRCE to verify  
+      your design.                                               
+*****************************************************************
+
+Start NBR special constraint process at 22:59:33 03/14/19
+
+Start NBR section for initial routing at 22:59:33 03/14/19
+Level 1, iteration 1
+0(0.00%) conflict; 429(72.59%) untouched conns; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.347ns/0.000ns; real time: 12 secs 
+Level 2, iteration 1
+0(0.00%) conflict; 423(71.57%) untouched conns; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.530ns/0.000ns; real time: 13 secs 
+Level 3, iteration 1
+0(0.00%) conflict; 420(71.07%) untouched conns; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.706ns/0.000ns; real time: 13 secs 
+Level 4, iteration 1
+7(0.00%) conflicts; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.484ns/0.000ns; real time: 13 secs 
+
+Info: Initial congestion level at 75% usage is 0
+Info: Initial congestion area  at 75% usage is 0 (0.00%)
+
+Start NBR section for normal routing at 22:59:34 03/14/19
+Level 4, iteration 1
+3(0.00%) conflicts; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.492ns/0.000ns; real time: 13 secs 
+Level 4, iteration 2
+3(0.00%) conflicts; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.492ns/0.000ns; real time: 13 secs 
+Level 4, iteration 3
+2(0.00%) conflicts; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.492ns/0.000ns; real time: 13 secs 
+Level 4, iteration 4
+0(0.00%) conflict; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.492ns/0.000ns; real time: 13 secs 
+
+Start NBR section for setup/hold timing optimization with effort level 3 at 22:59:34 03/14/19
+
+Start NBR section for re-routing at 22:59:34 03/14/19
+Level 4, iteration 1
+0(0.00%) conflict; 0(0.00%) untouched conn; 0 (nbr) score; 
+Estimated worst slack/total negative slack<setup>: 8.492ns/0.000ns; real time: 13 secs 
+
+Start NBR section for post-routing at 22:59:34 03/14/19
+
+End NBR router with 0 unrouted connection
+
+NBR Summary
+-----------
+  Number of unrouted connections : 0 (0.00%)
+  Number of connections with timing violations : 0 (0.00%)
+  Estimated worst slack<setup> : 8.492ns
+  Timing score<setup> : 0
+-----------
+Notes: The timing info is calculated for SETUP only and all PAR_ADJs are ignored.
+
+
+
+Total CPU time 11 secs 
+Total REAL time: 13 secs 
+Completely routed.
+End of route.  591 routed (100.00%); 0 unrouted.
+
+Hold time timing score: 0, hold timing errors: 0
+
+Timing score: 0 
+
+Dumping design to file KanalogBuffer_Real_kabuf_Real.dir/5_1.ncd.
+
+
+All signals are completely routed.
+
+
+PAR_SUMMARY::Run status = Success
+PAR_SUMMARY::Number of unrouted conns = 0
+PAR_SUMMARY::Worst  slack<setup/<ns>> = 8.492
+PAR_SUMMARY::Timing score<setup/<ns>> = 0.000
+PAR_SUMMARY::Worst  slack<hold /<ns>> = 0.304
+PAR_SUMMARY::Timing score<hold /<ns>> = 0.000
+PAR_SUMMARY::Number of errors = 0
+
+Total CPU  time to completion: 11 secs 
+Total REAL time to completion: 13 secs 
+
+par done!
+
+Copyright (c) 1991-1994 by NeoCAD Inc. All rights reserved.
+Copyright (c) 1995 AT&T Corp.   All rights reserved.
+Copyright (c) 1995-2001 Lucent Technologies Inc.  All rights reserved.
+Copyright (c) 2001 Agere Systems   All rights reserved.
+Copyright (c) 2002-2017 Lattice Semiconductor Corporation,  All rights reserved.

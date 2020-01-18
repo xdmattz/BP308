@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BuildStatus>
+    <Strategy name="Strategy1">
+        <Milestone name="Export" build_result="0" build_time="0">
+            <Task name="IBIS" build_result="0" update_result="2" update_time="1549137720"/>
+            <Task name="TimingSimFileVlg" build_result="0" update_result="3" update_time="0"/>
+            <Task name="TimingSimFileVHD" build_result="0" update_result="3" update_time="0"/>
+            <Task name="Bitgen" build_result="2" update_result="0" update_time="1552618781"/>
+            <Task name="Jedecgen" build_result="2" update_result="0" update_time="1552618784"/>
+        </Milestone>
+        <Milestone name="Map" build_result="2" build_time="1552618759">
+            <Task name="Map" build_result="2" update_result="0" update_time="1552618759"/>
+            <Task name="MapTrace" build_result="2" update_result="0" update_time="1552618760"/>
+            <Task name="MapVerilogSimFile" build_result="0" update_result="3" update_time="0"/>
+            <Task name="MapVHDLSimFile" build_result="0" update_result="3" update_time="0"/>
+        </Milestone>
+        <Milestone name="PAR" build_result="2" build_time="1552618774">
+            <Task name="PAR" build_result="2" update_result="0" update_time="1552618774"/>
+            <Task name="PARTrace" build_result="2" update_result="0" update_time="1552618775"/>
+            <Task name="IOTiming" build_result="2" update_result="0" update_time="1552618778"/>
+        </Milestone>
+        <Milestone name="Synthesis" build_result="2" build_time="1552618756">
+            <Task name="Lattice_Synthesis" build_result="2" update_result="0" update_time="1552618756"/>
+            <Task name="LSE_Compile" build_result="2" update_result="0" update_time="1552618784"/>
+        </Milestone>
+        <Milestone name="TOOL_Report" build_result="0" build_time="0">
+            <Task name="HDLE" build_result="0" update_result="2" update_time="1549160361"/>
+            <Task name="SSO" build_result="0" update_result="3" update_time="0"/>
+            <Task name="PIODRC" build_result="0" update_result="3" update_time="0"/>
+        </Milestone>
+        <Report name=".vdbs/KanalogBuffer_Real_kabuf_Real_map.vdb" last_build_time="1552618759" last_build_size="79140"/>
+        <Report name=".vdbs/KanalogBuffer_kabuf1_map.vdb" last_build_time="1544302448" last_build_size="67164"/>
+        <Report name="IBIS/KanalogBuffer_Real_kabuf_Real.ibs" last_build_time="1549137720" last_build_size="80038"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.bgn" last_build_time="1552618784" last_build_size="4365"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.bit" last_build_time="1552618781" last_build_size="27379"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.ior" last_build_time="1552618778" last_build_size="4685"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.jed" last_build_time="1552618784" last_build_size="1467460"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.lsedata" last_build_time="1552618754" last_build_size="218711"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.ncd" last_build_time="1552618774" last_build_size="202546"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.ngd" last_build_time="1552618756" last_build_size="164193"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.tw1" last_build_time="1552618760" last_build_size="8388"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real.twr" last_build_time="1552618775" last_build_size="42261"/>
+        <Report name="KanalogBuffer_Real_kabuf_Real_map.ncd" last_build_time="1552618758" last_build_size="146290"/>
+        <Report name="KanalogBuffer_kabuf1.bgn" last_build_time="1544302468" last_build_size="4300"/>
+        <Report name="KanalogBuffer_kabuf1.bit" last_build_time="1544302464" last_build_size="27004"/>
+        <Report name="KanalogBuffer_kabuf1.ior" last_build_time="1544302462" last_build_size="4056"/>
+        <Report name="KanalogBuffer_kabuf1.jed" last_build_time="1544302468" last_build_size="1466974"/>
+        <Report name="KanalogBuffer_kabuf1.lsedata" last_build_time="1544302446" last_build_size="180972"/>
+        <Report name="KanalogBuffer_kabuf1.ncd" last_build_time="1544302458" last_build_size="163860"/>
+        <Report name="KanalogBuffer_kabuf1.ngd" last_build_time="1544302446" last_build_size="130721"/>
+        <Report name="KanalogBuffer_kabuf1.tw1" last_build_time="1544302448" last_build_size="8275"/>
+        <Report name="KanalogBuffer_kabuf1.twr" last_build_time="1544302460" last_build_size="42286"/>
+        <Report name="KanalogBuffer_kabuf1_map.ncd" last_build_time="1544302448" last_build_size="117131"/>
+    </Strategy>
+</BuildStatus>
