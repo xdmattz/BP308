@@ -1,7 +1,0 @@
-C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TLAUX_PSoC.cyprj|9e56e820-1e8e-44f5-bf35-12f8b1946716
-C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|921ba7dc-ae56-489e-a684-e7acb2d0c930
-C:\Users\Dan\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|83e551c6-8ac3-487a-bbad-0e1dee0349c2
-C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|9477e84d-64fc-41af-af34-c99f1e3c57be
-C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|5bc5ca1d-ba86-4e97-9f31-71e1dd75abf0
-C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|1953fed2-9f10-4dae-a665-5fec98861ad2
-C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_Bootloader.cydsn\TLAUX_Bootloader.cyprj|d3e2b0d5-e4c3-4602-8264-18979a5437f1

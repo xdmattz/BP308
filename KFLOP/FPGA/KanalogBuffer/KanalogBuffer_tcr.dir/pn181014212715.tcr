@@ -1,6 +1,0 @@
-#Start recording tcl command: 10/14/2018 21:26:21
-#Project Location: C:/Dan/Engineering/Lattice/Learning/KanalogBuffer; Project name: KanalogBuffer
-prj_project open "C:/Dan/Engineering/Lattice/Learning/KanalogBuffer/KanalogBuffer.ldf"
-prj_run Export -impl kabuf1
-prj_project archive -includeAll "C:/Dan/Engineering/Lattice/Learning/KanalogBuffer 3.zip"
-#Stop recording: 10/14/2018 21:27:15
