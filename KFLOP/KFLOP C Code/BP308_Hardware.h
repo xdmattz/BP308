@@ -1,6 +1,8 @@
 #ifndef BP308_HARDWARE_H
 #define BP308_HARDWARE_H
 
+
+
 #define QUERY_TIMEOUT 0.010         // 10 millisecond timeout
 #define FLOOD_QUERY_TIMEOUT 0.200   // 200 millisecond timeout
 #define ESTOP_DELAY_TIMEOUT 1.2     // 1200 ms delay to wait for axis ready after estop

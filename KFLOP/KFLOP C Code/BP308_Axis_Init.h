@@ -1,11 +1,7 @@
 #ifndef BP308_AXIS_INIT_H
 #define BP308_AXIS_INIT_H
 
-#define X_AXIS 0
-#define Y_AXIS 1
-#define Z_AXIS 2
-#define A_AXIS 3
-#define SPINDLE_AXIS 7
+
 
 // these number are from the BOSS 6 - need to recalculate for the BP308
 // AXIS Resolutions

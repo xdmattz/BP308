@@ -12,6 +12,6 @@ void Tool_Change(void)
     // if the HostStatus bit is active then don't do anything with the MPG
     if((HostStatus & HOST_JOB_ACTIVE_BIT) == 0)
     {
-        if(ReadBit(To))
+  //      if(ReadBit(To))
     }
 }

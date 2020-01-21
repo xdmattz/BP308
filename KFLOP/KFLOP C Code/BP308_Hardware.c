@@ -178,6 +178,9 @@ void Warning_Check(void)
 
 /*
 
+#define INPUT 0
+#define OUTPUT 1
+
 void Init_Kanalog_IO(void)
 {
     // Kanalog Inputs - opto inputs

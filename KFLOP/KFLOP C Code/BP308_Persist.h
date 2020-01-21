@@ -1,9 +1,10 @@
 #ifndef BP308_PERSIST_H
 #define BP308_PERSIST_H
 
-// This head file should be included in any program that accesses the persistant variables in any thread. - common to all threads
+// *** This header file should be included in any program that accesses the persistant variables in any thread ***
+// ie. it is common to all threads
 
-#define _BV(X) (1 << X)     // bit shifting macro - from winAVR 
+
 
 // definitions of the persist variables used in the BP308
 //
@@ -12,14 +13,43 @@
 // P_XXX means Persist
 // SB_XXX means Status Bit
 
-// have to figure out the best place to put these - 
+ // persistant variable map
+ // the KFLOP communicates between threads and with the PC via "persist variables"  
+ // there are 200 UserData varialbes defined in KMotionDef.h 
+ // Each user data is described in various sections of the KFLOP documentation.
+ // 0 - 99  MACH3 User DROs 1 - 50 - 2 words each 
+ //     5   MACH3 
+ //     6   MACH3 notify message
+ //     50-61 MACH3 Current positions of the defined axes.
+ //     62  MACH3 Probe Status
+ //     
+ //
+ // 100 - 107 PC_COMM_PERSIST - defined in PC-DSP.h  Special Vars constanty loaded with Bulk Status 
+ // 110 - 114 PC_COMM_CSS Mode - Constant Surface Speed variables.
+ //
+ // 120 - 129 BP308 status variables
+ //     120     P_STATUS - BP308 status 
+ //     121     P_TLAUX_STATUS - BP308 tool changer status
+ //     122     P_MPG_STATUS - BP308 MPG status
+ //     123     P_DEVICE_STATUS - some future device?
+ //     124     P_SERIAL_PENDING
+ //     125     P_MSG_PTR
+ //     126     P_MSG_PTR_H
+ //     127     P_RESYNC_MPG    - flag to cause MPG Resync
+ // 
+ // 130 - 139  BP308 Home routines (Thread 2) communications
+ //     130     Notify message - similar to MACH3 Notify Message ie the command to execute   
 
-#define P_STATUS            0   // the main status word of the machine
-#define P_TLAUX_STATUS      1   // latest status recieved from the TLUX Tool Changer Query
-#define P_MPG_STATUS        2   // latest status recieved from the MPG Query 
-#define P_DEVICE_STATUS     3   // Some other TBD device status 
-#define P_SERIAL_PENDING    4   // flags that indicate a message has been sent to a peripheral device
-#define P_TLAUX_MSG_PTR     5   // Contains a pointer to the message to send - from another thread.
+#define P_STATUS            120   // the main status word of the machine
+#define P_TLAUX_STATUS      121   // latest status recieved from the TLUX Tool Changer Query
+#define P_MPG_STATUS        122   // latest status recieved from the MPG Query 
+#define P_DEVICE_STATUS     123   // Some other TBD device status 
+#define P_SERIAL_PENDING    124   // flags that indicate a message has been sent to a peripheral device
+#define P_MSG_PTR           125   // Contains a pointer to the message to send - from another thread. - low bytes
+#define P_MSG_PTR_H         126   // High byte
+#define P_MPG_RESYNC        127
+
+#define P_NOTIFY            130
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -42,7 +72,7 @@
 #define SB_Y_LIMIT          15  // 1 = on Y_Limit, 0 = normal
 #define SB_Z_LIMIT          16  // 1 = on Z_Limit, 0 = normal
 
-
+#define _BV(X) (1 << X)     // bit shifting macro
 
 // P_SERIAL_PENDING bit definitions
 #define SP_TLAUX_QUERY      _BV(0)   // TLAUX query sent
@@ -68,7 +98,7 @@
 // 16 bits contain the state of the selector switches
 //
 //      |      Fault Bits |       open            | Selector Switches
-// | NC | Timeout | ESTOP |                       | EN_SW | off | Axis | Rate |
+// | NC | Timeout | ESTOP |              |SW2| SW1| EN_SW | off | Axis | Rate |
 // | 15 |    14   |  13   | 12 | 11 | 10 | 9 | 8  |  7    |  6  | 5-3  | 2-0  | 
 #define MPG_FAULT_MASK          0x06000
 
@@ -76,6 +106,8 @@
 #define MPG_STATUS_ESTOP_POS        13
 #define MPG_STATUS_ENSW_POS         7
 #define MPG_STATUS_AXIS_POS         3
+#define MPG_STATUS_SW2_POS          9
+#define MPG_STATUS_SW1_POS          8
 #define MPG_STATUS_AXIS_MASK    0x0038
 #define MPG_STATUS_AXIS_X       0x0008
 #define MPG_STATUS_AXIS_Y       0x0010
@@ -85,8 +117,6 @@
 #define MPG_STATUS_RATE_X1      0x0001
 #define MPG_STATUS_RATE_X10     0x0002
 #define MPG_STATUS_RATE_X100    0x0003
-
-   
 
 
 

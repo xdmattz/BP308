@@ -1,6 +1,24 @@
 #ifndef BP308_IO_H
 #define BP308_IO_H
 
+// Axis Definitions
+
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+#define A_AXIS 3
+#define SPINDLE_AXIS 7
+
+// Limit Switch Backoff 
+#define BACKOFF_STEPS 1250  // 1/20 of an inch - assuming 40u in/step
+#define BACKOFF_VEL 5000    // units are encoder ticks per second
+
+// Home Switch Backoff
+#define HOME_BACKOFF 25000  // about 1 inch
+#define HOME_VEL_1  8333  // Homing velocity    20 ipm, 0.333 ips 
+#define HOME_VEL_2  3000  // Homing backoff velocity  7.2 ipm    
+#define HOME_VEL_3  1500   // index hunt velocity 0.06 ips
+
 // definitions for the IO ports on the DANALOG Board for the Bridgeport Discovery 308 rebuild
 // The DANALOG board looks like both a KANALOG and KONNECT board
 // 
@@ -45,6 +63,12 @@
 #define Z_NO_LIMIT          1
 #define Z_AT_LIMIT          0
 #define Z_AT_HOME           1
+#define LIM_AT_LIM          0
+#define LIM_NO_LIM          1
+#define HOME_AT_HOME        1
+#define HOME_NOT_HOME       0
+#define INDEX_AT_INDEX      1
+#define INDEX_NOT_INDEX     0
 
 
 // Outputs
@@ -125,5 +149,9 @@
 #define AIR_MON_OK      1
 #define COOLANT_MON_OK  1
 
+// return values for CheckDone
+#define CD_AXIS_DISABLED    -1
+#define CD_DONE             1
+#define CD_NOT_DONE         0
 
 #endif

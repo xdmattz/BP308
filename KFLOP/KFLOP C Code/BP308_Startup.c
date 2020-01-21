@@ -1,5 +1,14 @@
 #pragma TI_COMPILER // (optimization) or (optimization, size)
 
+// BP308 Startup
+// this is the main loop that runs on the KFLOP for the BP308 Machine
+// this program should always run in thread 1 so it will not be cleared during ESTOP
+// 
+// performs the following functions:
+// Initialization
+// Serial port management - for monitoring the MPG and TLAUX
+// MPG Management
+// Other periodic processes that have to run all the time. - Add here as implemented.
 
 #include "KMotionDef.h"
 

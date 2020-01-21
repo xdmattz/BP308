@@ -7,8 +7,10 @@
 
 void Init_MPG(void)
 {
+    persist.UserData[P_MPG_RESYNC] = FALSE;
 
 }
+
 void ServiceMPG(void)
 {
     int MPG_NewState = 0;
@@ -21,6 +23,14 @@ void ServiceMPG(void)
     static int MPG_LastState;
     static int Prev_Axis = 0;
 
+if(persist.UserData[P_MPG_RESYNC] == TRUE)
+{
+    // make it look like the axis switch on the MPG is off by setting the bits in the P_MPG_STATUS to the off position
+    // the next serial MPG query will reset it.
+    persist.UserData[P_MPG_STATUS] &= ~(MPG_STATUS_AXIS_MASK);
+    persist.UserData[P_MPG_RESYNC] = FALSE;
+    // printf("MPG Resync!\n");
+}
 
 //SetBit(TP2);
     // if the HostStatus bit is active then don't do anything with the MPG
