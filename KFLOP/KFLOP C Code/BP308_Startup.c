@@ -26,7 +26,6 @@
 main()
 {
 
-	double P0, P1, P2, P3, P4;
 	double Elapsed_Time;
     double MS_Slow_Timer;      // timer for slow peroidic events - 5 to 10 ms resolution
 
@@ -91,29 +90,38 @@ main()
             Tool_Change();          // check for a tool release
             ServiceMPG();           // manage the MPG 
             // 
-            static int dsp_cnt = 0;
-            if((Time_sec() - Elapsed_Time) > 1.0) // print out the current position
+            
+            if(Axis_Printout(Elapsed_Time) != 0)
             {
-                Elapsed_Time = Time_sec();
- 
-                P0 = chan[X_AXIS].Position;
-                P1 = chan[Y_AXIS].Position;
-                P2 = chan[Z_AXIS].Position;
-                P3 = chan[A_AXIS].Position;
-                P4 = chan[SPINDLE_AXIS].Position;
-                printf("C = %d X = %f,  Y = %f,  Z = %f,  A = %f,  SP = %f\n", dsp_cnt++, P0, P1, P2, P3, P4);
-                
-/*
-				P0 = chan[X_AXIS].Dest;
-                P1 = chan[Y_AXIS].Dest;
-                P2 = chan[Z_AXIS].Dest;
-                P3 = chan[A_AXIS].Dest;
-					
-                printf("Dest: X = %f,  Y = %f,  Z = %f,  A = %f,\n", P0, P1, P2, P3, P4);
-*/                
+                Elapsed_Time = Time_Sec();
             }
         }
     }
+}
+
+int Axis_Printout(double ETime)
+{
+    if((Time_sec() - ETime) > 1.0) // print out the current position
+    {
+        double P0, P1, P2, P3, P4;
+
+        P0 = chan[X_AXIS].Position;
+        P1 = chan[Y_AXIS].Position;
+        P2 = chan[Z_AXIS].Position;
+        P3 = chan[A_AXIS].Position;
+        P4 = chan[SPINDLE_AXIS].Position;
+        printf("X = %f,  Y = %f,  Z = %f,  A = %f,  SP = %f\n", P0, P1, P2, P3, P4);
+/*
+		P0 = chan[X_AXIS].Dest;
+        P1 = chan[Y_AXIS].Dest;
+        P2 = chan[Z_AXIS].Dest;
+        P3 = chan[A_AXIS].Dest;
+					
+        printf("Dest: X = %f,  Y = %f,  Z = %f,  A = %f,\n", P0, P1, P2, P3, P4);
+*/      
+        return 1;          
+    }
+    return 0;
 }
 
 void ESTOP_Loop(void)

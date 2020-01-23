@@ -15,9 +15,9 @@
 
 // Home Switch Backoff
 #define HOME_BACKOFF 25000  // about 1 inch
-#define HOME_VEL_1  8333  // Homing velocity    20 ipm, 0.333 ips 
+#define HOME_VEL_1  30000  // Homing velocity    20 ipm, 0.333 ips 
 #define HOME_VEL_2  3000  // Homing backoff velocity  7.2 ipm    
-#define HOME_VEL_3  1500   // index hunt velocity 0.06 ips
+#define HOME_VEL_3  1000   // index hunt velocity 0.06 ips
 
 // definitions for the IO ports on the DANALOG Board for the Bridgeport Discovery 308 rebuild
 // The DANALOG board looks like both a KANALOG and KONNECT board

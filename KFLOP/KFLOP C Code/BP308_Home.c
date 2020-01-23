@@ -28,7 +28,7 @@ int main()
                     break;
         case T2_ZERO_AXIS : Zero_Axis(msg);
                     break;
-        case T2_HOME_X : 
+        case T2_HOME_AXIS : Home_All_Axis(msg);
                     break;
         case T2_HOME_Y : 
                     break;

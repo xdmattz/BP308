@@ -1,0 +1,37 @@
+BP308 Notes
+
+These are notes on the KFLOP code for the Bridgeport Discovery 308 VMC
+
+Trying to figure out the operations of the machine and how to break the tasks up
+There are at least XXX levels of software on the BP308. 
+
+KFLOP Servo code and Thread 0
+        |
+        |
+    KFLOP Thread 1 code forever loop
+        |
+        +----- > TLAUX Tool changer -- PSoC5
+        |
+        +----- > MPG Manual Pulse Generator -- PSoC5
+        |
+        |
+    KFLOP Thread 2 code - run once operations, like M-Codes
+        |
+        |
+    KFLOP Thread 3 code - another run one operation that may need to run simultaneously with Thread 2. Threading routine?
+        |
+        |
+KMotion - for Testing
+KMotionCNC for CNC or MACH3 for G-code reading and motion control commands
+
+
+KFLOP Thread 1 code
+(main file is BP308_Startup.c)
+
+Initializes the hardware
+
+main loop that runs forever. 
+Always checks for ESTOP
+Manages the Serial Port - looks for a valid received message
+
+
