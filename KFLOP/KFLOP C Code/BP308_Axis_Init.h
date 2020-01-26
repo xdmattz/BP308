@@ -30,5 +30,6 @@ void Init_Z_Axis(void);
 void Init_A_Axis(void);
 void Init_Spindle(void);
 void Init_Axis(void);
+void OffsetCal(int Axis);
 
 #endif

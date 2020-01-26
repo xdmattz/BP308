@@ -11,16 +11,16 @@ void Init_X_Axis(void)
 	ch0->InputMode=ENCODER_MODE;
 	ch0->OutputMode=DAC_SERVO_MODE;
 	ch0->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
-	ch0->Accel=7e+06;
-	ch0->Jerk=3e+07;
-	ch0->P=3;
-	ch0->I=0.01;
+	ch0->Accel=2e+06;
+	ch0->Jerk=1e+08;
+	ch0->P=1.1;
+	ch0->I=0.0012;
 	ch0->D=0;
-	ch0->FFAccel=1e-05;
-	ch0->FFVel=0.002;
-	ch0->MaxI=800;
-	ch0->MaxErr=500;		// Setting max error to max output/P or 1500/3 = 500
-	ch0->MaxOutput=1500;	// 1500 = 8V max output - 1680 is 9V
+	ch0->FFAccel=1e-07;
+	ch0->FFVel=0.0001;
+	ch0->MaxI=1100;
+	ch0->MaxErr=1500;		// Setting max error to max output/P or 1500/3 = 500
+	ch0->MaxOutput=1800;	// 1500 = 8V max output - 1680 is 9V
 	ch0->DeadBandGain=1;
 	ch0->DeadBandRange=0;
 	ch0->InputChan0=0;
@@ -49,10 +49,10 @@ void Init_X_Axis(void)
 	ch0->StepperAmplitude=20;
 
 	// LPF 1
-	ch0->iir[0].B0=0.14504;
-	ch0->iir[0].B1=0.14504;
+	ch0->iir[0].B0=0.0900485;
+	ch0->iir[0].B1=0.0900485;
 	ch0->iir[0].B2=0;
-	ch0->iir[0].A1=0.709919;
+	ch0->iir[0].A1=0.819902;
 	ch0->iir[0].A2=0;
 
 	// LPF 2
@@ -63,11 +63,11 @@ void Init_X_Axis(void)
 	ch0->iir[1].A2=0;
 
 	// LPF 3
-	ch0->iir[2].B0=0.0490337;
-	ch0->iir[2].B1=0.0980675;
-	ch0->iir[2].B2=0.0490337;
-	ch0->iir[2].A1=1.35143;
-	ch0->iir[2].A2=-0.547568;
+	ch0->iir[2].B0=0.0472436;
+	ch0->iir[2].B1=0.0944873;
+	ch0->iir[2].B2=0.0472436;
+	ch0->iir[2].A1=1.3021;
+	ch0->iir[2].A2=-0.49107;
 }
 
 void Init_Y_Axis(void)
@@ -75,16 +75,16 @@ void Init_Y_Axis(void)
 	ch1->InputMode=ENCODER_MODE;
 	ch1->OutputMode=DAC_SERVO_MODE;
 	ch1->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
-	ch1->Accel=7e+06;
+	ch1->Accel=4e+06;
 	ch1->Jerk=3e+07;
-	ch1->P=3;
-	ch1->I=0.01;
+	ch1->P=1.2;
+	ch1->I=0.0015;
 	ch1->D=0;
 	ch1->FFAccel=1e-05;
 	ch1->FFVel=0.002;
-	ch1->MaxI=800;
-	ch1->MaxErr=500;		// Setting max error to max output/P or 1500/3 = 500
-	ch1->MaxOutput=1500;	// 1500 = 8V max output  - 1680 is 9V
+	ch1->MaxI=1000;
+	ch1->MaxErr=1400;		// Setting max error to max output/P or 1500/3 = 500
+	ch1->MaxOutput=1800;	// 1500 = 8V max output  - 1680 is 9V
 	ch1->DeadBandGain=1;
 	ch1->DeadBandRange=0;
 	ch1->InputChan0=1;
@@ -113,10 +113,10 @@ void Init_Y_Axis(void)
 	ch1->StepperAmplitude=20;
 
 	// LPF 1
-	ch1->iir[0].B0=0.14504;
-	ch1->iir[0].B1=0.14504;
+	ch1->iir[0].B0=0.078916;
+	ch1->iir[0].B1=0.078916;
 	ch1->iir[0].B2=0;
-	ch1->iir[0].A1=0.709919;
+	ch1->iir[0].A1=0.843619;
 	ch1->iir[0].A2=0;
 
 	// LPF 2
@@ -127,11 +127,11 @@ void Init_Y_Axis(void)
 	ch1->iir[1].A2=0;
 
 	// LPF 3
-	ch1->iir[2].B0=0.0490337;
-	ch1->iir[2].B1=0.0980675;
-	ch1->iir[2].B2=0.0490337;
-	ch1->iir[2].A1=1.35143;
-	ch1->iir[2].A2=-0.547568;
+	ch1->iir[2].B0=0.0385131;
+	ch1->iir[2].B1=0.0770262;
+	ch1->iir[2].B2=0.0385131;
+	ch1->iir[2].A1=1.37736;
+	ch1->iir[2].A2=-0.531416;
 }
 
 void Init_Z_Axis(void)
@@ -139,16 +139,16 @@ void Init_Z_Axis(void)
 	ch2->InputMode=ENCODER_MODE;
 	ch2->OutputMode=DAC_SERVO_MODE;
 	ch2->Vel=160000;		// 4800 mm/min or 189 in/min - top speed. Rated speed is 250000 - 7500 mm/min or 295 in/mm
-	ch2->Accel=7e+06;
-	ch2->Jerk=3e+07;
-	ch2->P=3;
-	ch2->I=0.01;
+	ch2->Accel=3e+06;
+	ch2->Jerk=1e+07;
+	ch2->P=0.8;
+	ch2->I=0.0012;
 	ch2->D=0;
-	ch2->FFAccel=1e-05;
-	ch2->FFVel=0.002;
-	ch2->MaxI=800;
-	ch2->MaxErr=500;		// Setting max error to max output/P or 1500/3 = 500
-	ch2->MaxOutput=1340;	// 1340 = 7.2V max output  - 1680 is 9V
+	ch2->FFAccel=1e-08;
+	ch2->FFVel=0.0002;
+	ch2->MaxI=100;
+	ch2->MaxErr=1500;		// Setting max error to max output/P or 1500/3 = 500
+	ch2->MaxOutput=1700;	// 1340 = 7.2V max output  - 1680 is 9V
 	ch2->DeadBandGain=1;
 	ch2->DeadBandRange=0;
 	ch2->InputChan0=2;
@@ -177,10 +177,10 @@ void Init_Z_Axis(void)
 	ch2->StepperAmplitude=20;
 
 	// LPF 1
-	ch2->iir[0].B0=0.14504;
-	ch2->iir[0].B1=0.14504;
+	ch2->iir[0].B0=0.0781906;
+	ch2->iir[0].B1=0.0781906;
 	ch2->iir[0].B2=0;
-	ch2->iir[0].A1=0.709919;
+	ch2->iir[0].A1=0.843619;
 	ch2->iir[0].A2=0;
 
 	// LPF 2
@@ -191,11 +191,11 @@ void Init_Z_Axis(void)
 	ch2->iir[1].A2=0;
 
 	// LPF 3
-	ch2->iir[2].B0=0.0490337;
-	ch2->iir[2].B1=0.0980675;
-	ch2->iir[2].B2=0.0490337;
-	ch2->iir[2].A1=1.35143;
-	ch2->iir[2].A2=-0.547568;
+	ch2->iir[2].B0=0.0472522;
+	ch2->iir[2].B1=0.0945044;
+	ch2->iir[2].B2=0.0472522;
+	ch2->iir[2].A1=1.30233;
+	ch2->iir[2].A2=-0.491341;
 }
 
 
@@ -230,15 +230,40 @@ void Init_Axis(void)
 	Zero(Z_AXIS);
 
 	// Release the Z Brake
-	 SetBit(Z_BRAKE);
+	SetBit(Z_BRAKE);
 
-	// enable the axis with a small pause between each
-//	Delay_sec(0.05);
+	// enable the axis 
+
 	EnableAxis(X_AXIS);
-//	Delay_sec(0.05);
 	EnableAxis(Y_AXIS);
-//	Delay_sec(0.05);
 	EnableAxis(Z_AXIS);
-	// EnalbeAxis(A_AXIS);
 
+	//pause for a short time to allow things to settle
+	// this should give time for the brake to release, and the axis to zero
+	Delay_sec(0.3);	
+
+	// auto offset calibration
+	// read the output when not in motion and set that value as the offset
+	OffsetCal(X_AXIS);
+	OffsetCal(Y_AXIS);
+	OffsetCal(Z_AXIS);
+	OffsetCal(A_AXIS);
+
+}
+
+void OffsetCal(int Axis)
+{
+	// auto offset calibration
+	// read the output when not in motion and set that value as the offset
+
+	double offset;
+
+	if(CheckDone(Axis) != CD_AXIS_DISABLED)	// only do this if the axis is not disabled.
+	{
+		offset = chan[Axis].Output;	// read the output disable and set the output 
+		DisableAxis(Axis);
+		chan[Axis].OutputOffset = offset;
+		EnableAxis(Axis);
+		WaitNextTimeSlice();	// only do one per slice.
+	}
 }

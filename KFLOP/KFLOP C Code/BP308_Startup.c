@@ -93,7 +93,7 @@ main()
             
             if(Axis_Printout(Elapsed_Time) != 0)
             {
-                Elapsed_Time = Time_Sec();
+                Elapsed_Time = Time_sec();
             }
         }
     }
@@ -111,14 +111,19 @@ int Axis_Printout(double ETime)
         P3 = chan[A_AXIS].Position;
         P4 = chan[SPINDLE_AXIS].Position;
         printf("X = %f,  Y = %f,  Z = %f,  A = %f,  SP = %f\n", P0, P1, P2, P3, P4);
-/*
-		P0 = chan[X_AXIS].Dest;
-        P1 = chan[Y_AXIS].Dest;
-        P2 = chan[Z_AXIS].Dest;
-        P3 = chan[A_AXIS].Dest;
+
+	//	P0 = chan[X_AXIS].Dest;
+    //    P1 = chan[Y_AXIS].Dest;
+    //    P2 = chan[Z_AXIS].Dest;
+    //    P3 = chan[A_AXIS].Dest;
+    P0 = chan[X_AXIS].Output;
+    P1 = chan[Y_AXIS].Output;
+    P2 = chan[Z_AXIS].Output;
+    P3 = chan[A_AXIS].Output;
+    P4 = chan[SPINDLE_AXIS].Output;
 					
-        printf("Dest: X = %f,  Y = %f,  Z = %f,  A = %f,\n", P0, P1, P2, P3, P4);
-*/      
+        printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f\n", P0, P1, P2, P3, P4);
+     
         return 1;          
     }
     return 0;
