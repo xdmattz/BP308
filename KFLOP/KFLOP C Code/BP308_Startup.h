@@ -11,6 +11,7 @@
 int Axis_Printout(double ETime);
 void ESTOP_Loop(void);
 void Periodic_Processes(void);
+void Init_Variables(void);
 
 
 

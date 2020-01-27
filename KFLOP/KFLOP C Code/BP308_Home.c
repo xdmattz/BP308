@@ -38,8 +38,10 @@ int main()
                     break;
         case T2_LIMIT_BACKOFF : Limit_Backoff(msg);
                     break;
-        case T2_SEL_TOOL :
+        case T2_SEL_TOOL :  Select_Tool(msg);
                     break;
+        case T2_TOOL_CLAMP : Tool_Clamp(msg);
+                    break;                    
         default: break;
     }
 
@@ -221,5 +223,23 @@ void Limit_Backoff(int pmsg)
         }
     }
     persist.UserData[P_NOTIFY] = 0;     // clear the P_NOTIFY cmd so it can't accidently be called twice  
+}
+
+// Tool Changer routines
+
+void Select_Tool(int pmsg)
+{
+
+}
+
+void Tool_Clamp(int pmsg)
+{
+    // wait for the remote command bit to clear
+    while(persist.UserData[P_REMOTE_CMD] != 0)
+    {
+        WaitNextTimeSlice();
+        // check for a timeout? so not to get hung up here
+    }
+    persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);
 }
 

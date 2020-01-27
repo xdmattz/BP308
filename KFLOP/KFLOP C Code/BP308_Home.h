@@ -23,8 +23,14 @@
 #define T2_LIM_ZP       0x0a05
 #define T2_LIM_ZN       0x0a06
 #define T2_SEL_TOOL     0x0c00
+#define T2_TOOL_CLAMP   0x0d00
+#define T2_TOOL_AIR     0x0d01
+#define T2_TOOL_RELA    0x0d02
+#define T2_TOOL_REL     0x0d03
+#define T2_TOOL_GRAB    0x0d04
 
 #define CMD_MASK 0xff00
+#define ARG_MASK 0x00ff
 
 // Testing
 void Test_Msg(int pmsg);
@@ -52,7 +58,9 @@ void Backoff_Zpos(void);
 void Backoff_Zneg(void);
 
 // tool changer routines
-void Select_Tool(void);
+void Select_Tool(int pmsg);
+
+void Tool_Clamp(int pmsg);
 
 // Coolant routines
 void Mist_On(void) ;

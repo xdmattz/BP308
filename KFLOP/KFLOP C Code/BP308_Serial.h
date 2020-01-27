@@ -17,7 +17,20 @@
 // device addresses and commands
 #define TLAUX_ADDRESS    0x02   // Device Address
 #define TLAUX_QUERY      0x03   // Query Command
-#define TLAUX_CMD2       0x04   // CMD2 Command
+#define TLAUX_CMD2       0x04   // Returned command from TLAUX
+#define TLAUX_ARM_CMD    0x04   // Arm Command. Next byte: 0 = no action, 1 = Arm IN, 2 = Arm OUT.
+#define TLAUX_CAR_CMD    0x05   // Tool Carousel Command. Next byte: 0 - no action, 1 - 32 go to tool 
+#define TLAUX_CLAMP_CMD  0x06   // Tool Clamp Command. Next byte: 0 - no action, 1 Air Blast, 2 Clamp release with Air, 3 Clamp release no air, 4 Clamp Grab
+#define TLAUX_HOME_CMD   0x07   // Home Command - starts in a known position - fault recovery
+
+// Arm Commands
+#define TLAUX_ARM_IN     0x01
+#define TLAUX_ARM_OUT    0x02
+// Clamp Commands
+#define TLAUX_CLAMP_AIR  0x01
+#define TLAUX_CLAMP_RELA 0x02
+#define TLAUX_CLAMP_REL  0x03
+#define TLAUX_CLAMP_GRAB 0x04
 
 
 #define MPG_ADDRESS     0x03    // Device Address
@@ -112,6 +125,8 @@ struct CommandList Device_Cmds[] =
 };
 
 char TLAUX_StatusQuery[] = { 0x04, TLAUX_ADDRESS, TLAUX_QUERY };
+
+
 char MPG_StatusQuery[] = { 0x04, MPG_ADDRESS, MPG_QUERY };
 
 #endif

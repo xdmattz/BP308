@@ -22,6 +22,9 @@
 #include "BP308_MPG.c"
 #include "BP308_Spindle.c"
 #include "BP308_Serial.c"
+#include "BP308_RemoteCmds.c"
+
+#define RUNNING_STATUS_LOG
 
 main()
 {
@@ -36,6 +39,9 @@ main()
 	AddKonnect(0,&VirtualBits,VirtualBitsEx);	// start the Konnect section of the Danalog Board
 	printf("Konnect Started!\n");
 
+    Delay_sec(0.1); // short delay to allow Konnect and Kanalog to initialize
+
+    Init_Variables();
     // Initialize the serial port
 	Init_BP308_Serial();
 	
@@ -60,7 +66,7 @@ main()
 
     // Check for hardware present
 
-    // main loop - where all the action happens - runs forever - or until the universe ends.
+    // main loop - where all the action happens - runs forever - or until the universe ends (with an ESTOP).
 	for (;;)
     {
 		WaitNextTimeSlice();    // always start on a new time slice
@@ -72,9 +78,9 @@ main()
         else
         {
             // check the serial port for an input
-            SetBit(TP1);     // Test Point Toggle
+            // SetBit(TP1);     // Test Point Toggle
             SerialPort_Manager();
-            ClearBit(TP1);
+            // ClearBit(TP1);
 			// Peiodic processes and checks
             if(Time_sec() > MS_Slow_Timer)
             {
@@ -86,15 +92,16 @@ main()
 
             // check for a fault in the persistant status 
             // turn off the spindle 
-            ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
-            Tool_Change();          // check for a tool release
+            // ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
             ServiceMPG();           // manage the MPG 
-            // 
-            
+
+#ifdef RUNNING_STATUS_LOG
             if(Axis_Printout(Elapsed_Time) != 0)
             {
                 Elapsed_Time = Time_sec();
             }
+#endif  
+
         }
     }
 }
@@ -116,13 +123,15 @@ int Axis_Printout(double ETime)
     //    P1 = chan[Y_AXIS].Dest;
     //    P2 = chan[Z_AXIS].Dest;
     //    P3 = chan[A_AXIS].Dest;
-    P0 = chan[X_AXIS].Output;
-    P1 = chan[Y_AXIS].Output;
-    P2 = chan[Z_AXIS].Output;
-    P3 = chan[A_AXIS].Output;
-    P4 = chan[SPINDLE_AXIS].Output;
+        P0 = chan[X_AXIS].Output;
+        P1 = chan[Y_AXIS].Output;
+        P2 = chan[Z_AXIS].Output;
+        P3 = chan[A_AXIS].Output;
+        P4 = chan[SPINDLE_AXIS].Output;
 					
         printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f\n", P0, P1, P2, P3, P4);
+        
+        printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
      
         return 1;          
     }
@@ -165,6 +174,7 @@ void ESTOP_Loop(void)
     // then re-check the hardware, re-enable the axis and move back into normal operation.
 }
 
+
 // Periodic Processes
 // this gets called every 5ms
 void Periodic_Processes(void)
@@ -177,7 +187,12 @@ void Periodic_Processes(void)
     // if a particular device has missed more than XX querys, then shut down the device - ie. don't query any more and flag it as disabled
     switch (ProcessCnt++)
     {
-        case 0 : Fault_Check();
+        case 0 :    // Remote Command Check - only checks every 30 ms - is this enough? or do I need to put it in the main loop?
+                if(persist.UserData[P_REMOTE_CMD] != 0)
+                {
+                    RemoteCmd();
+                }
+                break;
         case 1 :  
                 persist.UserData[P_SERIAL_PENDING] |= (SP_MPG_QUERY); 
     	        Send_Serial(MPG_StatusQuery);  
@@ -186,8 +201,11 @@ void Periodic_Processes(void)
                 persist.UserData[P_SERIAL_PENDING] |= (SP_TLAUX_QUERY);    // set the query pending bit
                 Send_Serial(TLAUX_StatusQuery);
                 break;
-        case 3  : Warning_Check();
-        case 4  : break;
+        case 3  : Warning_Check();  // check for things that have potential problems
+                  Fault_Check();
+                break;
+        case 4  : ButtonCheck();
+                break;
         case 5  : // check for unanswered queries
         default:
             ProcessCnt = 0;
@@ -213,5 +231,19 @@ void Periodic_Processes(void)
     // stagger the querys so that they don't all happen at once.
     // query the MPG every 50ms for the current switch state, and state of its ESTOP button
     // query the TLAUX board every 50 ms to detemine it's state - 
+}
+
+void Init_Variables(void)
+{
+    // initialize all the variables so they start in a known state
+    persist.UserData[P_STATUS] = 0;
+    persist.UserData[P_TLAUX_STATUS] = 0;
+    persist.UserData[P_MPG_STATUS] = 0;
+    persist.UserData[P_REMOTE_CMD] = 0;
+    persist.UserData[P_SERIAL_PENDING] = 0;
+    persist.UserData[P_NOTIFY] = 0;
+
+    Init_Buttons();
+
 }
 

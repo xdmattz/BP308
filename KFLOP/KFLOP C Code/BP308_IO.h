@@ -42,7 +42,7 @@
 #define HEAD_GREEN		    141		// OPTO_13
 #define HEAD_BLUE		    142		// OPTO_14
 #define HEAD_YELLOW		    143		// OPTO_15
-#define TOOL_RELEASE        143     // same as yellow wire.
+#define TOOL_RELEASE        140     // same as red wire.
 
 #define ESTOP_ACTIVE	    1		// Reads 1 when the ESTOP switch is pressed
 #define ESTOP_RUN           0

@@ -49,7 +49,8 @@
 #define P_MSG_PTR_H         126   // High byte
 #define P_MPG_RESYNC        127
 
-#define P_NOTIFY            130
+#define P_NOTIFY            130     // command to Thread 2 functions
+#define P_REMOTE_CMD        133     // a non zero value here indicates a command from another Thread or the PC
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -117,6 +118,14 @@
 #define MPG_STATUS_RATE_X1      0x0001
 #define MPG_STATUS_RATE_X10     0x0002
 #define MPG_STATUS_RATE_X100    0x0003
+
+// Remote Commands 
+
+#define RC_TLAUX_CLAMP_CMD  0x0100
+#define RC_TLAUX_CLAMP_AIR  0x0101
+#define RC_TLAUX_CLAMP_RELA 0x0102
+#define RC_TLAUX_CLAMP_REL  0x0103
+#define RC_TLAUX_CLAMP_GRAB 0x0104
 
 
 
