@@ -9,6 +9,12 @@
 #define A_AXIS 3
 #define SPINDLE_AXIS 7
 
+#define X_ENC_RES 8000  // Encoder resolution * Gear ratio
+#define Y_ENC_RES 8000  // Encoder resolution * Gear ratio
+#define Z_ENC_RES 8000  // Encoder resolution * Gear ratio
+#define SP_ENC_RES 8000  // Encoder resolution * Gear ratio
+
+
 // Limit Switch Backoff 
 #define BACKOFF_STEPS 1250  // 1/20 of an inch - assuming 40u in/step
 #define BACKOFF_VEL 5000    // units are encoder ticks per second

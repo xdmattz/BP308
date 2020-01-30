@@ -41,7 +41,9 @@ int main()
         case T2_SEL_TOOL :  Select_Tool(msg);
                     break;
         case T2_TOOL_CLAMP : Tool_Clamp(msg);
-                    break;                    
+                    break;  
+        case T2_SPINDLE : SpindleCmd(msg);
+                    break;                  
         default: break;
     }
 
@@ -240,6 +242,24 @@ void Tool_Clamp(int pmsg)
         WaitNextTimeSlice();
         // check for a timeout? so not to get hung up here
     }
-    persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);
+    persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);   // remote command 
 }
 
+
+
+// Spindle Control
+void SpindleCmd(int pmsg)
+{
+    switch (pmsg)
+    {
+        case T2_SPINDLE_EN : break;
+        case T2_SPINDLE_DIS : break;
+        case T2_SPINDLE_CW : break;
+        case T2_SPINDLE_CCW : break;
+        case T2_SPINDLE_STOP : break;
+        case T2_SPINDLE_HOME : break;
+        case T2_SPINDLE_ZERO : break;
+        default : break;
+    }
+
+}

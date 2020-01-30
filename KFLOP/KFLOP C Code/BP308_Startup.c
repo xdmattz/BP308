@@ -53,7 +53,7 @@ main()
 	DAC(Y_AXIS, -36);
 	DAC(Z_AXIS, -36);
 	DAC(A_AXIS, -36);
-	DAC(SPINDLE_AXIS, -152);
+	DAC(SPINDLE_AXIS, -36);
 
     Init_BP308_Hardware();  // hardware check
 	
@@ -92,7 +92,7 @@ main()
 
             // check for a fault in the persistant status 
             // turn off the spindle 
-            // ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
+            ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
             ServiceMPG();           // manage the MPG 
 
 #ifdef RUNNING_STATUS_LOG
@@ -129,7 +129,7 @@ int Axis_Printout(double ETime)
         P3 = chan[A_AXIS].Output;
         P4 = chan[SPINDLE_AXIS].Output;
 					
-        printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f\n", P0, P1, P2, P3, P4);
+        printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f, SP = %d RPM\n", P0, P1, P2, P3, P4, persist.UserData[P_SPINDLE_RPM]);
         
         printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
      
@@ -144,6 +144,9 @@ void ESTOP_Loop(void)
     // If the program is here then something has triggered the ESTOP. On the BP308 this means that the relay has been engaged
     // and the Siemens Drive has been completely disabled. 
     // the only way to recover from this is probably to start over and re-home the machine. 
+
+    // ** To Add *** should probably continue to query status and the MPG and TLAUX - for ESTOP post mortem analysis
+
 	printf("*** ESTOP! ***\n");
 	// make sure that everything is stopped!
 	// the only way out of this is to reset the ESTOP switch and re-run the Init program (RESET in MACH3)!
@@ -159,6 +162,7 @@ void ESTOP_Loop(void)
     ClearBit(Z_BRAKE);  // re-enable the Z Brake
 
 	// disable the spindle
+    ClearBit(SPINDLE_ENABLE);
 	
 
 

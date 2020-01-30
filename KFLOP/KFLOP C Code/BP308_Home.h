@@ -28,6 +28,15 @@
 #define T2_TOOL_RELA    0x0d02
 #define T2_TOOL_REL     0x0d03
 #define T2_TOOL_GRAB    0x0d04
+#define T2_TOLL_ARM     0x0E00
+#define T2_SPINDLE      0x0500
+#define T2_SPINDLE_EN   0x0501
+#define T2_SPINDLE_DIS  0x0502
+#define T2_SPINDLE_CW   0x0503
+#define T2_SPINDLE_CCW  0x0504
+#define T2_SPINDLE_STOP 0x0505
+#define T2_SPINDLE_HOME 0x0506
+#define T2_SPINDLE_ZERO 0x0507
 
 #define CMD_MASK 0xff00
 #define ARG_MASK 0x00ff
@@ -66,6 +75,10 @@ void Tool_Clamp(int pmsg);
 void Mist_On(void) ;
 void Flood_On(void);
 void Coolant_Off(void);
+
+// Spindle Control Routines
+void SpindleCmd(int pmsg);
+void SpindleEn(void);
 
 
 

@@ -38,7 +38,8 @@
  //     127     P_RESYNC_MPG    - flag to cause MPG Resync
  // 
  // 130 - 139  BP308 Home routines (Thread 2) communications
- //     130     Notify message - similar to MACH3 Notify Message ie the command to execute   
+ //     130     Notify Command Message - similar to MACH3 Notify Message ie the command to execute   
+ //     131     Notify Argument - any data that may accompany a message - 
 
 #define P_STATUS            120   // the main status word of the machine
 #define P_TLAUX_STATUS      121   // latest status recieved from the TLUX Tool Changer Query
@@ -47,9 +48,12 @@
 #define P_SERIAL_PENDING    124   // flags that indicate a message has been sent to a peripheral device
 #define P_MSG_PTR           125   // Contains a pointer to the message to send - from another thread. - low bytes
 #define P_MSG_PTR_H         126   // High byte
-#define P_MPG_RESYNC        127
+#define P_MPG_RESYNC        127   // making this non zero will cause the MPG to resync 
+#define P_SPINDLE_STATUS    128   // 
+#define P_SPINDLE_RPM       129   // calcualted in spinle monitor
 
 #define P_NOTIFY            130     // command to Thread 2 functions
+#define P_NOTIFY_ARGUMENT   131     // Argument passed to a Notify Command
 #define P_REMOTE_CMD        133     // a non zero value here indicates a command from another Thread or the PC
 
 
