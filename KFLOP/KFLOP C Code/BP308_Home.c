@@ -12,6 +12,8 @@
 #include "BP308_IO.h"
 #include "BP308_Persist.h"
 
+#include "BP308_MoreSpindle.c"
+
 int main()
 {
     int msg = persist.UserData[P_NOTIFY]; // get the Notify command
@@ -252,14 +254,21 @@ void SpindleCmd(int pmsg)
 {
     switch (pmsg)
     {
-        case T2_SPINDLE_EN : break;
-        case T2_SPINDLE_DIS : break;
+        case T2_SPINDLE_EN : SpindleEnable();
+                    break;
+        case T2_SPINDLE_DIS : SpindleDisable();
+                    break;
         case T2_SPINDLE_CW : break;
         case T2_SPINDLE_CCW : break;
         case T2_SPINDLE_STOP : break;
         case T2_SPINDLE_HOME : break;
         case T2_SPINDLE_ZERO : break;
+        case T2_SPINDLE_PID : SetSyncSpindle();
+                    break;
+        case T2_SPINDLE_RPM : SetRPMSpindle();
+                    break;
         default : break;
     }
+    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
 
 }

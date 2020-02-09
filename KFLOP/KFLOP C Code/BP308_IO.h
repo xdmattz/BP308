@@ -12,7 +12,7 @@
 #define X_ENC_RES 8000  // Encoder resolution * Gear ratio
 #define Y_ENC_RES 8000  // Encoder resolution * Gear ratio
 #define Z_ENC_RES 8000  // Encoder resolution * Gear ratio
-#define SP_ENC_RES 8000  // Encoder resolution * Gear ratio
+#define SP_ENC_RES 2000  // Encoder resolution * Gear ratio
 
 
 // Limit Switch Backoff 

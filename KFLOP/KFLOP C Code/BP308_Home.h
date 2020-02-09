@@ -37,6 +37,8 @@
 #define T2_SPINDLE_STOP 0x0505
 #define T2_SPINDLE_HOME 0x0506
 #define T2_SPINDLE_ZERO 0x0507
+#define T2_SPINDLE_PID  0x0510
+#define T2_SPINDLE_RPM  0x0511
 
 #define CMD_MASK 0xff00
 #define ARG_MASK 0x00ff
@@ -78,7 +80,7 @@ void Coolant_Off(void);
 
 // Spindle Control Routines
 void SpindleCmd(int pmsg);
-void SpindleEn(void);
+
 
 
 
