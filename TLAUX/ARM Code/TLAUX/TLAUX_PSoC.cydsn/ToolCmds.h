@@ -62,7 +62,7 @@
 #define CAROUSEL_HOME_DELAY 10000       // 10 second delay if we need to go all the way around the tool changer
 
 #define MOTOR_STOP_DELAY 10             // 50ms motor stop delay
-#define AIR_BLAST_DELAY 1200            // 1.2 seconds air blast   
+#define AIR_BLAST_DELAY 800            // 0.8 seconds air blast   
     
 // Command Arguments
 // Arm Command arguments
