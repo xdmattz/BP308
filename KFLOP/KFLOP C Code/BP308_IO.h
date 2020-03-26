@@ -1,6 +1,9 @@
 #ifndef BP308_IO_H
 #define BP308_IO_H
 
+// uncomment the next line for operating in the development environment
+#define TESTBED 
+
 // Axis Definitions
 
 #define X_AXIS 0

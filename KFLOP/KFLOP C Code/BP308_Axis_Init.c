@@ -3,6 +3,200 @@
 #include "BP308_IO.h"
 
 
+#ifdef TESTBED
+// Axis control values for the test bed
+void Init_X_Axis(void)
+{
+	ch0->InputMode=NO_INPUT_MODE;
+	ch0->OutputMode=DAC_SERVO_MODE;
+	ch0->Vel=160000;
+	ch0->Accel=2e+06;
+	ch0->Jerk=1e+08;
+	ch0->P=0.0;
+	ch0->I=0.0;
+	ch0->D=0.0;
+	ch0->FFAccel=0;
+	ch0->FFVel=2048;
+	ch0->MaxI=0;
+	ch0->MaxErr=0;
+	ch0->MaxOutput=1800;
+	ch0->DeadBandGain=1;
+	ch0->DeadBandRange=0;
+	ch0->InputChan0=0;
+	ch0->InputChan1=0;
+	ch0->OutputChan0=0;
+	ch0->OutputChan1=0;
+	ch0->MasterAxis=-1;
+	ch0->LimitSwitchOptions=0x120;
+	ch0->LimitSwitchNegBit=X_LIMIT;
+	ch0->LimitSwitchPosBit=X_LIMIT;
+	ch0->SoftLimitPos=1e+09;
+	ch0->SoftLimitNeg=-1e+09;
+	ch0->InputGain0=1;
+	ch0->InputGain1=1;
+	ch0->InputOffset0=0;
+	ch0->InputOffset1=0;
+	ch0->OutputGain=1;
+	ch0->OutputOffset=0;
+	ch0->SlaveGain=1;
+	ch0->BacklashMode=BACKLASH_OFF;
+	ch0->BacklashAmount=0;
+	ch0->BacklashRate=0;
+	ch0->invDistPerCycle=1;
+	ch0->Lead=0;
+	ch0->MaxFollowingError=2000;
+	ch0->StepperAmplitude=20;
+
+	ch0->iir[0].B0=0.090048;
+	ch0->iir[0].B1=0.090048;
+	ch0->iir[0].B2=0;
+	ch0->iir[0].A1=0.819902;
+	ch0->iir[0].A2=0;
+
+	ch0->iir[1].B0=1;
+	ch0->iir[1].B1=0;
+	ch0->iir[1].B2=0;
+	ch0->iir[1].A1=0;
+	ch0->iir[1].A2=0;
+
+	ch0->iir[2].B0=0.047244;
+	ch0->iir[2].B1=0.094487;
+	ch0->iir[2].B2=0.047244;
+	ch0->iir[2].A1=1.3021;
+	ch0->iir[2].A2=-0.49107;
+}
+
+void Init_Y_Axis(void)
+{
+	ch1->InputMode=NO_INPUT_MODE;
+	ch1->OutputMode=DAC_SERVO_MODE;
+	ch1->Vel=160000;
+	ch1->Accel=2e+06;
+	ch1->Jerk=1e+08;
+	ch1->P=0.0;
+	ch1->I=0.0;
+	ch1->D=0.0;
+	ch1->FFAccel=0;
+	ch1->FFVel=2048;
+	ch1->MaxI=0;
+	ch1->MaxErr=0;
+	ch1->MaxOutput=1800;
+	ch1->DeadBandGain=1;
+	ch1->DeadBandRange=0;
+	ch1->InputChan0=0;
+	ch1->InputChan1=0;
+	ch1->OutputChan0=0;
+	ch1->OutputChan1=0;
+	ch1->MasterAxis=-1;
+	ch1->LimitSwitchOptions=0x120;
+	ch1->LimitSwitchNegBit=Y_LIMIT;
+	ch1->LimitSwitchPosBit=Y_LIMIT;
+	ch1->SoftLimitPos=1e+09;
+	ch1->SoftLimitNeg=-1e+09;
+	ch1->InputGain0=1;
+	ch1->InputGain1=1;
+	ch1->InputOffset0=0;
+	ch1->InputOffset1=0;
+	ch1->OutputGain=1;
+	ch1->OutputOffset=0;
+	ch1->SlaveGain=1;
+	ch1->BacklashMode=BACKLASH_OFF;
+	ch1->BacklashAmount=0;
+	ch1->BacklashRate=0;
+	ch1->invDistPerCycle=1;
+	ch1->Lead=0;
+	ch1->MaxFollowingError=2000;
+	ch1->StepperAmplitude=20;
+
+	ch1->iir[0].B0=0.090048;
+	ch1->iir[0].B1=0.090048;
+	ch1->iir[0].B2=0;
+	ch1->iir[0].A1=0.819902;
+	ch1->iir[0].A2=0;
+
+	ch1->iir[1].B0=1;
+	ch1->iir[1].B1=0;
+	ch1->iir[1].B2=0;
+	ch1->iir[1].A1=0;
+	ch1->iir[1].A2=0;
+
+	ch1->iir[2].B0=0.047244;
+	ch1->iir[2].B1=0.094487;
+	ch1->iir[2].B2=0.047244;
+	ch1->iir[2].A1=1.3021;
+	ch1->iir[2].A2=-0.49107;
+}
+
+void Init_Z_Axis(void)
+{
+	ch2->InputMode=NO_INPUT_MODE;
+	ch2->OutputMode=DAC_SERVO_MODE;
+	ch2->Vel=160000;
+	ch2->Accel=2e+06;
+	ch2->Jerk=1e+08;
+	ch2->P=0.0;
+	ch2->I=0.0;
+	ch2->D=0.0;
+	ch2->FFAccel=0;
+	ch2->FFVel=2048;
+	ch2->MaxI=0;
+	ch2->MaxErr=0;
+	ch2->MaxOutput=1800;
+	ch2->DeadBandGain=1;
+	ch2->DeadBandRange=0;
+	ch2->InputChan0=0;
+	ch2->InputChan1=0;
+	ch2->OutputChan0=0;
+	ch2->OutputChan1=0;
+	ch2->MasterAxis=-1;
+	ch2->LimitSwitchOptions=0x120;
+	ch2->LimitSwitchNegBit=Z_LIMIT;
+	ch2->LimitSwitchPosBit=Z_LIMIT;
+	ch2->SoftLimitPos=1e+09;
+	ch2->SoftLimitNeg=-1e+09;
+	ch2->InputGain0=1;
+	ch2->InputGain1=1;
+	ch2->InputOffset0=0;
+	ch2->InputOffset1=0;
+	ch2->OutputGain=1;
+	ch2->OutputOffset=0;
+	ch2->SlaveGain=1;
+	ch2->BacklashMode=BACKLASH_OFF;
+	ch2->BacklashAmount=0;
+	ch2->BacklashRate=0;
+	ch2->invDistPerCycle=1;
+	ch2->Lead=0;
+	ch2->MaxFollowingError=2000;
+	ch2->StepperAmplitude=20;
+
+	ch2->iir[0].B0=0.090048;
+	ch2->iir[0].B1=0.090048;
+	ch2->iir[0].B2=0;
+	ch2->iir[0].A1=0.819902;
+	ch2->iir[0].A2=0;
+
+	ch2->iir[1].B0=1;
+	ch2->iir[1].B1=0;
+	ch2->iir[1].B2=0;
+	ch2->iir[1].A1=0;
+	ch2->iir[1].A2=0;
+
+	ch2->iir[2].B0=0.047244;
+	ch2->iir[2].B1=0.094487;
+	ch2->iir[2].B2=0.047244;
+	ch2->iir[2].A1=1.3021;
+	ch2->iir[2].A2=-0.49107;	
+}
+
+void Init_A_Axis(void)
+{}
+
+void Init_Spindle(void)
+{}
+
+#else
+
+// Axis control values for the BP308 machine 
 // X Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
 //
 
@@ -208,6 +402,8 @@ void Init_Spindle(void)
 {
 
 }
+
+#endif
 
 void Init_Axis(void)
 {
