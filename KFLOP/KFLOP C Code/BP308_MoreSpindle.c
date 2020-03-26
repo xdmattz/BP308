@@ -5,6 +5,7 @@
 // setup channel 7 as a PID loop for synchronous Spindle Control
 void SetSyncSpindle(void)
 {
+	printf("PID SPINDLE\n");
     ch7->InputMode=ENCODER_MODE;
 	ch7->OutputMode=DAC_SERVO_MODE;
 	ch7->Vel=180000;
@@ -67,19 +68,21 @@ void SetSyncSpindle(void)
 // setup channel 7 as an open loop 
 void SetRPMSpindle(void)
 {
-    ch7->InputMode=NO_INPUT_MODE;
+	printf("RPM Spindle\n");
+	
+	ch7->InputMode=ENCODER_MODE;
 	ch7->OutputMode=DAC_SERVO_MODE;
-	ch7->Vel=200000;
-	ch7->Accel=70000;
-	ch7->Jerk=4e+06;
-	ch7->P=0.0;
-	ch7->I=0.0;
-	ch7->D=0.0;
-	ch7->FFAccel=0.0;
-	ch7->FFVel=2048;
-	ch7->MaxI=0.0;
-	ch7->MaxErr=0.0;
-	ch7->MaxOutput=2000;
+	ch7->Vel=5900;
+	ch7->Accel=1700;
+	ch7->Jerk=20000;
+	ch7->P=0;
+	ch7->I=0;
+	ch7->D=0;
+	ch7->FFAccel=0;
+	ch7->FFVel=0.275;
+	ch7->MaxI=0;
+	ch7->MaxErr=0;
+	ch7->MaxOutput=1700;
 	ch7->DeadBandGain=1;
 	ch7->DeadBandRange=0;
 	ch7->InputChan0=7;
@@ -104,7 +107,7 @@ void SetRPMSpindle(void)
 	ch7->BacklashRate=0;
 	ch7->invDistPerCycle=1;
 	ch7->Lead=0;
-	ch7->MaxFollowingError=1e+09;
+	ch7->MaxFollowingError=1000000000;
 	ch7->StepperAmplitude=250;
 
 	ch7->iir[0].B0=1;
@@ -124,19 +127,28 @@ void SetRPMSpindle(void)
 	ch7->iir[2].B2=0;
 	ch7->iir[2].A1=0;
 	ch7->iir[2].A2=0;
+
+
 }
 
 void SpindleEnable(void)
 {
-    if(ReadBit((SPINDLE_FAULT != SPINDLE_FAULTED) && (ReadBit(SPINDLE_ENABLE) == 0)))
+   // if(ReadBit((SPINDLE_FAULT != SPINDLE_FAULTED) && (ReadBit(SPINDLE_ENABLE) == 0)))
+   if(ReadBit(SPINDLE_ENABLE) == 0)
     {
         SetBit(SPINDLE_ENABLE);
-    }
+		printf("SP Enabled\n");
+    } else
+	{
+		printf("Check Fault!\n");
+	}
+	
 }
 void SpindleDisable(void)
 {
     ClearBit(SPINDLE_ENABLE);
 }
+
 int CheckSpindleOn(void)
 {
     if((ReadBit(SPINDLE_ENABLE) == 1) && (ReadBit(SPINDLE_FAULT) == SPINDLE_FAULT_OK))
