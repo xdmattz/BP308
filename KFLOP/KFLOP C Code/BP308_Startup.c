@@ -26,6 +26,8 @@
 
 #define RUNNING_STATUS_LOG
 
+double ESTOP_Time;
+
 main()
 {
 
@@ -55,6 +57,22 @@ main()
 	DAC(A_AXIS, -36);
 	DAC(SPINDLE_AXIS, -36);
 
+// test the DAC outputs
+/*	
+	double freq = 200;
+	double dt = 0.00009;
+    double wt = 0;
+    double Output = 0;
+    double Ax = 1024; // amplitude
+	
+	for(;;)
+	{
+		WaitNextTimeSlice();
+		DAC(X_AXIS, (int)Output);
+		Output = Ax * sin(freq * 2 * PI * wt);
+		wt = wt + dt;
+	}
+*/
     Init_BP308_Hardware();  // hardware check
 	
 	Init_Axis();    // initialize all the axis variables and enable the axis
@@ -73,6 +91,7 @@ main()
 		// check the E-Stop button
         if(ReadBit(ESTOP) == ESTOP_ACTIVE)
         {
+            ESTOP_Time = Time_sec();
             ESTOP_Loop();   // go to the ESTOP Loop.
         }
         else
@@ -168,6 +187,21 @@ void ESTOP_Loop(void)
 
     for(;;) // for now, just sit here forever.
     {
+        // while in the ESTOP loop toggle outputs 48 and 49
+        // this is used to flash the ESTOP sign in KMotionCNC
+        if(Time_sec() > (ESTOP_Time + 0.25))
+        {
+            ESTOP_Time = Time_sec();
+            if(ReadBit(KON_OUT_48) == 1)
+            {
+                ClearBit(KON_OUT_48);
+            } else
+            {
+                SetBit(KON_OUT_48);
+            }
+  
+        }
+
         WaitNextTimeSlice();
         if(ReadBit(ESTOP) == ESTOP_RUN)
         {

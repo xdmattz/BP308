@@ -5,6 +5,7 @@
 
 #ifdef TESTBED
 // Axis control values for the test bed
+// this passes the velocity (position deritive) data straight through to the DACs
 void Init_X_Axis(void)
 {
 	ch0->InputMode=NO_INPUT_MODE;
@@ -16,7 +17,7 @@ void Init_X_Axis(void)
 	ch0->I=0.0;
 	ch0->D=0.0;
 	ch0->FFAccel=0;
-	ch0->FFVel=2048;
+	ch0->FFVel=-0.0084;	// 9V DAC value / max velocity --- 1680 / 200000 
 	ch0->MaxI=0;
 	ch0->MaxErr=0;
 	ch0->MaxOutput=1800;
@@ -44,7 +45,7 @@ void Init_X_Axis(void)
 	ch0->BacklashRate=0;
 	ch0->invDistPerCycle=1;
 	ch0->Lead=0;
-	ch0->MaxFollowingError=2000;
+	ch0->MaxFollowingError=1e+09;
 	ch0->StepperAmplitude=20;
 
 	ch0->iir[0].B0=0.090048;
@@ -77,15 +78,15 @@ void Init_Y_Axis(void)
 	ch1->I=0.0;
 	ch1->D=0.0;
 	ch1->FFAccel=0;
-	ch1->FFVel=2048;
+	ch1->FFVel=-0.0084;	// 9V DAC value / max velocity --- 1680 / 200000
 	ch1->MaxI=0;
 	ch1->MaxErr=0;
 	ch1->MaxOutput=1800;
 	ch1->DeadBandGain=1;
 	ch1->DeadBandRange=0;
-	ch1->InputChan0=0;
+	ch1->InputChan0=1;
 	ch1->InputChan1=0;
-	ch1->OutputChan0=0;
+	ch1->OutputChan0=1;
 	ch1->OutputChan1=0;
 	ch1->MasterAxis=-1;
 	ch1->LimitSwitchOptions=0x120;
@@ -105,7 +106,7 @@ void Init_Y_Axis(void)
 	ch1->BacklashRate=0;
 	ch1->invDistPerCycle=1;
 	ch1->Lead=0;
-	ch1->MaxFollowingError=2000;
+	ch1->MaxFollowingError=1e+09;
 	ch1->StepperAmplitude=20;
 
 	ch1->iir[0].B0=0.090048;
@@ -138,15 +139,15 @@ void Init_Z_Axis(void)
 	ch2->I=0.0;
 	ch2->D=0.0;
 	ch2->FFAccel=0;
-	ch2->FFVel=2048;
+	ch2->FFVel=-0.0084;	// 9V DAC value / max velocity --- 1680 / 200000
 	ch2->MaxI=0;
 	ch2->MaxErr=0;
 	ch2->MaxOutput=1800;
 	ch2->DeadBandGain=1;
 	ch2->DeadBandRange=0;
-	ch2->InputChan0=0;
+	ch2->InputChan0=2;
 	ch2->InputChan1=0;
-	ch2->OutputChan0=0;
+	ch2->OutputChan0=2;
 	ch2->OutputChan1=0;
 	ch2->MasterAxis=-1;
 	ch2->LimitSwitchOptions=0x120;
@@ -166,7 +167,7 @@ void Init_Z_Axis(void)
 	ch2->BacklashRate=0;
 	ch2->invDistPerCycle=1;
 	ch2->Lead=0;
-	ch2->MaxFollowingError=2000;
+	ch2->MaxFollowingError=1e+09;
 	ch2->StepperAmplitude=20;
 
 	ch2->iir[0].B0=0.090048;
@@ -197,6 +198,7 @@ void Init_Spindle(void)
 #else
 
 // Axis control values for the BP308 machine 
+
 // X Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
 //
 
@@ -264,6 +266,8 @@ void Init_X_Axis(void)
 	ch0->iir[2].A2=-0.49107;
 }
 
+// Y Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
+//
 void Init_Y_Axis(void)
 {
 	ch1->InputMode=ENCODER_MODE;
@@ -328,6 +332,8 @@ void Init_Y_Axis(void)
 	ch1->iir[2].A2=-0.531416;
 }
 
+// Z Axis, Encoder resolution = 0.0005mm, 19.68539e-6 inch, 2000 steps/mm or 50800 steps/in
+//
 void Init_Z_Axis(void)
 {
 	ch2->InputMode=ENCODER_MODE;
@@ -438,12 +444,15 @@ void Init_Axis(void)
 	// this should give time for the brake to release, and the axis to zero
 	Delay_sec(0.3);	
 
+#ifndef TESTBED
 	// auto offset calibration
 	// read the output when not in motion and set that value as the offset
 	OffsetCal(X_AXIS);
 	OffsetCal(Y_AXIS);
 	OffsetCal(Z_AXIS);
 	OffsetCal(A_AXIS);
+
+#endif	
 
 }
 

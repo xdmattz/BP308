@@ -3,6 +3,8 @@
 #include "BP308_IO.h"
 
 // setup channel 7 as a PID loop for synchronous Spindle Control
+// Spindle Encoder 2000 per rev
+
 void SetSyncSpindle(void)
 {
 	printf("PID SPINDLE\n");
@@ -79,7 +81,7 @@ void SetRPMSpindle(void)
 	ch7->I=0;
 	ch7->D=0;
 	ch7->FFAccel=0;
-	ch7->FFVel=0.275;
+	ch7->FFVel=0.275;	// 9V DAC value / (Units / sec) --- using RPM as the Jog value units/sec 
 	ch7->MaxI=0;
 	ch7->MaxErr=0;
 	ch7->MaxOutput=1700;

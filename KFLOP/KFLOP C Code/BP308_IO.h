@@ -128,23 +128,25 @@
 // Encoder 7 SPINDLE
 
 // KONNECT Connections
+// 32 Inputs
+// Board 0 addresses
 // Extended IO
 #define ENC_X_R		    1024	// X_Axis Index
 #define ENC_Y_R		    1025	// Y_Axis Index
 #define ENC_Z_R		    1026	// Z_Axis Index
 #define ENC_A_R		    1027	// A_Axis Index - currently not connected
-#define ENC_CH4_R	    1028	//
-#define ENC_CH5_R	    1029	//
-#define ENC_CH6_R	    1030	//
+#define ENC_CH4_R	    1028	// B_Axis Index - currently not connected
+#define ENC_CH5_R	    1029	// C_Axis Index - currently not connected
+#define ENC_CH6_R	    1030	// D_Axis Index - currently not connected
 #define SPINDLE_R	    1031	// Spindle Index
 #define MPG_A		    1032	//
 #define MPG_B		    1033	//
-#define KOUT_1034	    1034	//
-#define KOUT_1035	    1035	//
-#define KOUT_1036	    1036	//
-#define KOUT_1037	    1037	//
-#define KOUT_1038	    1038	//
-#define KOUT_1039	    1039	//
+#define KON_IN_1034	    1034	//
+#define KON_IN_1035	    1035	//
+#define KON_IN_1036	    1036	//
+#define KON_IN_1037	    1037	//
+#define KON_IN_1038	    1038	//
+#define KON_IN_1039	    1039	//
 #define AUX_ISO_0	    1040	//
 #define AUX_ISO_1	    1041	//
 #define AUX_ISO_2	    1042	//
@@ -153,6 +155,33 @@
 #define COOLANT_MON	    1045	// Coolant motor relay monitor
 #define AIR_MON		    1046	// Air input PSI monitor
 #define AUX_ISO_7	    1047	//
+#define KON_IN_1048     1048
+#define KON_IN_1049     1049
+#define KON_IN_1050     1050
+#define KON_IN_1051     1051
+#define KON_IN_1052     1052
+#define KON_IN_1053     1053
+#define KON_IN_1054     1054
+#define KON_IN_1055     1055
+
+// 16 Konnect outputs 
+// Board 0 addresses
+#define KON_OUT_48      48
+#define KON_OUT_49      49
+#define KON_OUT_50      50
+#define KON_OUT_51      51
+#define KON_OUT_52      52
+#define KON_OUT_53      53
+#define KON_OUT_54      54
+#define KON_OUT_55      55
+#define KON_OUT_56      56
+#define KON_OUT_57      57
+#define KON_OUT_58      58
+#define KON_OUT_59      59
+#define KON_OUT_60      60
+#define KON_OUT_61      61
+#define KON_OUT_62      62
+#define KON_OUT_63      63
 
 #define LUBE_MON_OK     1
 #define AIR_MON_OK      1

@@ -16,6 +16,15 @@ void ServiceSpindleCount(void)
       Prev_Spindle_Count = chan[SPINDLE_AXIS].Position;
       double RPM = (Spin_Delta * 60.0) / (SP_ENC_RES * SPINDLE_PERIOD);   // (difference * 60) / (SP_Encoder resolution * Period)  = RPM
       persist.UserData[P_SPINDLE_RPM] = (int) (RPM);
+
+#ifdef TESTBED
+    // if on the test bed then derive the spindle RPM from DAC7 value.
+    
+
+#endif     
+
+      // write the spindle value to the KMotionCNC screen
+
     }
 
 

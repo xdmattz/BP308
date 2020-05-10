@@ -15,7 +15,7 @@
 
  // persistant variable map
  // the KFLOP communicates between threads and with the PC via "persist variables"  
- // there are 200 UserData varialbes defined in KMotionDef.h 
+ // there are 200 UserData variables defined in KMotionDef.h 
  // Each user data is described in various sections of the KFLOP documentation.
  // 0 - 99  MACH3 User DROs 1 - 50 - 2 words each 
  //     5   MACH3 
