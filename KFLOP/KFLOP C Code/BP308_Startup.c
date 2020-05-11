@@ -13,7 +13,7 @@
 #include "KMotionDef.h"
 
 #include "BP308_Persist.h"
-#include "BP308_IO.h"
+#include "BP308_IO.h"       // Note !!! TESTBED is defined in BP308_IO.h
 #include "BP308_Startup.h"
 
 // maybe if I had an actual project file (or make file) I could make these all .h
