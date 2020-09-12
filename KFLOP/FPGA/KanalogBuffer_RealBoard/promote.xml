@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<userSetting name="C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/promote.xml" version="Diamond (64-bit) 3.10.3.144" date="Thu Mar 14 23:24:10 2019" vendor="Lattice Semiconductor Corporation" >
+<userSetting name="C:/Dan/Eng Projects/BP308/KFLOP/FPGA/KanalogBuffer_RealBoard/promote.xml" version="Diamond (64-bit) 3.11.0.396.4" date="Wed Jun 03 07:30:31 2020" vendor="Lattice Semiconductor Corporation" >
   <msg mid="35931002" type="Warning" />
   <msg mid="35901010" type="Error" />
   <msg mid="35901162" type="Error" />

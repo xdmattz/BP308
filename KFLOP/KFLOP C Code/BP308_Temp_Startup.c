@@ -24,7 +24,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-// #define RUNNING_STATUS_LOG // print status to the console
+#define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 
@@ -74,7 +74,7 @@ main()
 		wt = wt + dt;
 	}
 */
-    Init_BP308_Hardware();  // hardware check
+ //   Init_BP308_Hardware();  // hardware check
 	
 	Init_Axis();    // initialize all the axis variables and enable the axis
 
@@ -90,30 +90,30 @@ main()
     {
 		WaitNextTimeSlice();    // always start on a new time slice
 		// check the E-Stop button
-        if(ReadBit(ESTOP) == ESTOP_ACTIVE)
-        {
-            ESTOP_Time = Time_sec();
-            ESTOP_Loop();   // go to the ESTOP Loop.
-        }
-        else
+ //       if(ReadBit(ESTOP) == ESTOP_ACTIVE)
+ //       {
+ //           ESTOP_Time = Time_sec();
+ //           ESTOP_Loop();   // go to the ESTOP Loop.
+ //       }
+ //       else
         {
             // check the serial port for an input
             // SetBit(TP1);     // Test Point Toggle
-            SerialPort_Manager();
+         //   SerialPort_Manager();
             // ClearBit(TP1);
 			// Peiodic processes and checks
-            if(Time_sec() > MS_Slow_Timer)
-            {
-                MS_Slow_Timer = Time_sec() + MS05_Time;    // reset the timer
+         //   if(Time_sec() > MS_Slow_Timer)
+         //   {
+         //       MS_Slow_Timer = Time_sec() + MS05_Time;    // reset the timer
                 // do the fucntions that happen every Slow time tick
-                Periodic_Processes();
+         //       Periodic_Processes();
                 //printf("Tick time = %f\n", Time_sec());
-            }
+         //   }
 
             // check for a fault in the persistant status 
             // turn off the spindle 
-            ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
-            ServiceMPG();           // manage the MPG 
+          //  ServiceSpindleCount();  // manage the Spindle encoder count for MACH3 spindle speed display
+          //  ServiceMPG();           // manage the MPG 
 
 #ifdef RUNNING_STATUS_LOG
             if(Axis_Printout(Elapsed_Time) != 0)
