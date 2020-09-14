@@ -24,7 +24,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-// #define RUNNING_STATUS_LOG // print status to the console
+#define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 
@@ -132,12 +132,12 @@ int Axis_Printout(double ETime)
     {
         double P0, P1, P2, P3, P4;
 
-        P0 = chan[X_AXIS].Position;
-        P1 = chan[Y_AXIS].Position;
-        P2 = chan[Z_AXIS].Position;
-        P3 = chan[A_AXIS].Position;
-        P4 = chan[SPINDLE_AXIS].Position;
-        printf("X = %f,  Y = %f,  Z = %f,  A = %f,  SP = %f\n", P0, P1, P2, P3, P4);
+ //       P0 = chan[X_AXIS].Position;
+ //       P1 = chan[Y_AXIS].Position;
+ //       P2 = chan[Z_AXIS].Position;
+ //       P3 = chan[A_AXIS].Position;
+ //       P4 = chan[SPINDLE_AXIS].Position;
+ //       printf("X = %f,  Y = %f,  Z = %f,  A = %f,  SP = %f\n", P0, P1, P2, P3, P4);
 
 	//	P0 = chan[X_AXIS].Dest;
     //    P1 = chan[Y_AXIS].Dest;
