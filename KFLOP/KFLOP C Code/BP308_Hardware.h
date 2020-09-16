@@ -28,6 +28,7 @@ void TLAUX_Query(void);
 void MPG_Query(void);
 void CheckHW(int Mask, int HW_IO_Addr, int IO_state, float timeout);
 void Limit_Check(void);
+void Limit_Check2(void);
 void Init_Spindle(void);
 void Init_TestPoints(void);
 

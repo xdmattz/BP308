@@ -48,10 +48,6 @@ void HardwareQuery(void)
     if ((persist.UserData[P_STATUS] & _BV(SB_OIL_OK)) == 0) printf(" Oil LOW\n");
     else printf(" Oil OK\n");
 
-    CheckHW(_BV(SB_FLOOD_MOTOR_OK), COOLANT_MON, COOLANT_MON_OK, MS_Timeout);   // check the coolant motor relay 
-    if ((persist.UserData[P_STATUS] & _BV(SB_FLOOD_MOTOR_OK)) == 0) printf(" Coolant Motor OK\n");
-    else printf(" Coolant Motor fault!\n");
-
     // check to see if on the limit switches.
     Limit_Check();
 
@@ -68,13 +64,6 @@ void HardwareQuery(void)
     if((persist.UserData[P_STATUS] & _BV(SB_PWR_MODULE_OK)) == 0) printf(" Power Module Fault!\n");
     else printf("Power Module OK\n");
 
-    SetBit(SPINDLE_ENABLE);
-    // pause for a few ms
-    Delay_sec(0.15);
-    CheckHW(_BV(SB_SPINDLE_OK), SPINDLE_FAULT, SPINDLE_FAULT_OK, SPINDLE_READY_TIMEOUT);
-    if((persist.UserData[P_STATUS] & _BV(SB_SPINDLE_OK)) == 0) printf("Spindle Module Fault\n");
-    else printf("Spinlde Module OK\n");
-    ClearBit(SPINDLE_ENABLE);
 }
 
 void TLAUX_Query(void)
@@ -138,21 +127,42 @@ void CheckHW(int Mask, int HW_IO_Addr, int IO_state, float timeout)
 void Limit_Check(void)
 {
     printf("Limit Test:\n");
+    persist.UserData[P_STATUS] |= SB_LIMIT_MASK;    // set the limit bits in the P_STATUS variable
     if(ReadBit(X_LIMIT) == X_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] |= _BV(SB_X_LIMIT);
+        persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
         printf(" X on the Limit Switch\n");
     } else printf(" X OK\n");
     if(ReadBit(Y_LIMIT) == Y_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] |= _BV(SB_Y_LIMIT);
+        persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
         printf(" Y on the Limit Switch\n");
     } else printf (" Y OK\n");
     if(ReadBit(Z_LIMIT) == Z_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] |= _BV(SB_Z_LIMIT);
+        persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
         printf(" Z on the Limit Switch\n");
     } else printf(" Z OK\n");
+}
+
+void Limit_Check2(void)
+{
+
+    persist.UserData[P_STATUS] |= SB_LIMIT_MASK;    // set the limit bits in the P_STATUS variable
+    #ifndef TESTBED     
+    if(ReadBit(X_LIMIT) == X_AT_LIMIT)
+    {
+        persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
+    } 
+    if(ReadBit(Y_LIMIT) == Y_AT_LIMIT)
+    {
+        persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
+    }
+    if(ReadBit(Z_LIMIT) == Z_AT_LIMIT)
+    {
+        persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
+    }
+    #endif
 }
 
 // check the machine for the basic faults
@@ -162,6 +172,7 @@ void Fault_Check(void)
 // Air Pressure Loss
 // Motor Drive fault
 // Axis Limit
+    Limit_Check2();
 // Spindle fault
 // no MPG response
 // no TLAUX response

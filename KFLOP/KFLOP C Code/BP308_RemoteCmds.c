@@ -74,3 +74,21 @@ void TLAUX_Clamp_Grab(void)
         Send_Serial(TLAUX_Cmd_1Arg);
     }     
 }
+
+// Tool Carousel Arm retracted
+void TLAUX_ArmIn(void)
+{
+
+}
+
+// Tool Carousel Arm Extended    
+void TLAUX_ArmOut(void)
+{
+
+}    
+
+// Rotate Tool Carousel 
+void TLAUX_CarouselSel(void)
+{
+    
+} 

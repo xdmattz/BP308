@@ -78,6 +78,7 @@ main()
 	
 	Init_Axis();    // initialize all the axis variables and enable the axis
 
+    persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS]  | 0x01; // copy P_STATUS and set the LSB to 1
 	
     Elapsed_Time = Time_sec();
     MS_Slow_Timer = Time_sec() + MS05_Time;
@@ -93,6 +94,8 @@ main()
         if(ReadBit(ESTOP) == ESTOP_ACTIVE)
         {
             ESTOP_Time = Time_sec();
+            persist.UserData[P_STATUS] |= SB_ESTOP;     // set the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
+            persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS]  | 0x01; // copy P_STATUS and set the LSB to 1
             ESTOP_Loop();   // go to the ESTOP Loop.
         }
         else
@@ -151,7 +154,7 @@ int Axis_Printout(double ETime)
 					
         printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f, SP = %d RPM\n", P0, P1, P2, P3, P4, persist.UserData[P_SPINDLE_RPM]);
         
-        printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
+        printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS_REPORT], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
      
         return 1;          
     }
@@ -242,6 +245,9 @@ void Periodic_Processes(void)
                 break;
         case 3  : Warning_Check();  // check for things that have potential problems
                   Fault_Check();
+                  // and update the STATUS_REPORT UserData to send it to the PC Program.
+                  persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS] | 0x01; // copy P_STATUS and set the LSB to 1
+
                 break;
         case 4  : ButtonCheck();
                 break;
@@ -274,14 +280,12 @@ void Periodic_Processes(void)
 
 void Init_Variables(void)
 {
+    int i;
     // initialize all the variables so they start in a known state
-    persist.UserData[P_STATUS] = 0;
-    persist.UserData[P_TLAUX_STATUS] = 0;
-    persist.UserData[P_MPG_STATUS] = 0;
-    persist.UserData[P_REMOTE_CMD] = 0;
-    persist.UserData[P_SERIAL_PENDING] = 0;
-    persist.UserData[P_NOTIFY] = 0;
-
+    for(i = 100; i < 133; i++)
+    {   
+        persist.UserData[i] = 0;    // clear the persist variables 100 through 133
+    }
     Init_Buttons();
 
 }

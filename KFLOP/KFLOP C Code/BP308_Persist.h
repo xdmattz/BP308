@@ -27,6 +27,13 @@
  // 100 - 107 PC_COMM_PERSIST - defined in PC-DSP.h  Special Vars constanty loaded with Bulk Status 
  // 110 - 114 PC_COMM_CSS Mode - Constant Surface Speed variables.
  //
+ // Changing this because it doesn't seem very efficient.
+ // putting the status into the PC_Comm variables because they automatically get sent to KMotion_dotNet.dll
+ // the other variables appear to take much longer to read so I don't want to put them into the timer loop.
+ // from the KmotionDef.h file, it appears that the values 104 - 107 are not used by KMotionCNC but are still
+ // passed in the MainStatus report.
+
+ // old definitions
  // 120 - 129 BP308 status variables
  //     120     P_STATUS - BP308 status 
  //     121     P_TLAUX_STATUS - BP308 tool changer status
@@ -37,11 +44,15 @@
  //     126     P_MSG_PTR_H
  //     127     P_RESYNC_MPG    - flag to cause MPG Resync
  // 
+ // new definitions
+ //     104     P_STATUS - BP308 status
+ // 
  // 130 - 139  BP308 Home routines (Thread 2) communications
  //     130     Notify Command Message - similar to MACH3 Notify Message ie the command to execute   
  //     131     Notify Argument - any data that may accompany a message - 
 
 #define P_STATUS            120   // the main status word of the machine
+#define P_STATUS_REPORT     104   // the reported main status word of the machine copy status to this persist variable when done computing.
 #define P_TLAUX_STATUS      121   // latest status recieved from the TLUX Tool Changer Query
 #define P_MPG_STATUS        122   // latest status recieved from the MPG Query 
 #define P_DEVICE_STATUS     123   // Some other TBD device status 
@@ -58,24 +69,33 @@
 
 
 // BP308_STATUS bit definitions for P_STATUS
-#define SB_ESTOP            0   // ESTOP sense 1 = OK, 0 = in ESTOP - this way it always defaults to ESTOP at startup
-#define SB_TLAUX_OK         1   // indicates the summary status of the TLAUX, 1 = TLAUX is OK, 0 = some fault has occured 
-                            // - this bit is managed by the TLAUX Query Response
-#define SB_TLAUX_PRES       2   // The TLAUX is responding to querys, 1 = TLAUX present, 0 = TLAUX doesn't answer 
-#define SB_MPG_OK           3
-#define SB_MPG_PRES         4   // 1 = MPG present, 0 = MPG not present
-#define SB_DEVICE_OK        5   
-#define SB_DEVICE_PRES      6   // 1 = Device present, 0 = Device not present
-#define SB_OIL_OK           7   // 1 = Oil OK, 0 = Oil low
+// rewrite this!
+// new bit definitions
+// One 32 bit status word should have plenty of room for all the information needed
+#define SB_ACTIVE           0   // this bit should always be set to 1 once the program starts - it can indicate that things are running
+#define SB_ESTOP            1   // ESTOP sense 1 = OK, 0 = in ESTOP - this way it always defaults to ESTOP at startup
+                                
+// The next group of bits should be organized into an "Error" group and a "Warning" group
+// Errors should inhibit normal operation
+// Warnings should cause some sort of indication but not stop operation  
+#define ERROR_STATUS_MASK   0x000002fc            
+#define SB_TLAUX_OK         2   // indicates the summary status of the TLAUX, 1 = TLAUX is OK, 0 = some fault has occured - this bit is managed by the TLAUX Query Response
+#define SB_TLAUX_PRES       3   // The TLAUX is responding to querys, 1 = TLAUX present, 0 = TLAUX doesn't answer 
+#define SB_MPG_OK           4
+#define SB_MPG_PRES         5   // 1 = MPG present, 0 = MPG not present
+#define SB_DEVICE_OK        6   
+#define SB_DEVICE_PRES      7   // 1 = Device present, 0 = Device not present
 #define SB_AIR_OK           8   // 1 = Air OK, 0 = Air pressure low
-#define SB_FLOOD_MOTOR_OK   9   // 1 = motor switch tested OK
-#define SB_PWR_MODULE_OK    10  // power module 1 = OK, 0 = not ready fault
-#define SB_AXIS_OK          11  // Axis Fault 1 = AXIS OK, 0 = AXIS Fault
-#define SB_SPINDLE_OK       12  // Spindle fault 1 = OK, 0 = fault
-#define SB_HOME             13  // 1 = machine has been homed, 0 = not yet homed
-#define SB_X_LIMIT          14  // 1 = on X_Limit, 0 = normal
-#define SB_Y_LIMIT          15  // 1 = on Y_Limit, 0 = normal
-#define SB_Z_LIMIT          16  // 1 = on Z_Limit, 0 = normal
+#define SB_PWR_MODULE_OK    9   // power module 1 = OK, 0 = not ready fault
+#define SB_AXIS_OK          10  // Axis Fault 1 = AXIS OK, 0 = AXIS Fault
+
+#define WARNING_STATUS_MASK 0x0000f000
+#define SB_OIL_OK           11  // 1 = Oil OK, 0 = Oil low
+#define SB_HOME             12  // 1 = machine has been homed, 0 = not yet homed
+#define SB_LIMIT_MASK       0x0000e000
+#define SB_X_LIMIT          13  // 0 = on X_Limit, 1 = normal
+#define SB_Y_LIMIT          14  // 0 = on Y_Limit, 1 = normal
+#define SB_Z_LIMIT          15  // 0 = on Z_Limit, 1 = normal
 
 #define _BV(X) (1 << X)     // bit shifting macro
 
@@ -130,7 +150,7 @@
 #define RC_TLAUX_CLAMP_RELA 0x0102
 #define RC_TLAUX_CLAMP_REL  0x0103
 #define RC_TLAUX_CLAMP_GRAB 0x0104
-
-
+#define RC_TLAUX_ARM_IN     0x0105
+#define RC_TLAUX_ARM_OUT    0x0106
 
 #endif

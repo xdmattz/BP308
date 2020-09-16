@@ -21,5 +21,8 @@ void Init_Buttons(void);
 
 void TLAUX_Clamp_Release_Air(void);
 void TLAUX_Clamp_Grab(void);
+void TLAUX_ArmIn(void);     // Tool Carousel Arm retracted
+void TLAUX_ArmOut(void);    // Tool Carousel Arm Extended 
+void TLAUX_CarouselSel(void) ; // Rotate Tool Carousel 
 
 #endif

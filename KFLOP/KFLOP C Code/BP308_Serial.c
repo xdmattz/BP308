@@ -28,15 +28,12 @@ void Init_BP308_Serial(void)
 	RxMsg.msg_cnt = 0;
 	RxMsg.msg_cntr = 0;
 	RxMsg.InMessage = FALSE;
-
-
 }
 
 // Serial Port receive manager
 // manages all the incomming  serial messages and processes them
 void SerialPort_Manager(void)
 {
-
     // read the serial port 
     while(pRS232RecIn != pRS232RecOut)
     {
