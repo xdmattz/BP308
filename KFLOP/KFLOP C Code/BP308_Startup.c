@@ -24,7 +24,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-// #define RUNNING_STATUS_LOG // print status to the console
+//#define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 

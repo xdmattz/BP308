@@ -109,6 +109,7 @@
 #define SB_Z_HOME           18
 #define SB_A_HOME           19   // not yet implemented - since I don't have an A axis yet.
 #define SB_SPIN_HOME        23
+#define SB_SPINDLE_OK       24  // Spindle fault 1 = OK, 0 = fault
 
 
 #define _BV(X) (1 << X)     // bit shifting macro

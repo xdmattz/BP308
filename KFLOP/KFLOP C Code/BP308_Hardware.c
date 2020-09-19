@@ -70,6 +70,14 @@ void HardwareQuery(void)
     if((persist.UserData[P_STATUS] & _BV(SB_PWR_MODULE_OK)) == 0) printf(" Power Module Fault!\n");
     else printf("Power Module OK\n");
 
+    SetBit(SPINDLE_ENABLE);
+    // pause for a few ms
+    Delay_sec(0.15);
+    CheckHW(_BV(SB_SPINDLE_OK), SPINDLE_FAULT, SPINDLE_FAULT_OK, SPINDLE_READY_TIMEOUT);
+    if((persist.UserData[P_STATUS] & _BV(SB_SPINDLE_OK)) == 0) printf("Spindle Module Fault\n");
+    else printf("Spinlde Module OK\n");
+    ClearBit(SPINDLE_ENABLE);
+
 }
 
 void TLAUX_Query(void)
