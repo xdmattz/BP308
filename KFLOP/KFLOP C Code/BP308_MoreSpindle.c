@@ -174,7 +174,7 @@ void Spindle_Home(void)
 	
 	double home_pos;
 	// first make sure the spindle is off!
-	if(CheckSpindleOn == TRUE)
+	if(CheckSpindleOn() == TRUE)
 	{
 		SpindleDisable();	// turn the spindle off and wait for RPM = 0;
 		//
@@ -189,7 +189,7 @@ void Spindle_Home(void)
 	SpindleEnable();
 	// wait a little while it comes up 
 	Delay_sec(0.3); // short delay to allow spindle drive to initialize
-	if(CheckSpindleOn == TRUE)
+	if(CheckSpindleOn() == TRUE)
 	{
 		 // is the spindle on the index Switch?
     
