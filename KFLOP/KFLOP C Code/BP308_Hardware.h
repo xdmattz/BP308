@@ -3,7 +3,7 @@
 
 
 
-#define QUERY_TIMEOUT 0.010         // 10 millisecond timeout
+#define QUERY_TIMEOUT 0.10         // 100 millisecond timeout
 #define FLOOD_QUERY_TIMEOUT 0.200   // 200 millisecond timeout
 #define ESTOP_DELAY_TIMEOUT 1.2     // 1200 ms delay to wait for axis ready after estop
 #define PWR_MOD_READY_TIMEOUT 1.0   // give the power module 2 seconds to get ready after coming out of ESTOP_DELAY_TIMEOUT

@@ -6,6 +6,7 @@
 #include "BP308_Persist.h"
 #include "BP308_Serial.h"
 
+
 void Init_BP308_Hardware(void)
 {
     Init_TestPoints();
@@ -29,16 +30,21 @@ void Init_BP308_Hardware(void)
 
 void HardwareQuery(void)
 {
-    // clear the user status 
-    persist.UserData[P_STATUS] &= 0;
+    // Don't clear the user status !
+    // persist.UserData[P_STATUS] &= 0;
     TLAUX_Query();
     // test it!
     if ((persist.UserData[P_STATUS] & _BV(SB_TLAUX_PRES)) == 0) printf(" No TLAUX Present\n");
     else printf(" TLAUX Response!\n");
+    if((persist.UserData[P_STATUS] & _BV(SB_TLAUX_OK)) == 0) printf(" TLAUX Fault\n");
+    else printf(" TLAUX OK!\n");
     
     MPG_Query();
     if ((persist.UserData[P_STATUS] & _BV(SB_MPG_PRES)) == 0) printf(" No MPG Present\n");
     else printf(" MPG Response!\n");
+    if ((persist.UserData[P_STATUS] & _BV(SB_MPG_OK)) == 0) printf(" MPG Fault\n");
+    else printf(" MPG OK!\n");
+
 
     CheckHW(_BV(SB_AIR_OK), AIR_MON, AIR_MON_OK ,MS_Timeout);   // Air sensor check
     if ((persist.UserData[P_STATUS] & _BV(SB_AIR_OK)) == 0) printf(" No Air Pressure\n");
@@ -70,6 +76,8 @@ void TLAUX_Query(void)
 {
     float ElapsedTime;
     persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_TLAUX_QUERY));    // set the query pending bit - to be cleared by the query message handler
+    persist.UserData[P_TLAUX_STATUS] = 0;
+    persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_PRES));    // clear the TLAUX Present Bit
     Send_Serial(TLAUX_StatusQuery);  // send a TLAUX status query
     ElapsedTime = Time_sec() + QUERY_TIMEOUT;
     SetBit(TP1);
@@ -77,14 +85,14 @@ void TLAUX_Query(void)
     {
         WaitNextTimeSlice();    // only  run once per cycle
         SerialPort_Manager();   
-        persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_PRES));    // clear the TLAUX Present Bit
         if((persist.UserData[P_SERIAL_PENDING] & _BV(SP_TLAUX_QUERY)) == 0) // if the pending bit has been cleared the query response was recieved
         {
-            persist.UserData[P_STATUS] |= _BV(SB_TLAUX_PRES);
+            // persist.UserData[P_STATUS] |= _BV(SB_TLAUX_PRES);
             break;
         }
     }
     ClearBit(TP1);
+    printf("TLAUX Query %4X, status = %4X\n", persist.UserData[P_TLAUX_STATUS], persist.UserData[P_STATUS]);
 }
 
 void MPG_Query(void)
@@ -92,6 +100,7 @@ void MPG_Query(void)
     float ElapsedTime;
     // send a MPG status query
     persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_MPG_QUERY));  // flag set here - cleared by query received function
+    persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_PRES));  // clear the present bit
     Send_Serial(MPG_StatusQuery);
     ElapsedTime = Time_sec() + QUERY_TIMEOUT;
     SetBit(TP1);
@@ -99,14 +108,15 @@ void MPG_Query(void)
     {
         WaitNextTimeSlice();
         SerialPort_Manager();
-        persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_PRES));  // clear the present bit
+
         if((persist.UserData[P_SERIAL_PENDING] & _BV(SP_MPG_QUERY)) == 0)
         {
-            persist.UserData[P_STATUS] |= _BV(SB_MPG_PRES); // set the present bit
+            // persist.UserData[P_STATUS] |= _BV(SB_MPG_PRES); // set the present bit
             break;
         }
     }
     ClearBit(TP1);
+    printf("MPG Query %4X, status = %4X\n", persist.UserData[P_MPG_STATUS], persist.UserData[P_STATUS]);
 }
 
 void CheckHW(int Mask, int HW_IO_Addr, int IO_state, float timeout)
@@ -148,8 +158,11 @@ void Limit_Check(void)
 void Limit_Check2(void)
 {
 
+    #ifdef TESTBED  
+        // don't do anything here... don't look at the real limit switches.
+    #else
     persist.UserData[P_STATUS] |= SB_LIMIT_MASK;    // set the limit bits in the P_STATUS variable
-    #ifndef TESTBED     
+       
     if(ReadBit(X_LIMIT) == X_AT_LIMIT)
     {
         persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
@@ -183,6 +196,15 @@ void Fault_Check(void)
 // check for machine warnings
 void Warning_Check(void)
 {
+    // check home bits - can probably take out the home check here because it as put into the homing test.
+    if ((persist.UserData[P_STATUS] & HOME_STATUS_MASK) == 0)
+    {
+        persist.UserData[P_STATUS] |= _BV(SB_HOME); // set the Home bit in status
+    }
+    else
+    {
+        persist.UserData[P_STATUS] &= ~(_BV(SB_HOME)); // clear the home bit
+    }
     // low oil
     // low coolant
 }

@@ -30,13 +30,9 @@ int main()
                     break;
         case T2_ZERO_AXIS : Zero_Axis(msg);
                     break;
-        case T2_HOME_AXIS : Home_All_Axis(msg);
+        case T2_HOME_AXIS : Home_AxisCmd(msg);
                     break;
-        case T2_HOME_Y : 
-                    break;
-        case T2_HOME_Z : 
-                    break;
-        case T2_HOME_A : 
+        case T2_HOME_SPINDLE : Spindle_Home();
                     break;
         case T2_LIMIT_BACKOFF : Limit_Backoff(msg);
                     break;
@@ -95,89 +91,123 @@ void Zero_Axis(int Axis)
     }
 }
 
-
-void Home_All_Axis(int pmsg)
+void Home_AxisCmd(int pmsg)
 {
+
+    #ifdef TESTBED
+    if((persist.UserData[P_STATUS] & SB_LIMIT_MASK) != SB_LIMIT_MASK)
+    {
+        printf("Axis on Limit! cannot Proceede\nClear Limit and retry\n");
+        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
+    } else
+    #else
+
     // start by checking the limit switches. If any limit switch is active then don't home
     if((ReadBit(X_LIMIT) == LIM_AT_LIM) || (ReadBit(Y_LIMIT) == LIM_AT_LIM) || (ReadBit(Z_LIMIT) == LIM_AT_LIM))
     {
         printf("Axis on Limit! cannot Proceede\nClear Limit and retry\n");
         persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
+
+    #endif
     {
-        persist.UserData[P_MPG_RESYNC] = TRUE;
-        // start with the Z axis, then do the Y axis and finally the X axis
-        Home_Axis(Z_AXIS, Z_HOME, ENC_Z_R);
-        Zero(Z_AXIS);   // Zero Axis
-        Home_Axis(Y_AXIS, Y_HOME, ENC_Y_R);
-        Zero(Y_AXIS);   // Zero Axis
-        Home_Axis(X_AXIS, X_HOME, ENC_X_R);
-        Zero(X_AXIS);   // Zero Axis
-        // set the home bit!
-        persist.UserData[P_STATUS] &= _BV(SB_HOME);
+
+        switch(pmsg)
+        {
+            case T2_HOME_X : Home_Axis(X_AXIS, X_HOME, ENC_X_R);
+                            Zero(X_AXIS);   // Zero Axis
+                            break;
+            case T2_HOME_Y : Home_Axis(Y_AXIS, Y_HOME, ENC_Y_R);
+                            Zero(Y_AXIS);   // Zero Axis
+                            break;
+            case T2_HOME_Z : Home_Axis(Z_AXIS, Z_HOME, ENC_Z_R);
+                            Zero(Z_AXIS);   // Zero Axis
+                            break;
+        //    case T2_HOME_A : Home_Axis(A_AXIS, A_HOME, ENC_A_R);
+        //                    Zero(A_AXIS);   // Zero Axis
+        //                    break;  
+            case T2_HOME_SPINDLE : Spindle_Home();
+                            break; 
+            case T2_HOME_ALL : Home_All_Axis();
+                            break;
+            default : break;
+
+        }  
+        if((persist.UserData[P_STATUS] & HOME_STATUS_MASK) == 0) 
+        {
+            persist.UserData[P_STATUS] |= _BV(SB_HOME);  // if all the bits are cleared then set the SB_HOME Bit to indicate homed
+        }   
+        persist.UserData[P_NOTIFY] = 0; // clear the command. 
     }
-    persist.UserData[P_NOTIFY] = 0; // clear the command.
+
+
+}
+
+void Home_All_Axis(void)
+{
+    printf("Home All\n");
+    persist.UserData[P_MPG_RESYNC] = TRUE;
+    // start with the Z axis, then do the Y axis and finally the X axis
+    Home_Axis(Z_AXIS, Z_HOME, ENC_Z_R);
+    Zero(Z_AXIS);   // Zero Axis
+    Home_Axis(Y_AXIS, Y_HOME, ENC_Y_R);
+    Zero(Y_AXIS);   // Zero Axis
+    Home_Axis(X_AXIS, X_HOME, ENC_X_R);
+    Zero(X_AXIS);   // Zero Axis
+    Spindle_Home();
+    SpindleDisable();   // disable the spindle after homing. - do this here because Spindle home is also used for tool changing 
 }
 
 void Home_Axis(int Axis, int Home, int Index)
 {
-    double home_pos;
-    // is the axis on the Home Switch?
-    if(ReadBit(Home)== HOME_AT_HOME)
+
+    // Skip if the axis is disabled!
+    if(CheckDone(Axis) != CD_AXIS_DISABLED)    // skip if axis is disabled
     {
-        MoveRelAtVel(Axis, -(HOME_BACKOFF), HOME_VEL_1);        // if so then back up 1 inch.
-        while(CheckDone(Axis) != CD_DONE)
+        #ifdef TESTBED
+            // just clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
+            persist.UserData[P_STATUS] &= ~(1 << (Axis + 16));
+            printf("Axis %d Homed\n", Axis);
+        #else
+
+        double home_pos;
+        // is the axis on the Home Switch?
+        if(ReadBit(Home)== HOME_AT_HOME)
+        {
+            MoveRelAtVel(Axis, -(HOME_BACKOFF), HOME_VEL_1);        // if so then back up 1 inch.
+            while(CheckDone(Axis) != CD_DONE)
+            {
+                WaitNextTimeSlice();
+            }
+        }
+        Jog(Axis, HOME_VEL_1);
+        while(ReadBit(Home) == HOME_NOT_HOME)       // move until Home switch detects.
         {
             WaitNextTimeSlice();
         }
+        Jog(Axis, 0);
+        Jog(Axis, -(HOME_VEL_2));   // backup until off the home switch
+        while(ReadBit(Home) == HOME_AT_HOME)
+        {
+            WaitNextTimeSlice();
+        }
+        Jog(Axis, (HOME_VEL_3));    // move slowly until Index is set.
+        while(ReadBit(Index) == INDEX_NOT_INDEX)
+        {
+            WaitNextTimeSlice();
+        }
+        home_pos = chan[Axis].Dest;     // record the index location
+        Jog(Axis,0);    // stop the motion
+        MoveAtVel(Axis, home_pos, HOME_VEL_3);
+        while(CheckDone(Axis) != CD_DONE)    // move to the index location
+        {
+            WaitNextTimeSlice();
+        }
+        // clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
+        persist.UserData[P_STATUS] &= ~(1 << (Axis + 16));
+        // is Index set again?
+        #endif
     }
-    Jog(Axis, HOME_VEL_1);
-    while(ReadBit(Home) == HOME_NOT_HOME)       // move until Home switch detects.
-    {
-        WaitNextTimeSlice();
-    }
-    Jog(Axis, 0);
-    Jog(Axis, -(HOME_VEL_2));   // backup until off the home switch
-    while(ReadBit(Home) == HOME_AT_HOME)
-    {
-        WaitNextTimeSlice();
-    }
-    Jog(Axis, (HOME_VEL_3));    // move slowly until Index is set.
-    while(ReadBit(Index) == INDEX_NOT_INDEX)
-    {
-        WaitNextTimeSlice();
-    }
-    home_pos = chan[Axis].Dest;     // record the index location
-    Jog(Axis,0);    // stop the motion
-    MoveAtVel(Axis, home_pos, HOME_VEL_3);
-    while(CheckDone(Axis) != CD_DONE)    // move to the index location
-    {
-        WaitNextTimeSlice();
-    }
-    // is Index set again?
-}
-
-
-void Home_X(void)
-{
-    // always start with Z
-    // then Y
-    // then X
-}
-
-void Home_Y(void)
-{
-
-}
-
-void Home_Z(void)
-{
-
-}
-
-void Home_A(void)
-{
-
 }
 
 void Limit_Backoff(int pmsg)
@@ -201,6 +231,16 @@ void Limit_Backoff(int pmsg)
     {
         if(CheckDone(pAxis) != CD_AXIS_DISABLED)    // skip if axis is disabled
         {
+            #ifdef TESTBED
+                switch (pAxis)
+                {
+                    case X_AXIS : persist.UserData[P_STATUS] |= _BV(SB_X_LIMIT); break;
+                    case Y_AXIS : persist.UserData[P_STATUS] |= _BV(SB_Y_LIMIT); break;
+                    case Z_AXIS : persist.UserData[P_STATUS] |= _BV(SB_Z_LIMIT); break;
+                    default : break;
+                }
+                printf("Limit Backoff axis %d status: %4X\n", pAxis, persist.UserData[P_STATUS]);
+            #else
             if(ReadBit(LimSwitch) == LIM_AT_LIM)    // check to make sure that the limit switch is triggered
             {
                 ClearStopImmediately();             // stop the feed hold
@@ -224,6 +264,7 @@ void Limit_Backoff(int pmsg)
                 }
                 persist.UserData[P_MPG_RESYNC] = TRUE;         // restart the MPG
             }
+            #endif
         }
     }
     persist.UserData[P_NOTIFY] = 0;     // clear the P_NOTIFY cmd so it can't accidently be called twice  
@@ -258,11 +299,15 @@ void SpindleCmd(int pmsg)
                     break;
         case T2_SPINDLE_DIS : SpindleDisable();
                     break;
-        case T2_SPINDLE_CW : break;
-        case T2_SPINDLE_CCW : break;
-        case T2_SPINDLE_STOP : break;
-        case T2_SPINDLE_HOME : break;
-        case T2_SPINDLE_ZERO : break;
+        case T2_SPINDLE_CW : Spindle_CW(persist.UserData[P_NOTIFY_ARGUMENT]);
+                    break;
+        case T2_SPINDLE_CCW : Spindle_CCW(persist.UserData[P_NOTIFY_ARGUMENT]);
+                    break;
+        case T2_SPINDLE_STOP : Spindle_Stop();
+                    break;
+        //case T2_SPINDLE_HOME : break;
+        case T2_SPINDLE_ZERO : Spindle_Home(); 
+                    break;
         case T2_SPINDLE_PID : SetSyncSpindle();
                     break;
         case T2_SPINDLE_RPM : SetRPMSpindle();

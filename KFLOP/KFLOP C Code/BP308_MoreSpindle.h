@@ -6,5 +6,9 @@ void SetRPMSpindle(void);
 void SpindleEnable(void);
 void SpindleDisable(void);
 int CheckSpindleOn(void);
+void Spindle_Home(void);
+void Spindle_CW(int RPM);
+void Spindle_CCW(int RPM);
+void Spindle_Stop(void);
 
 #endif

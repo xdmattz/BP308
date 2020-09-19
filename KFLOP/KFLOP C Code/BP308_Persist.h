@@ -43,14 +43,16 @@
  //     125     P_MSG_PTR
  //     126     P_MSG_PTR_H
  //     127     P_RESYNC_MPG    - flag to cause MPG Resync
+
  // 
  // new definitions
  //     104     P_STATUS - BP308 status
+ //     119     P_HOME_STATUS - 
  // 
  // 130 - 139  BP308 Home routines (Thread 2) communications
  //     130     Notify Command Message - similar to MACH3 Notify Message ie the command to execute   
  //     131     Notify Argument - any data that may accompany a message - 
-
+// #define P_HOME_STATUS       119   // bits are set when an axis is homed. pushed these bits into the upper 16 bits of P_STATUS
 #define P_STATUS            120   // the main status word of the machine
 #define P_STATUS_REPORT     104   // the reported main status word of the machine copy status to this persist variable when done computing.
 #define P_TLAUX_STATUS      121   // latest status recieved from the TLUX Tool Changer Query
@@ -63,9 +65,10 @@
 #define P_SPINDLE_STATUS    128   // 
 #define P_SPINDLE_RPM       129   // calcualted in spinle monitor
 
-#define P_NOTIFY            130     // command to Thread 2 functions
-#define P_NOTIFY_ARGUMENT   131     // Argument passed to a Notify Command
-#define P_REMOTE_CMD        133     // a non zero value here indicates a command from another Thread or the PC
+#define P_NOTIFY            131     // command to Thread 2 functions
+#define P_NOTIFY_ARGUMENT   132     // Argument passed to a Notify Command - this is on an even boundry in case argument is a double
+#define P_NOTIFY_ARGUMENT2  133     // Second possible argument passed to a Notify Command 
+#define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -89,13 +92,24 @@
 #define SB_PWR_MODULE_OK    9   // power module 1 = OK, 0 = not ready fault
 #define SB_AXIS_OK          10  // Axis Fault 1 = AXIS OK, 0 = AXIS Fault
 
-#define WARNING_STATUS_MASK 0x0000f000
+#define WARNING_STATUS_MASK 0x0000f000  // should this really be 0x0000f800 ?
 #define SB_OIL_OK           11  // 1 = Oil OK, 0 = Oil low
 #define SB_HOME             12  // 1 = machine has been homed, 0 = not yet homed
 #define SB_LIMIT_MASK       0x0000e000
 #define SB_X_LIMIT          13  // 0 = on X_Limit, 1 = normal
 #define SB_Y_LIMIT          14  // 0 = on Y_Limit, 1 = normal
 #define SB_Z_LIMIT          15  // 0 = on Z_Limit, 1 = normal
+
+// these are the home status bit definitions for P_HOME_STATUS
+// inorder to simplify testing, these bits are set at initialization, and cleared when the axis is homed.
+// that way if(P_STATUS & HOME_STATUS_MASK == 0) the machine is all homed. 
+#define HOME_STATUS_MASK    0x00870000
+#define SB_X_HOME           16   // 1 = not yet homed, 0 = homed
+#define SB_Y_HOME           17
+#define SB_Z_HOME           18
+#define SB_A_HOME           19   // not yet implemented - since I don't have an A axis yet.
+#define SB_SPIN_HOME        23
+
 
 #define _BV(X) (1 << X)     // bit shifting macro
 

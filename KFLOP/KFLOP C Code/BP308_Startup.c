@@ -24,7 +24,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-#define RUNNING_STATUS_LOG // print status to the console
+// #define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 
@@ -94,7 +94,7 @@ main()
         if(ReadBit(ESTOP) == ESTOP_ACTIVE)
         {
             ESTOP_Time = Time_sec();
-            persist.UserData[P_STATUS] |= SB_ESTOP;     // set the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
+            persist.UserData[P_STATUS] &= ~(_BV(SB_ESTOP));     // clear the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
             persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS]  | 0x01; // copy P_STATUS and set the LSB to 1
             ESTOP_Loop();   // go to the ESTOP Loop.
         }
@@ -249,7 +249,7 @@ void Periodic_Processes(void)
                   persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS] | 0x01; // copy P_STATUS and set the LSB to 1
 
                 break;
-        case 4  : ButtonCheck();
+        case 4  : ButtonCheck();    // check to see if any of the buttons are presses - currently only have the tool release button
                 break;
         case 5  : // check for unanswered queries
         default:
@@ -286,7 +286,8 @@ void Init_Variables(void)
     {   
         persist.UserData[i] = 0;    // clear the persist variables 100 through 133
     }
-    Init_Buttons();
+    persist.UserData[P_STATUS] = HOME_STATUS_MASK; // initialize the HOME status bits to 1s
+    Init_Buttons(); // initialize the state of the "buttons" so a button press can be edge detected
 
 }
 

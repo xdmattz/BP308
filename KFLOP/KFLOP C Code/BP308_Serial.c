@@ -183,6 +183,7 @@ void Device_Parse(SerMsg *SM)
 void TLAUX_Query_Cmd(SerMsg *SM)
 {	
 	persist.UserData[P_SERIAL_PENDING] &= ~(SP_TLAUX_QUERY);	// clear the status query bit
+	persist.UserData[P_STATUS] |= _BV(SB_TLAUX_PRES);	// the TLAUX answered so present bit should be set
 //	printf("Good TXLAUX Query! %d\n", qcount);
 	//PrintSerMsg(SM);
 	// printf("x\n");
@@ -191,11 +192,11 @@ void TLAUX_Query_Cmd(SerMsg *SM)
 	tstatus = (((int)(SM->msg[DATA_INDEX]) << 8) | ((int)(SM->msg[DATA_INDEX + 1])));	// get the status message
 	if((tstatus & TLAUX_FAULT_MASK) != 0)	// if there is any fault 
 	{
-		persist.UserData[P_STATUS] |= _BV(SB_TLAUX_OK);	// set the tlaux fault bit in the main status register
+		persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_OK));	// clear the tlaux fault bit in the main status register indicates a fault
 	}
 	else
 	{
-		persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_OK));	// otherwise clear it.
+		persist.UserData[P_STATUS] |= _BV(SB_TLAUX_OK);	// Set the no fault bit.
 	}
 	persist.UserData[P_TLAUX_STATUS] = tstatus;
 }
@@ -207,15 +208,16 @@ void TLAUX_CMD2_Cmd(SerMsg *SM)
 void MPG_Query_Cmd(SerMsg *SM)
 {
 	persist.UserData[P_SERIAL_PENDING] &= ~(SP_MPG_QUERY);	// clear the status query bit
+	persist.UserData[P_STATUS] |= _BV(SB_MPG_PRES); // MPG responded with this message so set present bit
 	int tstatus;
 	tstatus = (((int)(SM->msg[DATA_INDEX]) << 8) | ((int)(SM->msg[DATA_INDEX + 1])));	// get the status message
 	if((tstatus & MPG_FAULT_MASK) != 0)	// if there is any fault 
 	{
-		persist.UserData[P_STATUS] |= _BV(SB_MPG_OK);	// set the MPG fault bit in the main status register
+		persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_OK));	// clear the MPG fault bit in the main status register
 	}
 	else
 	{
-		persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_OK));	// otherwise clear it.
+		persist.UserData[P_STATUS] |= _BV(SB_MPG_OK);	// set the no fault bit.
 	}
 	persist.UserData[P_MPG_STATUS] = tstatus;
 }

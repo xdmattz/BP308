@@ -161,3 +161,75 @@ int CheckSpindleOn(void)
         return FALSE;
     }
 }
+
+void Spindle_Home(void)
+{
+
+
+	#ifdef TESTBED
+		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
+		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+		printf("Spindle Homed!\n");
+	#else
+	
+	double home_pos;
+	// first make sure the spindle is off!
+	if(CheckSpindleOn == TRUE)
+	{
+		SpindleDisable();	// turn the spindle off and wait for RPM = 0;
+		//
+		while (persist.UserData[P_SPINDLE_RPM] != 0)
+		{
+			WaitNextTimeSlice();
+		}
+	}
+	// set the spindle to synch mode
+	SetSyncSpindle();
+	// turn on the spindle
+	SpindleEnable();
+	// wait a little while it comes up 
+	Delay_sec(0.3); // short delay to allow spindle drive to initialize
+	if(CheckSpindleOn == TRUE)
+	{
+		 // is the spindle on the index Switch?
+    
+    	Jog(SPINDLE_AXIS, (HOME_VEL_3));    // move slowly until Index is set.
+		while(ReadBit(SPINDLE_R) == INDEX_NOT_INDEX)
+		{
+			WaitNextTimeSlice();
+		}
+    	home_pos = chan[SPINDLE_AXIS].Dest;     // record the index location
+    	Jog(SPINDLE_AXIS,0);    // stop the motion
+    	MoveAtVel(SPINDLE_AXIS, home_pos, HOME_VEL_3);
+    	while(CheckDone(SPINDLE_AXIS) != CD_DONE)    // move to the index location
+		{
+			WaitNextTimeSlice();
+		}
+		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
+		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+	} 
+	else 
+	{
+		// some kind of fault happend
+		// spindle is not homed
+		printf("Spindle Problem!\nSpindle did not HOME\n");
+		persist.UserData[P_STATUS] |= _BV(SB_SPIN_HOME);	// set the spindle home bit - ie not homed
+	}
+	#endif
+}
+
+void Spindle_CW(int RPM)
+{
+	// is spindle already running?
+	// if so make sure it is running the correct way. jog to the new value
+	// if not yet running, change to RPM mode and enable and Jog.
+}
+void Spindle_CCW(int RPM)
+{
+	// is spindle already running?
+}
+void Spindle_Stop(void)
+{
+
+}
+
