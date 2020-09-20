@@ -257,6 +257,8 @@ void Periodic_Processes(void)
             break;
     }
 
+    CheckZFault();  // check if Z has been disabled.
+
  /*   
     if(ProcessCnt++ == 1)
     {

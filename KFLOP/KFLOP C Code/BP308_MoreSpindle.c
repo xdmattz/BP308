@@ -2,6 +2,11 @@
 #include "KMotionDef.h"
 #include "BP308_IO.h"
 
+//
+//
+#define MinRPM 12
+#define RPM_TIMOUT 2.0	// 2 second timeout
+//
 // setup channel 7 as a PID loop for synchronous Spindle Control
 // Spindle Encoder 2000 per rev
 
@@ -177,10 +182,17 @@ void Spindle_Home(void)
 	if(CheckSpindleOn() == TRUE)
 	{
 		SpindleDisable();	// turn the spindle off and wait for RPM = 0;
+		// need an actual timeout here.
+		double xTime = Time_sec() + RPM_TIMOUT;
 		//
-		while (persist.UserData[P_SPINDLE_RPM] != 0)
+		while (persist.UserData[P_SPINDLE_RPM] > MinRPM)	// is the spindle slow enough
 		{
 			WaitNextTimeSlice();
+			if(Time_sec() > xTime)
+			{
+				printf("Spindle stop timeout\n");
+				return;
+			} 
 		}
 	}
 	// set the spindle to synch mode
@@ -188,11 +200,10 @@ void Spindle_Home(void)
 	// turn on the spindle
 	SpindleEnable();
 	// wait a little while it comes up 
-	Delay_sec(0.3); // short delay to allow spindle drive to initialize
+	Delay_sec(0.5); // short delay to allow spindle drive to initialize
 	if(CheckSpindleOn() == TRUE)
 	{
 		 // is the spindle on the index Switch?
-    
     	Jog(SPINDLE_AXIS, (HOME_VEL_3));    // move slowly until Index is set.
 		while(ReadBit(SPINDLE_R) == INDEX_NOT_INDEX)
 		{

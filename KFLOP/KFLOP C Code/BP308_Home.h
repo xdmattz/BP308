@@ -20,6 +20,23 @@
 #define T2_ZERO_Z       0x0402
 #define T2_ZERO_A       0x0403
 
+// Axis Enable / Disable Commands - command byte 0x0600;
+#define T2_AXIS_CMD     0x0600
+#define T2_X_AXIS_EN    0x0601
+#define T2_X_AXIS_DIS   0x0602
+#define T2_Y_AXIS_EN    0x0603
+#define T2_Y_AXIS_DIS   0x0604
+#define T2_Z_AXIS_EN    0x0605
+#define T2_Z_AXIS_DIS   0x0606
+#define T2_A_AXIS_EN    0x0607
+#define T2_A_AXIS_DIS   0x0608
+#define T2_B_AXIS_EN    0x0609
+#define T2_B_AXIS_DIS   0x060a
+#define T2_C_AXIS_EN    0x060b
+#define T2_C_AXIS_DIS   0x060c
+// Spindle commands are in command 0x0500
+
+
 // Homing Commands - command byte 0x00800
 #define T2_HOME_AXIS    0x0800
 #define T2_HOME_X       0x0801
@@ -93,9 +110,10 @@ void Flood_On(void);
 void Coolant_Off(void);
 
 // Spindle Control Routines
-void SpindleCmd(int pmsg);
+void Spindle_Cmd(int pmsg);
 
-
+// Axis Commands
+void Axis_Cmd(int pmsg);
 
 
 #endif

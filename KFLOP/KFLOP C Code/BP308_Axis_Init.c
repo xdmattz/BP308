@@ -442,7 +442,7 @@ void Init_Axis(void)
 
 	//pause for a short time to allow things to settle
 	// this should give time for the brake to release, and the axis to zero
-	Delay_sec(0.3);	
+	Delay_sec(0.4);	
 
 #ifndef TESTBED
 	// auto offset calibration
@@ -470,5 +470,14 @@ void OffsetCal(int Axis)
 		chan[Axis].OutputOffset = offset;
 		EnableAxis(Axis);
 		WaitNextTimeSlice();	// only do one per slice.
+	}
+}
+
+void CheckZFault(void)
+{
+	if(CheckDone(Z_AXIS) == CD_AXIS_DISABLED)
+	{
+		// Z_Axis has been disabled...
+		ClearBit(Z_BRAKE);	// set the turn the Z Axis brake back on - so the head doesn't fall down.
 	}
 }

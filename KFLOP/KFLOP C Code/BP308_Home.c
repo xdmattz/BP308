@@ -32,15 +32,17 @@ int main()
                     break;
         case T2_HOME_AXIS : Home_AxisCmd(msg);
                     break;
+        case T2_AXIS_CMD : Axis_Cmd(msg);
+                    break;
         case T2_HOME_SPINDLE : Spindle_Home();
                     break;
         case T2_LIMIT_BACKOFF : Limit_Backoff(msg);
                     break;
-        case T2_SEL_TOOL :  Select_Tool(msg);
+        case T2_SEL_TOOL : Select_Tool(msg);
                     break;
         case T2_TOOL_CLAMP : Tool_Clamp(msg);
                     break;  
-        case T2_SPINDLE : SpindleCmd(msg);
+        case T2_SPINDLE : Spindle_Cmd(msg);
                     break;                  
         default: break;
     }
@@ -291,7 +293,7 @@ void Tool_Clamp(int pmsg)
 
 
 // Spindle Control
-void SpindleCmd(int pmsg)
+void Spindle_Cmd(int pmsg)
 {
     switch (pmsg)
     {
@@ -315,5 +317,31 @@ void SpindleCmd(int pmsg)
         default : break;
     }
     persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
-
 }
+
+// Axis Commands
+void Axis_Cmd(int pmsg)
+{
+    switch(pmsg)
+    {
+        case T2_X_AXIS_EN : EnableAxis(X_AXIS); break;
+        case T2_X_AXIS_DIS : DisableAxis(X_AXIS); break;
+        case T2_Y_AXIS_EN : EnableAxis(X_AXIS); break;
+        case T2_Y_AXIS_DIS : DisableAxis(X_AXIS); break;
+        case T2_Z_AXIS_EN : SetBit(Z_BRAKE);    // release the Z Brake and enable the axis
+                        EnableAxis(Z_AXIS); 
+                        break; 
+        case T2_Z_AXIS_DIS : ClearBit(Z_BRAKE); // set the Z Brake and disable the axis
+                        DisableAxis(Z_AXIS); 
+                        break;
+        case T2_A_AXIS_EN : EnableAxis(X_AXIS); break;
+        case T2_A_AXIS_DIS : DisableAxis(X_AXIS); break;
+        case T2_B_AXIS_EN : EnableAxis(X_AXIS); break;
+        case T2_B_AXIS_DIS : DisableAxis(X_AXIS); break;
+        case T2_C_AXIS_EN : EnableAxis(X_AXIS); break;
+        case T2_C_AXIS_DIS : DisableAxis(X_AXIS); break;
+        default : break;
+    }
+    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
+}
+
