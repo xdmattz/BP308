@@ -2,6 +2,8 @@
 #include "BP308_MPG.h"
 #include "BP308_Hardware.h"
 #include "BP308_IO.h"
+#include "BP308_Persist.h"
+#include "BP308_Axis_Init.h"
 
 // functions to communicate with an MPG via the serial port and Quadrature Inputs
 

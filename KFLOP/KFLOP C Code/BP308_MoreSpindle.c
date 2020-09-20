@@ -154,6 +154,7 @@ void SpindleEnable(void)
 void SpindleDisable(void)
 {
     ClearBit(SPINDLE_ENABLE);
+	printf("SP Disabled\n");
 }
 
 int CheckSpindleOn(void)
@@ -170,7 +171,7 @@ int CheckSpindleOn(void)
 void Spindle_Home(void)
 {
 
-
+	printf("In Spindle Home\n");
 	#ifdef TESTBED
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
 		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
@@ -218,6 +219,7 @@ void Spindle_Home(void)
 		}
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
 		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+		printf("Spindle Homed");
 	} 
 	else 
 	{
