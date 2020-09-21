@@ -40,7 +40,7 @@ if(persist.UserData[P_MPG_RESYNC] == TRUE)
     {
         // Host is active so don't do anything with the MPG
         // Set the MPG state to OFF so it has to respond to a status query to restart.
-        persist.UserData[P_MPG_STATUS] |= _BV(MPG_STATUS_OFF_POS); // set the off bit 
+        SetPBit(P_MPG_STATUS, MPG_STATUS_OFF_POS); // persist.UserData[P_MPG_STATUS] |= _BV(MPG_STATUS_OFF_POS); // set the off bit 
     }
     else if((persist.UserData[P_MPG_STATUS] & _BV(MPG_STATUS_OFF_POS)) == 0)   // MPG Switch OFF flag is not set so not in off
     {

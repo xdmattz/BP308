@@ -420,7 +420,7 @@ void Init_Axis(void)
 	Init_Y_Axis();
 	Init_Z_Axis();
 	Init_A_Axis();
-	Init_Spindle();
+	// Init_Spindle(); Spindle is initalize everytime int is enabled. 
 
 	// zero the Axis
 	ResetFilters(X_AXIS);
@@ -451,6 +451,7 @@ void Init_Axis(void)
 	OffsetCal(Y_AXIS);
 	OffsetCal(Z_AXIS);
 	OffsetCal(A_AXIS);
+	chan[SPINDLE_AXIS].OutputOffset = -38;	// this is just an estimate that makes the spindle almost 0
 
 #endif	
 

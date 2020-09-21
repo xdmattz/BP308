@@ -94,7 +94,7 @@ main()
         if(ReadBit(ESTOP) == ESTOP_ACTIVE)
         {
             ESTOP_Time = Time_sec();
-            persist.UserData[P_STATUS] &= ~(_BV(SB_ESTOP));     // clear the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
+            ClearPStatusBit(SB_ESTOP); // persist.UserData[P_STATUS] &= ~(_BV(SB_ESTOP));     // clear the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
             persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS]  | 0x01; // copy P_STATUS and set the LSB to 1
             ESTOP_Loop();   // go to the ESTOP Loop.
         }
@@ -236,11 +236,11 @@ void Periodic_Processes(void)
                 }
                 break;
         case 1 :  
-                persist.UserData[P_SERIAL_PENDING] |= (SP_MPG_QUERY); 
+                SetPBit(P_SERIAL_PENDING, SP_MPG_QUERY); // persist.UserData[P_SERIAL_PENDING] |= (SP_MPG_QUERY); 
     	        Send_Serial(MPG_StatusQuery);  
                 break;
         case 2  : 
-                persist.UserData[P_SERIAL_PENDING] |= (SP_TLAUX_QUERY);    // set the query pending bit
+                SetPBit(P_SERIAL_PENDING, SP_TLAUX_QUERY); // persist.UserData[P_SERIAL_PENDING] |= (SP_TLAUX_QUERY);    // set the query pending bit
                 Send_Serial(TLAUX_StatusQuery);
                 break;
         case 3  : Warning_Check();  // check for things that have potential problems

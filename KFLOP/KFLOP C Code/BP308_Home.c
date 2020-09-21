@@ -137,7 +137,7 @@ void Home_AxisCmd(int pmsg)
         }  
         if((persist.UserData[P_STATUS] & HOME_STATUS_MASK) == 0) 
         {
-            persist.UserData[P_STATUS] |= _BV(SB_HOME);  // if all the bits are cleared then set the SB_HOME Bit to indicate homed
+            SetPStatusBit(SB_HOME); //persist.UserData[P_STATUS] |= _BV(SB_HOME);  // if all the bits are cleared then set the SB_HOME Bit to indicate homed
         }   
         persist.UserData[P_NOTIFY] = 0; // clear the command. 
     }
@@ -206,7 +206,7 @@ void Home_Axis(int Axis, int Home, int Index)
             WaitNextTimeSlice();
         }
         // clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
-        persist.UserData[P_STATUS] &= ~(1 << (Axis + 16));
+        ClearPStatusBit(Axis + SB_HOME_POS); // persist.UserData[P_STATUS] &= ~(1 << (Axis + 16));
         // is Index set again?
         #endif
     }

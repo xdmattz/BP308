@@ -83,9 +83,9 @@ void HardwareQuery(void)
 void TLAUX_Query(void)
 {
     float ElapsedTime;
-    persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_TLAUX_QUERY));    // set the query pending bit - to be cleared by the query message handler
+    SetPBit(P_SERIAL_PENDING, SP_TLAUX_QUERY); // persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_TLAUX_QUERY));    // set the query pending bit - to be cleared by the query message handler
     persist.UserData[P_TLAUX_STATUS] = 0;
-    persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_PRES));    // clear the TLAUX Present Bit
+    ClearPStatusBit(SB_TLAUX_PRES); // persist.UserData[P_STATUS] &= ~(_BV(SB_TLAUX_PRES));    // clear the TLAUX Present Bit
     Send_Serial(TLAUX_StatusQuery);  // send a TLAUX status query
     ElapsedTime = Time_sec() + QUERY_TIMEOUT;
     SetBit(TP1);
@@ -107,8 +107,8 @@ void MPG_Query(void)
 {
     float ElapsedTime;
     // send a MPG status query
-    persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_MPG_QUERY));  // flag set here - cleared by query received function
-    persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_PRES));  // clear the present bit
+    SetPBit(P_SERIAL_PENDING, SP_MPG_QUERY); // persist.UserData[P_SERIAL_PENDING] |= (_BV(SP_MPG_QUERY));  // flag set here - cleared by query received function
+    ClearPStatusBit(SB_MPG_PRES); // persist.UserData[P_STATUS] &= ~(_BV(SB_MPG_PRES));  // clear the present bit
     Send_Serial(MPG_StatusQuery);
     ElapsedTime = Time_sec() + QUERY_TIMEOUT;
     SetBit(TP1);
@@ -133,10 +133,10 @@ void CheckHW(int Mask, int HW_IO_Addr, int IO_state, float timeout)
     while(Time_sec() < ElapsedTime)
     {
         WaitNextTimeSlice();    // only once per time slice
-        persist.UserData[P_STATUS] &= ~(Mask);
+        ClearPStatusBit(Mask); // persist.UserData[P_STATUS] &= ~(Mask);
         if(ReadBit(HW_IO_Addr) == IO_state)
         {
-            persist.UserData[P_STATUS] |= Mask;
+            SetPStatusBit(Mask); // persist.UserData[P_STATUS] |= Mask;
             break;
         }
     }
@@ -148,17 +148,17 @@ void Limit_Check(void)
     persist.UserData[P_STATUS] |= SB_LIMIT_MASK;    // set the limit bits in the P_STATUS variable
     if(ReadBit(X_LIMIT) == X_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
+        ClearPStatusBit(SB_X_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
         printf(" X on the Limit Switch\n");
     } else printf(" X OK\n");
     if(ReadBit(Y_LIMIT) == Y_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
+        ClearPStatusBit(SB_Y_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
         printf(" Y on the Limit Switch\n");
     } else printf (" Y OK\n");
     if(ReadBit(Z_LIMIT) == Z_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
+        ClearPStatusBit(SB_Z_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
         printf(" Z on the Limit Switch\n");
     } else printf(" Z OK\n");
 }
@@ -173,15 +173,15 @@ void Limit_Check2(void)
        
     if(ReadBit(X_LIMIT) == X_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
+        ClearPStatusBit(SB_X_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_X_LIMIT));   // clear the bit if on the limit
     } 
     if(ReadBit(Y_LIMIT) == Y_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
+        ClearPStatusBit(SB_Y_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_Y_LIMIT));
     }
     if(ReadBit(Z_LIMIT) == Z_AT_LIMIT)
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
+        ClearPStatusBit(SB_Z_LIMIT); // persist.UserData[P_STATUS] &= ~(_BV(SB_Z_LIMIT));
     }
     #endif
 }
@@ -207,11 +207,11 @@ void Warning_Check(void)
     // check home bits - can probably take out the home check here because it as put into the homing test.
     if ((persist.UserData[P_STATUS] & HOME_STATUS_MASK) == 0)
     {
-        persist.UserData[P_STATUS] |= _BV(SB_HOME); // set the Home bit in status
+        SetPStatusBit(SB_HOME); // persist.UserData[P_STATUS] |= _BV(SB_HOME); // set the Home bit in status
     }
     else
     {
-        persist.UserData[P_STATUS] &= ~(_BV(SB_HOME)); // clear the home bit
+        ClearPStatusBit(SB_HOME); // persist.UserData[P_STATUS] &= ~(_BV(SB_HOME)); // clear the home bit
     }
     // low oil
     // low coolant

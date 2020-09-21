@@ -1,6 +1,7 @@
 #include "BP308_MoreSpindle.h"
 #include "KMotionDef.h"
 #include "BP308_IO.h"
+#include "BP308_Persist.h"
 
 //
 //
@@ -9,6 +10,10 @@
 //
 // setup channel 7 as a PID loop for synchronous Spindle Control
 // Spindle Encoder 2000 per rev
+#define SP_ENCODER_RES 2000
+#define SP_UPDATE_TIME 0.2
+#define SP_FILTER_TAU 0.1
+#define SP_SENSOR_ENCODER 1
 
 void SetSyncSpindle(void)
 {
@@ -70,6 +75,7 @@ void SetSyncSpindle(void)
 	ch7->iir[2].B2=0;
 	ch7->iir[2].A1=0;
 	ch7->iir[2].A2=0;
+	ClearPStatusBit(SB_SPINDLE_MODE);	// SPINDLE MODE 0 = PID Mode
 }
 
 // setup channel 7 as an open loop 
@@ -135,6 +141,7 @@ void SetRPMSpindle(void)
 	ch7->iir[2].A1=0;
 	ch7->iir[2].A2=0;
 
+	SetPStatusBit(SB_SPINDLE_MODE);	// SPINDLE MODE 1 = RPM Mode - JOG7=RPM
 
 }
 
@@ -144,6 +151,10 @@ void SpindleEnable(void)
    if(ReadBit(SPINDLE_ENABLE) == 0)
     {
         SetBit(SPINDLE_ENABLE);
+		Zero(SPINDLE_AXIS);
+		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
+		EnableAxis(SPINDLE_AXIS);
+		SetPStatusBit(SB_SPINDLE_ON);
 		printf("SP Enabled\n");
     } else
 	{
@@ -153,7 +164,9 @@ void SpindleEnable(void)
 }
 void SpindleDisable(void)
 {
+	DisableAxis(SPINDLE_AXIS);
     ClearBit(SPINDLE_ENABLE);
+	ClearPStatusBit(SB_SPINDLE_ON);
 	printf("SP Disabled\n");
 }
 
@@ -217,6 +230,7 @@ void Spindle_Home(void)
 		{
 			WaitNextTimeSlice();
 		}
+		Zero(SPINDLE_AXIS);
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
 		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
 		printf("Spindle Homed");
@@ -234,7 +248,8 @@ void Spindle_Home(void)
 void Spindle_CW(int RPM)
 {
 	// is spindle already running?
-	// if so make sure it is running the correct way. jog to the new value
+	// if so make sure it is running the correct way. jog to the new value - actually don't have to do this. 
+	// the motion control will automatically decelerate and reverse direction.
 	// if not yet running, change to RPM mode and enable and Jog.
 }
 void Spindle_CCW(int RPM)
