@@ -431,8 +431,7 @@ void Init_Axis(void)
 	Zero(Y_AXIS);
 	Zero(Z_AXIS);
 
-	// Release the Z Brake
-	SetBit(Z_BRAKE);
+	Delay_sec(0.2);	
 
 	// enable the axis 
 
@@ -440,9 +439,12 @@ void Init_Axis(void)
 	EnableAxis(Y_AXIS);
 	EnableAxis(Z_AXIS);
 
+	Delay_sec(0.1);
+	// Release the Z Brake
+	SetBit(Z_BRAKE);
 	//pause for a short time to allow things to settle
 	// this should give time for the brake to release, and the axis to zero
-	Delay_sec(0.4);	
+	Delay_sec(0.2);
 
 #ifndef TESTBED
 	// auto offset calibration
