@@ -373,7 +373,7 @@ void Init_Z_Axis(void)
 	ch2->BacklashRate=0;
 	ch2->invDistPerCycle=1;
 	ch2->Lead=0;
-	ch2->MaxFollowingError=2000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this
+	ch2->MaxFollowingError=8000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
 	ch2->StepperAmplitude=20;
 
 	// LPF 1
@@ -447,6 +447,8 @@ void Init_Axis(void)
 	Delay_sec(0.2);
 
 #ifndef TESTBED
+	ch2->MaxFollowingError=2000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
+	
 	// auto offset calibration
 	// read the output when not in motion and set that value as the offset
 	OffsetCal(X_AXIS);
