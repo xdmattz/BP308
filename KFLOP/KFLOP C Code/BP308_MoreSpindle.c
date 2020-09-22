@@ -211,14 +211,19 @@ void Spindle_Home(void)
 	}
 	// set the spindle to synch mode
 	SetSyncSpindle();
+
+	// zero the axis
+	ResetFilters(SPINDLE_AXIS);
+	Zero(SPINDLE_AXIS);
+	Delay_sec(0.1);
 	// turn on the spindle
 	SpindleEnable();
 	// wait a little while it comes up 
-	Delay_sec(0.5); // short delay to allow spindle drive to initialize
+	Delay_sec(0.3); // short delay to allow spindle drive to initialize
 	if(CheckSpindleOn() == TRUE)
 	{
 		 // is the spindle on the index Switch?
-    	Jog(SPINDLE_AXIS, (HOME_VEL_3));    // move slowly until Index is set.
+    	Jog(SPINDLE_AXIS, (HOME_VEL_3)*3);    // move slowly until Index is set.
 		while(ReadBit(SPINDLE_R) == INDEX_NOT_INDEX)
 		{
 			WaitNextTimeSlice();
@@ -233,7 +238,7 @@ void Spindle_Home(void)
 		Zero(SPINDLE_AXIS);
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
 		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
-		printf("Spindle Homed");
+		printf("Spindle Homed\n");
 	} 
 	else 
 	{
@@ -242,6 +247,13 @@ void Spindle_Home(void)
 		printf("Spindle Problem!\nSpindle did not HOME\n");
 		persist.UserData[P_STATUS] |= _BV(SB_SPIN_HOME);	// set the spindle home bit - ie not homed
 	}
+	// disable the spindle axis and turn off the spindle drive
+	DisableAxis(SPINDLE_AXIS);
+	ClearBit(SPINDLE_ENABLE);
+	printf("Spindle Off\n");
+
+
+
 	#endif
 }
 
