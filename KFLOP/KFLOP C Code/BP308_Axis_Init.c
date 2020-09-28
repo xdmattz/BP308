@@ -207,14 +207,14 @@ void Init_X_Axis(void)
 	ch0->InputMode=ENCODER_MODE;
 	ch0->OutputMode=DAC_SERVO_MODE;
 	ch0->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
-	ch0->Accel=2e+06;
-	ch0->Jerk=1e+08;
-	ch0->P=1.1;
-	ch0->I=0.0012;
+	ch0->Accel=0.9e+06;
+	ch0->Jerk=2e+07;
+	ch0->P=0.9;
+	ch0->I=0.015;
 	ch0->D=0;
 	ch0->FFAccel=1e-07;
-	ch0->FFVel=0.0001;
-	ch0->MaxI=1100;
+	ch0->FFVel=0.01;
+	ch0->MaxI=1200;
 	ch0->MaxErr=1500;		// Setting max error to max output/P or 1500/3 = 500
 	ch0->MaxOutput=1800;	// 1500 = 8V max output - 1680 is 9V
 	ch0->DeadBandGain=1;
@@ -273,13 +273,13 @@ void Init_Y_Axis(void)
 	ch1->InputMode=ENCODER_MODE;
 	ch1->OutputMode=DAC_SERVO_MODE;
 	ch1->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
-	ch1->Accel=4e+06;
-	ch1->Jerk=3e+07;
-	ch1->P=1.2;
-	ch1->I=0.0015;
+	ch1->Accel=0.9e+06;
+	ch1->Jerk=2e+07;
+	ch1->P=0.9;
+	ch1->I=0.015;
 	ch1->D=0;
 	ch1->FFAccel=1e-05;
-	ch1->FFVel=0.002;
+	ch1->FFVel=0.01;
 	ch1->MaxI=1000;
 	ch1->MaxErr=1400;		// Setting max error to max output/P or 1500/3 = 500
 	ch1->MaxOutput=1800;	// 1500 = 8V max output  - 1680 is 9V
@@ -339,10 +339,13 @@ void Init_Z_Axis(void)
 	ch2->InputMode=ENCODER_MODE;
 	ch2->OutputMode=DAC_SERVO_MODE;
 	ch2->Vel=160000;		// 4800 mm/min or 189 in/min - top speed. Rated speed is 250000 - 7500 mm/min or 295 in/mm
-	ch2->Accel=3e+06;
+	ch2->Accel=0.2e+06;
+//	ch2->Accel=3e+06;
 	ch2->Jerk=1e+07;
-	ch2->P=0.8;
-	ch2->I=0.0012;
+	ch2->P=0.5;
+	ch2->I=0.001;
+//	ch2->P=0.8;
+//	ch2->I=0.0012;
 	ch2->D=0;
 	ch2->FFAccel=1e-08;
 	ch2->FFVel=0.0002;
@@ -361,7 +364,9 @@ void Init_Z_Axis(void)
 	ch2->LimitSwitchPosBit=Z_LIMIT;
 	ch2->SoftLimitPos=1e+09;
 	ch2->SoftLimitNeg=-1e+09;
-	ch2->InputGain0=1;
+	ch2->InputGain0=1;	// for some unexplained reason the Z-Axis has changed polarity. Don't know what caused it but this the fix. - I was changing the control module around a bit.
+	// OK, Figured out why the direction swapped, I had swapped the Parameter Board (accidently) The parameter board in the SIMODRIVE 611 is 
+	// set different than the X, Y and A axis. the direction is reversed (DIP Switch setting) and it has weight compensation (R48)
 	ch2->InputGain1=1;
 	ch2->InputOffset0=0;
 	ch2->InputOffset1=0;
@@ -373,7 +378,7 @@ void Init_Z_Axis(void)
 	ch2->BacklashRate=0;
 	ch2->invDistPerCycle=1;
 	ch2->Lead=0;
-	ch2->MaxFollowingError=8000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
+	ch2->MaxFollowingError=4000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
 	ch2->StepperAmplitude=20;
 
 	// LPF 1
@@ -431,7 +436,7 @@ void Init_Axis(void)
 	Zero(Y_AXIS);
 	Zero(Z_AXIS);
 
-	Delay_sec(0.2);	
+//	Delay_sec(0.2);	
 
 	// enable the axis 
 
@@ -439,22 +444,22 @@ void Init_Axis(void)
 	EnableAxis(Y_AXIS);
 	EnableAxis(Z_AXIS);
 
-	Delay_sec(0.1);
+	Delay_sec(0.3);
 	// Release the Z Brake
-	SetBit(Z_BRAKE);
+//	SetBit(Z_BRAKE);
 	//pause for a short time to allow things to settle
 	// this should give time for the brake to release, and the axis to zero
 	Delay_sec(0.2);
 
 #ifndef TESTBED
-	ch2->MaxFollowingError=2000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
+	// ch2->MaxFollowingError=2000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
 	
 	// auto offset calibration
 	// read the output when not in motion and set that value as the offset
 	OffsetCal(X_AXIS);
 	OffsetCal(Y_AXIS);
 	OffsetCal(Z_AXIS);
-	OffsetCal(A_AXIS);
+// 	OffsetCal(A_AXIS);
 	chan[SPINDLE_AXIS].OutputOffset = -38;	// this is just an estimate that makes the spindle almost 0
 
 #endif	
@@ -472,6 +477,7 @@ void OffsetCal(int Axis)
 	{
 		offset = chan[Axis].Output;	// read the output disable and set the output 
 		DisableAxis(Axis);
+		ResetFilters(Axis);
 		chan[Axis].OutputOffset = offset;
 		EnableAxis(Axis);
 		WaitNextTimeSlice();	// only do one per slice.
@@ -483,6 +489,6 @@ void CheckZFault(void)
 	if(CheckDone(Z_AXIS) == CD_AXIS_DISABLED)
 	{
 		// Z_Axis has been disabled...
-		ClearBit(Z_BRAKE);	// set the turn the Z Axis brake back on - so the head doesn't fall down.
+		ClearBit(Z_BRAKE);	// turn the Z Axis brake back on - so the head doesn't fall down.
 	}
 }

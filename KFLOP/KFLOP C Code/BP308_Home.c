@@ -231,6 +231,7 @@ void Limit_Backoff(int pmsg)
     }
     if(pAxis != -1)
     {
+    	printf("In Limit Backoff\n");
         if(CheckDone(pAxis) != CD_AXIS_DISABLED)    // skip if axis is disabled
         {
             #ifdef TESTBED
