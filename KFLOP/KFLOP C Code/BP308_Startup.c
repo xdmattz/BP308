@@ -196,7 +196,7 @@ void ESTOP_Loop(void)
 	// disable the spindle
     ClearBit(SPINDLE_ENABLE);
 	
-
+	ESTOP_Time = Time_sec();
 
     for(;;) // for now, just sit here forever.
     {
@@ -293,7 +293,7 @@ void Init_Variables(void)
 {
     int i;
     // initialize all the variables so they start in a known state
-    for(i = 100; i < 133; i++)
+    for(i = 100; i < 136; i++)
     {   
         persist.UserData[i] = 0;    // clear the persist variables 100 through 133
     }

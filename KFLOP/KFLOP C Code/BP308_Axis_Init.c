@@ -1,6 +1,8 @@
 #include "BP308_Axis_Init.h"
 #include "KMotionDef.h"
 #include "BP308_IO.h"
+#include "BP308_Persist.h"
+#include "BP308_Startup.h"
 
 
 #ifdef TESTBED
@@ -339,18 +341,15 @@ void Init_Z_Axis(void)
 	ch2->InputMode=ENCODER_MODE;
 	ch2->OutputMode=DAC_SERVO_MODE;
 	ch2->Vel=160000;		// 4800 mm/min or 189 in/min - top speed. Rated speed is 250000 - 7500 mm/min or 295 in/mm
-	ch2->Accel=0.2e+06;
-//	ch2->Accel=3e+06;
+	ch2->Accel=2e+06;
 	ch2->Jerk=1e+07;
-	ch2->P=0.5;
-	ch2->I=0.001;
-//	ch2->P=0.8;
-//	ch2->I=0.0012;
+	ch2->P=1.3;
+	ch2->I=0.01;
 	ch2->D=0;
 	ch2->FFAccel=1e-08;
-	ch2->FFVel=0.0002;
-	ch2->MaxI=100;
-	ch2->MaxErr=1500;		// Setting max error to max output/P or 1500/3 = 500
+	ch2->FFVel=0.01;
+	ch2->MaxI=1000;
+	ch2->MaxErr=600;		// Setting max error to max output/P or 1500/3 = 500
 	ch2->MaxOutput=1700;	// 1340 = 7.2V max output  - 1680 is 9V
 	ch2->DeadBandGain=1;
 	ch2->DeadBandRange=0;
@@ -378,7 +377,7 @@ void Init_Z_Axis(void)
 	ch2->BacklashRate=0;
 	ch2->invDistPerCycle=1;
 	ch2->Lead=0;
-	ch2->MaxFollowingError=4000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
+	ch2->MaxFollowingError=8000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
 	ch2->StepperAmplitude=20;
 
 	// LPF 1
@@ -444,13 +443,13 @@ void Init_Axis(void)
 	EnableAxis(Y_AXIS);
 	EnableAxis(Z_AXIS);
 
-	Delay_sec(0.3);
-	// Release the Z Brake
-//	SetBit(Z_BRAKE);
-	//pause for a short time to allow things to settle
-	// this should give time for the brake to release, and the axis to zero
-	Delay_sec(0.2);
+#define OffsetWaitDelay 0.3
+#define ZBrakeWaitDelay 0.5
 
+	DelayWithEStop(OffsetWaitDelay);
+
+	// Delay_sec(0.3);
+	// start of delay time
 #ifndef TESTBED
 	// ch2->MaxFollowingError=2000;	// 2000 error is 1/4 turn of the lead screw - this is a lot of error - may want to revisit this // changed to 8000
 	
@@ -461,6 +460,15 @@ void Init_Axis(void)
 	OffsetCal(Z_AXIS);
 // 	OffsetCal(A_AXIS);
 	chan[SPINDLE_AXIS].OutputOffset = -38;	// this is just an estimate that makes the spindle almost 0
+
+	DelayWithEStop(ZBrakeWaitDelay);
+
+
+		// Release the Z Brake
+	SetBit(Z_BRAKE);
+	//pause for a short time to allow things to settle
+	// this should give time for the brake to release, and the axis to zero
+	ch2->MaxFollowingError=1500; // reduce the Z Axis max following error to something reasonable 
 
 #endif	
 
@@ -486,9 +494,29 @@ void OffsetCal(int Axis)
 
 void CheckZFault(void)
 {
-	if(CheckDone(Z_AXIS) == CD_AXIS_DISABLED)
+	if(persist.UserData[P_INGORE_FAULT] == 0)
 	{
-		// Z_Axis has been disabled...
-		ClearBit(Z_BRAKE);	// turn the Z Axis brake back on - so the head doesn't fall down.
+		if(CheckDone(Z_AXIS) == CD_AXIS_DISABLED)
+		{
+			// Z_Axis has been disabled...
+			ClearBit(Z_BRAKE);	// turn the Z Axis brake back on - so the head doesn't fall down.
+		}
+	}
+
+}
+
+void DelayWithEStop(double Delay)
+{
+	double DelayStopTime = Time_sec() + Delay;
+	while(Time_sec() < DelayStopTime)
+	{
+		// check ESTOP
+		if(ReadBit(ESTOP) == ESTOP_ACTIVE)
+        {
+            ClearPStatusBit(SB_ESTOP); // persist.UserData[P_STATUS] &= ~(_BV(SB_ESTOP));     // clear the Estop bit in P_STATUS and copy to P_STATUS_REPORT so the PC application can pick it up.
+            persist.UserData[P_STATUS_REPORT] = persist.UserData[P_STATUS]  | 0x01; // copy P_STATUS and set the LSB to 1
+            ESTOP_Loop();   // go to the ESTOP Loop.
+        }
+		WaitNextTimeSlice();
 	}
 }

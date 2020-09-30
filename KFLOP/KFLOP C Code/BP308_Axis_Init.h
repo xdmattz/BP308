@@ -32,5 +32,6 @@ void Init_Spindle(void);
 void Init_Axis(void);
 void OffsetCal(int Axis);
 void CheckZFault(void);
+void DelayWithEStop(double Delay);
 
 #endif

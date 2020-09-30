@@ -69,6 +69,7 @@
 #define P_NOTIFY_ARGUMENT   132     // Argument passed to a Notify Command - this is on an even boundry in case argument is a double
 #define P_NOTIFY_ARGUMENT2  133     // Second possible argument passed to a Notify Command 
 #define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC
+#define P_INGORE_FAULT      135     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
 
 
 // BP308_STATUS bit definitions for P_STATUS
