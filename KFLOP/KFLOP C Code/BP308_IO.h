@@ -79,6 +79,7 @@
 #define HOME_NOT_HOME       0
 #define INDEX_AT_INDEX      1
 #define INDEX_NOT_INDEX     0
+#define SPINDLE_AT_INDEX    0
 
 
 // Outputs

@@ -11,6 +11,7 @@
 #include "BP308_Home.h"
 #include "BP308_IO.h"
 #include "BP308_Persist.h"
+#include "BP308_Notify_Cmds.h"
 
 #include "BP308_MoreSpindle.c"
 
