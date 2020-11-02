@@ -45,17 +45,18 @@ int main()
     */
 
     printf("In Thread 3\n");
-    printf("1:%d 2:%f 3:%f 99:%f\n", 
+    printf("1:%d 2:%f 3:%f 129:%f Speed = %d\n", 
     persist.UserData[0],
     *(float *)&persist.UserData[1], 
     *(float *)&persist.UserData[2],
-    *(float *)&persist.UserData[99]);
+    *(float *)&persist.UserData[129],
+     (int)(*(float *)&persist.UserData[129]));
 
     // clear all the variables.
     persist.UserData[0] = 0;
     persist.UserData[1] = 0;
     persist.UserData[2] = 0;
-    persist.UserData[99] = 0;
+//    persist.UserData[99] = 0;
     return 0;
 
 }
