@@ -99,7 +99,7 @@ void Home_AxisCmd(int pmsg)
     #ifdef TESTBED
     if((persist.UserData[P_STATUS] & SB_LIMIT_MASK) != SB_LIMIT_MASK)
     {
-        printf("Axis on Limit! cannot Proceede\nClear Limit and retry\n");
+        printf("Axis on Limit! cannot Proceed\nClear Limit and retry\n");
         persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
     #else
@@ -107,7 +107,7 @@ void Home_AxisCmd(int pmsg)
     // start by checking the limit switches. If any limit switch is active then don't home
     if((ReadBit(X_LIMIT) == LIM_AT_LIM) || (ReadBit(Y_LIMIT) == LIM_AT_LIM) || (ReadBit(Z_LIMIT) == LIM_AT_LIM))
     {
-        printf("Axis on Limit! cannot Proceede\nClear Limit and retry\n");
+        printf("Axis on Limit! cannot Proceed\nClear Limit and retry\n");
         persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
 
