@@ -112,6 +112,7 @@ void Home_AxisCmd(int pmsg)
         persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
 
+
     #endif
     {
 
