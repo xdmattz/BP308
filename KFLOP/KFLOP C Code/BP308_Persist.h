@@ -63,12 +63,13 @@
 #define P_MSG_PTR_H         126   // High byte
 #define P_MPG_RESYNC        127   // making this non zero will cause the MPG to resync 
 #define P_SPINDLE_STATUS    128   // 
-// #define P_SPINDLE_RPM       129   // calcualted in spindle monitor
+#define P_SPINDLE_RPM_CMD   129   // commanded spindle speed - float value passed into thread 3 - 
 #define P_SPINDLE_RPM       105    // calcualted in spindle monitor - test so it is passed to PC in PC_Comm
 #define P_NOTIFY            131     // command to Thread 2 functions
 #define P_NOTIFY_ARGUMENT   132     // Argument passed to a Notify Command - this is on an even boundry in case argument is a double
 #define P_NOTIFY_ARGUMENT2  133     // Second possible argument passed to a Notify Command 
 #define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC
+#define P_INGORE_FAULT      135     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -111,8 +112,11 @@
 #define SB_A_HOME           19   // not yet implemented - since I don't have an A axis yet.
 #define SB_SPIN_HOME        23
 #define SB_SPINDLE_OK       24  // Spindle fault 1 = OK, 0 = fault
-#define SB_SPINDLE_MODE     25  // Spindle Mode 1 = RPM mode, 0 = PID mode.
-#define SB_SPINDLE_ON       26  // Spindle ON = 1, Spindle OFF = 0
+#define SB_SPINDLE_RPM      25  // Spindle Mode RPM if set
+#define SB_SPINDLE_PID      26  // Spindle Mode PID if set - if both are set then there is some sort of error. if both are cleared then not yet initialzied
+#define SB_SPINDLE_ON       27  // Spindle ON = 1, Spindle OFF = 0
+#define SB_SPINDLE_CW       28
+#define SB_SPINDLE_CCW      29
 
 
 #define _BV(X) (1 << X)     // bit shifting macro
@@ -120,6 +124,7 @@
 #define ClearPStatusBit(X) persist.UserData[P_STATUS] &= ~(_BV(X))
 #define SetPBit(X,Y) persist.UserData[X] |= _BV(Y)
 #define ClearPBit(X,U) persist.UserData[X] &= ~(_BV(Y))
+#define PStatusBitIsSet(X) (persist.UserData[P_STATUS] & _BV(X)) // usage if(PStatusBitIsSet(X) == true) where true is non zero
 
 // P_SERIAL_PENDING bit definitions
 #define SP_TLAUX_QUERY      _BV(0)   // TLAUX query sent

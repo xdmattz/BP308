@@ -75,7 +75,8 @@ void SetSyncSpindle(void)
 	ch7->iir[2].B2=0;
 	ch7->iir[2].A1=0;
 	ch7->iir[2].A2=0;
-	ClearPStatusBit(SB_SPINDLE_MODE);	// SPINDLE MODE 0 = PID Mode
+	SetPStatusBit(SB_SPINDLE_PID);	// SPINDLE MODE = PID Mode
+	ClearPStatusBit(SB_SPINDLE_RPM);
 }
 
 // setup channel 7 as an open loop 
@@ -141,7 +142,8 @@ void SetRPMSpindle(void)
 	ch7->iir[2].A1=0;
 	ch7->iir[2].A2=0;
 
-	SetPStatusBit(SB_SPINDLE_MODE);	// SPINDLE MODE 1 = RPM Mode - JOG7=RPM
+	ClearPStatusBit(SB_SPINDLE_PID);	
+	SetPStatusBit(SB_SPINDLE_RPM);	// SPINDLE MODE RPM Mode - JOG7=RPM
 
 }
 
@@ -151,7 +153,7 @@ void SpindleEnable(void)
    if(ReadBit(SPINDLE_ENABLE) == 0)
     {
         SetBit(SPINDLE_ENABLE);
-		Zero(SPINDLE_AXIS);
+//		Zero(SPINDLE_AXIS);
 		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
 		EnableAxis(SPINDLE_AXIS);
 		SetPStatusBit(SB_SPINDLE_ON);
@@ -192,6 +194,7 @@ void Spindle_Home(void)
 	#else
 	
 	double home_pos;
+	double S_Offset;
 	// first make sure the spindle is off!
 	if(CheckSpindleOn() == TRUE)
 	{
@@ -211,15 +214,20 @@ void Spindle_Home(void)
 	}
 	// set the spindle to synch mode
 	SetSyncSpindle();
+
+	// zero the axis
+	ResetFilters(SPINDLE_AXIS);
+	Zero(SPINDLE_AXIS);
+	Delay_sec(0.1);
 	// turn on the spindle
 	SpindleEnable();
 	// wait a little while it comes up 
-	Delay_sec(0.5); // short delay to allow spindle drive to initialize
+	Delay_sec(0.3); // short delay to allow spindle drive to initialize
 	if(CheckSpindleOn() == TRUE)
 	{
 		 // is the spindle on the index Switch?
-    	Jog(SPINDLE_AXIS, (HOME_VEL_3));    // move slowly until Index is set.
-		while(ReadBit(SPINDLE_R) == INDEX_NOT_INDEX)
+    	Jog(SPINDLE_AXIS, (HOME_VEL_3)*3);    // move slowly until Index is set.
+		while(ReadBit(SPINDLE_R) != SPINDLE_AT_INDEX)
 		{
 			WaitNextTimeSlice();
 		}
@@ -231,9 +239,18 @@ void Spindle_Home(void)
 			WaitNextTimeSlice();
 		}
 		Zero(SPINDLE_AXIS);
+		// set the output offset so the error is zero
+		// S_Offset = chan[SPINDLE_AXIS].Output;
+		// DisableAxis(SPINDLE_AXIS);
+		// ResetFilters(SPINDLE_AXIS);
+		// chan[SPINDLE_AXIS].OutputOffset = S_Offset;
+		// EnableAxis(SPINDLE_AXIS);
+
+		Delay_sec(0.1);
+		
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
-		persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
-		printf("Spindle Homed");
+		ClearPStatusBit(SB_SPIN_HOME); // persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+		printf("Spindle Homed\n");
 	} 
 	else 
 	{
@@ -242,22 +259,81 @@ void Spindle_Home(void)
 		printf("Spindle Problem!\nSpindle did not HOME\n");
 		persist.UserData[P_STATUS] |= _BV(SB_SPIN_HOME);	// set the spindle home bit - ie not homed
 	}
+	// disable the spindle axis and turn off the spindle drive
+	DisableAxis(SPINDLE_AXIS);
+	ClearBit(SPINDLE_ENABLE);
+	printf("Spindle Off\n");
+
+
+
 	#endif
 }
 
 void Spindle_CW(int RPM)
 {
-	// is spindle already running?
-	// if so make sure it is running the correct way. jog to the new value - actually don't have to do this. 
+	if(CheckSpindleOn() == FALSE)	// is spindle already running?
+	{
+		// if not then enable and start the spindle
+		SetSpindleRPM();
+		SpindleEnable();
+		// wait just a bit for it to enable
+		Delay_sec(0.2);
+
+	}
+		// if so make sure it is running the correct way. jog to the new value - actually don't have to do this. 
+//		if(PStatusBitIsSet(SB_SPINDLE_CCW))
+//		{
+			// stop the spindle first
+//			Jog(SPINDLE_AXIS, 0);
+			// wait for it to get there...not sure I need to do this - check before coding it up.
+//		}
+		// get the set spindle speed - double stored in persist variable
+		Jog(SPINDLE_AXIS, *(float *)&persist.UserData[P_SPINDLE_RPM_CMD]);
+		SetPStatusBit(SB_SPINDLE_CW);
+		ClearPStatusBit(SB_SPINDLE_CCW);
+
 	// the motion control will automatically decelerate and reverse direction.
 	// if not yet running, change to RPM mode and enable and Jog.
 }
 void Spindle_CCW(int RPM)
 {
-	// is spindle already running?
+	if(CheckSpindleOn() == FALSE)	// is spindle already running?
+	{
+		// if not then enable and start the spindle
+		SetSpindleRPM();
+		SpindleEnable();
+		// wait just a bit for it to enable
+		Delay_sec(0.2);
+
+	}
+		// if so make sure it is running the correct way. jog to the new value - actually don't have to do this. 
+//		if(PStatusBitIsSet(SB_SPINDLE_CW))
+//		{
+			// stop the spindle first
+//			Jog(SPINDLE_AXIS, 0);
+			// wait for it to get there...not sure I need to do this - check before coding it up.
+//		}
+		// get the set spindle speed - double stored in persist variable
+		Jog(SPINDLE_AXIS, -(*(float *)&persist.UserData[P_SPINDLE_RPM_CMD]));
+		SetPStatusBit(SB_SPINDLE_CCW);
+		ClearPStatusBit(SB_SPINDLE_CW);
+
 }
 void Spindle_Stop(void)
 {
+	if(CheckSpindleOn() == TRUE)
+	{
+	// set spindle jog to 0
+		Jog(SPINDLE_AXIS, 0);
+		// wait for axis to finish... 
+		while(CheckDone(SPINDLE_AXIS) == CD_NOT_DONE)
+		{
+			WaitNextTimeSlice();
+		}
+		ClearPStatusBit(SB_SPINDLE_CW);
+		ClearPStatusBit(SB_SPINDLE_CCW);
+		SpindleDisable();
+	}
 
 }
 

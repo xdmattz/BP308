@@ -46,11 +46,11 @@ void HardwareQuery(void)
     else printf(" MPG OK!\n");
 
 
-    CheckHW(_BV(SB_AIR_OK), AIR_MON, AIR_MON_OK ,MS_Timeout);   // Air sensor check
+    CheckHW(SB_AIR_OK, AIR_MON, AIR_MON_OK ,MS_Timeout);   // Air sensor check
     if ((persist.UserData[P_STATUS] & _BV(SB_AIR_OK)) == 0) printf(" No Air Pressure\n");
     else printf(" Air OK\n");
 
-    CheckHW(_BV(SB_OIL_OK), LUBE_MON, LUBE_MON_OK, MS_Timeout);  // Oil level check
+    CheckHW(SB_OIL_OK, LUBE_MON, LUBE_MON_OK, MS_Timeout);  // Oil level check
     if ((persist.UserData[P_STATUS] & _BV(SB_OIL_OK)) == 0) printf(" Oil LOW\n");
     else printf(" Oil OK\n");
 
@@ -58,7 +58,7 @@ void HardwareQuery(void)
     Limit_Check();
 
     SetBit(ESTOP_RELAY);        // turn on the ESTOP relay
-    CheckHW(_BV(SB_ESTOP), ESTOP, ESTOP_OK, ESTOP_DELAY_TIMEOUT);
+    CheckHW(SB_ESTOP, ESTOP, ESTOP_OK, ESTOP_DELAY_TIMEOUT);
     if((persist.UserData[P_STATUS] & _BV(SB_ESTOP)) == 0)
     {
         printf("ESTOP ERROR - ESTOP Relay Disabled!\n");
@@ -66,14 +66,14 @@ void HardwareQuery(void)
     }
     else printf("ESTOP OK\n");
 
-    CheckHW(_BV(SB_PWR_MODULE_OK), POWER_MODULE_READY, POWER_MODULE_OK ,PWR_MOD_READY_TIMEOUT);  // check the power module ready 
+    CheckHW(SB_PWR_MODULE_OK, POWER_MODULE_READY, POWER_MODULE_OK ,PWR_MOD_READY_TIMEOUT);  // check the power module ready 
     if((persist.UserData[P_STATUS] & _BV(SB_PWR_MODULE_OK)) == 0) printf(" Power Module Fault!\n");
     else printf("Power Module OK\n");
 
     SetBit(SPINDLE_ENABLE);
     // pause for a few ms
     Delay_sec(0.15);
-    CheckHW(_BV(SB_SPINDLE_OK), SPINDLE_FAULT, SPINDLE_FAULT_OK, SPINDLE_READY_TIMEOUT);
+    CheckHW(SB_SPINDLE_OK, SPINDLE_FAULT, SPINDLE_FAULT_OK, SPINDLE_READY_TIMEOUT);
     if((persist.UserData[P_STATUS] & _BV(SB_SPINDLE_OK)) == 0) printf("Spindle Module Fault\n");
     else printf("Spinlde Module OK\n");
     ClearBit(SPINDLE_ENABLE);

@@ -24,7 +24,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-//#define RUNNING_STATUS_LOG // print status to the console
+// #define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 
@@ -51,13 +51,16 @@ main()
 	
 	// Initialize the DAC outputs for all the axis
     // Probably don't need to do this once the axis are all turned on and running.
+    
+    // Note, this is the nominal offset of the DAC ouputs, I think it may be due to me using standard resistor
+    // values, instead of exact values to make the true offest 0.
 	
 	DAC(X_AXIS, -36);
 	DAC(Y_AXIS, -36);
 	DAC(Z_AXIS, -36);
 	DAC(A_AXIS, -36);
 	DAC(SPINDLE_AXIS, -36);
-
+	
 // test the DAC outputs
 /*	
 	double freq = 200;
@@ -146,15 +149,21 @@ int Axis_Printout(double ETime)
     //    P1 = chan[Y_AXIS].Dest;
     //    P2 = chan[Z_AXIS].Dest;
     //    P3 = chan[A_AXIS].Dest;
-        P0 = chan[X_AXIS].Output;
-        P1 = chan[Y_AXIS].Output;
-        P2 = chan[Z_AXIS].Output;
-        P3 = chan[A_AXIS].Output;
-        P4 = chan[SPINDLE_AXIS].Output;
+    //    P0 = chan[X_AXIS].Output;
+    //    P1 = chan[Y_AXIS].Output;
+    //    P2 = chan[Z_AXIS].Output;
+    //    P3 = chan[A_AXIS].Output;
+    //    P4 = chan[SPINDLE_AXIS].Output;
 					
-        printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f, SP = %d RPM\n", P0, P1, P2, P3, P4, persist.UserData[P_SPINDLE_RPM]);
+    //    printf("DAC Out: X = %f,  Y = %f,  Z = %f,  A = %f, SP = %f, SP = %d RPM\n", P0, P1, P2, P3, P4, persist.UserData[P_SPINDLE_RPM]);
         
-        printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS_REPORT], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
+ //       printf("Main Status: %4X, TLAUX Status: %4X, MPG Staatus:%4X\n", persist.UserData[P_STATUS_REPORT], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
+     
+		// Z Axis Debugging
+		P0 = chan[Z_AXIS].Position;
+		P2 = chan[Z_AXIS].Dest;
+		P3 = chan[Z_AXIS].Output;
+		printf("Z_Axis - Pos: %f, Dest: %f, Output: %f\n", P0, P2, P3 );
      
         return 1;          
     }
@@ -187,7 +196,7 @@ void ESTOP_Loop(void)
 	// disable the spindle
     ClearBit(SPINDLE_ENABLE);
 	
-
+	ESTOP_Time = Time_sec();
 
     for(;;) // for now, just sit here forever.
     {
@@ -284,7 +293,7 @@ void Init_Variables(void)
 {
     int i;
     // initialize all the variables so they start in a known state
-    for(i = 100; i < 133; i++)
+    for(i = 100; i < 136; i++)
     {   
         persist.UserData[i] = 0;    // clear the persist variables 100 through 133
     }

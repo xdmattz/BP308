@@ -11,6 +11,7 @@
 #include "BP308_Home.h"
 #include "BP308_IO.h"
 #include "BP308_Persist.h"
+#include "BP308_Notify_Cmds.h"
 
 #include "BP308_MoreSpindle.c"
 
@@ -231,6 +232,7 @@ void Limit_Backoff(int pmsg)
     }
     if(pAxis != -1)
     {
+    	printf("In Limit Backoff\n");
         if(CheckDone(pAxis) != CD_AXIS_DISABLED)    // skip if axis is disabled
         {
             #ifdef TESTBED
