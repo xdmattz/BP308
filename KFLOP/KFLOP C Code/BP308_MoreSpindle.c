@@ -274,7 +274,7 @@ void Spindle_CW(int RPM)
 	if(CheckSpindleOn() == FALSE)	// is spindle already running?
 	{
 		// if not then enable and start the spindle
-		SetSpindleRPM();
+		SetRPMSpindle();
 		SpindleEnable();
 		// wait just a bit for it to enable
 		Delay_sec(0.2);
@@ -300,7 +300,7 @@ void Spindle_CCW(int RPM)
 	if(CheckSpindleOn() == FALSE)	// is spindle already running?
 	{
 		// if not then enable and start the spindle
-		SetSpindleRPM();
+		SetRPMSpindle();
 		SpindleEnable();
 		// wait just a bit for it to enable
 		Delay_sec(0.2);

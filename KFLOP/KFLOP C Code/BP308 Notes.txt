@@ -34,4 +34,13 @@ main loop that runs forever.
 Always checks for ESTOP
 Manages the Serial Port - looks for a valid received message
 
+KFLOP Thread 2 code
+(main file is BP308_Home.c)
+process messages from the PC by setting the persist variable 131 (P_NOTIFY) 
+possible P_NoTIFY values are listed in BP308_Notify_Cmds.h
+
+KFLOP Therad 3 code
+(main file is BP308_Thread3_S_Cmd.c)
+reads spindle speed and sets the notify to run thread 2
+
 
