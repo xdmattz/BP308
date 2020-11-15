@@ -149,6 +149,10 @@ void SetRPMSpindle(void)
 
 void SpindleEnable(void)
 {
+
+#ifdef TESTBED
+	SetBit(SPINDLE_ENABLE);
+#else
    // if(ReadBit((SPINDLE_FAULT != SPINDLE_FAULTED) && (ReadBit(SPINDLE_ENABLE) == 0)))
    if(ReadBit(SPINDLE_ENABLE) == 0)
     {
@@ -162,6 +166,7 @@ void SpindleEnable(void)
 	{
 		printf("Check Fault!\n");
 	}
+#endif
 	
 }
 void SpindleDisable(void)
@@ -304,7 +309,6 @@ void Spindle_CCW(int RPM)
 		SpindleEnable();
 		// wait just a bit for it to enable
 		Delay_sec(0.2);
-
 	}
 		// if so make sure it is running the correct way. jog to the new value - actually don't have to do this. 
 //		if(PStatusBitIsSet(SB_SPINDLE_CW))
@@ -317,10 +321,19 @@ void Spindle_CCW(int RPM)
 		Jog(SPINDLE_AXIS, -(*(float *)&persist.UserData[P_SPINDLE_RPM_CMD]));
 		SetPStatusBit(SB_SPINDLE_CCW);
 		ClearPStatusBit(SB_SPINDLE_CW);
-
 }
+
+
 void Spindle_Stop(void)
 {
+	#ifdef TESTBED
+	if(CheckSpindleOn() ==TRUE)
+	{
+		ClearPStatusBit(SB_SPINDLE_CW);
+		ClearPStatusBit(SB_SPINDLE_CCW);
+		SpindleDisable();	
+	}
+	#else
 	if(CheckSpindleOn() == TRUE)
 	{
 	// set spindle jog to 0
@@ -334,6 +347,6 @@ void Spindle_Stop(void)
 		ClearPStatusBit(SB_SPINDLE_CCW);
 		SpindleDisable();
 	}
-
+	#endif
 }
 
