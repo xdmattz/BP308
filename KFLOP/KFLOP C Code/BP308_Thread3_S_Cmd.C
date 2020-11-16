@@ -1,3 +1,6 @@
+#pragma TI_COMPILER // (optimization) or (optimization, size)
+// of course use the TI Compiler!
+
 #include "KMotionDef.h"
 #include "PC-DSP.h"
 #include "BP308_Persist.h"

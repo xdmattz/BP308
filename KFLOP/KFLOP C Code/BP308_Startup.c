@@ -196,6 +196,9 @@ void ESTOP_Loop(void)
 
 	// disable the spindle
     ClearBit(SPINDLE_ENABLE);
+
+    // turn off the ESTOP Relay! 
+    ClearBit(ESTOP_RELAY);
 	
 	ESTOP_Time = Time_sec();
 

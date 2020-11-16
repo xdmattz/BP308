@@ -11,11 +11,14 @@ void Init_BP308_Hardware(void)
 {
     Init_TestPoints();
     // initialize all the IO
- //   Init_Kanalog_IO();  // initialize the IO   - these should already be defined as inputs and outputs
- //   Init_Konnect_IO();
+    // Init_Kanalog_IO();  // initialize the IO   - these should already be defined as inputs and outputs
+    // Init_Konnect_IO();
 
     // get the current status and set the status register
     HardwareQuery();
+
+    // enable the oiler
+    SetBit(OIL_LUBE);
 
     // if everything is OK - or at lease acceptable
     // Engage the ESTOP relay
@@ -189,6 +192,7 @@ void Limit_Check2(void)
 // check the machine for the basic faults
 void Fault_Check(void)
 {
+// While these are all improtant, the managment of them has been moved to the PC program.
 // Faults that machine needs to stop for:
 // Air Pressure Loss
 // Motor Drive fault

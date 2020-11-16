@@ -43,6 +43,8 @@ int main()
                     break;
         case T2_TOOL_CLAMP : Tool_Clamp(msg);
                     break;  
+        case T2_TOOL_ARM : Tool_Arm(msg);
+                    break;
         case T2_SPINDLE : Spindle_Cmd(msg);
                     break;                  
         default: break;
@@ -279,21 +281,44 @@ void Limit_Backoff(int pmsg)
 
 void Select_Tool(int pmsg)
 {
-
+    // wait for the remote command bit to clear
+    if(WaitForRemoteDone(2.0) == TRUE)
+    {
+        
+    }
 }
 
 void Tool_Clamp(int pmsg)
 {
     // wait for the remote command bit to clear
-    while(persist.UserData[P_REMOTE_CMD] != 0)
+    if(WaitForRemoteDone(2.0) == TRUE)
     {
-        WaitNextTimeSlice();
-        // check for a timeout? so not to get hung up here
+       persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);   // remote command 
     }
-    persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);   // remote command 
+}
+
+void Tool_Arm(int pmsg)
+{
+    // wait for the remote command bit to clear
+    if(WaitForRemoteDone(2.0) == TRUE)
+    {
+
+    }
 }
 
 
+int WaitForRemoteDone(double delay)
+{
+    double elapsed_time;
+    elapsed_time = Time_sec() + delay;
+    while(persist.UserData[P_REMOTE_CMD] != 0)
+    {
+        WaitNextTimeSlice();
+        if(Time_sec() > elapsed_time)
+        { return FALSE; }
+    }
+    return TRUE;
+}
 
 // Spindle Control
 void Spindle_Cmd(int pmsg)

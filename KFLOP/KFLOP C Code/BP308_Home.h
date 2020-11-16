@@ -30,6 +30,7 @@ void Limit_Backoff(int pmsg);
 void Select_Tool(int pmsg);
 
 void Tool_Clamp(int pmsg);
+void Tool_Arm(int pmsg);
 
 // Coolant routines
 void Mist_On(void) ;
@@ -41,6 +42,9 @@ void Spindle_Cmd(int pmsg);
 
 // Axis Commands
 void Axis_Cmd(int pmsg);
+
+// misc commands
+int WaitForRemoteDone(double delay);
 
 
 #endif

@@ -62,7 +62,7 @@
 #define T2_TOOL_RELA    0x0d02
 #define T2_TOOL_REL     0x0d03
 #define T2_TOOL_GRAB    0x0d04
-#define T2_TOLL_ARM     0x0E00
+#define T2_TOOL_ARM     0x0E00
 
 // Spindle commands - command byte 0x0500
 #define T2_SPINDLE      0x0500

@@ -2,7 +2,7 @@
 #define BP308_IO_H
 
 // uncomment the next line for operating in the development environment
-#define TESTBED 
+//#define TESTBED 
 
 
 // Axis Definitions
@@ -38,7 +38,7 @@
 // Inputs
 #define ESTOP			    128		// ESTOP Switch - OPTO_0
 #define SPINDLE_FAULT	    129		// Pins - need to double check the name here - OPTO_1
-#define POWER_MODULE_READY  130	// - OPTO_2
+#define POWER_MODULE_READY  130	    // - OPTO_2
 #define AXIS_FAULT		    131		// - OPTO_3
 #define X_LIMIT			    132		// Normally Closed - OPTO_4
 #define X_HOME			    134		// Normally Open - OPTO_6
