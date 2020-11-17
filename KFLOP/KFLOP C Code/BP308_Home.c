@@ -39,17 +39,15 @@ int main()
                     break;
         case T2_LIMIT_BACKOFF : Limit_Backoff(msg);
                     break;
-        case T2_SEL_TOOL : Select_Tool(msg);
+        case T2_SEL_TOOL : Select_Tool(msg);    // carousel rotate
                     break;
-        case T2_TOOL_CLAMP : Tool_Clamp(msg);
+        case T2_TOOL_CLAMP : Tool_Clamp(msg);   // all other TLAUX functions
                     break;  
-        case T2_TOOL_ARM : Tool_Arm(msg);
-                    break;
         case T2_SPINDLE : Spindle_Cmd(msg);
                     break;                  
         default: break;
     }
-
+    persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd - Indicates that the thread is done. only do this here! - all others have been commented out.
     return 0;
 }
 
@@ -103,7 +101,7 @@ void Home_AxisCmd(int pmsg)
     if((persist.UserData[P_STATUS] & SB_LIMIT_MASK) != SB_LIMIT_MASK)
     {
         printf("Axis on Limit! cannot Proceed\nClear Limit and retry\n");
-        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
+//        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
     #else
 
@@ -111,7 +109,7 @@ void Home_AxisCmd(int pmsg)
     if((ReadBit(X_LIMIT) == LIM_AT_LIM) || (ReadBit(Y_LIMIT) == LIM_AT_LIM) || (ReadBit(Z_LIMIT) == LIM_AT_LIM))
     {
         printf("Axis on Limit! cannot Proceed\nClear Limit and retry\n");
-        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
+//        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
 
 
@@ -143,7 +141,7 @@ void Home_AxisCmd(int pmsg)
         {
             SetPStatusBit(SB_HOME); //persist.UserData[P_STATUS] |= _BV(SB_HOME);  // if all the bits are cleared then set the SB_HOME Bit to indicate homed
         }   
-        persist.UserData[P_NOTIFY] = 0; // clear the command. 
+//        persist.UserData[P_NOTIFY] = 0; // clear the command. 
     }
 
 
@@ -274,7 +272,7 @@ void Limit_Backoff(int pmsg)
             #endif
         }
     }
-    persist.UserData[P_NOTIFY] = 0;     // clear the P_NOTIFY cmd so it can't accidently be called twice  
+//    persist.UserData[P_NOTIFY] = 0;     // clear the P_NOTIFY cmd so it can't accidently be called twice  
 }
 
 // Tool Changer routines
@@ -284,7 +282,7 @@ void Select_Tool(int pmsg)
     // wait for the remote command bit to clear
     if(WaitForRemoteDone(2.0) == TRUE)
     {
-        
+        persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CAROUSEL_CMD & CMD_MASK) | (pmsg & ARG_MASK); // remote command to rotate tool carousel
     }
 }
 
@@ -293,19 +291,9 @@ void Tool_Clamp(int pmsg)
     // wait for the remote command bit to clear
     if(WaitForRemoteDone(2.0) == TRUE)
     {
-       persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);   // remote command 
+       persist.UserData[P_REMOTE_CMD] = (RC_TLAUX_CLAMP_CMD & CMD_MASK) | (pmsg & ARG_MASK);   // remote command to TLAUX
     }
 }
-
-void Tool_Arm(int pmsg)
-{
-    // wait for the remote command bit to clear
-    if(WaitForRemoteDone(2.0) == TRUE)
-    {
-
-    }
-}
-
 
 int WaitForRemoteDone(double delay)
 {
@@ -344,7 +332,7 @@ void Spindle_Cmd(int pmsg)
                     break;
         default : break;
     }
-    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
+//    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
 }
 
 // Axis Commands
@@ -370,6 +358,6 @@ void Axis_Cmd(int pmsg)
         case T2_C_AXIS_DIS : DisableAxis(X_AXIS); break;
         default : break;
     }
-    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
+//    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
 }
 

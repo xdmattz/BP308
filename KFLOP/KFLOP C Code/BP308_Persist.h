@@ -68,7 +68,7 @@
 #define P_NOTIFY            131     // command to Thread 2 functions
 #define P_NOTIFY_ARGUMENT   132     // Argument passed to a Notify Command - this is on an even boundry in case argument is a double
 #define P_NOTIFY_ARGUMENT2  133     // Second possible argument passed to a Notify Command 
-#define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC
+#define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC - used for sending commands to the serial engine from other threads etc.
 #define P_INGORE_FAULT      135     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
 
 
@@ -171,7 +171,12 @@
 #define MPG_STATUS_RATE_X100    0x0003
 
 // Remote Commands 
+// these commands are passed in the P_REMOTE_CMD variable 
 
+#define CMD_MASK 0xff00
+#define ARG_MASK 0x00ff
+
+// TLAUX clamp and arm
 #define RC_TLAUX_CLAMP_CMD  0x0100
 #define RC_TLAUX_CLAMP_AIR  0x0101
 #define RC_TLAUX_CLAMP_RELA 0x0102
@@ -179,5 +184,8 @@
 #define RC_TLAUX_CLAMP_GRAB 0x0104
 #define RC_TLAUX_ARM_IN     0x0105
 #define RC_TLAUX_ARM_OUT    0x0106
+// TLAUX tool carousel
+#define RC_TLAUX_CAROUSEL_CMD   0x0200  
+  
 
 #endif

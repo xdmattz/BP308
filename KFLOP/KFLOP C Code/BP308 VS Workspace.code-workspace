@@ -3,5 +3,10 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"BP308_Thread3_S_Cmd.C": "cpp"
+		}
+	}
 }

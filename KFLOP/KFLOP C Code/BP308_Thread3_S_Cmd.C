@@ -19,12 +19,34 @@
     // if CW Call Thread 2 with CW command
         persist.UserData[P_NOTIFY] = T2_SPINDLE_CW;
         StartThread(2);
+
+        // wait for P_NOTIFY to clear
+        WaitForT2Done(3.0); // wait for up to 3 seconds.
     }
     else if((persist.UserData[P_STATUS] & _BV(SB_SPINDLE_CCW)) != 0)
     {
     // if CCW Call Thead 3 with CCW command
         persist.UserData[P_NOTIFY] = T2_SPINDLE_CCW;
         StartThread(2);
+
+        // wait for P_NOTIFY to clear
+        WaitForT2Done(3.0); // wait for up to 3 seconds.
     }
 
+}
+
+int WaitForT2Done(double WaitTime)
+{
+    double elapsedTime;
+    elapsedTime = Time_sec() + WaitTime;
+    while(persist.UserData[P_NOTIFY] != 0)
+    {
+        if (Time_sec() > elapsedTime)
+        {
+            printf("Waiting for T2 Timeout!");
+            return FALSE;
+        }
+        WaitNextTimeSlice();
+    }
+    return TRUE;
 }

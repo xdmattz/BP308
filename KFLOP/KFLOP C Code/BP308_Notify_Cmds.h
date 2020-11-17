@@ -56,13 +56,14 @@
 #define T2_LIM_ZN       0x0a06
 
 // Tool changer commands - command bytes 0x0c00, 0x0d00 and 0x0e00
-#define T2_SEL_TOOL     0x0c00
+#define T2_SEL_TOOL     0x0c00  // 0x0cXX where XX is the tool number -
 #define T2_TOOL_CLAMP   0x0d00
 #define T2_TOOL_AIR     0x0d01
 #define T2_TOOL_RELA    0x0d02
 #define T2_TOOL_REL     0x0d03
 #define T2_TOOL_GRAB    0x0d04
-#define T2_TOOL_ARM     0x0E00
+#define T2_TOOL_ARM_IN  0x0d05  
+#define T2_TOOL_ARM_OUT 0x0d06
 
 // Spindle commands - command byte 0x0500
 #define T2_SPINDLE      0x0500

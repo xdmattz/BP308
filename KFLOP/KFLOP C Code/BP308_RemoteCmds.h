@@ -14,15 +14,26 @@
 
 void RemoteCmd(void);
 
+void TLAUX_Clamp_Cmd(int rcmd);
+void TLAUX_CAROUSEL_Cmd(int rcmd);
+
 // Button Check 
 void ButtonCheck(void);
 
 void Init_Buttons(void);
 
+
 void TLAUX_Clamp_Release_Air(void);
 void TLAUX_Clamp_Grab(void);
+
+void TLAUX_Clamp_Home(void);
+void TLAUX_CAROUSEL_Cmd(int rcmd);  // Rotate Tool Carousel
 void TLAUX_ArmIn(void);     // Tool Carousel Arm retracted
 void TLAUX_ArmOut(void);    // Tool Carousel Arm Extended 
-void TLAUX_CarouselSel(void) ; // Rotate Tool Carousel 
+
+void TLAUX_Clamp_AirX(void); // air blast - no spindle check  
+void TLAUX_Clamp_ReleaseX(void); // clamp release no air blast
+void TLAUX_Clamp_Release_AirX(void); // clamp release with air blast
+void TLAUX_Clamp_GrabX(void);   // clamp grab no spindle check
 
 #endif
