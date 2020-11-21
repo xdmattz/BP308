@@ -184,6 +184,7 @@
 #define RC_TLAUX_CLAMP_GRAB 0x0104
 #define RC_TLAUX_ARM_IN     0x0105
 #define RC_TLAUX_ARM_OUT    0x0106
+#define RC_TLAUX_HOME       0x010f
 // TLAUX tool carousel
 #define RC_TLAUX_CAROUSEL_CMD   0x0200  
   

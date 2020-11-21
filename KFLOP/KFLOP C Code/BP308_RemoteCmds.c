@@ -81,8 +81,6 @@ void TLAUX_Clamp_Cmd(int rcmd)
 {
     switch (rcmd)
     {
-        case RC_TLAUX_CLAMP_CMD : TLAUX_Clamp_Home();
-                                break;
         case RC_TLAUX_CLAMP_AIR : TLAUX_Clamp_AirX();    // Air only
                                 break;
         case RC_TLAUX_CLAMP_REL : TLAUX_Clamp_ReleaseX();    // release no air blast
@@ -91,6 +89,13 @@ void TLAUX_Clamp_Cmd(int rcmd)
                                 break;
         case RC_TLAUX_CLAMP_GRAB : TLAUX_Clamp_GrabX(); // clamp grab
                                 break;
+        case RC_TLAUX_ARM_IN    : TLAUX_ArmIn();
+                                break;
+        case RC_TLAUX_ARM_OUT   : TLAUX_ArmOut();
+                                break;
+        case RC_TLAUX_HOME      : TLAUX_Clamp_Home(); // initialize the TLAUX and send it to its home position
+                                break;
+
         default : break;
     }
                              
@@ -116,6 +121,7 @@ void TLAUX_CAROUSEL_Cmd(int rcmd)
 // Tool Carousel Arm retracted
 void TLAUX_ArmIn(void)
 {
+    printf("Arm In\n");
     // send the command to the serial port
     TLAUX_Cmd_1Arg[COMMAND_INDEX - 1] = TLAUX_ARM_CMD;  // the carousel command
     TLAUX_Cmd_1Arg[DATA_INDEX - 1] = TLAUX_ARM_IN;   // tool slot number
@@ -125,6 +131,7 @@ void TLAUX_ArmIn(void)
 // Tool Carousel Arm Extended    
 void TLAUX_ArmOut(void)
 {
+    printf("Arm Out\n");
     // send the command to the serial port
     TLAUX_Cmd_1Arg[COMMAND_INDEX - 1] = TLAUX_ARM_CMD;  // the carousel command
     TLAUX_Cmd_1Arg[DATA_INDEX - 1] = TLAUX_ARM_OUT;   // tool slot number
