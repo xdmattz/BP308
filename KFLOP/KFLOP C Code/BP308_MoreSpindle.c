@@ -31,8 +31,8 @@ void SetSyncSpindle(void)
 	ch7->MaxI=1700;
 	ch7->MaxErr=1000;
 	ch7->MaxOutput=1900;
-	ch7->DeadBandGain=1;
-	ch7->DeadBandRange=0;
+	ch7->DeadBandGain=0.1;
+	ch7->DeadBandRange=3;
 	ch7->InputChan0=7;
 	ch7->InputChan1=1;
 	ch7->OutputChan0=7;
