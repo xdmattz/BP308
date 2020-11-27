@@ -199,7 +199,7 @@ void Spindle_Home(void)
 	#else
 	
 	double home_pos;
-	double S_Offset;
+	// double S_Offset;
 	// first make sure the spindle is off!
 	if(CheckSpindleOn() == TRUE)
 	{
@@ -231,7 +231,7 @@ void Spindle_Home(void)
 	if(CheckSpindleOn() == TRUE)
 	{
 		 // is the spindle on the index Switch?
-    	Jog(SPINDLE_AXIS, (HOME_VEL_3)*3);    // move slowly until Index is set.
+    	Jog(SPINDLE_AXIS, (SPINDLE_HOME_VEL));    // move slowly until Index is set.
 		while(ReadBit(SPINDLE_R) != SPINDLE_AT_INDEX)
 		{
 			WaitNextTimeSlice();

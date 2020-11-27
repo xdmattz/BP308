@@ -104,12 +104,15 @@
 // these are the home status bit definitions for P_HOME_STATUS
 // inorder to simplify testing, these bits are set at initialization, and cleared when the axis is homed.
 // that way if(P_STATUS & HOME_STATUS_MASK == 0) the machine is all homed. 
-#define HOME_STATUS_MASK    0x00870000
+#define HOME_STATUS_MASK    0x00C70000
 #define SB_HOME_POS        16    // Position of the first bit of the home status bits - should be the same as SB_X_HOME
 #define SB_X_HOME           16   // 1 = not yet homed, 0 = homed
 #define SB_Y_HOME           17
 #define SB_Z_HOME           18
 #define SB_A_HOME           19   // not yet implemented - since I don't have an A axis yet.
+#define SB_B_HOME           20   // not yet implemented
+#define SB_C_HOME           21   // not yet implemented
+#define SB_TLAUX_HOME       22   // TLAUX HOMED 
 #define SB_SPIN_HOME        23
 #define SB_SPINDLE_OK       24  // Spindle fault 1 = OK, 0 = fault
 #define SB_SPINDLE_RPM      25  // Spindle Mode RPM if set

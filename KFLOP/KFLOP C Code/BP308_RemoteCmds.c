@@ -106,7 +106,9 @@ void TLAUX_Clamp_Home(void)
     // send the command to the serial port
     TLAUX_Cmd_1Arg[COMMAND_INDEX - 1] = TLAUX_HOME_CMD;  // TLAUX Home Command
     TLAUX_Cmd_1Arg[DATA_INDEX - 1] = 0;   // No argument
-    Send_Serial(TLAUX_Cmd_1Arg);    
+    Send_Serial(TLAUX_Cmd_1Arg); 
+    // clear the TLAUX Home bit in the status persist variable
+    ClearPStatusBit(SB_TLAUX_HOME);   
 }
 
 // Rotate Tool Carousel

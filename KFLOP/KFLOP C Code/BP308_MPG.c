@@ -76,6 +76,9 @@ SetBit(TP2);
         }
         else if (MPG_Step != 0) // the wheel has moved
         {
+            // it would be nice here to make the wheel change resolution in inch vs metric mode.
+            // just something to think about.
+            // **************
             double Factor = X_FACTOR_X1;
             if(Rate == MPG_STATUS_RATE_X10) Factor = X_FACTOR_X10;
             if(Rate == MPG_STATUS_RATE_X100) Factor = X_FACTOR_X100;

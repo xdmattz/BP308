@@ -2,7 +2,7 @@
 #define BP308_IO_H
 
 // uncomment the next line for operating in the development environment
-#define TESTBED 
+// #define TESTBED 
 
 
 // Axis Definitions
@@ -28,6 +28,9 @@
 #define HOME_VEL_1  40000  // Homing velocity    20 ipm, 0.333 ips 
 #define HOME_VEL_2  5000  // Homing backoff velocity  7.2 ipm    
 #define HOME_VEL_3  1500   // index hunt velocity 0.06 ips
+#define SPINDLE_HOME_VEL 1500 // spindle index hunt at 0.75 rev per sec.
+// in thread 2 which should be occuring 5500 times a second, the index pulse should be active for at least 
+// 3.66 time slots. It should not get missed at this rate.
 
 // definitions for the IO ports on the DANALOG Board for the Bridgeport Discovery 308 rebuild
 // The DANALOG board looks like both a KANALOG and KONNECT board
