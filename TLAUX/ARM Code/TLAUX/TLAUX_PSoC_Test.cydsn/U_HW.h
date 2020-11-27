@@ -21,9 +21,13 @@
 #define MS_TICK 0   //
 #define ECHO    1
 #define SOMETHING 2
+
     
-     
+#define TESTBED // defining this will compile for test bed operation - simulates commands instead of performing commands    
+// this is similar to the KFLOP C code.     
 //     
+
+   
 #define _BV(X) (1 << X)
     
 

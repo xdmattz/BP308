@@ -13,7 +13,7 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="TLAUX\TLAUX_PSoC_Test\Header Files\ToolCmds.h">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="TLAUX\TLAUX_PSoC_Test\Header Files\CLI.h">
 <ExpandedNodeIds>
 <v>TLAUX</v>
 <v>TLAUX\TLAUX_Bootloader\TopDesign</v>
@@ -69,7 +69,6 @@
 <v>TLAUX\TLAUX_PSoC\Source Files\ToolCmds.c</v>
 <v>TLAUX\TLAUX_PSoC\Source Files\U_HW.c</v>
 <v>TLAUX\TLAUX_PSoC\Generated_Source\PSoC5</v>
-<v>TLAUX\TLAUX_PSoC_Test</v>
 <v>TLAUX\TLAUX_PSoC_Test\TopDesign</v>
 <v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr</v>
 <v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Pins</v>
@@ -112,42 +111,6 @@
 <v>TLAUX\TLAUX_Bootloader</v>
 <v>TLAUX\TLAUX_PSoC</v>
 <v>TLAUX\TLAUX_PSoC_Test</v>
-<v>TLAUX\TLAUX_PSoC_Test\TopDesign</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Pins</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Analog</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Clocks</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Interrupts</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\DMA</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\System</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Directives</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\Flash Security</v>
-<v>TLAUX\TLAUX_PSoC_Test\TLAUX_PSoC_Test.cydwr\EEPROM</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\CLI.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\Cmds.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\cyapicallbacks.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\Processes.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\SerCmds.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\Serial.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\Serial_IO.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\SerMessages.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\State_Machine.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\TestMessages.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\ToolCmds.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Header Files\U_HW.h</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\CLI.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\Cmds.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\main.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\Processes.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\SerCmds.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\Serial.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\Serial_IO.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\State_Machine.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\ToolCmds.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Source Files\U_HW.c</v>
-<v>TLAUX\TLAUX_PSoC_Test\Generated_Source</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
@@ -427,6 +390,7 @@
 <v>TLAUX\TLAUX_Bootloader\CortexM3\ARM_GCC_541\Debug\TLAUX_Bootloader.elf</v>
 <v>TLAUX\TLAUX_Bootloader\CortexM3\ARM_GCC_541\Debug\TLAUX_Bootloader.hex</v>
 <v>TLAUX\TLAUX_Bootloader\CortexM3\ARM_GCC_541\Debug\TLAUX_Bootloader.map</v>
+<v>TLAUX\TLAUX_Bootloader\TLAUX_Bootloader.gpdsc</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 </TreeStates>
@@ -554,6 +518,8 @@
 <name v=".\TLAUX_PSoC_Test.cydsn\SerCmds.c" />
 <name v=".\TLAUX_PSoC_Test.cydsn\SerCmds.h" />
 <name v=".\TLAUX_PSoC_Test.cydsn\ToolCmds.h" />
+<name v=".\TLAUX_PSoC_Test.cydsn\U_HW.h" />
+<name v=".\TLAUX_PSoC_Test.cydsn\Serial.h" />
 </OpenDocs>
 <OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
 
@@ -561,7 +527,7 @@
   Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
   http://www.actiprosoftware.com
 
---><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1369, 605" SelectedTabbedMdiWindow="c7857db7-00e9-4410-a7ca-8c59a189ecdd"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\main.c" Guid="360dd487-8332-42e7-9fcc-71d296201875" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\U_HW.c" Guid="1269b4ed-a581-4758-bfda-8665a9ac08f9" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Processes.c" Guid="07fa0bf5-6a59-4130-ae5f-48b324a3acc3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\ToolCmds.c" Guid="4ee40333-aef5-44e7-a4b9-1d6fc02d9e52" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Cmds.c" Guid="bc279161-5a8d-4f9e-8bcf-cda64a9f4c3f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TopDesign\TopDesign.cysch" Guid="1d934e29-1663-4a5c-a44b-5c274d23237d" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\ToolCmds.h" Guid="dd34b6dc-7e60-4c92-bf11-a27be7349a19" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\SerCmds.c" Guid="1d854c5a-5c0d-456d-add8-55bb09297eaf" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial.c" Guid="8d336c41-025e-4dc5-94e7-7a9fcc176730" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TLAUX_PSoC.cydwr" Guid="90af385f-d1b6-4ea4-b199-1a48661a1e3e" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\CLI.c" Guid="69851ad5-f688-466e-a912-c76604f85c21" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\U_HW.h" Guid="614cf20e-3cf5-4681-b22c-30c5198e9efa" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Generated_Source\PSoC5\USBUART.c" Guid="bb37c2f5-b06a-4977-ad64-84c3aa72186d" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial_IO.c" Guid="7574faf3-0bdd-47f6-96a2-93db3271507c" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial_IO.h" Guid="83d7c1d3-c14a-43f5-8f1c-e469c339c41a" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial.h" Guid="983b8402-c94e-45de-a377-c7b071b6b592" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TestMessages.h" Guid="d4e9a67f-e606-481c-8aef-4bf483b60405" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Cmds.h" Guid="48b34946-4250-4db9-a11a-9653374fa9dc" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\State_Machine.c" Guid="9ec4bf74-b911-4b7a-abe0-6bb7c03d2bd6" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\main.c" Guid="d9398b2d-db32-44d1-9ba8-4dd5df98c4b4" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\TestMessages.h" Guid="0dfdbd3e-6752-4b63-8031-25be1eb650a1" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Cmds.h" Guid="ff14a6b7-de79-468c-9b50-27a406c7fe41" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Cmds.c" Guid="d84c3c3f-d1ff-4eda-af16-54f77e73b290" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Processes.h" Guid="8446ea0a-c6f5-4601-b5a0-a40c5d6add27" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Processes.c" Guid="f91c1bad-6a0c-4928-9e16-3692e4837f29" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\TopDesign\TopDesign.cysch" Guid="811e7df3-b557-47b8-a49c-86c3812a234b" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\ToolCmds.c" Guid="f58e3e8d-f25a-4af3-9421-ae95dce14d99" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\SerCmds.c" Guid="82bdab80-9ffd-46b9-b990-7e2d2caf699f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\SerCmds.h" Guid="c7857db7-00e9-4410-a7ca-8c59a189ecdd" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\ToolCmds.h" Guid="e0321c09-d6b3-4c3f-afd9-fa53b66a9e04" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1240, 598" SelectedTabbedMdiWindow="f58e3e8d-f25a-4af3-9421-ae95dce14d99"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\main.c" Guid="360dd487-8332-42e7-9fcc-71d296201875" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\U_HW.c" Guid="1269b4ed-a581-4758-bfda-8665a9ac08f9" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Processes.c" Guid="07fa0bf5-6a59-4130-ae5f-48b324a3acc3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\ToolCmds.c" Guid="4ee40333-aef5-44e7-a4b9-1d6fc02d9e52" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Cmds.c" Guid="bc279161-5a8d-4f9e-8bcf-cda64a9f4c3f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TopDesign\TopDesign.cysch" Guid="1d934e29-1663-4a5c-a44b-5c274d23237d" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\ToolCmds.h" Guid="dd34b6dc-7e60-4c92-bf11-a27be7349a19" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\SerCmds.c" Guid="1d854c5a-5c0d-456d-add8-55bb09297eaf" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial.c" Guid="8d336c41-025e-4dc5-94e7-7a9fcc176730" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TLAUX_PSoC.cydwr" Guid="90af385f-d1b6-4ea4-b199-1a48661a1e3e" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\CLI.c" Guid="69851ad5-f688-466e-a912-c76604f85c21" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\U_HW.h" Guid="614cf20e-3cf5-4681-b22c-30c5198e9efa" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Generated_Source\PSoC5\USBUART.c" Guid="bb37c2f5-b06a-4977-ad64-84c3aa72186d" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial_IO.c" Guid="7574faf3-0bdd-47f6-96a2-93db3271507c" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial_IO.h" Guid="83d7c1d3-c14a-43f5-8f1c-e469c339c41a" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Serial.h" Guid="983b8402-c94e-45de-a377-c7b071b6b592" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\TestMessages.h" Guid="d4e9a67f-e606-481c-8aef-4bf483b60405" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\Cmds.h" Guid="48b34946-4250-4db9-a11a-9653374fa9dc" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC.cydsn\State_Machine.c" Guid="9ec4bf74-b911-4b7a-abe0-6bb7c03d2bd6" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\main.c" Guid="d9398b2d-db32-44d1-9ba8-4dd5df98c4b4" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\TestMessages.h" Guid="0dfdbd3e-6752-4b63-8031-25be1eb650a1" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Cmds.h" Guid="ff14a6b7-de79-468c-9b50-27a406c7fe41" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Cmds.c" Guid="d84c3c3f-d1ff-4eda-af16-54f77e73b290" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Processes.h" Guid="8446ea0a-c6f5-4601-b5a0-a40c5d6add27" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Processes.c" Guid="f91c1bad-6a0c-4928-9e16-3692e4837f29" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\TopDesign\TopDesign.cysch" Guid="811e7df3-b557-47b8-a49c-86c3812a234b" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\ToolCmds.c" Guid="f58e3e8d-f25a-4af3-9421-ae95dce14d99" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\SerCmds.c" Guid="82bdab80-9ffd-46b9-b990-7e2d2caf699f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\SerCmds.h" Guid="c7857db7-00e9-4410-a7ca-8c59a189ecdd" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\ToolCmds.h" Guid="e0321c09-d6b3-4c3f-afd9-fa53b66a9e04" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\U_HW.h" Guid="7ed614b1-a85c-4f39-ac47-e659596bead6" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\TLAUX\ARM Code\TLAUX\TLAUX_PSoC_Test.cydsn\Serial.h" Guid="548e18ef-0e77-4a70-9284-8c8d5183482b" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
 <config v="" />
 <AutoUpdate v="true" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>

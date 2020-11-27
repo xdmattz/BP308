@@ -252,12 +252,18 @@ void TC_Fault(void)
     // There are two ways to get out of the fault state.
     // the first is via a HOME command 
     // the second is for the tool changer to be in the HOME position with no faults.
+#ifdef TESTBED
+        Set_Current_Tool(1);    //this is needed for coming out of fault on startup 
+        TC_SM = &TC_IDLE;   // change state back to idle
+        Motors_Off();       // make sure the motors are off... 
+#else    
     if((At_Home() == 1) && (In_Fault() == 0))
     {
         Set_Current_Tool(1);    //this is needed for coming out of fault on startup 
         TC_SM = &TC_IDLE;   // change state back to idle
         Motors_Off();       // make sure the motors are off... 
     }
+#endif    
 }
 
 void TC_Test_Delay(void)
@@ -354,6 +360,9 @@ int At_Home(void)
 // is there an existing fault condition? 1 = yes, 0 = no
 int In_Fault(void)
 {
+#ifdef TESTBED
+    return 0; // no fault - TESTBED can't fault!
+#else    
     uint8 fault = (FAULT_PORT & (Pin_V_Mon2_MASK | Pin_AC_Mon_MASK | Pin_ESTOP_MASK));
     if(fault == (Pin_V_Mon2_MASK | Pin_ESTOP_MASK))
     {
@@ -363,6 +372,7 @@ int In_Fault(void)
     {
         return 1;   // in fault
     }
+#endif
 }
 
 void TC_Home_Arm(void)

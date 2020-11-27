@@ -21,12 +21,22 @@
 extern func_ptr TC_SM;
 extern uint8 TC_STATE;
 
+int16 TB_STATUS;
+
+
 // char t_msg[32];
 
 // ToolStatusQuery - returns the status of the tool changer
+// ** TEST VERSION - 
+// instead of looking at the FAULT_PORT and SENSE PORT look at the global state variable that tracks those.
 uint16 ToolStatusQuery(void)
 {
     uint16 status = 0;
+#ifdef TESTBED
+    if(TC_STATE == TC_STATE_FAULT) status = (1 << TIMEOUT_FAULT_POS);           // in fault state
+    status = status | TB_STATUS;
+#else        
+    
     if(TC_STATE == TC_STATE_FAULT) status = (1 << TIMEOUT_FAULT_POS);           // in fault state
     if((FAULT_PORT & Pin_ESTOP_MASK) == 0) status |= (1 << ESTOP_STATUS_POS);   // in ESTOP condition
     if((FAULT_PORT & Pin_V_Mon2_MASK) == 0) status |= (1 << V24_STATUS_POS);    // 24V under voltage fault
@@ -37,6 +47,7 @@ uint16 ToolStatusQuery(void)
     if((SENSE_PORT & Pin_Tool_Arm_In_MASK) == 0) status |= (1 << ARM_IN_STATUS_POS);        // tool arm in sensor
     if(((SENSE_PORT & Pin_Tool_1_MASK) == 0) || ((SENSE_PORT & Pin_Tool_Count_MASK) == 0)) status |= (1 << CAROUSEL_ON_TOOL_POS); // tool carousel is on a tool
     status |= ((uint16)(Get_Current_Tool()) & 0x3f);
+#endif    
     return status;
 }
 
@@ -48,15 +59,31 @@ void Arm_Cmd(uint8 arg)
     {
         TC_SM = &TC_Fault;
     }
+#ifdef TESTBED
+        switch(arg)
+        {
+            case ARM_IN : 
+                    TB_STATUS |= _BV(ARM_IN_STATUS_POS); // set the ARM IN bit 
+                    TB_STATUS &= ~(_BV(ARM_OUT_STATUS_POS)); // clear the ARM OUT bit
+                    break;
+            case ARM_OUT: 
+                    TB_STATUS |= _BV(ARM_OUT_STATUS_POS); // set the ARM OUT bit 
+                    TB_STATUS &= ~(_BV(ARM_IN_STATUS_POS)); // clear the ARM IN bit                    
+                    break;
+            default : break;
+        }
+#else       
     else if(((SENSE_PORT & Pin_Tool_Arm_Out_MASK) != 0) && ((SENSE_PORT & Pin_Tool_Arm_In_MASK) != 0))
     {   
         TC_SM = &TC_Fault;  // if not on a sensor then fault
     }
     else
     {
+ 
         switch(arg)
         {
             case ARM_IN :
+
                     if((SENSE_PORT & Pin_Tool_Arm_In_MASK) == 0) break;    // already there, don't move
                     else
                     {
@@ -81,12 +108,23 @@ void Arm_Cmd(uint8 arg)
             default :
                     // do nothing!
                     break;
-        }
+        } 
     }
+#endif     
 }
 
 void Carousel_Cmd(uint8 arg)
 {
+#ifdef TESTBED
+    if(In_Fault() == 0)
+    {
+        if((arg > 0) && (arg <= NUMBER_OF_TOOLS))
+        {
+            TB_STATUS |= arg;
+        }
+    }
+#else
+    
     // calculate the shortest path to the desired tool
     if(In_Fault() == 0)   // only do this if not in a fault state
     {
@@ -137,10 +175,30 @@ void Carousel_Cmd(uint8 arg)
             }
         }
     }
+#endif    
 }
 
 void Clamp_Cmd(uint8 arg)
 {
+#ifdef TESTBED
+    switch(arg)
+    {
+        case AIR_BLAST_ONLY : break;
+        case AIR_BLAST_TOOL_UNCLAMP : 
+                            TB_STATUS |= _BV(UNCLAMP_STATUS_POS); // set the UNCLAMP bit 
+                            TB_STATUS &= ~(_BV(CLAMP_STATUS_POS)); // clear the CLAMP bit
+                            break;
+        case TOOL_UNCLAMP : 
+                            TB_STATUS |= _BV(UNCLAMP_STATUS_POS); // set the UNCLAMP bit 
+                            TB_STATUS &= ~(_BV(CLAMP_STATUS_POS)); // clear the CLAMP bit
+                            break;
+        case TOOL_CLAMP :
+                            TB_STATUS |= _BV(CLAMP_STATUS_POS); // set the UNCLAMP bit 
+                            TB_STATUS &= ~(_BV(UNCLAMP_STATUS_POS)); // clear the CLAMP bit
+                            break;
+        default : break;
+    }
+#else    
     switch(arg)
     {
         case AIR_BLAST_ONLY :
@@ -163,12 +221,20 @@ void Clamp_Cmd(uint8 arg)
         default :
             break;
     }
+#endif    
 }
 
 void Home_Cmd(uint8 arg)
 {
     UNUSED_ARG(arg);
     // This command needs to do two things, retract the Arm and rotate the Carousel to tool position 1
+    
+#ifdef TESTBED
+    // this should be the "home" state of the tool changer
+    TB_STATUS = _BV(CLAMP_STATUS_POS) | _BV(ARM_IN_STATUS_POS) | _BV(CAROUSEL_ON_TOOL_POS) | 0x01;
+       
+#else
+   
 
     if(In_Fault() == 0) // only try this if there is no fault
     {
@@ -200,6 +266,7 @@ void Home_Cmd(uint8 arg)
             TRIAC_PORT |= (Pin_Tool_Arm_REV_MASK | Pin_Tool_Arm_Brake_MASK); // release the brake and start moving
         }
     }
+#endif    
 }
 
 

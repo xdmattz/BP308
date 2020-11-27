@@ -42,6 +42,8 @@ CLI_CMD(Ver_Cmd)
     UNUSED_ARG(argc);UNUSED_ARG(argv);
     
     PutStr("\r** BP308 TLAUX with PSOC-5 **\r");
+    PutStr("\r** Test Bed Version **\r");
+    PutStr("\r** Simulates all serial commands **\r");
 	PutStr("  Version 1.00\r");
 	PutStr(__DATE__" "__TIME__"\r");
 	return 0;
