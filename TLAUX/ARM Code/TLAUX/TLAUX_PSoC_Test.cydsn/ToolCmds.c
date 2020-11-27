@@ -120,7 +120,8 @@ void Carousel_Cmd(uint8 arg)
     {
         if((arg > 0) && (arg <= NUMBER_OF_TOOLS))
         {
-            TB_STATUS |= arg;
+            TB_STATUS &= ~(TOOL_MASK); // clear all the tool position bits
+            TB_STATUS |= arg;           // replace with the new tool position.
         }
     }
 #else

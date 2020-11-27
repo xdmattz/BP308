@@ -45,7 +45,8 @@
 #define ARM_OUT_STATUS_POS      8
 #define ARM_IN_STATUS_POS       7
 #define CAROUSEL_ON_TOOL_POS    6
-#define CAROUSEL_TOOL_POS       0    
+#define CAROUSEL_TOOL_POS       0 
+#define TOOL_MASK               0x001f
     
 #define TRIAC_PORT Pin_Tool_Arm_FWD_DR  // port 3 Data Register - TRIAC AC Power Outputs
 #define SENSE_PORT Pin_Tool_1_PS        // port 0 Port State - Sense inputs
