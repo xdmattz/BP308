@@ -190,8 +190,28 @@ void Home_Axis(int Axis, int Home, int Index)
             WaitNextTimeSlice();
         }
         Jog(Axis, 0);
-        Jog(Axis, -(HOME_VEL_2));   // backup until off the home switch
+        while(CheckDone(Axis) != CD_DONE)   // wait for stop
+        {
+            WaitNextTimeSlice();
+        }
+        Jog(Axis, -(HOME_VEL_2));   // backup until off the home switch ie. until it undetects
         while(ReadBit(Home) == HOME_AT_HOME)
+        {
+            WaitNextTimeSlice();
+        }
+        Jog(Axis, 0);
+        while(CheckDone(Axis) != CD_DONE)
+        {
+            WaitNextTimeSlice();
+        }
+        Jog(Axis, HOME_VEL_2);  // move back to the home switch slowly - at HOME_VEL_2 until it detects again.
+        // there seems to be about 0.09" hysteresis on the switches.
+        while(ReadBit(Home) == HOME_NOT_HOME)
+        {
+            WaitNextTimeSlice();
+        }
+        Jog(Axis, 0); // stop the axis
+        while(CheckDone(Axis) != CD_DONE)
         {
             WaitNextTimeSlice();
         }
@@ -202,6 +222,10 @@ void Home_Axis(int Axis, int Home, int Index)
         }
         home_pos = chan[Axis].Dest;     // record the index location
         Jog(Axis,0);    // stop the motion
+        while(CheckDone(Axis) != CD_DONE)
+        {
+            WaitNextTimeSlice();
+        }
         MoveAtVel(Axis, home_pos, HOME_VEL_3);
         while(CheckDone(Axis) != CD_DONE)    // move to the index location
         {
