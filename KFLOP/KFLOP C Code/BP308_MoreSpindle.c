@@ -157,6 +157,7 @@ void SpindleEnable(void)
    if(ReadBit(SPINDLE_ENABLE) == 0)
     {
         SetBit(SPINDLE_ENABLE);
+		Delay_sec(0.1);	// delay while the hardware enables.
 //		Zero(SPINDLE_AXIS);
 //		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
 		EnableAxis(SPINDLE_AXIS);		
