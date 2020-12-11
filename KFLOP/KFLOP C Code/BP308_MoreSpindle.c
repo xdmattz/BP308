@@ -31,8 +31,8 @@ void SetSyncSpindle(void)
 	ch7->MaxI=1700;
 	ch7->MaxErr=1000;
 	ch7->MaxOutput=1900;
-	ch7->DeadBandGain=0.1;
-	ch7->DeadBandRange=3;
+	ch7->DeadBandGain=1.0;
+	ch7->DeadBandRange=0.0;
 	ch7->InputChan0=7;
 	ch7->InputChan1=1;
 	ch7->OutputChan0=7;
@@ -158,8 +158,8 @@ void SpindleEnable(void)
     {
         SetBit(SPINDLE_ENABLE);
 //		Zero(SPINDLE_AXIS);
-		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
-		EnableAxis(SPINDLE_AXIS);
+//		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
+		EnableAxis(SPINDLE_AXIS);		
 		SetPStatusBit(SB_SPINDLE_ON);
 		printf("SP Enabled\n");
     } else
@@ -198,6 +198,9 @@ void Spindle_Home(void)
 		printf("Spindle Homed!\n");
 	#else
 	
+	// set the home bit in P_STATUS to indicate it is not homed
+	SetPStatusBit(SB_SPIN_HOME);
+
 	double home_pos;
 	// double S_Offset;
 	// first make sure the spindle is off!
@@ -237,7 +240,12 @@ void Spindle_Home(void)
 			WaitNextTimeSlice();
 		}
     	home_pos = chan[SPINDLE_AXIS].Dest;     // record the index location
+	//	home_pos = chan[SPINDLE_AXIS].Position; // record the encoder position.
     	Jog(SPINDLE_AXIS,0);    // stop the motion
+		while(CheckDone(SPINDLE_AXIS) != CD_DONE)
+        {
+            WaitNextTimeSlice();
+        }
     	MoveAtVel(SPINDLE_AXIS, home_pos, HOME_VEL_3);
     	while(CheckDone(SPINDLE_AXIS) != CD_DONE)    // move to the index location
 		{

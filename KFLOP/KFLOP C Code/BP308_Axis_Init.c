@@ -424,7 +424,7 @@ void Init_Axis(void)
 	Init_Y_Axis();
 	Init_Z_Axis();
 	Init_A_Axis();
-	// Init_Spindle(); Spindle is initalize everytime int is enabled. 
+	// Init_Spindle(); Spindle is initalize everytime it is enabled. 
 
 	// zero the Axis
 	ResetFilters(X_AXIS);

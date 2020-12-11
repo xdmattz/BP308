@@ -73,7 +73,7 @@
 #define T2_SPINDLE_CW   0x0503
 #define T2_SPINDLE_CCW  0x0504
 #define T2_SPINDLE_STOP 0x0505
-// #define T2_SPINDLE_HOME 0x0506 // - this was moved to the Homing section
+#define T2_SPINDLE_HOMEx 0x0506 // - this was moved to the Homing section
 #define T2_SPINDLE_ZERO 0x0507
 #define T2_SPINDLE_PID  0x0510
 #define T2_SPINDLE_RPM  0x0511
