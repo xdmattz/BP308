@@ -159,7 +159,7 @@ void SpindleEnable(void)
         SetBit(SPINDLE_ENABLE);
 		Delay_sec(0.1);	// delay while the hardware enables.
 //		Zero(SPINDLE_AXIS);
-//		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
+		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
 		EnableAxis(SPINDLE_AXIS);		
 		SetPStatusBit(SB_SPINDLE_ON);
 		printf("SP Enabled\n");
