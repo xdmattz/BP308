@@ -363,7 +363,7 @@ void xSpindle_PID(void)
 			WaitSP();
 			SpindleDisable();	// don't switch to PID while enabled.
 		}
-		SetSyncSpindle(); 
+		SetSyncSpindle();	// When switching from RPM to PID should we automatacially re-home?
 	} 
 }
 
