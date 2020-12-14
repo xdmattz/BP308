@@ -7,12 +7,10 @@
 // necessary to run it in Thread 3 and let Thread 1 overrun Thread 2's code space. 
 
 #include "KMotionDef.h"
-
 #include "BP308_Home.h"
 #include "BP308_IO.h"
 #include "BP308_Persist.h"
 #include "BP308_Notify_Cmds.h"
-
 #include "BP308_MoreSpindle.c"
 
 int main()
@@ -51,7 +49,6 @@ int main()
     return 0;
 }
 
-
 // Testing
 void Test_Msg(int pmsg)
 {
@@ -69,7 +66,6 @@ void StatusRead(void)
 }
 
 // Zeroing & Homing Routines
-
 void Zero_Axis(int Axis)
 {
     int pAxis;
@@ -112,10 +108,8 @@ void Home_AxisCmd(int pmsg)
 //        persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd
     } else
 
-
     #endif
     {
-
         switch(pmsg)
         {
             case T2_HOME_X : Home_Axis(X_AXIS, X_HOME, ENC_X_R);
@@ -135,7 +129,6 @@ void Home_AxisCmd(int pmsg)
             case T2_HOME_ALL : Home_All_Axis();
                             break;
             default : break;
-
         }  
         if((persist.UserData[P_STATUS] & HOME_STATUS_MASK) == 0) 
         {
@@ -143,8 +136,6 @@ void Home_AxisCmd(int pmsg)
         }   
 //        persist.UserData[P_NOTIFY] = 0; // clear the command. 
     }
-
-
 }
 
 void Home_All_Axis(void)
@@ -179,10 +170,7 @@ void Home_Axis(int Axis, int Home, int Index)
         if(ReadBit(Home)== HOME_AT_HOME)
         {
             MoveRelAtVel(Axis, -(HOME_BACKOFF), HOME_VEL_1);        // if so then back up 1 inch.
-            while(CheckDone(Axis) != CD_DONE)
-            {
-                WaitNextTimeSlice();
-            }
+            WaitAxis(Axis); // wait for the move to finish
         }
         Jog(Axis, HOME_VEL_1);
         while(ReadBit(Home) == HOME_NOT_HOME)       // move until Home switch detects.
@@ -190,20 +178,14 @@ void Home_Axis(int Axis, int Home, int Index)
             WaitNextTimeSlice();
         }
         Jog(Axis, 0);
-        while(CheckDone(Axis) != CD_DONE)   // wait for stop
-        {
-            WaitNextTimeSlice();
-        }
+        WaitAxis(Axis); // wait for the stop
         Jog(Axis, -(HOME_VEL_2));   // backup until off the home switch ie. until it undetects
         while(ReadBit(Home) == HOME_AT_HOME)
         {
             WaitNextTimeSlice();
         }
         Jog(Axis, 0);
-        while(CheckDone(Axis) != CD_DONE)
-        {
-            WaitNextTimeSlice();
-        }
+        WaitAxis(Axis);
         Jog(Axis, HOME_VEL_2);  // move back to the home switch slowly - at HOME_VEL_2 until it detects again.
         // there seems to be about 0.09" hysteresis on the switches.
         while(ReadBit(Home) == HOME_NOT_HOME)
@@ -211,10 +193,7 @@ void Home_Axis(int Axis, int Home, int Index)
             WaitNextTimeSlice();
         }
         Jog(Axis, 0); // stop the axis
-        while(CheckDone(Axis) != CD_DONE)
-        {
-            WaitNextTimeSlice();
-        }
+        WaitAxis(Axis);
         Jog(Axis, (HOME_VEL_3));    // move slowly until Index is set.
         while(ReadBit(Index) == INDEX_NOT_INDEX)
         {
@@ -222,15 +201,9 @@ void Home_Axis(int Axis, int Home, int Index)
         }
         home_pos = chan[Axis].Dest;     // record the index location
         Jog(Axis,0);    // stop the motion
-        while(CheckDone(Axis) != CD_DONE)
-        {
-            WaitNextTimeSlice();
-        }
+        WaitAxis(Axis);
         MoveAtVel(Axis, home_pos, HOME_VEL_3);
-        while(CheckDone(Axis) != CD_DONE)    // move to the index location
-        {
-            WaitNextTimeSlice();
-        }
+        WaitAxis(Axis);
         // clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
         ClearPStatusBit(Axis + SB_HOME_POS); // persist.UserData[P_STATUS] &= ~(1 << (Axis + 16));
         // is Index set again?
@@ -279,10 +252,7 @@ void Limit_Backoff(int pmsg)
                     int LimitOptions = chan[pAxis].LimitSwitchOptions;  // save the existing limit switch settings
                     chan[pAxis].LimitSwitchOptions = 0;                 // Disable limit switch action - very dangerous!
                     MoveRelAtVel(pAxis, (pDir * (BACKOFF_STEPS)), BACKOFF_VEL); // Look up MPG slowest rate.
-                    while(CheckDone(pAxis) != CD_DONE)
-                    {
-                        WaitNextTimeSlice();
-                    }
+                    WaitAxis(pAxis);
                     chan[pAxis].LimitSwitchOptions = LimitOptions;  // restore the original limit switch settings
                     BackoffCnt++;
                     if(BackoffCnt > 5)
@@ -350,9 +320,9 @@ void Spindle_Cmd(int pmsg)
         //case T2_SPINDLE_HOME : break;
         case T2_SPINDLE_ZERO : Spindle_Home(); 
                     break;
-        case T2_SPINDLE_PID : SetSyncSpindle();
+        case T2_SPINDLE_PID : xSpindle_PID(); // a little more checking here?
                     break;
-        case T2_SPINDLE_RPM : SetRPMSpindle();
+        case T2_SPINDLE_RPM : xSpindle_RPM(); 
                     break;
         default : break;
     }

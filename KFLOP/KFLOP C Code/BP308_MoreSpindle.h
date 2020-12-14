@@ -11,4 +11,12 @@ void Spindle_CW(int RPM);
 void Spindle_CCW(int RPM);
 void Spindle_Stop(void);
 
+void xSpindle_PID(void);
+void xSpindle_RPM(void);
+
+// helper functions
+void WaitSP(void);
+void WaitAxis(int Axis);
+int WaitSPTimeout(double Timeout);
+
 #endif

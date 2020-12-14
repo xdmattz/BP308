@@ -30,9 +30,10 @@
         StartThread(2);
 
         // wait for P_NOTIFY to clear
+        // So why do this here? shouldn't we already be done? 
+        // I think that doing this will help prevent the command from being sent more than once.
         WaitForT2Done(3.0); // wait for up to 3 seconds.
     }
-
 }
 
 int WaitForT2Done(double WaitTime)

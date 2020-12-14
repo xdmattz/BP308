@@ -127,7 +127,7 @@
 #define ClearPStatusBit(X) persist.UserData[P_STATUS] &= ~(_BV(X))
 #define SetPBit(X,Y) persist.UserData[X] |= _BV(Y)
 #define ClearPBit(X,U) persist.UserData[X] &= ~(_BV(Y))
-#define PStatusBitIsSet(X) (persist.UserData[P_STATUS] & _BV(X)) // usage if(PStatusBitIsSet(X) == true) where true is non zero
+#define PStatusBitIsSet(X) (persist.UserData[P_STATUS] & _BV(X)) // usage if(PStatusBitIsSet(X) == true) where true is non zero - maybe better to say if(PStatusBitIsSet(X) != FALSE)
 
 // P_SERIAL_PENDING bit definitions
 #define SP_TLAUX_QUERY      _BV(0)   // TLAUX query sent

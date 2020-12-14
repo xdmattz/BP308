@@ -266,6 +266,8 @@ void Init_X_Axis(void)
 	ch0->iir[2].B2=0.0472436;
 	ch0->iir[2].A1=1.3021;
 	ch0->iir[2].A2=-0.49107;
+
+	ResetFilters(X_AXIS);
 }
 
 // Y Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
@@ -332,6 +334,8 @@ void Init_Y_Axis(void)
 	ch1->iir[2].B2=0.0385131;
 	ch1->iir[2].A1=1.37736;
 	ch1->iir[2].A2=-0.531416;
+
+	ResetFilters(Y_AXIS);
 }
 
 // Z Axis, Encoder resolution = 0.0005mm, 19.68539e-6 inch, 2000 steps/mm or 50800 steps/in
@@ -400,6 +404,8 @@ void Init_Z_Axis(void)
 	ch2->iir[2].B2=0.0472522;
 	ch2->iir[2].A1=1.30233;
 	ch2->iir[2].A2=-0.491341;
+
+	ResetFilters(Z_AXIS);
 }
 
 
@@ -427,18 +433,13 @@ void Init_Axis(void)
 	// Init_Spindle(); Spindle is initalize everytime it is enabled. 
 
 	// zero the Axis
-	ResetFilters(X_AXIS);
-	ResetFilters(Y_AXIS);
-	ResetFilters(Z_AXIS);
-
 	Zero(X_AXIS);
 	Zero(Y_AXIS);
 	Zero(Z_AXIS);
 
-//	Delay_sec(0.2);	
+	//	Delay_sec(0.2);	
 
 	// enable the axis 
-
 	EnableAxis(X_AXIS);
 	EnableAxis(Y_AXIS);
 	EnableAxis(Z_AXIS);
@@ -463,8 +464,7 @@ void Init_Axis(void)
 
 	DelayWithEStop(ZBrakeWaitDelay);
 
-
-		// Release the Z Brake
+	// Release the Z Brake
 	SetBit(Z_BRAKE);
 	//pause for a short time to allow things to settle
 	// this should give time for the brake to release, and the axis to zero
