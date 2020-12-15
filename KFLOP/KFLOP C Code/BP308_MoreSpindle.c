@@ -155,19 +155,21 @@ void SpindleEnable(void)
 #ifdef TESTBED
 	SetBit(SPINDLE_ENABLE);
 #else
-   // if(ReadBit((SPINDLE_FAULT != SPINDLE_FAULTED) && (ReadBit(SPINDLE_ENABLE) == 0)))
-   if(ReadBit(SPINDLE_ENABLE) == 0)
+   	if(ReadBit(SPINDLE_FAULT) == SPINDLE_FAULTED)
+	{
+		printf("Check Spindle Fault!\n");
+	}
+	else if(ReadBit(SPINDLE_ENABLE) == 0)
     {
         SetBit(SPINDLE_ENABLE);	// enable the hardware signal
-		Delay_sec(0.1);	// delay while the hardware enables.
-//		Zero(SPINDLE_AXIS);
+		Delay_sec(0.2);	// delay while the hardware enables.
 		ConfigureSpindle(SP_SENSOR_ENCODER, SPINDLE_AXIS, SP_UPDATE_TIME, SP_FILTER_TAU, SP_ENCODER_RES);
 		EnableAxis(SPINDLE_AXIS);		
 		SetPStatusBit(SB_SPINDLE_ON);
 		printf("SP Enabled\n");
     } else
 	{
-		printf("Check Fault!\n");
+		printf("Spindle Already Enabled\n");
 	}
 #endif
 	
@@ -213,8 +215,12 @@ void Spindle_Home(void)
 		// refactoring 12/13/2020
 		// if the spindle is on and in RPM Mode then jog to 0 then switch to PID Mode
 		if(PStatusBitIsSet(SB_SPINDLE_RPM) != FALSE)
-		Jog(SPINDLE_AXIS,0);    // stop the motion		
-		WaitSP();
+		{
+			Jog(SPINDLE_AXIS,0);    // stop the motion		
+			WaitSP();
+		}
+		SpindleDisable();
+		WaitNextTimeSlice();
 	}
 	// set the spindle to synch mode
 	SetSyncSpindle();
