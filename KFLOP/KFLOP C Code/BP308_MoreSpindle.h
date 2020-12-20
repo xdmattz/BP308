@@ -17,6 +17,6 @@ void xSpindle_RPM(void);
 // helper functions
 void WaitSP(void);
 void WaitAxis(int Axis);
-int WaitSPTimeout(double Timeout);
+int WaitAxisTimeout(int Axis, double Timeout);
 
 #endif

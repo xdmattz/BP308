@@ -2,7 +2,7 @@
 #define BP308_IO_H
 
 // uncomment the next line for operating in the development environment
-// #define TESTBED 
+#define TESTBED 
 
 
 // Axis Definitions

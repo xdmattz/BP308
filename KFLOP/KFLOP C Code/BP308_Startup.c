@@ -25,7 +25,7 @@
 #include "BP308_Serial.c"
 #include "BP308_RemoteCmds.c"
 
-// #define RUNNING_STATUS_LOG // print status to the console
+#define RUNNING_STATUS_LOG // print status to the console
 
 double ESTOP_Time;
 
@@ -161,10 +161,10 @@ int Axis_Printout(double ETime)
         printf("Main Status: %4X, TLAUX Status: %4X, MPG Status:%4X\n", persist.UserData[P_STATUS_REPORT], persist.UserData[P_TLAUX_STATUS], persist.UserData[P_MPG_STATUS]);
      
 		// Z Axis Debugging
-		P0 = chan[Z_AXIS].Position;
-		P2 = chan[Z_AXIS].Dest;
-		P3 = chan[Z_AXIS].Output;
-		printf("Z_Axis - Pos: %f, Dest: %f, Output: %f\n", P0, P2, P3 );
+		P0 = chan[SPINDLE_AXIS].Position;
+		P2 = chan[SPINDLE_AXIS].Dest;
+		P3 = chan[SPINDLE_AXIS].Output;
+		printf("Spindle - Pos: %f, Dest: %f, Output: %f\n", P0, P2, P3 );
      
         return 1;          
     }

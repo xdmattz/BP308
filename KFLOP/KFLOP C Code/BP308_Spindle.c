@@ -9,6 +9,12 @@ void ServiceSpindleCount(void)
   static double Prev_Spindle_Count = 0;
   static double SpindleTime = 0;
 
+#ifdef TESTBED
+    // if on the test bed then derive the spindle RPM from DAC7 value.
+    chan[SPINDLE_AXIS].Position += chan[SPINDLE_AXIS].Output/10;    
+
+#endif   
+
     if (Time_sec() > SpindleTime)
     {
       SpindleTime = Time_sec() + SPINDLE_PERIOD;      // check the elapsed time for time tick
@@ -17,11 +23,7 @@ void ServiceSpindleCount(void)
       double RPM = (Spin_Delta * 60.0) / (SP_ENC_RES * SPINDLE_PERIOD);   // (difference * 60) / (SP_Encoder resolution * Period)  = RPM
       persist.UserData[P_SPINDLE_RPM] = (int) (RPM);
 
-#ifdef TESTBED
-    // if on the test bed then derive the spindle RPM from DAC7 value.
-    
-
-#endif     
+  
 
       // write the spindle value to the KMotionCNC screen
 

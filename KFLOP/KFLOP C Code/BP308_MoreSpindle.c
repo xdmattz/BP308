@@ -15,6 +15,75 @@
 #define SP_FILTER_TAU 0.1
 #define SP_SENSOR_ENCODER 1
 
+#ifdef TESTBED
+
+void SetSyncSpindle(void)
+{
+	printf("PID SPINDLE\n");
+    ch7->InputMode=ENCODER_MODE;
+	ch7->OutputMode=DAC_SERVO_MODE;
+	ch7->Vel=180000;
+	ch7->Accel=70000;
+	ch7->Jerk=4e+06;
+	ch7->P=0.0;
+	ch7->I=0.00;
+	ch7->D=0.0;
+	ch7->FFAccel=0.00;
+	ch7->FFVel=0.0018;
+	ch7->MaxI=0;
+	ch7->MaxErr=0;
+	ch7->MaxOutput=1900;
+	ch7->DeadBandGain=1.0;
+	ch7->DeadBandRange=0.0;
+	ch7->InputChan0=7;
+	ch7->InputChan1=1;
+	ch7->OutputChan0=7;
+	ch7->OutputChan1=1;
+	ch7->MasterAxis=-1;
+	ch7->LimitSwitchOptions=0x12f;
+	ch7->LimitSwitchNegBit=129;
+	ch7->LimitSwitchPosBit=129;
+	ch7->SoftLimitPos=1e+09;
+	ch7->SoftLimitNeg=-1e+09;
+	ch7->InputGain0=1;
+	ch7->InputGain1=1;
+	ch7->InputOffset0=0;
+	ch7->InputOffset1=0;
+	ch7->OutputGain=1;
+	ch7->OutputOffset=-39;
+	ch7->SlaveGain=1;
+	ch7->BacklashMode=BACKLASH_OFF;
+	ch7->BacklashAmount=0;
+	ch7->BacklashRate=0;
+	ch7->invDistPerCycle=1;
+	ch7->Lead=0;
+	ch7->MaxFollowingError=20000;
+	ch7->StepperAmplitude=250;
+
+	// IIR Filters are all all pass.
+	ch7->iir[0].B0=1;
+	ch7->iir[0].B1=0;
+	ch7->iir[0].B2=0;
+	ch7->iir[0].A1=0;
+	ch7->iir[0].A2=0;
+
+	ch7->iir[1].B0=1;
+	ch7->iir[1].B1=0;
+	ch7->iir[1].B2=0;
+	ch7->iir[1].A1=0;
+	ch7->iir[1].A2=0;
+
+	ch7->iir[2].B0=1;
+	ch7->iir[2].B1=0;
+	ch7->iir[2].B2=0;
+	ch7->iir[2].A1=0;
+	ch7->iir[2].A2=0;
+	SetPStatusBit(SB_SPINDLE_PID);	// SPINDLE MODE = PID Mode
+	ClearPStatusBit(SB_SPINDLE_RPM);
+	ResetFilters(SPINDLE_AXIS);	
+}
+
+#else
 void SetSyncSpindle(void)
 {
 	printf("PID SPINDLE\n");
@@ -79,6 +148,8 @@ void SetSyncSpindle(void)
 	ClearPStatusBit(SB_SPINDLE_RPM);
 	ResetFilters(SPINDLE_AXIS);
 }
+
+#endif
 
 // setup channel 7 as an open loop 
 void SetRPMSpindle(void)
@@ -154,6 +225,9 @@ void SpindleEnable(void)
 
 #ifdef TESTBED
 	SetBit(SPINDLE_ENABLE);
+	// pause for just a bit
+	Delay_sec(0.4);
+	SetPStatusBit(SB_SPINDLE_ON);
 #else
    	if(ReadBit(SPINDLE_FAULT) == SPINDLE_FAULTED)
 	{
@@ -184,13 +258,23 @@ void SpindleDisable(void)
 
 int CheckSpindleOn(void)
 {
+	#ifdef TESTBED
+	// if on the TESTBED only check the SPINDLE ENABLE - because the falut detect doesn't exist
+	if(ReadBit(SPINDLE_ENABLE) == 1)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+	#else
+
     if((ReadBit(SPINDLE_ENABLE) == 1) && (ReadBit(SPINDLE_FAULT) == SPINDLE_FAULT_OK))
     {
         return TRUE;
     } else 
-    {
-        return FALSE;
-    }
+    return FALSE;
+    
+	#endif
 }
 
 void Spindle_Home(void)
@@ -200,6 +284,15 @@ void Spindle_Home(void)
 	#ifdef TESTBED
 		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
 		//persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+
+		// set the home bit in P_STATUS to indicate it is not homed
+		SetPStatusBit(SB_SPIN_HOME);
+
+		// wait for for a little time to simulate the actual process.
+		Delay_sec(1.0); // Wait 1.0 second
+		Zero(SPINDLE_AXIS);
+		chan[SPINDLE_AXIS].Position = 0;
+		SetSyncSpindle();	// set the spindle control to PID
 		ClearPStatusBit(SB_SPIN_HOME);
 		printf("Spindle Homed!\n");
 	#else
@@ -208,7 +301,7 @@ void Spindle_Home(void)
 	SetPStatusBit(SB_SPIN_HOME);
 
 	double home_pos;
-	// double S_Offset;
+
 	// first make sure the spindle is off!
 	if(CheckSpindleOn() == TRUE)
 	{
@@ -217,6 +310,7 @@ void Spindle_Home(void)
 		if(PStatusBitIsSet(SB_SPINDLE_RPM) != FALSE)
 		{
 			Jog(SPINDLE_AXIS,0);    // stop the motion		
+			printf("SP Jog 0");	// TEST - 
 			WaitSP();
 		}
 		SpindleDisable();
@@ -225,8 +319,8 @@ void Spindle_Home(void)
 	// set the spindle to synch mode
 	SetSyncSpindle();
 
-	// zero the axis
-	Zero(SPINDLE_AXIS);
+	// zero the axis 
+	// Zero(SPINDLE_AXIS);	
 	// Delay_sec(0.1);
 	// turn on the spindle
 	SpindleEnable();
@@ -406,8 +500,18 @@ void WaitAxis(int Axis)
 	}
 }
 
-int WaitSPTimeout(double Timeout)
+// returns TRUE if the axis completes normally, FALSE if there is a timeout
+int WaitAxisTimeout(int Axis, double Timeout)
 {
-	return 0;
+	double CheckTime = Time_sec() + Timeout;
+	while (CheckDone(Axis) != CD_DONE)
+	{
+		WaitNextTimeSlice();
+		if(Time_sec() > CheckTime)
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
