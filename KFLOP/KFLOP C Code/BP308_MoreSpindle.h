@@ -13,6 +13,7 @@ void Spindle_Stop(void);
 
 void xSpindle_PID(void);
 void xSpindle_RPM(void);
+void xSpindle_Home(void);
 
 // helper functions
 void WaitSP(void);

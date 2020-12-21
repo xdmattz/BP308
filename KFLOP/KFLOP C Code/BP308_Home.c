@@ -318,7 +318,7 @@ void Spindle_Cmd(int pmsg)
         case T2_SPINDLE_STOP : Spindle_Stop();
                     break;
         //case T2_SPINDLE_HOME : break;
-        case T2_SPINDLE_ZERO : Spindle_Home(); 
+        case T2_SPINDLE_ZERO : xSpindle_Home(); 
                     break;
         case T2_SPINDLE_PID : xSpindle_PID(); // a little more checking here?
                     break;

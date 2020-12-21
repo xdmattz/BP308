@@ -279,94 +279,14 @@ int CheckSpindleOn(void)
 
 void Spindle_Home(void)
 {
-
-	printf("In Spindle Home\n");
-	#ifdef TESTBED
-		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
-		//persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
-
-		// set the home bit in P_STATUS to indicate it is not homed
-		SetPStatusBit(SB_SPIN_HOME);
-
-		// wait for for a little time to simulate the actual process.
-		Delay_sec(1.0); // Wait 1.0 second
-		Zero(SPINDLE_AXIS);
-		chan[SPINDLE_AXIS].Position = 0;
-		SetSyncSpindle();	// set the spindle control to PID
-		ClearPStatusBit(SB_SPIN_HOME);
-		printf("Spindle Homed!\n");
-	#else
-	
-	// set the home bit in P_STATUS to indicate it is not homed
-	SetPStatusBit(SB_SPIN_HOME);
-
-	double home_pos;
-
-	// first make sure the spindle is off!
-	if(CheckSpindleOn() == TRUE)
-	{
-		// refactoring 12/13/2020
-		// if the spindle is on and in RPM Mode then jog to 0 then switch to PID Mode
-		if(PStatusBitIsSet(SB_SPINDLE_RPM) != FALSE)
-		{
-			Jog(SPINDLE_AXIS,0);    // stop the motion		
-			printf("SP Jog 0");	// TEST - 
-			WaitSP();
-		}
-		SpindleDisable();
-		WaitNextTimeSlice();
-	}
-	// set the spindle to synch mode
-	SetSyncSpindle();
-
-	// zero the axis 
-	// Zero(SPINDLE_AXIS);	
-	// Delay_sec(0.1);
-	// turn on the spindle
-	SpindleEnable();
-	// wait a little while it comes up 
-	Delay_sec(0.1); // short delay to allow spindle drive to initialize
-	if(CheckSpindleOn() == TRUE)	// <- why do this again? didn't we just enable the spindle? - this also checks the Fault.
-	{
-		 // is the spindle on the index Switch?
-    	Jog(SPINDLE_AXIS, (SPINDLE_HOME_VEL));    // move slowly until Index is set.
-		while(ReadBit(SPINDLE_R) != SPINDLE_AT_INDEX)
-		{
-			WaitNextTimeSlice();
-		}
-    	home_pos = chan[SPINDLE_AXIS].Dest;     // record the index location in home_pos
-	//	home_pos = chan[SPINDLE_AXIS].Position; // record the encoder position.
-    	Jog(SPINDLE_AXIS,0);    // stop the motion
-		WaitSP();
-    	MoveAtVel(SPINDLE_AXIS, home_pos, HOME_VEL_3);
-    	WaitSP();
-		Zero(SPINDLE_AXIS);
-		// set the output offset so the error is zero
-		// S_Offset = chan[SPINDLE_AXIS].Output;
-		// DisableAxis(SPINDLE_AXIS);
-		// ResetFilters(SPINDLE_AXIS);
-		// chan[SPINDLE_AXIS].OutputOffset = S_Offset;
-		// EnableAxis(SPINDLE_AXIS);
-		// Delay_sec(0.1);
-		
-		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
-		ClearPStatusBit(SB_SPIN_HOME); // persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
-		printf("Spindle Homed\n");
-	} 
-	else 
-	{
-		// some kind of fault happend
-		// spindle is not homed
-		printf("Spindle Problem!\nSpindle did not HOME\n");
-		//persist.UserData[P_STATUS] |= _BV(SB_SPIN_HOME);	// set the spindle home bit - ie not homed
-		SetPStatusBit(SB_SPIN_HOME);	// set the spindle home bit - ie not homed
-	}
+	xSpindle_Home();	// home the spindle
 	// disable the spindle axis and turn off the spindle drive
-	DisableAxis(SPINDLE_AXIS);
-	ClearBit(SPINDLE_ENABLE);
+	SpindleDisable();
+//	DisableAxis(SPINDLE_AXIS);
+//	ClearBit(SPINDLE_ENABLE);
+//	ClearPStatusBit(SB_SPINDLE_ON);
 	printf("Spindle Off\n");
 
-	#endif
 }
 
 void Spindle_CW(int RPM)
@@ -480,6 +400,78 @@ void xSpindle_RPM(void)
 		}
 		SetRPMSpindle();
 	}
+}
+
+// home the spindle but leave it enabled. Ready to move to a controlled position
+void xSpindle_Home(void)
+{
+#ifdef TESTBED
+	// if not in PID mode then switch to PID mode
+	if(CheckSpindleOn() == TRUE)
+	{
+		SpindleDisable();
+	}
+		// set the home bit in P_STATUS to indicate it is not homed
+		SetPStatusBit(SB_SPIN_HOME);
+
+		// wait for for a little time to simulate the actual process.
+		Delay_sec(1.0); // Wait 1.0 second
+		Zero(SPINDLE_AXIS);
+		chan[SPINDLE_AXIS].Position = 0;
+		SetSyncSpindle();	// set the spindle control to PID
+		printf("Spindle Homed!\n");
+		SpindleDisable();
+		printf("Spindle Off\n");	
+
+#else
+// set the home bit in P_STATUS to indicate it is not homed
+	SetPStatusBit(SB_SPIN_HOME);
+
+	double home_pos;
+	// first make sure the spindle is off!
+	if(CheckSpindleOn() == TRUE)
+	{
+		// if the spindle is on and in RPM Mode then jog to 0 then switch to PID Mode
+		if(PStatusBitIsSet(SB_SPINDLE_RPM) != FALSE)
+		{
+			Jog(SPINDLE_AXIS,0);    // stop the motion		
+			printf("SP Jog 0");	// TEST - 
+			WaitSP();
+		}
+		SpindleDisable();
+		WaitNextTimeSlice();
+	}
+	// set the spindle to synch mode
+	SetSyncSpindle();
+	SpindleEnable();
+	Delay_sec(0.1); // short delay to allow spindle drive to initialize
+	if(CheckSpindleOn() == TRUE)	// <- why do this again? didn't we just enable the spindle? - this also checks the Fault.
+	{
+		 // is the spindle on the index Switch?
+    	Jog(SPINDLE_AXIS, (SPINDLE_HOME_VEL));    // move slowly until Index is set.
+		while(ReadBit(SPINDLE_R) != SPINDLE_AT_INDEX)
+		{
+			WaitNextTimeSlice();
+		}
+    	home_pos = chan[SPINDLE_AXIS].Dest;     // record the index location in home_pos
+	   	Jog(SPINDLE_AXIS,0);    // stop the motion
+		WaitSP();
+    	MoveAtVel(SPINDLE_AXIS, home_pos, HOME_VEL_3);
+    	WaitSP();
+		Zero(SPINDLE_AXIS);
+		
+		// clear the appropriate bit in the P_STATUS variable - 1 = not homed, 0 = homed
+		ClearPStatusBit(SB_SPIN_HOME); // persist.UserData[P_STATUS] &= ~(1 << SB_SPIN_HOME);
+		printf("Spindle Homed\n");
+	}
+	else 
+	{
+		printf("Spindle Homing Fault!\n");
+		SetPStatusBit(SB_SPIN_HOME); // set the status bit means not homed!
+	}
+
+#endif
+
 }
 
 // helper functions
