@@ -126,6 +126,7 @@ void SerResponseMsg(uint8 cnt, uint8 *msg)
         SER_PutChar(msg[i]);
     }
     SER_PutChar(~(checksum));   // followed by the checksum.
+    SER_PutChar(0x00);
 }
 
 // Serial Commands

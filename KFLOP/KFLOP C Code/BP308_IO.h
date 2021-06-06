@@ -2,7 +2,7 @@
 #define BP308_IO_H
 
 // uncomment the next line for operating in the development environment
-// #define TESTBED 
+#define TESTBED 
 
 
 // Axis Definitions
@@ -50,9 +50,11 @@
 #define Z_LIMIT			    136		// Normally Closed - OPTO_8
 #define Z_HOME			    138		// Normally Open - OPTO_10
 #define OPTO_9			    137		// UNUSED - OPTO_9
-#define HEAD_WHITE		    139		// OPTO_11
+#define HEAD_WHITE		    139		// OPTO_11 - 
+#define TOUCH_PROBE         139     // Touch Probe?
 #define HEAD_RED		    140		// OPTO_12
 #define HEAD_GREEN		    141		// OPTO_13
+#define TOOL_SETTER		    141		// OPTO_13
 #define HEAD_BLUE		    142		// OPTO_14
 #define HEAD_YELLOW		    143		// OPTO_15
 #define TOOL_RELEASE        140     // same as red wire.
@@ -83,6 +85,11 @@
 #define INDEX_AT_INDEX      1
 #define INDEX_NOT_INDEX     0
 #define SPINDLE_AT_INDEX    0
+#define TOUCH_NORMAL        1 // touch probe attached - normal 
+#define TOUCH_ACTIVE        0 // touch probe activated
+#define TOUCH_NA            0 // touch probe not attached 
+#define TOOL_SETTER_NORMAL  0 // Tool Setter normal 
+#define TOOL_SETTER_ACTIVE  1 // Tool Setter Activated
 
 
 // Outputs

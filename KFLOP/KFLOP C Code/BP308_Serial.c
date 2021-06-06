@@ -35,21 +35,21 @@ void Init_BP308_Serial(void)
 void SerialPort_Manager(void)
 {
     // read the serial port 
-    while(pRS232RecIn != pRS232RecOut)
+    while(pRS232RecIn != pRS232RecOut)	// if there is a character in the receive buffer...
     {
-		char c = RS232_GetChar();
-		if(RxMsg.InMessage == FALSE)
+		char c = RS232_GetChar();	// get the serial char from the buffer
+		if(RxMsg.InMessage == FALSE)	//  if not currently in a message then search for the start of message command
 		{
 			if((c & 0xff) == MSG_RET_START_CMD)
 			{
 				RxMsg.msg_cntr = 1;
 				RxMsg.InMessage = TRUE;
-				RxMsg.msg[0] = MSG_RET_START_CMD;
+				RxMsg.msg[0] = MSG_RET_START_CMD;	// put the start cmd into the first location of the message buffer
 			}
 		}
 		else
 		{
-			if (RxMsg.msg_cntr == 1)
+			if (RxMsg.msg_cntr == 1)	// if this is the second byte of a message then it is the message count
 			{
 				RxMsg.msg_cnt = (int)(c & 0xff);	// make sure the count doesn't have all the extra bits on it...
 				if(RxMsg.msg_cnt >= SERIAL_MSG_LEN)
@@ -92,6 +92,8 @@ void SerialPort_Manager(void)
     }
 }
 
+// build and send a serial message 
+// 
 void Send_Serial(char *msg)
 {
     char msg_len;
@@ -108,6 +110,7 @@ void Send_Serial(char *msg)
         RS232_PutChar(*(msg++));
     }
     RS232_PutChar(~(CheckSum));
+	RS232_PutChar(0x00);	// stuff a zero on the end for good measure - 05June2021
 }
 
 void SerMsgParse(SerMsg *SM)

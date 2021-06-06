@@ -42,10 +42,12 @@ int main()
         case T2_TOOL_CLAMP : Tool_Clamp(msg);   // all other TLAUX functions
                     break;  
         case T2_SPINDLE : Spindle_Cmd(msg);
-                    break;                  
+                    break;  
+        case T2_PROBE : Probe_Cmd(msg);
         default: break;
     }
     persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd - Indicates that the thread is done. only do this here! - all others have been commented out.
+    printf("Thread 2 Done msg = %4X\n", msg);
     return 0;
 }
 
@@ -230,7 +232,7 @@ void Limit_Backoff(int pmsg)
     }
     if(pAxis != -1)
     {
-    	printf("In Limit Backoff\n");
+    	printf("In Limit Backoff\nAxis = %d, Dir = %f, LimSwitch = %d\n", pAxis, pDir, LimSwitch);
         if(CheckDone(pAxis) != CD_AXIS_DISABLED)    // skip if axis is disabled
         {
             #ifdef TESTBED
@@ -353,5 +355,214 @@ void Axis_Cmd(int pmsg)
         default : break;
     }
 //    persist.UserData[P_NOTIFY] = 0; // indicate that the command has compleated
+}
+
+// Probe Commands
+void Probe_Cmd(int pmsg)
+{
+    // clear the probe status bits
+    persist.UserData[P_STATUS] &= ~(SB_PROBE_STATUS_MASK);
+
+    switch(pmsg)
+    {
+        case T2_PROBE_X : Probe_Axis(X_AXIS); break;
+        case T2_PROBE_Y : Probe_Axis(Y_AXIS); break;
+        case T2_PROBE_Z : Probe_Axis(Z_AXIS); break;
+        case T2_PROBE_A : Probe_Axis(A_AXIS); break;
+        case T2_PROBE_XYZ : Probe_XYZ(); break;
+        case T2_TOOLSET : ToolSet(); break;
+        default : break;
+    }
+}
+
+// the probe command will move (Jog) in the Axis direction at the rate passed in P_NOTIFY_ARGUMENT1 
+// until either the probe detects, or the timeout - passed in P_NOTIFY_ARGUMENT4 expires.
+// it is the responsibility of the calling function on the PC program to determine the velocity and 
+// direction (+/-) and the timeout - which also determines the max distance 
+// on probe detect the motion stops, backs up, and probes again slowly (double touch) ending up right
+// at the touch point.
+//  when completed, the status bit SB_PROBE or SB_PROBE_TIMEOUT are set in the status register 
+
+void Probe_Axis(int Axis)
+{
+
+    // jog at the velocity indicated. 
+    // move until timeout or probe detect. 
+    float JogSpeed = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
+    float Timeout = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT4];
+    double ProbePos;
+
+    double TimeoutTime = Time_sec() + (double)Timeout;
+    Jog(Axis, (double)JogSpeed);
+    while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)  // check the probe bit to activate
+    {
+        WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            Jog(Axis, 0);   // stop the axis
+            SetPStatusBit(SB_PROBE_TIMEOUT); // set the timeout bit
+            return; //
+        }
+    }
+    Jog(Axis, 0);
+    WaitAxis(Axis); // wait for it to stop.
+    Jog(Axis, (double) (-JogSpeed));
+    while(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL) // move till the probe un-detects - normal operation
+    {
+        WaitNextTimeSlice();
+    }
+    Delay_sec(0.100); // let it move just a little bit more...
+    Jog(Axis, 0);
+    WaitAxis(Axis);
+    if(JogSpeed > 0)
+    {
+        Jog(Axis, HOME_VEL_3);
+    } else
+    {
+        Jog(Axis, -HOME_VEL_3);
+    }
+    while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)
+    {
+        WaitNextTimeSlice();
+    }
+    ProbePos = chan[Axis].Dest;
+    Jog(Axis, 0);
+    WaitAxis(Axis);
+    Move(Axis,ProbePos);
+    WaitAxis(Axis);
+    SetPStatusBit(SB_PROBE_DETECT);
+    // clear out the notify arguments so the command doesn't repeat accidently.
+    persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+    persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+}
+
+void Probe_XYZ(void)
+{
+    // jog at the velocity indicated. 
+    // move until timeout or probe detect. 
+    float JogSpeed_X = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
+    float JogSpeed_Y = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT2];
+    float JogSpeed_Z = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT3];
+    float Timeout = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT4];
+    double ProbePosX, ProbePosY, ProbePosZ;
+
+    double TimeoutTime = Time_sec() + (double)Timeout;
+    Jog(X_AXIS, (double)JogSpeed_X);
+    Jog(Y_AXIS, (double)JogSpeed_Y);
+    Jog(Z_AXIS, (double)JogSpeed_Z);
+    while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)  // check the probe bit to activate - !!!*** need to figure out polarity of this  ***!!!
+    {
+        WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            Jog(X_AXIS, 0);   // stop all axis
+            Jog(Y_AXIS, 0);
+            Jog(Z_AXIS, 0);
+            SetPStatusBit(SB_PROBE_TIMEOUT); // set the timeout bit
+            return; //
+        }
+    }
+    Jog(X_AXIS, 0);   // stop all axis
+    Jog(Y_AXIS, 0);
+    Jog(Z_AXIS, 0);
+    WaitAxis(X_AXIS); // wait for all axis to be stopped
+    WaitAxis(Y_AXIS); 
+    WaitAxis(Z_AXIS); 
+    Jog(X_AXIS, (double) (-JogSpeed_X));
+    Jog(Y_AXIS, (double) (-JogSpeed_Y));
+    Jog(Z_AXIS, (double) (-JogSpeed_Z));
+    while(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL) // move till the probe un-detects
+    {
+        WaitNextTimeSlice();
+    }
+    Delay_sec(100); // let it move just a little bit more...
+    Jog(X_AXIS, 0);   // stop all axis
+    Jog(Y_AXIS, 0);
+    Jog(Z_AXIS, 0);
+    WaitAxis(X_AXIS); // wait for all axis to be stopped
+    WaitAxis(Y_AXIS); 
+    WaitAxis(Z_AXIS); 
+    Jog(X_AXIS, (double) (JogSpeed_X / 4)); // jog back at 1/4 speed
+    Jog(Y_AXIS, (double) (JogSpeed_Y / 4));
+    Jog(Z_AXIS, (double) (JogSpeed_Z / 4));
+    while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)
+    {
+        WaitNextTimeSlice();
+    }
+    ProbePosX = chan[X_AXIS].Dest;
+    ProbePosY = chan[Y_AXIS].Dest;
+    ProbePosZ = chan[Z_AXIS].Dest;
+    Jog(X_AXIS, 0);   // stop all axis
+    Jog(Y_AXIS, 0);
+    Jog(Z_AXIS, 0);
+    WaitAxis(X_AXIS); // wait for all axis to be stopped
+    WaitAxis(Y_AXIS); 
+    WaitAxis(Z_AXIS);
+
+    MoveXYZABC(ProbePosX, ProbePosY, ProbePosZ, 0, 0, 0);
+    WaitAxis(X_AXIS); // wait for all axis to be stopped
+    WaitAxis(Y_AXIS); 
+    WaitAxis(Z_AXIS);
+
+    SetPStatusBit(SB_PROBE_DETECT);
+
+    // clear out the notify arguments so the command doesn't repeat accidently.
+    persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+    persist.UserData[P_NOTIFY_ARGUMENT2] = 0;
+    persist.UserData[P_NOTIFY_ARGUMENT3] = 0;
+    persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+}
+void ToolSet(void)
+{
+    // move in the -Z direction until the tool setter is activated
+    // This assumes that the X and Y positions of the TOOL setter are already at the correct location
+    // and that the Z axis has been moved to an appropriate height above the tool setter.
+    // Z direction and timeout are passed in the P_NOTIFY_ARGUMENT variables.
+
+    float JogSpeed = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
+    float Timeout = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT4];
+
+    double TimeoutTime = Time_sec() + (double)Timeout;
+    double ToolPosition;
+
+    // move until the tool setter detects
+    Jog(Z_AXIS, (double)JogSpeed);
+    while(ReadBit(TOOL_SETTER) != TOOL_SETTER_ACTIVE)
+    {
+        WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            Jog(Z_AXIS, 0);
+            SetPStatusBit(SB_PROBE_TIMEOUT); // set the timeout bit
+            return; //
+        }
+    }
+    Jog(Z_AXIS, 0);
+    WaitAxis(Z_AXIS);
+    Jog(Z_AXIS, (double)(-JogSpeed));
+    while(ReadBit(TOOL_SETTER) != TOOL_SETTER_NORMAL)
+    {
+        WaitNextTimeSlice();
+    }
+    Delay_sec(0.100);
+    Jog(Z_AXIS, 0);
+    WaitAxis(Z_AXIS);
+    Jog(Z_AXIS, -HOME_VEL_3);
+    while(ReadBit(TOOL_SETTER) != TOOL_SETTER_ACTIVE)
+    {
+        WaitNextTimeSlice();
+    }
+    ToolPosition = chan[Z_AXIS].Dest;
+    Jog(Z_AXIS, 0);
+    WaitAxis(Z_AXIS);
+    Move(Z_AXIS, ToolPosition);
+    WaitAxis(Z_AXIS);
+    
+    SetPStatusBit(SB_PROBE_DETECT);
+    
+    // clear out the notify arguments so the command doesn't repeat accidently.
+    persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+    persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+
 }
 

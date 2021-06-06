@@ -421,6 +421,7 @@ void xSpindle_Home(void)
 		SetSyncSpindle();	// set the spindle control to PID
 		printf("Spindle Homed!\n");
 		SpindleDisable();
+		ClearPStatusBit(SB_SPIN_HOME);	// clear the homed bit in the status byte
 		printf("Spindle Off\n");	
 
 #else

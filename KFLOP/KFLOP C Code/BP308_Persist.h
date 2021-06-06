@@ -50,8 +50,8 @@
  //     119     P_HOME_STATUS - 
  // 
  // 130 - 139  BP308 Home routines (Thread 2) communications
- //     130     Notify Command Message - similar to MACH3 Notify Message ie the command to execute   
- //     131     Notify Argument - any data that may accompany a message - 
+ //     131     Notify Command Message - similar to MACH3 Notify Message ie the command to execute   
+ //     132     Notify Argument - any data that may accompany a message - 
 // #define P_HOME_STATUS       119   // bits are set when an axis is homed. pushed these bits into the upper 16 bits of P_STATUS
 #define P_STATUS            120   // the main status word of the machine
 #define P_STATUS_REPORT     104   // the reported main status word of the machine copy status to this persist variable when done computing.
@@ -67,9 +67,12 @@
 #define P_SPINDLE_RPM       105    // calcualted in spindle monitor - test so it is passed to PC in PC_Comm
 #define P_NOTIFY            131     // command to Thread 2 functions
 #define P_NOTIFY_ARGUMENT   132     // Argument passed to a Notify Command - this is on an even boundry in case argument is a double
+#define P_NOTIFY_ARGUMENT1  132     // same as P_NOTIFY_ARGUMENT
 #define P_NOTIFY_ARGUMENT2  133     // Second possible argument passed to a Notify Command 
-#define P_REMOTE_CMD        134     // a non zero value here indicates a command from another Thread or the PC - used for sending commands to the serial engine from other threads etc.
-#define P_INGORE_FAULT      135     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
+#define P_NOTIFY_ARGUMENT3  134
+#define P_NOTIFY_ARGUMENT4  135
+#define P_REMOTE_CMD        136     // a non zero value here indicates a command from another Thread or the PC - used for sending commands to the serial engine from other threads etc.
+#define P_INGORE_FAULT      137     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -120,6 +123,9 @@
 #define SB_SPINDLE_ON       27  // Spindle ON = 1, Spindle OFF = 0
 #define SB_SPINDLE_CW       28
 #define SB_SPINDLE_CCW      29
+#define SB_PROBE_DETECT     30  // set to 1 if probe or tool setter detected
+#define SB_PROBE_TIMEOUT    31  // set to 1 if probe or tool setter timed out.
+#define SB_PROBE_STATUS_MASK 0xC0000000
 
 
 #define _BV(X) (1 << X)     // bit shifting macro

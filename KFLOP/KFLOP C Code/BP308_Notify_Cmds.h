@@ -55,7 +55,7 @@
 #define T2_LIM_ZP       0x0a05
 #define T2_LIM_ZN       0x0a06
 
-// Tool changer commands - command bytes 0x0c00, 0x0d00 and 0x0e00
+// Tool changer commands - command bytes 0x0c00 and 0x0d00
 #define T2_SEL_TOOL     0x0c00  // 0x0cXX where XX is the tool number -
 #define T2_TOOL_CLAMP   0x0d00
 #define T2_TOOL_AIR     0x0d01
@@ -77,5 +77,14 @@
 #define T2_SPINDLE_ZERO 0x0507
 #define T2_SPINDLE_PID  0x0510
 #define T2_SPINDLE_RPM  0x0511
+
+// Probing commands - command byte 0x0700
+#define T2_PROBE        0x0700
+#define T2_PROBE_X      0x0701
+#define T2_PROBE_Y      0x0702
+#define T2_PROBE_Z      0x0703
+#define T2_PROBE_A      0x0704
+#define T2_PROBE_XYZ    0x0707
+#define T2_TOOLSET      0x0710
 
 #endif

@@ -43,6 +43,12 @@ void Spindle_Cmd(int pmsg);
 // Axis Commands
 void Axis_Cmd(int pmsg);
 
+// Probe Commands
+void Probe_Cmd(int pmsg);
+void Probe_Axis(int Axis);
+void Probe_XYZ(void);
+void ToolSet(void);
+
 // misc commands
 int WaitForRemoteDone(double delay);
 

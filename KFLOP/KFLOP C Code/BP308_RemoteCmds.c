@@ -21,7 +21,7 @@ void RemoteCmd(void)
 }
 
 
-char TLAUX_Home_Cmd[] = { 0x04, TLAUX_ADDRESS, TLAUX_HOME_CMD};
+char TLAUX_Home_Cmd[] = { 0x04, TLAUX_ADDRESS, TLAUX_HOME_CMD, 0x00};
 char TLAUX_Cmd_1Arg[] = { 0x05, TLAUX_ADDRESS, TLAUX_CLAMP_CMD, 0x00};
 
 int ToolBtnN;   // button history for edge detection

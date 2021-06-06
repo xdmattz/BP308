@@ -13,7 +13,7 @@
 <v>Output</v>
 </TreeKeys>
 <TreeStates>
-<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="MPG\MPG_PSoC\Source Files\MPGCmds.c">
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="MPG\MPG_PSoC">
 <ExpandedNodeIds>
 <v>MPG</v>
 <v>MPG\MPG_Bootloader</v>
@@ -32,7 +32,6 @@
 <v>MPG\MPG_Bootloader\Source Files</v>
 <v>MPG\MPG_Bootloader\Source Files\main.c</v>
 <v>MPG\MPG_Bootloader\Generated_Source\PSoC5</v>
-<v>MPG\MPG_PSoC</v>
 <v>MPG\MPG_PSoC\TopDesign</v>
 <v>MPG\MPG_PSoC\MPG_PSoC.cydwr</v>
 <v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Pins</v>
@@ -71,6 +70,8 @@
 <v>MPG\MPG_PSoC\Generated_Source\PSoC5</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
+<v>MPG</v>
+<v>MPG\MPG_Bootloader</v>
 <v>MPG\MPG_Bootloader\TopDesign</v>
 <v>MPG\MPG_Bootloader\MPG_Bootloader.cydwr</v>
 <v>MPG\MPG_Bootloader\Header Files</v>
@@ -79,42 +80,6 @@
 <v>MPG\MPG_Bootloader\Source Files\main.c</v>
 <v>MPG\MPG_Bootloader\Generated_Source</v>
 <v>MPG\MPG_PSoC</v>
-<v>MPG\MPG_PSoC\TopDesign</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Pins</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Analog</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Clocks</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Interrupts</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\DMA</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\System</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Directives</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\Flash Security</v>
-<v>MPG\MPG_PSoC\MPG_PSoC.cydwr\EEPROM</v>
-<v>MPG\MPG_PSoC\Header Files</v>
-<v>MPG\MPG_PSoC\Header Files\CLI.h</v>
-<v>MPG\MPG_PSoC\Header Files\Cmds.h</v>
-<v>MPG\MPG_PSoC\Header Files\cyapicallbacks.h</v>
-<v>MPG\MPG_PSoC\Header Files\MPGCmds.h</v>
-<v>MPG\MPG_PSoC\Header Files\Processes.h</v>
-<v>MPG\MPG_PSoC\Header Files\SerCmds.h</v>
-<v>MPG\MPG_PSoC\Header Files\Serial.h</v>
-<v>MPG\MPG_PSoC\Header Files\Serial_IO.h</v>
-<v>MPG\MPG_PSoC\Header Files\SerMessages.h</v>
-<v>MPG\MPG_PSoC\Header Files\State_Machine.h</v>
-<v>MPG\MPG_PSoC\Header Files\TestMessages.h</v>
-<v>MPG\MPG_PSoC\Header Files\U_HW.h</v>
-<v>MPG\MPG_PSoC\Source Files</v>
-<v>MPG\MPG_PSoC\Source Files\CLI.c</v>
-<v>MPG\MPG_PSoC\Source Files\Cmds.c</v>
-<v>MPG\MPG_PSoC\Source Files\main.c</v>
-<v>MPG\MPG_PSoC\Source Files\MPGCmds.c</v>
-<v>MPG\MPG_PSoC\Source Files\Processes.c</v>
-<v>MPG\MPG_PSoC\Source Files\SerCmds.c</v>
-<v>MPG\MPG_PSoC\Source Files\Serial.c</v>
-<v>MPG\MPG_PSoC\Source Files\Serial_IO.c</v>
-<v>MPG\MPG_PSoC\Source Files\State_Machine.c</v>
-<v>MPG\MPG_PSoC\Source Files\U_HW.c</v>
-<v>MPG\MPG_PSoC\Generated_Source</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="MPG\MPG_PSoC\TopDesign\TopDesign.cysch">
@@ -318,6 +283,7 @@
 <v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.hex</v>
 <v>MPG\MPG_Bootloader\CortexM3\ARM_GCC_541\Debug\MPG_Bootloader.map</v>
 <v>MPG\MPG_Bootloader\MPG_Bootloader.gpdsc</v>
+<v>MPG\MPG_Bootloader\MPG_Bootloader.rpt</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 </TreeStates>
@@ -428,6 +394,8 @@
 <name v=".\MPG_PSoC.cydsn\CLI.c" />
 <name v=".\MPG_PSoC.cydsn\MPGCmds.c" />
 <name v=".\MPG_PSoC.cydsn\Generated_Source\PSoC5\Control_Reg_MPG.c" />
+<name v=".\MPG_PSoC.cydsn\SerCmds.c" />
+<name v=".\MPG_PSoC.cydsn\Serial.c" />
 </OpenDocs>
 <OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
 
@@ -435,7 +403,7 @@
   Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
   http://www.actiprosoftware.com
 
---><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1216, 665" SelectedTabbedMdiWindow="252bd499-f127-4232-9538-9d862008353f"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\main.c" Guid="05116811-52e6-457d-8e70-6a56fb329633" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TestMessages.h" Guid="dae38f54-91bd-4ada-978e-338a9360eca5" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TopDesign\TopDesign.cysch" Guid="851caa77-b9bd-45a7-a81a-e77e30b883ea" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.h" Guid="ca420335-06c2-4a37-893b-9342d7954455" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.c" Guid="252bd499-f127-4232-9538-9d862008353f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.h" Guid="683792a4-0c37-451d-8e2a-5874809a149c" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Cmds.c" Guid="d5730d5a-4c49-4867-acba-e5bd74e7bf87" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPG_PSoC.cydwr" Guid="d13ea58f-d9a4-47b4-b1a4-122647cfd542" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\CLI.c" Guid="8a1454c6-8cae-4167-b28d-02804ecf2700" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.c" Guid="862bcf8a-5992-4993-9041-7bd03781f481" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Generated_Source\PSoC5\Control_Reg_MPG.c" Guid="bd973bc4-b00e-44a4-86b2-1cd7fdc99b77" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1240, 598" SelectedTabbedMdiWindow="a7a6c5df-633e-40c4-ac04-9cf621cc6464"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="75eb03ef-503f-47c8-9a58-02b0790a64e3" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\main.c" Guid="05116811-52e6-457d-8e70-6a56fb329633" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TestMessages.h" Guid="dae38f54-91bd-4ada-978e-338a9360eca5" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\TopDesign\TopDesign.cysch" Guid="851caa77-b9bd-45a7-a81a-e77e30b883ea" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.h" Guid="ca420335-06c2-4a37-893b-9342d7954455" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.c" Guid="252bd499-f127-4232-9538-9d862008353f" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\U_HW.h" Guid="683792a4-0c37-451d-8e2a-5874809a149c" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Cmds.c" Guid="d5730d5a-4c49-4867-acba-e5bd74e7bf87" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPG_PSoC.cydwr" Guid="d13ea58f-d9a4-47b4-b1a4-122647cfd542" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\CLI.c" Guid="8a1454c6-8cae-4167-b28d-02804ecf2700" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\MPGCmds.c" Guid="862bcf8a-5992-4993-9041-7bd03781f481" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Generated_Source\PSoC5\Control_Reg_MPG.c" Guid="bd973bc4-b00e-44a4-86b2-1cd7fdc99b77" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\SerCmds.c" Guid="8bee6829-d66a-4cf9-a66c-643789beb642" /><DocumentWindow Key="C:\Dan\Eng Projects\BP308\MPG\ARM Code\MPG\MPG_PSoC.cydsn\Serial.c" Guid="a7a6c5df-633e-40c4-ac04-9cf621cc6464" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
 <config v="" />
 <AutoUpdate v="true" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>

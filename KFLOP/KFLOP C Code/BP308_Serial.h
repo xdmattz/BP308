@@ -4,7 +4,7 @@
 #include "KMotionDef.h"
 
 #define MSG_RET_START_CMD 0xe2
-#define SERIAL_MSG_LEN 32
+#define SERIAL_MSG_LEN 64   // changed from 32 on 05June2021 - don't think this is TLAUX_HOME_CMD problem but I'm seeing some strange errors.
 
 
 
