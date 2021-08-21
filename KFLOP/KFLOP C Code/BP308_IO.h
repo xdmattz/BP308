@@ -22,6 +22,8 @@
 // Limit Switch Backoff 
 #define BACKOFF_STEPS 1250  // 1/20 of an inch - assuming 40u in/step
 #define BACKOFF_VEL 5000    // units are encoder ticks per second
+#define RETOUCH_TIME 1.5      // time to allow a retouch. if this time is exceeded then declare an error
+#define BACKUP_TIME 0.1
 
 // Home Switch Backoff
 #define HOME_BACKOFF 25000  // about 1 inch
@@ -51,7 +53,7 @@
 #define Z_HOME			    138		// Normally Open - OPTO_10
 #define OPTO_9			    137		// UNUSED - OPTO_9
 #define HEAD_WHITE		    139		// OPTO_11 - 
-#define TOUCH_PROBE         139     // Touch Probe?
+#define TOUCH_PROBE         139     // Touch Probe
 #define HEAD_RED		    140		// OPTO_12
 #define HEAD_GREEN		    141		// OPTO_13
 #define TOOL_SETTER		    141		// OPTO_13
@@ -159,14 +161,14 @@
 #define KON_IN_1037	    1037	//
 #define KON_IN_1038	    1038	//
 #define KON_IN_1039	    1039	//
-#define AUX_ISO_0	    1040	//
-#define AUX_ISO_1	    1041	//
-#define AUX_ISO_2	    1042	//
-#define AUX_ISO_3	    1043	//
-#define LUBE_MON	    1044	// Lube Oil level
-#define COOLANT_MON	    1045	// Coolant motor relay monitor
-#define AIR_MON		    1046	// Air input PSI monitor
-#define AUX_ISO_7	    1047	//
+#define AUX_ISO_0	    1040	//   Aux Input 0
+#define AUX_ISO_1	    1041	//   Aux Input 1
+#define AUX_ISO_2	    1042	//   Aux Input 2
+#define AUX_ISO_3	    1043	//   Aux Input 3
+#define LUBE_MON	    1044	// Lube Oil level -Aux Input 4
+#define COOLANT_MON	    1045	// Coolant motor relay monitor -Aux Input 5
+#define AIR_MON		    1046	// Air input PSI monitor - Aux Input 6
+#define AUX_ISO_7	    1047	//   Aux Input 7
 #define KON_IN_1048     1048
 #define KON_IN_1049     1049
 #define KON_IN_1050     1050

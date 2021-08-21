@@ -385,33 +385,56 @@ void Probe_Cmd(int pmsg)
 
 void Probe_Axis(int Axis)
 {
-
     // jog at the velocity indicated. 
     // move until timeout or probe detect. 
     float JogSpeed = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
     float Timeout = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT4];
     double ProbePos;
 
+// print out the speed and timeout
+    printf("speed = %f, Timeout = %f\n", JogSpeed, Timeout);
+    double printtime = Time_sec() + 1.0;
+    printf("Current Time = %lf\n", Time_sec());
+
+    if(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL)
+    {
+        ClearPStatusBit(SB_PROBE_DETECT);   // probe not detected
+        persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT4] = 0; 
+        printf("Probe not connected\n");
+        return;
+    }
+
     double TimeoutTime = Time_sec() + (double)Timeout;
     Jog(Axis, (double)JogSpeed);
+
     while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)  // check the probe bit to activate
     {
+        int count = 0;
         WaitNextTimeSlice();
         if(Time_sec() > TimeoutTime)
         {
+            if(Time_sec() > printtime)
+            {
+                count++;
+                printtime += 1.0;
+                printf("In waiting, time = %d\n", count);
+            }
             Jog(Axis, 0);   // stop the axis
+            printf("Jog stopped\n");
             SetPStatusBit(SB_PROBE_TIMEOUT); // set the timeout bit
             return; //
         }
     }
     Jog(Axis, 0);
     WaitAxis(Axis); // wait for it to stop.
+    printf("Detected\n");
     Jog(Axis, (double) (-JogSpeed));
     while(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL) // move till the probe un-detects - normal operation
     {
         WaitNextTimeSlice();
     }
-    Delay_sec(0.100); // let it move just a little bit more...
+    Delay_sec(BACKUP_TIME); // let it move just a little bit more...
     Jog(Axis, 0);
     WaitAxis(Axis);
     if(JogSpeed > 0)
@@ -421,9 +444,21 @@ void Probe_Axis(int Axis)
     {
         Jog(Axis, -HOME_VEL_3);
     }
+
+    TimeoutTime = Time_sec() + RETOUCH_TIME;
     while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)
     {
         WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            ClearPStatusBit(SB_PROBE_DETECT);
+            SetPStatusBit(SB_PROBE_TIMEOUT);
+            Jog(Axis,0);    // stop the motion
+            // clear out the notify arguments so the command doesn't repeat accidently.
+            persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+            persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+            return;
+        }
     }
     ProbePos = chan[Axis].Dest;
     Jog(Axis, 0);
@@ -438,6 +473,17 @@ void Probe_Axis(int Axis)
 
 void Probe_XYZ(void)
 {
+
+    if(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL)
+    {
+        ClearPStatusBit(SB_PROBE_DETECT);   // probe not detected
+        persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT2] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT3] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT4] = 0; 
+        printf("Probe not connected\n");
+        return;
+    }
     // jog at the velocity indicated. 
     // move until timeout or probe detect. 
     float JogSpeed_X = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
@@ -471,23 +517,40 @@ void Probe_XYZ(void)
     Jog(X_AXIS, (double) (-JogSpeed_X));
     Jog(Y_AXIS, (double) (-JogSpeed_Y));
     Jog(Z_AXIS, (double) (-JogSpeed_Z));
+
     while(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL) // move till the probe un-detects
     {
         WaitNextTimeSlice();
     }
-    Delay_sec(100); // let it move just a little bit more...
+    Delay_sec(BACKUP_TIME); // let it move just a little bit more...
     Jog(X_AXIS, 0);   // stop all axis
     Jog(Y_AXIS, 0);
     Jog(Z_AXIS, 0);
     WaitAxis(X_AXIS); // wait for all axis to be stopped
     WaitAxis(Y_AXIS); 
     WaitAxis(Z_AXIS); 
-    Jog(X_AXIS, (double) (JogSpeed_X / 4)); // jog back at 1/4 speed
-    Jog(Y_AXIS, (double) (JogSpeed_Y / 4));
-    Jog(Z_AXIS, (double) (JogSpeed_Z / 4));
+    Jog(X_AXIS, (double) (JogSpeed_X / 5)); // jog back at 1/5 speed
+    Jog(Y_AXIS, (double) (JogSpeed_Y / 5));
+    Jog(Z_AXIS, (double) (JogSpeed_Z / 5));
+
+    TimeoutTime = Time_sec() + RETOUCH_TIME;
     while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)
     {
         WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            ClearPStatusBit(SB_PROBE_DETECT);
+            SetPStatusBit(SB_PROBE_TIMEOUT);
+            Jog(X_AXIS,0);    // stop the motion
+            Jog(Y_AXIS,0);    // stop the motion
+            Jog(Z_AXIS,0);    // stop the motion
+            // clear out the notify arguments so the command doesn't repeat accidently.
+            persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+            persist.UserData[P_NOTIFY_ARGUMENT2] = 0;
+            persist.UserData[P_NOTIFY_ARGUMENT3] = 0;
+            persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+            return;
+        }
     }
     ProbePosX = chan[X_AXIS].Dest;
     ProbePosY = chan[Y_AXIS].Dest;
@@ -522,6 +585,18 @@ void ToolSet(void)
     float JogSpeed = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT1];
     float Timeout = *(float *)&persist.UserData[P_NOTIFY_ARGUMENT4];
 
+    // first make sure the tool setter is plugged in
+    if(ReadBit(TOOL_SETTER) != TOOL_SETTER_NORMAL)
+    {
+        // Clear the persist variables
+        persist.UserData[P_NOTIFY_ARGUMENT1] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT2] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT3] = 0;
+        persist.UserData[P_NOTIFY_ARGUMENT4] = 0;
+        ClearPStatusBit(SB_PROBE_DETECT);   
+        return;
+    }
+
     double TimeoutTime = Time_sec() + (double)Timeout;
     double ToolPosition;
 
@@ -544,13 +619,21 @@ void ToolSet(void)
     {
         WaitNextTimeSlice();
     }
-    Delay_sec(0.100);
+    Delay_sec(BACKUP_TIME);   // let it move just a little bit more
     Jog(Z_AXIS, 0);
     WaitAxis(Z_AXIS);
     Jog(Z_AXIS, -HOME_VEL_3);
+
+    TimeoutTime = Time_sec() + RETOUCH_TIME;
     while(ReadBit(TOOL_SETTER) != TOOL_SETTER_ACTIVE)
     {
         WaitNextTimeSlice();
+        if(Time_sec() > TimeoutTime)
+        {
+            Jog(Z_AXIS, 0);   // stop the Z axis
+            SetPStatusBit(SB_PROBE_TIMEOUT); // set the timeout bit
+            return; //
+        }        
     }
     ToolPosition = chan[Z_AXIS].Dest;
     Jog(Z_AXIS, 0);
