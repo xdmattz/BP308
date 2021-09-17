@@ -24,8 +24,8 @@
 #define X_LEADSCREW_PITCH 8.0 // mm
 // Pulley Ratios and Encoder are defined in BP308_IO.h
 
-#define X_RES_PER_INCH 254000 // encoder resolution per inch
-#define X_RES_PER_METER 1000000
+#define X_RES_PER_INCH 25400.0 // encoder resolution per inch
+#define X_RES_PER_METER 1000000.0
 
 // #define X_BACKOFF_STEPS (X_STEPS_PER_INCH / 20)	// 1/20 of an inch
 #define X_BACKOFF_STEPS (X_RES_PER_INCH / 20)   // 1/20 of an inch
@@ -50,8 +50,8 @@
 #define Z_PULLEY_RATIO 2
 #define Z_ENCODER_RESOLUTION 5000
 
-#define Z_RES_PER_INCH 508000 // encoder resolution per inch
-#define Z_RES_PER_METER 2000000 // resolution per meter
+#define Z_RES_PER_INCH 50800.0 // encoder resolution per inch
+#define Z_RES_PER_METER 2000000.0 // resolution per meter
 
 #define Z_BACKOFF_STEPS (Z_RES_PER_INCH / 20)     // 1/20 of an inch
 #define Z_BACKOFF_VEL (Z_RES_PER_INCH * 3 / 60)     // 3 inch per min

@@ -53,6 +53,7 @@ if(persist.UserData[P_MPG_RESYNC] == TRUE)
         MPG_Step = (MPG_NewState - MPG_LastState) & 0x03;   
         if(MPG_Step == 3) MPG_Step = -1;
         MPG_LastState = MPG_NewState;
+        if(MPG_Step != 0) printf("MPG_Step = %d\n", MPG_Step);
 
         // read the axis switch
         int MPG_Status = persist.UserData[P_MPG_STATUS]; 
@@ -119,7 +120,7 @@ if(persist.UserData[P_MPG_RESYNC] == TRUE)
 
                 Target = chan[MPG2Axis(Axis)].Dest;   // get the inital axis position value
             }
-            Target -=(MPG_Step * Factor);   // step times rate scale factor - minus sign due to the decoder phaseing
+            Target -=((double)(MPG_Step) * Factor);   // step times rate scale factor - minus sign due to the decoder phaseing
             MoveExp(MPG2Axis(Axis),Target,TAU);   // note: contains a WaitNextTimeSlice
             LastChangeTime = Time_sec();
             InMotion = TRUE;
