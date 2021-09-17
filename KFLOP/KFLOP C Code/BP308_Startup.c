@@ -297,9 +297,9 @@ void Init_Variables(void)
 {
     int i;
     // initialize all the variables so they start in a known state
-    for(i = 100; i < 136; i++)
+    for(i = 100; i < 139; i++)
     {   
-        persist.UserData[i] = 0;    // clear the persist variables 100 through 133
+        persist.UserData[i] = 0;    // clear the persist variables 100 through 138
     }
     persist.UserData[P_STATUS] = HOME_STATUS_MASK; // initialize the HOME status bits to 1s
     Init_Buttons(); // initialize the state of the "buttons" so a button press can be edge detected

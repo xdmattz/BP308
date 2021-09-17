@@ -8,5 +8,6 @@
 
 void Init_MPG(void);
 void ServiceMPG(void);
+int MPG2Axis(int MAxis);
 
 #endif

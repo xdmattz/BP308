@@ -73,6 +73,7 @@
 #define P_NOTIFY_ARGUMENT4  135
 #define P_REMOTE_CMD        136     // a non zero value here indicates a command from another Thread or the PC - used for sending commands to the serial engine from other threads etc.
 #define P_INGORE_FAULT      137     // temporarily ignore the Z Axis disabled fault that sets the Z Brake 
+#define P_METRIC            138     // a non zero in bit 0 indicates the interpreter is in metric mode (G21)
 
 
 // BP308_STATUS bit definitions for P_STATUS
@@ -196,6 +197,9 @@
 #define RC_TLAUX_HOME       0x010f
 // TLAUX tool carousel
 #define RC_TLAUX_CAROUSEL_CMD   0x0200  
+
+// P_METRIC Status bit positions
+#define METRIC_MASK 0x00001
   
 
 #endif
