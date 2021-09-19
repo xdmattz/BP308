@@ -165,20 +165,23 @@
 #define MPG_FAULT_MASK          0x06000
 
 #define MPG_STATUS_OFF_POS          6
+#define MPG_STATUS_OFF_MASK         0x0040
 #define MPG_STATUS_ESTOP_POS        13
+#define MPG_STATUS_ESTOP_MASK       0x2000
 #define MPG_STATUS_ENSW_POS         7
+#define MPG_STATUS_ENSW_MASK        0x0080
 #define MPG_STATUS_AXIS_POS         3
+#define MPG_STATUS_AXIS_MASK        0x0038
 #define MPG_STATUS_SW2_POS          9
 #define MPG_STATUS_SW1_POS          8
-#define MPG_STATUS_AXIS_MASK    0x0038
-#define MPG_STATUS_AXIS_X       0x0008
-#define MPG_STATUS_AXIS_Y       0x0010
-#define MPG_STATUS_AXIS_Z       0x0018
-#define MPG_STATUS_AXIS_A       0x0020
-#define MPG_STATUS_RATE_MASK    0x0007
-#define MPG_STATUS_RATE_X1      0x0001
-#define MPG_STATUS_RATE_X10     0x0002
-#define MPG_STATUS_RATE_X100    0x0003
+#define MPG_STATUS_AXIS_X           0x0008
+#define MPG_STATUS_AXIS_Y           0x0010
+#define MPG_STATUS_AXIS_Z           0x0018
+#define MPG_STATUS_AXIS_A           0x0020
+#define MPG_STATUS_RATE_MASK        0x0007
+#define MPG_STATUS_RATE_X1          0x0001
+#define MPG_STATUS_RATE_X10         0x0002
+#define MPG_STATUS_RATE_X100        0x0003
 
 // Remote Commands 
 // these commands are passed in the P_REMOTE_CMD variable 

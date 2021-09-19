@@ -19,6 +19,7 @@
 // MPG 
 
 static volatile int8 Out_MPG_Cnt;
+static volatile int8 rem_MPG_Cnt;
 
 CY_ISR(Inc_MPG_ISR)
 {
@@ -33,6 +34,28 @@ CY_ISR(Dec_MPG_ISR)
 //    Control_Reg_MPG_Write(Out_MPG_Cnt);
     Control_Reg_MPG_Control = Out_MPG_Cnt;
 }
+
+// this is to compensate for the fact that the cheap chinese MPG that I got puts out a full quadrature step (4 sub steps) for every detent location
+CY_ISR(Inc_Rem_MPG_ISR)
+{
+    if((++rem_MPG_Cnt) > 3)
+    {
+        rem_MPG_Cnt = 0;
+        Out_MPG_Cnt++;
+        Control_Reg_MPG_Control = Out_MPG_Cnt;
+    }
+}
+
+CY_ISR(Dec_Rem_MPG_ISR)
+{
+    if((--rem_MPG_Cnt) < -3)
+    {
+        rem_MPG_Cnt = 0;
+        Out_MPG_Cnt--;
+        Control_Reg_MPG_Control = Out_MPG_Cnt;
+    }
+}
+
 
 
 // using the ARM SysTick
@@ -184,10 +207,11 @@ void Init_HW(void)
         
         // Initialize and clear the counters
         Out_MPG_Cnt = 0;
+        rem_MPG_Cnt = 0;
         
         // start the interrupts
-        isr_Rem_Inc_StartEx(Inc_MPG_ISR);
-        isr_Rem_Dec_StartEx(Dec_MPG_ISR);
+        isr_Rem_Inc_StartEx(Inc_Rem_MPG_ISR);
+        isr_Rem_Dec_StartEx(Dec_Rem_MPG_ISR);
         isr_Loc_Inc_StartEx(Inc_MPG_ISR);
         isr_Loc_Dec_StartEx(Dec_MPG_ISR);
 

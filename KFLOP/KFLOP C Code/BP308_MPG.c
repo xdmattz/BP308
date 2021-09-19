@@ -53,7 +53,7 @@ if(persist.UserData[P_MPG_RESYNC] == TRUE)
         MPG_Step = (MPG_NewState - MPG_LastState) & 0x03;   
         if(MPG_Step == 3) MPG_Step = -1;
         MPG_LastState = MPG_NewState;
-        if(MPG_Step != 0) printf("MPG_Step = %d\n", MPG_Step);
+    //    if(MPG_Step != 0) printf("MPG_Step = %d\n", MPG_Step);
 
         // read the axis switch
         int MPG_Status = persist.UserData[P_MPG_STATUS]; 
@@ -119,6 +119,11 @@ if(persist.UserData[P_MPG_RESYNC] == TRUE)
             {
 
                 Target = chan[MPG2Axis(Axis)].Dest;   // get the inital axis position value
+            }
+            // if the Enable switch is down then high speed
+            if((MPG_Status & MPG_STATUS_ENSW_MASK) == MPG_STATUS_ENSW_MASK)
+            {
+                Factor = Factor * 3;    // 3x rate when enable switch is pressed
             }
             Target -=((double)(MPG_Step) * Factor);   // step times rate scale factor - minus sign due to the decoder phaseing
             MoveExp(MPG2Axis(Axis),Target,TAU);   // note: contains a WaitNextTimeSlice

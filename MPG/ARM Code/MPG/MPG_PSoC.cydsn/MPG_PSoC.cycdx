@@ -15,8 +15,8 @@
   <block name="isr_Loc_Dec" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="isr_Loc_Inc" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="isr_Rem_Dec" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="cy_boot" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Em_EEPROM_Dynamic" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="cy_boot" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="not_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Sync_MPG1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LUT_MPG1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
