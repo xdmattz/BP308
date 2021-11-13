@@ -439,10 +439,14 @@ void Probe_Axis(int Axis)
     WaitAxis(Axis);
     if(JogSpeed > 0)
     {
-        Jog(Axis, HOME_VEL_3);
+        if(Axis == Z_AXIS)
+        {Jog(Axis, HOME_VEL_Z);}
+        else {Jog(Axis, HOME_VEL_3);}   // different rate for the Z axis
     } else
     {
-        Jog(Axis, -HOME_VEL_3);
+        if(Axis == Z_AXIS)
+        {Jog(Axis, -HOME_VEL_Z);}
+        else {Jog(Axis, -HOME_VEL_3);}  // different rate for the Z axis
     }
 
     TimeoutTime = Time_sec() + RETOUCH_TIME;
@@ -514,9 +518,9 @@ void Probe_XYZ(void)
     WaitAxis(X_AXIS); // wait for all axis to be stopped
     WaitAxis(Y_AXIS); 
     WaitAxis(Z_AXIS); 
-    Jog(X_AXIS, (double) (-JogSpeed_X));
-    Jog(Y_AXIS, (double) (-JogSpeed_Y));
-    Jog(Z_AXIS, (double) (-JogSpeed_Z));
+    Jog(X_AXIS, (double) (-JogSpeed_X/2));
+    Jog(Y_AXIS, (double) (-JogSpeed_Y/2));
+    Jog(Z_AXIS, (double) (-JogSpeed_Z/2));
 
     while(ReadBit(TOUCH_PROBE) != TOUCH_NORMAL) // move till the probe un-detects
     {
@@ -529,9 +533,9 @@ void Probe_XYZ(void)
     WaitAxis(X_AXIS); // wait for all axis to be stopped
     WaitAxis(Y_AXIS); 
     WaitAxis(Z_AXIS); 
-    Jog(X_AXIS, (double) (JogSpeed_X / 5)); // jog back at 1/5 speed
-    Jog(Y_AXIS, (double) (JogSpeed_Y / 5));
-    Jog(Z_AXIS, (double) (JogSpeed_Z / 5));
+    Jog(X_AXIS, (double) (JogSpeed_X / 8)); // jog back at 1/8 speed
+    Jog(Y_AXIS, (double) (JogSpeed_Y / 8));
+    Jog(Z_AXIS, (double) (JogSpeed_Z / 8));
 
     TimeoutTime = Time_sec() + RETOUCH_TIME;
     while(ReadBit(TOUCH_PROBE) != TOUCH_ACTIVE)
@@ -615,14 +619,14 @@ void ToolSet(void)
     Jog(Z_AXIS, 0);
     WaitAxis(Z_AXIS);
     Jog(Z_AXIS, (double)(-JogSpeed));
-    while(ReadBit(TOOL_SETTER) != TOOL_SETTER_NORMAL)
+    while(ReadBit(TOOL_SETTER) != TOOL_SETTER_NORMAL)   // back up until switch releases
     {
         WaitNextTimeSlice();
     }
     Delay_sec(BACKUP_TIME);   // let it move just a little bit more
     Jog(Z_AXIS, 0);
     WaitAxis(Z_AXIS);
-    Jog(Z_AXIS, -HOME_VEL_3);
+    Jog(Z_AXIS, -HOME_VEL_Z); 
 
     TimeoutTime = Time_sec() + RETOUCH_TIME;
     while(ReadBit(TOOL_SETTER) != TOOL_SETTER_ACTIVE)

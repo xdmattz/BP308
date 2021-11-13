@@ -22,7 +22,7 @@
 // Limit Switch Backoff 
 #define BACKOFF_STEPS 1250  // 1/20 of an inch - assuming 40u in/step
 #define BACKOFF_VEL 5000    // units are encoder ticks per second
-#define RETOUCH_TIME 1.5      // time to allow a retouch. if this time is exceeded then declare an error
+#define RETOUCH_TIME 1.75      // time to allow a retouch. if this time is exceeded then declare an error - changed from 1.5
 #define BACKUP_TIME 0.1
 
 // Home Switch Backoff
@@ -30,6 +30,7 @@
 #define HOME_VEL_1  40000  // Homing velocity    20 ipm, 0.333 ips 
 #define HOME_VEL_2  5000  // Homing backoff velocity  7.2 ipm    
 #define HOME_VEL_3  1500   // index hunt velocity 0.06 ips
+#define HOME_VEL_Z  3000  // index touch velocity for the Z axis still 0.06 ips 
 #define SPINDLE_HOME_VEL 1500 // spindle index hunt at 0.75 rev per sec.
 // in thread 2 which should be occuring 5500 times a second, the index pulse should be active for at least 
 // 3.66 time slots. It should not get missed at this rate.
