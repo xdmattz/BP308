@@ -42,8 +42,10 @@ CLI_CMD(Ver_Cmd)
     UNUSED_ARG(argc);UNUSED_ARG(argv);
     
     PutStr("\r** BP308 TLAUX with PSOC-5 **\r");
+#ifdef TESTBED	
     PutStr("\r** Test Bed Version **\r");
     PutStr("\r** Simulates all serial commands **\r");
+#endif	
 	PutStr("  Version 1.00\r");
 	PutStr(__DATE__" "__TIME__"\r");
 	return 0;
@@ -411,10 +413,26 @@ CLI_CMD(In_Fault_Cmd)
     }
     else
     {
-        PutStr("*** FAULT ***");
+        PutStr("*** FAULT ***\n");
+        uint8 fault = (FAULT_PORT & (Pin_V_Mon2_MASK | Pin_AC_Mon_MASK | Pin_ESTOP_MASK));
+        if((fault & Pin_V_Mon2_MASK) == 0)
+        {
+            PutStr("Under Voltage Fault\n");
+        }
+        if((fault & Pin_AC_Mon_MASK) != 0)
+        {
+            PutStr("No AC Voltage Fault\n");
+        }
+        if((fault & Pin_ESTOP_MASK) == 0)
+        {
+            PutStr("ESTOP Fault\n");
+        }
+		TC_Status();    // get the state machine status
     }
     return 0;
 }
+
+
 
 CLI_CMD(Blink_Cmd)
 {

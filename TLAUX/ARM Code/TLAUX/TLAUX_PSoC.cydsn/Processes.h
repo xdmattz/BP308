@@ -11,6 +11,10 @@
 #define PROCESSES_H
     
 #include "cytypes.h"
+    
+typedef void (* func_ptr)(void);
+    
+void BlinkProcess(void);
         
 void InitCountProcess(void);    
 void CountProcess(void); 
@@ -44,6 +48,7 @@ void Init_TC_StateMachine(void);
 void TC_StateMachine(void);
 // state machine states
 void TC_IDLE(void);
+void TC_Brake_Delay(void);  // this doesn't get an official state number 
 void TC_Arm_Move_In_Start(void);
 void TC_Arm_Move_In(void);
 void TC_Arm_Move_Out_Start(void);
@@ -51,6 +56,7 @@ void TC_Arm_Move_Out(void);
 void TC_Motor_Brake(void);
 void TC_Carousel_Moving_Start(void);
 void TC_Carousel_Moving(void);
+void TC_CarouselContinueMove(void);
 void TC_Clamp_AirBlast(void);
 void TC_Clamp(void);
 void TC_Fault(void);
@@ -61,6 +67,7 @@ void TC_Home_Delay(void);
 
 
 // helper functions
+void Brake_Start(func_ptr NextState);
 void TC_Set_Delay(uint32 delay);
 void Motors_Off(void);
 uint8 Get_Current_Tool(void);

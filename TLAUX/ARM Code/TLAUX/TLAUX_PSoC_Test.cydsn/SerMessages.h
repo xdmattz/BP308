@@ -34,7 +34,8 @@ struct SerCmdDesc const SerCmdParseTable[] =
     { TC_TOOL_ARM_CMD, TC_Arm_Cmd},
     { TC_TOOL_CAROUSEL_CMD, TC_Carousel_Cmd},
     { TC_TOOL_CLAMP_CMD, TC_Clamp_Cmd},
-    { TC_HOME_CMD, TC_Home_Cmd}
+    { TC_HOME_CMD, TC_Home_Cmd},
+    { TC_BRAKE_CMD, TC_Brake_Cmd}
 };
    
 // #define NUMOFCMDS (sizeof(CMD_Parse_Table) / sizeof(CMD_Parse_Table[0]))

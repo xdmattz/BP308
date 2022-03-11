@@ -89,4 +89,11 @@ SER_CMD(TC_Home_Cmd)
     Home_Cmd(arg);
     return 0;
 }
+
+SER_CMD(TC_Brake_Cmd)
+{
+    uint8 arg = SerMsg[DATA_INDEX];
+    SBrake_Cmd(arg);
+    return 0;
+}
 /* [] END OF FILE */

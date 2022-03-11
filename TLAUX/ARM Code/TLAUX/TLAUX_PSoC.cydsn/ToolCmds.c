@@ -19,6 +19,7 @@
 #include "stdio.h"
 
 extern func_ptr TC_SM;
+extern func_ptr Brake_NextState;
 extern uint8 TC_STATE;
 
 // char t_msg[32];
@@ -48,6 +49,7 @@ void Arm_Cmd(uint8 arg)
     {
         TC_SM = &TC_Fault;
     }
+    // Make sure that it is currently on one of the sensors IN or OUT
     else if(((SENSE_PORT & Pin_Tool_Arm_Out_MASK) != 0) && ((SENSE_PORT & Pin_Tool_Arm_In_MASK) != 0))
     {   
         TC_SM = &TC_Fault;  // if not on a sensor then fault
@@ -61,7 +63,8 @@ void Arm_Cmd(uint8 arg)
                     else
                     {
                         // PutStr("Arm In\n");
-                        TC_SM = &TC_Arm_Move_In_Start;      // change the state to Arm Moving In
+                        Brake_Start(&TC_Arm_Move_In_Start);
+                        //TC_SM = &TC_Arm_Move_In_Start;      // change the state to Arm Moving In
                         TC_Set_Delay(ARM_START_DELAY);      // delay to allow for moving off the sensor
                         TRIAC_PORT &= ~(Pin_Tool_Arm_FWD_MASK); // make sure FWD is off
                         TRIAC_PORT |= (Pin_Tool_Arm_REV_MASK | Pin_Tool_Arm_Brake_MASK); // turn the motor on REV and release Brake
@@ -72,7 +75,8 @@ void Arm_Cmd(uint8 arg)
                     else
                     {
                         // PutStr("Arm Out\n");
-                        TC_SM = &TC_Arm_Move_Out_Start;  // change the state to Arm Moving Out
+                        Brake_Start(&TC_Arm_Move_Out_Start);
+                        // TC_SM = &TC_Arm_Move_Out_Start;  // change the state to Arm Moving Out
                         TC_Set_Delay(ARM_START_DELAY);     // 1.5 sec
                         TRIAC_PORT &= ~(Pin_Tool_Arm_REV_MASK); // make sure REV is off
                         TRIAC_PORT |= (Pin_Tool_Arm_FWD_MASK | Pin_Tool_Arm_Brake_MASK); // turn the motor on FWD and release Brake
@@ -91,9 +95,9 @@ void Carousel_Cmd(uint8 arg)
     if(In_Fault() == 0)   // only do this if not in a fault state
     {
         // make sure we are currently on a tool!
-        if((SENSE_PORT & Pin_Tool_Count_MASK) != 0)
+        if((SENSE_PORT & Pin_Tool_Count_MASK) != 0) // pin must measure low to start here
         { 
-            // PutStr("Not on tool!\n");
+            PutStr("Not on tool!\n");
             TC_SM = & TC_Fault;
         }
         else
@@ -120,19 +124,21 @@ void Carousel_Cmd(uint8 arg)
                     // PutStr(t_msg);
                     if(tool_distance > 0)   // if distance is positive
                     {
+                        // Carousel motor on Forward
                         TRIAC_PORT &= ~(Pin_Car_REV_MASK);  // REV is off
                         TRIAC_PORT |= Pin_Car_FWD_MASK;     // FWD is on
                         Set_Target_Tool(arg, 1);
                     }
                     else    // if distance is negative
                     {
+                        // Carousel motor on Reverse
                         TRIAC_PORT &= ~(Pin_Car_FWD_MASK);  // FWD is off
                         TRIAC_PORT |= Pin_Car_REV_MASK;     // REV is on
                         Set_Target_Tool(arg, -1);
                     }
                     // PutStr("Car 4\n");
                     TC_SM = &TC_Carousel_Moving_Start;      // change the state to start moving
-                    TC_Set_Delay(CAROUSEL_START_DELAY);
+                    TC_Set_Delay(CAROUSEL_START_DELAY);     // give it this long to get moving...
                 }
             }
         }
@@ -201,6 +207,24 @@ void Home_Cmd(uint8 arg)
         }
     }
 }
+
+void SBrake_Cmd(uint8 arg)
+{
+    if(In_Fault() == 0)
+    {
+        if(arg == BRAKE_IDLE)
+        {
+            // clear the brake control
+            TRIAC_PORT &= ~(Pin_Tool_Arm_Brake_MASK);
+        }
+        else if (arg == BRAKE_RELEASED)
+        {
+            // set the brake control
+            TRIAC_PORT |= Pin_Tool_Arm_Brake_MASK;
+        }
+    }
+}
+
 
 
 /* [] END OF FILE */

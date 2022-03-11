@@ -64,6 +64,7 @@
 #define T2_TOOL_GRAB    0x0d04
 #define T2_TOOL_ARM_IN  0x0d05  
 #define T2_TOOL_ARM_OUT 0x0d06
+#define T2_TOOL_BRAKE   0x0d07
 #define T2_TOOL_HOME    0x0d0f
 
 // Spindle commands - command byte 0x0500

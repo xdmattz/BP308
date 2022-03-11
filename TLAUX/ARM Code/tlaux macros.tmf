@@ -1,0 +1,49 @@
+# Terminal macro file v2
+fault
+fault$0d
+sense
+sense$0d
+usb
+ucfg$0d
+status
+status$0d
+home?
+at_home$0d
+Air on
+air on$0d
+Air off
+air off$0d
+T on
+tclamp on$0d
+T off
+tclamp off$0d
+A in
+arm_in$0d
+A out
+arm_out$0d
+M12
+
+CMot+
+c_dir cw$0dc_motor 4000$0d
+CMot-
+c_dir ccw$0dc_motor 4000$0d
+Brake
+brake 4000$0d
+AMot+
+a_dir in$0da_motor 4000$0d
+AMot-
+a_dir out$0da_motor 4000$0d
+M18
+
+M19
+
+M20
+
+M21
+
+M22
+
+M23
+
+M24
+

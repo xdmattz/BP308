@@ -47,6 +47,7 @@ CLI_CMD(Sense_Cmd);
 CLI_CMD(At_Home_Cmd);
 CLI_CMD(In_Fault_Cmd);
 CLI_CMD(UsbCfg_Cmd);
+CLI_CMD(Blink_Cmd);
 
 
 void StartProcesses(void);

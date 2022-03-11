@@ -23,6 +23,7 @@
 #define TC_TOOL_CAROUSEL_CMD 0x05    // Tool Carousel Command, 0 no motion, 1 - 32  go to tool position, 64-127 debug stuff?
 #define TC_TOOL_CLAMP_CMD   0x06    // Tool Clamp Command, 0 nothing, 1 Air Blast, 2 Clamp release with Air, 3 Clamp release no air, 4 Clamp engaged 
 #define TC_HOME_CMD         0x07    // Home command, send arm back, rotate carousel to tool 1, this is how to get out of a fault        
+#define TC_BRAKE_CMD        0x08    // Tool Arm Brake Command, 0 normal ie brake relay not active, 1 Brake released - relay engaged    
     
 #define NUMBER_OF_TOOLS         8   // Size of the tool holder   
 #define HALF_NUMBER_OF_TOOLS    4    // half the number of tools
@@ -51,18 +52,21 @@
 #define SENSE_PORT Pin_Tool_1_PS        // port 0 Port State - Sense inputs
 #define FAULT_PORT Pin_V_Mon2_PS        // port 1 Port State - Fault inputs    
     
-#define ARM_START_DELAY 400
+#define ARM_START_DELAY 300
 #define ARM_STOP_DELAY 5
 #define ARM_MOVE_TIME   3000
     
-#define CAROUSEL_START_DELAY 500        // 400 ms delay to get off carousel sensor 
+#define CAROUSEL_START_DELAY 400        // 400 ms delay to get off carousel sensor - Carousel takes about 800ms to rotate 1 tool space
                                         // - takes a little longer to get off the sensor because of the Geneva Mechanism
-#define CAROUSEL_MOVING_DELAY 2000
-#define CAROUSEL_STOP_DELAY 10         // 50 ms delay
+#define CAROUSEL_CONT_DELAY 600         // 600 ms continue moving - to get off the position sensor - 200ms is too short! 400ms is sometimes too short
+#define CAROUSEL_MOVING_DELAY 2000      // if it takes more than 2000 ms to get there then there is a problem
+#define CAROUSEL_STOP_DELAY 40         // 40 ms delay
 #define CAROUSEL_HOME_DELAY 10000       // 10 second delay if we need to go all the way around the tool changer
 
-#define MOTOR_STOP_DELAY 10             // 50ms motor stop delay
-#define AIR_BLAST_DELAY 800            // 0.8 seconds air blast   
+#define MOTOR_STOP_DELAY 50             // 80ms motor stop delay
+#define AIR_BLAST_DELAY 800            // 0.8 seconds air blast  
+    
+#define BRAKE_START_DELAY 20            // 20ms brake start - brake will release 20ms before motor starts.
     
 // Command Arguments
 // Arm Command arguments
@@ -81,6 +85,10 @@
 // Home Command
 // No arguments
     
+// Brake Command
+#define BRAKE_IDLE      0
+#define BRAKE_RELEASED  1
+    
 #ifndef UNUSED_ARG
 #define  UNUSED_ARG(X) (void)(X)
 #endif
@@ -90,6 +98,9 @@ void Arm_Cmd(uint8 arg);
 void Carousel_Cmd(uint8 arg);
 void Clamp_Cmd(uint8 arg);
 void Home_Cmd(uint8 arg);
+void SBrake_Cmd(uint8 arg);
+
+int Brake_Delay(int delay);
 
     
 #endif

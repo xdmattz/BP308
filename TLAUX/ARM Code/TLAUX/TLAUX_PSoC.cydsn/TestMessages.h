@@ -45,9 +45,9 @@ struct CmdDesc const CMD_Parse_Table[] =
     {"count",   "{on/off}", "Count up every second", Count_Cmd},
     {"alpha",   "{on/off}", "Alphabet up every second", Alpha_Cmd},
     {"utx",   "ccccc", "send the string to the uart", UTX_Cmd},
-    {"a_motor", "dd", "Run the Arm Motor for dd sec", A_Motor_Cmd},
+    {"a_motor", "dd", "Run the Arm Motor for dd msec", A_Motor_Cmd},
     {"a_dir", "{in/out}", "Set the Arm Motor direction", Arm_Dir_Cmd},
-    {"c_motor", "dd", "Run the Carousel Motor for dd sec", C_Motor_Cmd},
+    {"c_motor", "dd", "Run the Carousel Motor for dd msec", C_Motor_Cmd},
     {"c_dir", "{cw/ccw}", "Set the Carousel Motor direction", Carousel_Dir_Cmd},
     {"brake", "dd", "Release the Arm Brake for dd sec", Brake_Cmd}, 
     {"tclamp", "{on/off}", "Tool clamp control", TClamp_Cmd},
@@ -64,7 +64,8 @@ struct CmdDesc const CMD_Parse_Table[] =
     {"at_home", 0, "Home Query", At_Home_Cmd},
     {"fault", 0, "Fault Query", In_Fault_Cmd},
     {"sense", 0, "Read Port 0 and port 1", Sense_Cmd},
-    {"ucfg", 0, "get the USB Configuration", UsbCfg_Cmd}
+    {"ucfg", 0, "get the USB Configuration", UsbCfg_Cmd},
+    {"blink", 0, "Blink the LED", Blink_Cmd}
 };
     
 const char HelpDiv[] = "************************";
@@ -80,6 +81,7 @@ const char* const HelpHeader[] =
     "Available Commands:",
     0   // always terminate with NULL
 };
+
 
 #endif // End of TESTMESSAGES_H
 

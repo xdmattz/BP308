@@ -3,7 +3,7 @@
 <!--This file is machine generated and read. It is not intended to be edited by hand.-->
 <!--Due to this, there is no schema for this file.-->
 <CyGuid_2867d519-54d2-4c01-9830-c51cb08bc3dd type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWorkspaceSerialize" version="5" xml_contents_version="3" name="TLAUX" persistent="TLAUX.cywrk" platform="NOT_USED">
-<current_project name=".\TLAUX_PSoC.cydsn\TLAUX_PSoC.cyprj" />
+<current_project name=".\TLAUX_PSoC_Test.cydsn\TLAUX_PSoC_Test.cyprj" />
 <wrkspc_folders />
 <files />
 <projects>
@@ -12,8 +12,8 @@
 <v>.\TLAUX_PSoC_Test.cydsn\TLAUX_PSoC_Test.cyprj</v>
 </projects>
 <workspace_id v="a49c9313-098f-4d68-abc3-e39a31f8f302" />
-<WriteAppVersionLastSavedWith v="4.3.0.1445" />
-<WriteAppMarketingVersionLastSavedWith v="4.3" />
+<WriteAppVersionLastSavedWith v="4.4.0.80" />
+<WriteAppMarketingVersionLastSavedWith v="4.4" />
 <CyGuid_dcbd9771-0334-43dc-9cc3-fe99dc3c5316 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWorkspaceSerialize+CyPrjDependencyList" version="4">
 <wrkspc_dependencies />
 </CyGuid_dcbd9771-0334-43dc-9cc3-fe99dc3c5316>

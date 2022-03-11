@@ -22,15 +22,19 @@
 #define TLAUX_CAR_CMD    0x05   // Tool Carousel Command. Next byte: 0 - no action, 1 - 32 go to tool 
 #define TLAUX_CLAMP_CMD  0x06   // Tool Clamp Command. Next byte: 0 - no action, 1 Air Blast, 2 Clamp release with Air, 3 Clamp release no air, 4 Clamp Grab
 #define TLAUX_HOME_CMD   0x07   // Home Command - starts in a known position - fault recovery
+#define TLAUX_BRAKE_CMD  0x08   // Brake Commnad - to release the brake tool arm motor brake.  0 = brake engaged (not energized), 1 = brake released (energized)
 
-// Arm Commands
+// Arm Command Arguments
 #define TLAUX_ARM_IN     0x01
 #define TLAUX_ARM_OUT    0x02
-// Clamp Commands
+// Clamp Command Arguments 
 #define TLAUX_CLAMP_AIR  0x01
 #define TLAUX_CLAMP_RELA 0x02
 #define TLAUX_CLAMP_REL  0x03
 #define TLAUX_CLAMP_GRAB 0x04
+// Brake Argument Arguments
+#define TLAUX_BRAKE_IDLE 0x00
+#define TLAUX_BRAKE_RELEASED 0x01
 
 
 #define MPG_ADDRESS     0x03    // Device Address

@@ -32,6 +32,10 @@ double ESTOP_Time;
 main()
 {
 	printf("BP308 Startup!\n");
+
+#ifdef TESTBED
+    printf("****************\nTESTBED MODE\n****************\n\nNot for use on the real machine\n\n");
+#endif   
 	
 	double Elapsed_Time;
     double MS_Slow_Timer;      // timer for slow peroidic events - 5 to 10 ms resolution

@@ -140,6 +140,27 @@ void TLAUX_ArmOut(void)
     Send_Serial(TLAUX_Cmd_1Arg);
 }    
 
+// Arm Brake release command
+void TLAUX_Brake(int rcmd) 
+{
+    if(rcmd == TLAUX_BRAKE_IDLE)
+    {
+        printf("Brake Idle\n");
+        // send the command to the serial port
+        TLAUX_Cmd_1Arg[COMMAND_INDEX - 1] = TLAUX_BRAKE_CMD;  // the carousel command
+        TLAUX_Cmd_1Arg[DATA_INDEX - 1] = TLAUX_BRAKE_IDLE;   // tool slot number
+        Send_Serial(TLAUX_Cmd_1Arg);       
+    }
+    else if(rcmd == TLAUX_BRAKE_RELEASED)
+    {
+        printf("Brake Released\n");
+        // send the command to the serial port
+        TLAUX_Cmd_1Arg[COMMAND_INDEX - 1] = TLAUX_BRAKE_CMD;  // the carousel command
+        TLAUX_Cmd_1Arg[DATA_INDEX - 1] = TLAUX_BRAKE_RELEASED;   // tool slot number
+        Send_Serial(TLAUX_Cmd_1Arg);
+    }
+}
+
 // Four possiblities
 // 1 Air Blast only - Air blast automacially times out
 // 2 Clamp Release with Air - Air blast automatically times out

@@ -403,13 +403,55 @@ CLI_CMD(At_Home_Cmd)
 CLI_CMD(In_Fault_Cmd)
 {
     UNUSED_ARG(argc);UNUSED_ARG(argv);
+    
     if(In_Fault() == 0)
     {
         PutStr("NO FAULT");
     }
     else
     {
-        PutStr("*** FAULT ***");
+        PutStr("*** FAULT ***\n");
+        uint8 fault = (FAULT_PORT & (Pin_V_Mon2_MASK | Pin_AC_Mon_MASK | Pin_ESTOP_MASK));
+        if((fault & Pin_V_Mon2_MASK) == 0)  // if this is low...
+        {
+            PutStr("Under Voltage Fault\n");
+        }
+        if((fault & Pin_AC_Mon_MASK) != 0)
+        {
+            PutStr("No AC Voltage Fault\n");
+        }
+        if((fault & Pin_ESTOP_MASK) == 0)
+        {
+            PutStr("ESTOP Fault\n");
+        }
+        TC_Status();    // get the state machine status
+    }
+    return 0;
+}
+
+
+CLI_CMD(Blink_Cmd)
+{
+    if(argc < 2)
+    {
+        PutStr("usage: blink {on/off}");
+        return 0;
+    }
+   if(strcmp(argv[1], "on") == 0)
+    {
+        if(Process_Running(MsProcess, BlinkProcess))
+        {
+            PutStr("Blink already running!");
+        } else {
+            Add_Process(MsProcess, &(BlinkProcess));
+            InitCountProcess();
+            PutStr("Blink is ON!");
+        }
+    }
+    if(strcmp(argv[1], "off") == 0)
+    {
+        Del_Process(MsProcess, &(BlinkProcess));
+        PutStr("Blink is OFF!");
     }
     return 0;
 }

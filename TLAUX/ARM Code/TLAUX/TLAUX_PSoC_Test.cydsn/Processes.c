@@ -26,6 +26,7 @@ extern func_ptr SlowProcess[];
 extern volatile uint32 MS_Time;
 
 func_ptr TC_SM;
+func_ptr Brake_NextState;
 uint8   TC_STATE;
 
 uint8 Current_Tool;
@@ -34,6 +35,7 @@ int8  Carousel_Dir;
 
 static uint16_t C_Count;
 static uint16_t SecCount;
+
 
 void InitCountProcess(void)
 {
@@ -52,16 +54,7 @@ void CountProcess(void)
     }
 }
 
-static uint32 BCount = 400;
 
-void BlinkProcess(void)
-{
-    if((--BCount) == 0)
-    {
-        BCount = 600;
-        Pin_LED_Write(~(Pin_LED_Read()));
-    }
-}
 
 static uint8 A_Count;
 static uint16 S_Count;
@@ -86,24 +79,42 @@ void AlphaProcess(void)
     }
 }
 
+static uint32 BCount = 400;
+
+void BlinkProcess(void)
+{
+    if((--BCount) == 0)
+    {
+        BCount = 600;
+        Pin_LED_Write(~(Pin_LED_Read()));
+    }
+}
+
 
 // delay timer variables
 static uint32 TC_Delay; // the amount of time to delay
 static uint32 TC_DelayStart; // the time tick when the delay started
+static uint32 TC_BrakeDelayStart;
 
+static uint8 Detect_Cnt;
 
+//
+// DRM 07 March 2022 - changed TC_SM to run in the MsProcess - 
+// it is now only called once every ms this should still be plenty fast for what it does
+//
 // tool changer state machine
 void Init_TC_StateMachine(void)
 {
-    if(Process_Running(FastProcess, TC_StateMachine))
+    if(Process_Running(MsProcess, TC_StateMachine))
     {
-        PutStr("Status Process already running!\n");
+        PutStr("TC State Machine Process already running!\n");
     } else {
     // start all the constantaly running processes.
     // Status Monitor
-        Add_Process(FastProcess, &(TC_StateMachine));
+        Add_Process(MsProcess, &(TC_StateMachine));
         PutStr("TC_State Machine Started");
         TC_SM = &TC_Fault;
+        Detect_Cnt = 0;     // initalize the Detect_Cnt
     } 
 }
 
@@ -127,6 +138,21 @@ void TC_IDLE(void)
     }
 }
 
+void Brake_Start(func_ptr NextState)
+{
+    TC_BrakeDelayStart = MS_Time;
+    TC_SM = &TC_Brake_Delay;
+    Brake_NextState = NextState;
+}
+
+void TC_Brake_Delay(void)
+{
+    if((MS_Time - TC_BrakeDelayStart) > BRAKE_START_DELAY)
+    {
+    // wait for the delay to expire then go to the next state
+    TC_SM = Brake_NextState;
+    }
+}
 void TC_Arm_Move_In_Start(void)
 {
     TC_STATE = TC_STATE_ARM_IN_START;
@@ -184,13 +210,34 @@ void TC_Motor_Brake(void)
 void TC_Carousel_Moving_Start(void)
 {
     TC_STATE = TC_STATE_CAROUSEL_START;
-     // look for both sensor to be high, ie. off of he currrent tool position
-    if((SENSE_PORT & Pin_Tool_Count_MASK) != 0)   // stay in this state until off the sensor or timeout
+	    
+    //this is a kick start with no checks just a timeout
+ //   if((MS_Time - TC_DelayStart) >= TC_Delay)
+ //   {
+ //       TC_SM = &TC_Carousel_Moving;    // change status to carousel moving
+ //       TC_Set_Delay(CAROUSEL_MOVING_DELAY);        
+ //   }
+    
+    // stay in this state until off the sensor or timeout
+    
+    
+    // is there some kind of "debounce" or something we can do here to make sure the transition is not due to noise?
+    // maybe two lows in a row = detect
+    
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) != 0) && (Detect_Cnt == 0)) // Tool Count is high
     {
+        Detect_Cnt = 1;
+        return; 
+    }
+     // look for the tool count sensor to be high, ie. off of he currrent tool position
+    // a rising edge on Pin_Tool_Count should do this
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) != 0) && (Detect_Cnt == 1))  // Tool Count is high for the second time in a row.
+   {
         TC_SM = &TC_Carousel_Moving;    // change status to carousel moving
         TC_Set_Delay(CAROUSEL_MOVING_DELAY);
         // PutStr("P_Car 1\n");
     }
+    Detect_Cnt = 0;
     RunningTooLong();   // too long on sensor? then timeout ie. next state is Fault...
 }
 
@@ -199,7 +246,13 @@ void TC_Carousel_Moving(void)
     TC_STATE = TC_STATE_CAROUSEL;
     RunningTooLong();   // if timeout then next state is Fault.
     
-    if((SENSE_PORT & Pin_Tool_Count_MASK) == 0) // look for next sensor detect 
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) == 0) && (Detect_Cnt == 0))  // first low detected
+    {
+        Detect_Cnt = 1;
+        return;
+    }
+    
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) == 0) && (Detect_Cnt == 1)) // look for next sensor detect - low is detect
     {
         // PutStr("P_Car 2\n");
         Current_Tool = Current_Tool + Carousel_Dir;     // Increment/decrement Current Tool position
@@ -226,11 +279,33 @@ void TC_Carousel_Moving(void)
         }
         else
         {
-            TC_Set_Delay(CAROUSEL_START_DELAY); // otherwise continue - back to moving start until sensor is cleared by moving past it.
-            TC_SM = &TC_Carousel_Moving_Start;
+            TC_Set_Delay(CAROUSEL_CONT_DELAY); // otherwise continue - back to moving start until sensor is cleared by moving past it.
+            TC_SM = &TC_CarouselContinueMove;
             // PutStr("P_Car Restart\n");
         }
-    }  
+    } 
+    Detect_Cnt = 0; //reset the Detect Count
+}
+
+void TC_CarouselContinueMove(void)
+{
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) != 0) && (Detect_Cnt == 0)) // Tool Count first high high
+    {
+        Detect_Cnt = 1;
+        return; 
+    }
+    
+     // look for the tool count sensor to be high, ie. off of he currrent tool position
+    // a rising edge on Pin_Tool_Count should do this
+    if(((SENSE_PORT & Pin_Tool_Count_MASK) != 0) && (Detect_Cnt == 1))  // Tool Count is high for the second time in a row.
+   {
+        TC_SM = &TC_Carousel_Moving;    // change status to carousel moving
+        TC_Set_Delay(CAROUSEL_MOVING_DELAY);
+        // PutStr("P_Car Cont\n");
+    }
+    Detect_Cnt = 0;
+    RunningTooLong();   // too long on sensor? then timeout ie. next state is Fault...
+
 }
 
 void TC_Clamp_AirBlast(void)
@@ -274,8 +349,8 @@ void TC_Test_Delay(void)
     {
         // when done move state back to IDLE
         Motors_Off();   // turn everything that can move off first... 
-        TC_SM = &TC_IDLE;    
-        PutStr("Delay Done\n");
+		TC_SM = &TC_IDLE; 					 
+        // PutStr("Delay Done\n");
     }
 }
 
@@ -288,7 +363,7 @@ void TC_Set_Delay(uint32 delay)
 // Turn all the motors off - precursor to switching back to Idle or fault
 void Motors_Off(void)
 {
-    // since all motors are on the same port... 
+    // since all motors are on the same port... Everybody OFF!
     TRIAC_PORT &= ~(Pin_Tool_Arm_FWD_MASK | Pin_Tool_Arm_REV_MASK | Pin_Car_FWD_MASK | Pin_Car_REV_MASK | Pin_Tool_Arm_Brake_MASK);
 }
 
@@ -347,6 +422,17 @@ void TC_Status(void)
 // is the tool changer at the home position? 1 = yes, 0 = no
 int At_Home(void)
 {
+#ifdef TESTBED
+    // if status is 0x02c1 then at home....
+
+    if(ToolStatusQuery() == 0x02c1)
+    {
+        return 1;
+    }
+    return 0;
+    
+    
+#else
     if((SENSE_PORT & (Pin_Tool_1_MASK | Pin_Tool_Count_MASK | Pin_Tool_Arm_In_MASK)) == 0)    // all three must be low
     {
         return 1;   // at home
@@ -355,6 +441,7 @@ int At_Home(void)
     {
         return 0;   // not home
     }
+#endif    
 }
 
 // is there an existing fault condition? 1 = yes, 0 = no
@@ -364,7 +451,7 @@ int In_Fault(void)
     return 0; // no fault - TESTBED can't fault!
 #else    
     uint8 fault = (FAULT_PORT & (Pin_V_Mon2_MASK | Pin_AC_Mon_MASK | Pin_ESTOP_MASK));
-    if(fault == (Pin_V_Mon2_MASK | Pin_ESTOP_MASK))
+    if(fault == (Pin_V_Mon2_MASK | Pin_ESTOP_MASK))    // both high = normal 
     {
         return 0;   // no fault
     }
@@ -428,6 +515,7 @@ void RunningTooLong(void)
         Motors_Off();
         TC_SM = &TC_Fault;
         // PutStr("Timeout\n");
+		// TC_Status();
     }   
 }
 
