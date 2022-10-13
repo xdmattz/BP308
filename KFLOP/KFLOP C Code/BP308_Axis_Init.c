@@ -345,8 +345,10 @@ void Init_Z_Axis(void)
 	ch2->InputMode=ENCODER_MODE;
 	ch2->OutputMode=DAC_SERVO_MODE;
 	ch2->Vel=160000;		// 4800 mm/min or 189 in/min - top speed. Rated speed is 250000 - 7500 mm/min or 295 in/mm
-	ch2->Accel=2e+06;
-	ch2->Jerk=1e+07;
+	// ch2->Accel=2e+06;
+	// ch2->Jerk=1e+07;
+	ch2->Accel=1e+06;
+	ch2->Jerk=0.5e+07;
 	ch2->P=1.3;
 	ch2->I=0.01;
 	ch2->D=0;
@@ -500,6 +502,8 @@ void CheckZFault(void)
 		{
 			// Z_Axis has been disabled...
 			ClearBit(Z_BRAKE);	// turn the Z Axis brake back on - so the head doesn't fall down.
+			// send a message to the console so we know what happened
+			printf("Z - Axis Disabled - Brake Applied\n");
 		}
 	}
 
