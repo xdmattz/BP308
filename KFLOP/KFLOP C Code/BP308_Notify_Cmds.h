@@ -88,4 +88,8 @@
 #define T2_PROBE_XYZ    0x0707
 #define T2_TOOLSET      0x0710
 
+// Diagnostic commands - command byte 0x0900
+#define T2_DIAGNOSTIC   0x0900
+#define T2_ENCODERS     0x0901
+#define T2_DESTINATION  0x0902
 #endif

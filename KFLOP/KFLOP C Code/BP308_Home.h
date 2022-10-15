@@ -52,5 +52,8 @@ void ToolSet(void);
 // misc commands
 int WaitForRemoteDone(double delay);
 
-
+// Diagnostic commands
+void Diagnostic_Cmd(int pmsg);
+void D_ListEncoders(void);
+void D_ListDestination(void);
 #endif

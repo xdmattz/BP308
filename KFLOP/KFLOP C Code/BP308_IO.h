@@ -1,8 +1,11 @@
 #ifndef BP308_IO_H
 #define BP308_IO_H
 
+// This file contains the IO bit definitions for the KFLOP/KANALOG and KFLOP/KONNECT interfaces
+// Since my custom "DANALOG" board looks like both I just used this one file.
+//
 // uncomment the next line for operating in the development environment
-// #define TESTBED 
+#define TESTBED 
 
 
 // Axis Definitions

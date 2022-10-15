@@ -2,7 +2,15 @@
 
 // BP308 Startup
 // this is the main loop that runs on the KFLOP for the BP308 Machine
-// this program should always run in thread 1 so it will not be cleared during ESTOP
+// this program always run in KFLOP thread 1 so it will not be cleared during ESTOP
+// It never exits. it is the primary run forever loop.
+// 
+// Threads 2 and 3 are also loaded after thread 1. 
+// These Threads are "run once" but stay dormant in the memory so they don't have to be reloaded each time.
+// The Thread 2 main program is BP308_Home.c 
+// The Thread 3 maini program is BP308_Thread3_S_Cmd.c
+// 
+// The remaining Threads are availible for future use...
 // 
 // performs the following functions:
 // Initialization
@@ -10,6 +18,7 @@
 // MPG Management
 // Other periodic processes that have to run all the time. - Add here as implemented.
 // 
+// !!! The TESTBED Macro is defined in BP308_IO.h !!!
 
 #include "KMotionDef.h"
 

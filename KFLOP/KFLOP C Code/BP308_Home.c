@@ -3,8 +3,14 @@
 // 
 // BP308_Home
 // this program contains all the functions that don't run all the time, but run once and terminate.
-// it is intended that this program run in Thread 2, but if thread 1 gets too big, it may be
-// necessary to run it in Thread 3 and let Thread 1 overrun Thread 2's code space. 
+// This program runs in Thread 2. If for some reason thread 1 gets too big, it may be
+// necessary to run it in Thread 3 and let Thread 1 overrun Thread 2's code space.
+//
+// The exception to this is the Spindle command which runs in Thread 3.
+// 
+// Communication with "PC" program is via the persist variable P_NOTIFY
+// Communication with Thead 1 is via the persist variable P_REMOTE_CMD
+// 
 
 #include "KMotionDef.h"
 #include "BP308_Home.h"
@@ -44,6 +50,9 @@ int main()
         case T2_SPINDLE : Spindle_Cmd(msg);
                     break;  
         case T2_PROBE : Probe_Cmd(msg);
+                    break;
+        case T2_DIAGNOSTIC : Diagnostic_Cmd(msg);
+                    break;
         default: break;
     }
     persist.UserData[P_NOTIFY] = 0; // clear the Notify cmd - Indicates that the thread is done. only do this here! - all others have been commented out.
@@ -653,3 +662,37 @@ void ToolSet(void)
 
 }
 
+// Diagnostic commands
+void Diagnostic_Cmd(int pmsg)
+{
+    switch (pmsg)
+    {
+        case T2_ENCODERS : D_ListEncoders();
+                    break;
+        case T2_DESTINATION : D_ListDestination();
+                    break;
+        default : break;
+    }
+}
+
+void D_ListEncoders(void)
+{
+    // get the axis encoder values and print to the console
+    double X_Enc = chan[X_AXIS].Position;
+    double Y_Enc = chan[X_AXIS].Position; 
+    double Z_Enc = chan[Z_AXIS].Position;
+    double S_Enc = chan[SPINDLE_AXIS].Position;
+    printf("Encoders:\n");
+    printf("X = %f\nY = %f\nZ = %f\nSpindle = %f\n", X_Enc, Y_Enc, Z_Enc, S_Enc);
+}
+
+void D_ListDestination(void)
+{
+     // get the axis position values and print to the console
+    double X_Pos = chan[X_AXIS].Dest;
+    double Y_Pos = chan[X_AXIS].Dest; 
+    double Z_Pos = chan[Z_AXIS].Dest;
+    double S_Pos = chan[SPINDLE_AXIS].Dest;
+    printf("Destination:\n");
+    printf("X = %f\nY = %f\nZ = %f\nSpindle = %f\n", X_Pos, Y_Pos, Z_Pos, S_Pos);   
+}
