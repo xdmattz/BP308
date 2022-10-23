@@ -201,14 +201,14 @@ void Init_Spindle(void)
 
 // Axis control values for the BP308 machine 
 
-// X Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
+// X Axis, Encoder resolution = 0.0008 mm, 31.496e-6 inch, 1250 steps/mm or 31750 steps/in
 //
 
 void Init_X_Axis(void)
 {
 	ch0->InputMode=ENCODER_MODE;
 	ch0->OutputMode=DAC_SERVO_MODE;
-	ch0->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
+	ch0->Vel=160000;		// 7680 mm/min or 302 in/min - top speed. Rated speed is 200000 - 9600 mm/min or 377 in/mm
 	ch0->Accel=0.9e+06;
 	ch0->Jerk=2e+07;
 	ch0->P=0.9;
@@ -270,13 +270,13 @@ void Init_X_Axis(void)
 	ResetFilters(X_AXIS);
 }
 
-// Y Axis, Encoder resolution = 0.001mm, 39.370079e-6 inch, 1000 steps/mm or 25400 steps/in
+// Y Axis, Encoder resolution = 0.0008 mm, 31.496e-6 inch, 1250 steps/mm or 31750 steps/in
 //
 void Init_Y_Axis(void)
 {
 	ch1->InputMode=ENCODER_MODE;
 	ch1->OutputMode=DAC_SERVO_MODE;
-	ch1->Vel=160000;		// 9600 mm/min or 377 in/min - top speed. Rated speed is 200000 - 12000 mm/min or 472 in/mm
+	ch1->Vel=160000;		// 7680 mm/min or 302 in/min - top speed. Rated speed is 200000 - 9600 mm/min or 377 in/mm
 	ch1->Accel=0.9e+06;
 	ch1->Jerk=2e+07;
 	ch1->P=0.9;
@@ -347,8 +347,8 @@ void Init_Z_Axis(void)
 	ch2->Vel=160000;		// 4800 mm/min or 189 in/min - top speed. Rated speed is 250000 - 7500 mm/min or 295 in/mm
 	// ch2->Accel=2e+06;
 	// ch2->Jerk=1e+07;
-	ch2->Accel=1e+06;
-	ch2->Jerk=0.5e+07;
+	ch2->Accel=0.8e+06;
+	ch2->Jerk=0.4e+07;
 	ch2->P=1.3;
 	ch2->I=0.01;
 	ch2->D=0;
@@ -501,9 +501,13 @@ void CheckZFault(void)
 		if(CheckDone(Z_AXIS) == CD_AXIS_DISABLED)
 		{
 			// Z_Axis has been disabled...
+			int BitState = ReadBit(Z_BRAKE);
 			ClearBit(Z_BRAKE);	// turn the Z Axis brake back on - so the head doesn't fall down.
 			// send a message to the console so we know what happened
-			printf("Z - Axis Disabled - Brake Applied\n");
+			if(BitState == 1)	// this should only print when the bit is changed
+			{
+				printf("Z - Axis Disabled - Brake Applied\n");
+			}
 		}
 	}
 

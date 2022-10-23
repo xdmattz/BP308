@@ -679,7 +679,7 @@ void D_ListEncoders(void)
 {
     // get the axis encoder values and print to the console
     double X_Enc = chan[X_AXIS].Position;
-    double Y_Enc = chan[X_AXIS].Position; 
+    double Y_Enc = chan[Y_AXIS].Position; 
     double Z_Enc = chan[Z_AXIS].Position;
     double S_Enc = chan[SPINDLE_AXIS].Position;
     printf("Encoders:\n");
@@ -690,7 +690,7 @@ void D_ListDestination(void)
 {
      // get the axis position values and print to the console
     double X_Pos = chan[X_AXIS].Dest;
-    double Y_Pos = chan[X_AXIS].Dest; 
+    double Y_Pos = chan[Y_AXIS].Dest; 
     double Z_Pos = chan[Z_AXIS].Dest;
     double S_Pos = chan[SPINDLE_AXIS].Dest;
     printf("Destination:\n");

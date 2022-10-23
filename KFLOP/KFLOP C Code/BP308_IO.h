@@ -5,7 +5,7 @@
 // Since my custom "DANALOG" board looks like both I just used this one file.
 //
 // uncomment the next line for operating in the development environment
-#define TESTBED 
+// #define TESTBED 
 
 
 // Axis Definitions
@@ -16,8 +16,8 @@
 #define A_AXIS 3
 #define SPINDLE_AXIS 7
 
-#define X_ENC_RES 8000  // Encoder resolution * Gear ratio
-#define Y_ENC_RES 8000  // Encoder resolution * Gear ratio
+#define X_ENC_RES 10000  // Encoder resolution * Gear ratio
+#define Y_ENC_RES 10000  // Encoder resolution * Gear ratio
 #define Z_ENC_RES 8000  // Encoder resolution * Gear ratio
 #define SP_ENC_RES 2000  // Encoder resolution * Gear ratio
 
